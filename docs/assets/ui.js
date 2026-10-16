@@ -49,7 +49,7 @@
   const fmtP = (a, v = a.p) => {
     if (a.y) return v.toFixed(3) + '%';
     const d = v >= 1000 ? 2 : v >= 10 ? 2 : v >= 1 ? 4 : 4;
-    return (a.c === 'currencies' || a.c === 'indices' || a.c === 'bonds' ? '' : ({ EUR: '€', GBP: '£', JPY: '¥', USD: '$' }[a.cur] || (a.x === 'XETRA' || a.x === 'EURONEXT' ? '€' : a.x === 'LSE' ? '£' : '$'))) + v.toLocaleString('en-US', { minimumFractionDigits: a.c === 'currencies' ? 4 : d, maximumFractionDigits: a.c === 'currencies' ? 4 : d });
+    return (a.c === 'currencies' || a.c === 'indices' || a.c === 'bonds' ? '' : ({ EUR: '€', GBP: '£', JPY: '¥', USD: '$', CHF: 'CHF ', CAD: 'C$', AUD: 'A$', NZD: 'NZ$', HKD: 'HK$', SGD: 'S$', KRW: '₩', INR: '₹', CNY: '¥', ZAR: 'R ', EGP: 'E£', SAR: 'SAR ', AED: 'AED ', QAR: 'QAR ', BRL: 'R$', MXN: 'MX$', ILS: '₪' }[a.cur] || (a.x === 'XETRA' || a.x === 'EURONEXT' ? '€' : a.x === 'LSE' ? '£' : '$'))) + v.toLocaleString('en-US', { minimumFractionDigits: a.c === 'currencies' ? 4 : d, maximumFractionDigits: a.c === 'currencies' ? 4 : d });
   };
   const fmtC = (v, bps) => bps ? `${v > 0 ? '+' : ''}${(v * 1).toFixed(1)} bp` : `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`;
   const cls = v => v > 0 ? 'up' : v < 0 ? 'down' : 'muted';
@@ -57,11 +57,11 @@
   // Asset logos, all round and self-hosted in assets/logos: coin logos (CC0 set), brand marks (simple-icons CC0, svgl MIT), company icons
   // and round flags (circle-flags, MIT) for indices, bonds and currencies. Anything else gets a coloured ticker tile.
   const COIN = new Set(['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX', 'LINK', 'UNI', 'AAVE', 'USDT', 'USDC']);
-  const GLYPH = new Set(['NVDA', 'AAPL', 'GOOGL', 'META', 'TSLA', 'AVGO', 'V', 'DELL', 'INTC', 'NFLX', 'AMD', 'BA', 'SAP', 'KO', 'BAC', 'HSBA', 'SHEL', 'TM', 'BABA', 'SHOP', 'NU', 'MSFT', 'ADBE', 'CRM', 'MELI']);
+  const GLYPH = new Set(['NVDA', 'AAPL', 'GOOGL', 'META', 'TSLA', 'AVGO', 'V', 'DELL', 'INTC', 'NFLX', 'AMD', 'BA', 'SAP', 'KO', 'BAC', 'HSBA', 'SHEL', 'TM', 'BABA', 'SHOP', 'NU', 'MSFT', 'ADBE', 'CRM', 'MELI', 'ULVR', 'SIE', 'AIR', 'RACE', 'SMSN', 'HYMTF', 'SONY', 'XIACY', 'INFY', 'HDB']);
   const ICON = new Set(['GS', 'WFC', 'AMZN', 'JPM', 'LLY', 'XOM', 'WULF', 'CRWV', 'ASML', 'PEP', 'WMT', 'COST', 'BNP', 'JNJ', 'NVO', 'PFE', 'CVX', 'ENPH', 'QQQ', 'VTI', 'GLD', 'SCHD', 'ARKK', 'FXAIX']), ICON_ALIAS = { VOO: 'VTI', VFIAX: 'VTI', VWCE: 'VTI' };
   const FLAG = { SPX: 'us', NDX: 'us', DJI: 'us', RUT: 'us', ES1: 'us', YM1: 'us', NQ1: 'us', DAX: 'de', CAC: 'fr', UKX: 'gb', NKY: 'jp', SX5E: 'eu', HSI: 'hk', TSX: 'ca', IBOV: 'br', MXX: 'mx', XJO: 'au', NZ50: 'nz', J203: 'za', EGX30: 'eg', NGSE: 'ng', SENSEX: 'in', KOSPI: 'kr', SSEC: 'cn',
     US02Y: 'us', US10Y: 'us', US30Y: 'us', USIG: 'us', USHY: 'us', DE10Y: 'de', FR10Y: 'fr', JP10Y: 'jp', UK10Y: 'gb', IT10Y: 'it', DXY: 'us' };
-  const CCY = { EUR: 'eu', USD: 'us', GBP: 'gb', JPY: 'jp', CHF: 'ch', AUD: 'au', TRY: 'tr', MXN: 'mx', ZAR: 'za', CAD: 'ca', CNY: 'cn' };
+  const CCY = { EUR: 'eu', USD: 'us', GBP: 'gb', JPY: 'jp', CHF: 'ch', AUD: 'au', TRY: 'tr', MXN: 'mx', ZAR: 'za', CAD: 'ca', CNY: 'cn', BRL: 'br', INR: 'in', KRW: 'kr', NZD: 'nz', ILS: 'il', EGP: 'eg' };
   const CMD = {
     bar: '<path d="M3.5 17.5h17l-2.6-6.5H6.1z"/><path d="M7.6 11l1.3-4h6.2l1.3 4"/>',
     drop: '<path d="M12 3.5c3 4.3 5.8 7.4 5.8 10.7a5.8 5.8 0 0 1-11.6 0c0-3.3 2.8-6.4 5.8-10.7z"/>',
@@ -73,7 +73,8 @@
   const logo = (a, size = '') => {
     const s = a.s, icon = ICON_ALIAS[s] || s;
     if (COIN.has(s)) return `<span class="logo ${size} logo-img">${img(`assets/logos/${s}.svg`)}</span>`;
-    if (FLAG[s]) return `<span class="logo ${size} logo-img">${img(`assets/logos/flags/${FLAG[s]}.svg`)}</span>`;
+    const fc = FLAG[s] || ((a.c === 'indices' || a.c === 'bonds') && a.place && a.place !== 'Global' ? (a.place === 'UK' ? 'gb' : a.place.toLowerCase()) : null);
+    if (fc) return `<span class="logo ${size} logo-img">${img(`assets/logos/flags/${fc}.svg`)}</span>`;
     if (a.c === 'currencies' && CCY[s.slice(0, 3)] && CCY[s.slice(3)]) return `<span class="logo ${size} logo-fx">${img(`assets/logos/flags/${CCY[s.slice(0, 3)]}.svg`)}${img(`assets/logos/flags/${CCY[s.slice(3)]}.svg`)}</span>`;
     if (GLYPH.has(s)) return `<span class="logo ${size} logo-tile">${img(`assets/logos/${s}.svg`)}</span>`;
     if (ICON.has(icon)) return `<span class="logo ${size} logo-tile">${img(`assets/logos/${icon}.png`)}</span>`;
@@ -578,5 +579,29 @@
     draw();
     let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(draw, 60); }).observe(el);
   }
-  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref };
+  // ---------- regions ----------
+  // Tabs for the regions that actually have assets in `list`; calls onChange('All' | 'Europe' | …)
+  function regionTabs(el, list, onChange, cur = 'All') {
+    const have = M.REGIONS.filter(r => list.some(a => a.region === r));
+    el.classList.add('tabs', 'region-tabs'); el.setAttribute('role', 'tablist'); el.setAttribute('aria-label', 'Region');
+    el.innerHTML = ['All', ...have].map(r => `<button class="tab" type="button" role="tab" aria-selected="${r === cur}" data-r="${r}">${r}</button>`).join('');
+    el.onclick = e => { const b = e.target.closest('[data-r]'); if (!b) return; el.querySelectorAll('[data-r]').forEach(x => x.setAttribute('aria-selected', x === b)); onChange(b.dataset.r); };
+    return have;
+  }
+  const inRegion = (list, r) => !r || r === 'All' ? list : list.filter(a => a.region === r);
+  // "Rising now" for a region: top gainers for a period (d = today, w = week, m1 = month) plus the region's largest companies
+  function regionMovers(el, list, region = 'All', per = 'd') {
+    const pool = inRegion(list, region), lab = { d: 'today', w: 'this week', m1: 'this month' }[per];
+    const up = pool.filter(a => a[per] > 0).sort((x, y) => y[per] - x[per]).slice(0, 6);
+    const big = pool.filter(a => a.m).sort((x, y) => y.m - x.m).slice(0, 6);
+    const row = (a, v) => `<a class="arow" href="${href(a)}" style="grid-template-columns:minmax(0,1fr) auto auto"><span class="ident">${logo(a)}<span><b>${a.c === 'indices' || a.c === 'bonds' ? a.n : a.s}</b><small>${a.c === 'indices' || a.c === 'bonds' ? a.s : a.n}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(v)}" style="min-width:72px;text-align:right">${fmtC(v, a.y)}</span></a>`;
+    el.innerHTML = `<div class="grid g-2">
+      <div class="card"><div class="card-head"><h3>Rising ${lab}${region === 'All' ? '' : ' · ' + region}</h3><div class="range" data-per>${[['d', '1D'], ['w', '1W'], ['m1', '1M']].map(([k, t]) => `<button type="button" aria-pressed="${k === per}" data-k="${k}">${t}</button>`).join('')}</div></div>
+        <div>${up.length ? up.map(a => row(a, a[per])).join('') : `<p class="muted" style="padding:16px 18px;margin:0">Nothing in ${region} is up ${lab}.</p>`}</div></div>
+      <div class="card"><div class="card-head"><h3>Largest${region === 'All' ? '' : ' in ' + region}</h3><span class="meta">by market value</span></div>
+        <div>${big.map(a => row(a, a.d)).join('') || `<p class="muted" style="padding:16px 18px;margin:0">No companies listed yet.</p>`}</div></div></div>`;
+    el.querySelectorAll('[data-per] button').forEach(b => b.onclick = () => regionMovers(el, list, region, b.dataset.k));
+  }
+
+  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, regionTabs, inRegion, regionMovers };
 })();

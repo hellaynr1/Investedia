@@ -165,6 +165,128 @@ window.MOCK = (function () {
     { s: 'FXAIX', n: 'Fidelity 500 Index Fund', x: 'MUTUAL FUND', c: 'funds', p: 241.62, d: -0.08, w: 0.9, aum: '$728B', fee: '0.015%', kind: 'Index fund', logo: '#368727', ext: true },
     { s: 'VFIAX', n: 'Vanguard 500 Index Admiral', x: 'MUTUAL FUND', c: 'funds', p: 652.08, d: -0.08, w: 0.9, aum: '$1.6T', fee: '0.04%', kind: 'Index fund', logo: '#b91c1c', ext: true },
   );
+  // Leading companies in every region (prices refresh from their home exchange; market caps are USD estimates)
+  assets.push(
+    // Europe
+    S('NESN', 'Nestlé', 'SIX', 'Consumer', 'CH', 82.43, 0, 0, 240, 19.8, 3.1, 3.6, '#7b8a99'),
+    S('NOVN', 'Novartis', 'SIX', 'Healthcare', 'CH', 124.7, 0, 0, 260, 17.2, 6.4, 3.3, '#0460a9'),
+    S('ROG', 'Roche Holding', 'SIX', 'Healthcare', 'CH', 384.6, 0, 0, 280, 16.5, 4.2, 3.0, '#0b41cd'),
+    S('AZN', 'AstraZeneca', 'LSE', 'Healthcare', 'UK', 124.46, 0, 0, 245, 31.0, 11.5, 1.9, '#830051'),
+    S('ULVR', 'Unilever', 'LSE', 'Consumer', 'UK', 49.66, 0, 0, 150, 20.4, 3.9, 3.2, '#1f36c7'),
+    S('SIE', 'Siemens', 'XETRA', 'Industrials', 'DE', 270.65, 0, 0, 200, 21.3, 7.2, 1.9, '#009999'),
+    S('ALV', 'Allianz', 'XETRA', 'Finance', 'DE', 433.9, 0, 0, 160, 13.6, 6.8, 4.2, '#003781'),
+    S('RHM', 'Rheinmetall', 'XETRA', 'Industrials', 'DE', 1090.2, 0, 0, 55, 58.0, 34.0, 0.7, '#5a5a5a'),
+    S('AIR', 'Airbus', 'EURONEXT', 'Industrials', 'FR', 198.82, 0, 0, 170, 29.5, 12.1, 1.3, '#00205b'),
+    S('OR', 'L’Oréal', 'EURONEXT', 'Consumer', 'FR', 407.4, 0, 0, 230, 33.0, 5.6, 1.7, '#111113'),
+    S('ITX', 'Inditex', 'BME', 'Consumer', 'ES', 55.86, 0, 0, 170, 27.4, 9.8, 3.0, '#222222'),
+    S('SAN', 'Banco Santander', 'BME', 'Finance', 'ES', 12.034, 0, 0, 130, 9.8, 8.0, 3.1, '#ec0000'),
+    S('RACE', 'Ferrari', 'BIT', 'Consumer', 'IT', 356.35, 0, 0, 75, 47.0, 13.0, 0.8, '#d40000'),
+    S('ENEL', 'Enel', 'BIT', 'Utilities', 'IT', 9.187, 0, 0, 85, 12.1, 2.4, 5.4, '#0555fa'),
+    // Asia
+    S('SMSN', 'Samsung Electronics', 'KRX', 'Technology', 'KR', 215500, 0, 0, 450, 17.0, 14.0, 1.6, '#1428a0'),
+    S('HYMTF', 'Hyundai Motor', 'KRX', 'Consumer', 'KR', 312000, 0, 0, 45, 6.1, 7.5, 3.4, '#002c5f'),
+    S('SONY', 'Sony Group', 'TSE', 'Technology', 'JP', 3959, 0, 0, 160, 19.6, 6.0, 0.6, '#111113'),
+    S('MUFG', 'Mitsubishi UFJ Financial', 'TSE', 'Finance', 'JP', 3475, 0, 0, 140, 12.4, 9.0, 2.9, '#e60000'),
+    S('NTDOY', 'Nintendo', 'TSE', 'Communication', 'JP', 8479, 0, 0, 75, 38.0, 11.0, 1.4, '#e60012'),
+    S('SFTBY', 'SoftBank Group', 'TSE', 'Communication', 'JP', 4944, 0, 0, 95, 15.0, 4.0, 0.4, '#b8b8b8'),
+    S('TCEHY', 'Tencent Holdings', 'HKEX', 'Communication', 'CN', 417.8, 0, 0, 600, 21.0, 9.5, 0.8, '#1d9bf0'),
+    S('BYDDY', 'BYD Company', 'HKEX', 'Consumer', 'CN', 73.75, 0, 0, 120, 20.5, 25.0, 1.2, '#c4161c'),
+    S('XIACY', 'Xiaomi', 'HKEX', 'Technology', 'CN', 26.66, 0, 0, 90, 28.0, 30.0, 0, '#ff6900'),
+    S('RELI', 'Reliance Industries', 'NSE', 'Energy', 'IN', 1211.2, 0, 0, 190, 24.0, 7.0, 0.4, '#0b4ea2'),
+    S('INFY', 'Infosys', 'NSE', 'Technology', 'IN', 1161.2, 0, 0, 75, 22.5, 6.5, 2.7, '#007cc3'),
+    S('HDB', 'HDFC Bank', 'NSE', 'Finance', 'IN', 728.85, 0, 0, 160, 18.9, 16.0, 1.1, '#004c8f'),
+    S('DBS', 'DBS Group', 'SGX', 'Finance', 'SG', 74.11, 0, 0, 115, 12.0, 8.0, 5.0, '#ff3333'),
+    // Americas (outside the US) and Berkshire
+    S('BRKB', 'Berkshire Hathaway', 'NYSE', 'Finance', 'US', 529.49, 0, 0, 1150, 23.0, 6.0, 0, '#3b4f8f'),
+    S('TD', 'Toronto-Dominion Bank', 'TSX', 'Finance', 'CA', 170.94, 0, 0, 120, 12.6, 5.0, 3.6, '#00a651'),
+    S('ENB', 'Enbridge', 'TSX', 'Energy', 'CA', 67.41, 0, 0, 105, 20.0, 4.0, 5.6, '#ffb81c'),
+    S('CNQ', 'Canadian Natural Resources', 'TSX', 'Energy', 'CA', 75.25, 0, 0, 70, 13.0, 3.0, 4.6, '#c8102e'),
+    S('VALE', 'Vale', 'NYSE', 'Materials', 'BR', 13.19, 0, 0, 55, 7.5, -3.0, 7.8, '#00968f'),
+    S('ITUB', 'Itaú Unibanco', 'NYSE', 'Finance', 'BR', 9.465, 0, 0, 65, 9.6, 12.0, 4.5, '#ec7000'),
+    S('AMX', 'América Movil', 'NYSE', 'Communication', 'MX', 22.755, 0, 0, 70, 18.0, 5.0, 2.4, '#e30613'),
+    S('FMX', 'FEMSA', 'NYSE', 'Consumer', 'MX', 127.09, 0, 0, 45, 25.0, 8.0, 2.1, '#d7282f'),
+    // Oceania
+    S('BHP', 'BHP Group', 'ASX', 'Materials', 'AU', 60.03, 0, 0, 140, 16.0, -2.0, 4.8, '#e65400'),
+    S('RIO', 'Rio Tinto', 'ASX', 'Materials', 'AU', 154.93, 0, 0, 110, 11.0, -1.0, 5.6, '#e1251b'),
+    S('FMG', 'Fortescue', 'ASX', 'Materials', 'AU', 15.19, 0, 0, 30, 9.0, -6.0, 7.0, '#f6a01a'),
+    S('CBA', 'Commonwealth Bank', 'ASX', 'Finance', 'AU', 154.38, 0, 0, 170, 27.0, 4.0, 3.1, '#ffcc00'),
+    S('WBC', 'Westpac', 'ASX', 'Finance', 'AU', 35.15, 0, 0, 80, 17.0, 3.0, 4.4, '#d5002b'),
+    S('NAB', 'National Australia Bank', 'ASX', 'Finance', 'AU', 39.32, 0, 0, 80, 16.5, 3.0, 4.3, '#c20000'),
+    S('MQG', 'Macquarie Group', 'ASX', 'Finance', 'AU', 249.35, 0, 0, 60, 22.0, 8.0, 2.6, '#111113'),
+    S('CSL', 'CSL Limited', 'ASX', 'Healthcare', 'AU', 192.2, 0, 0, 65, 25.0, 6.0, 1.9, '#e2231a'),
+    S('WES', 'Wesfarmers', 'ASX', 'Consumer', 'AU', 79.31, 0, 0, 60, 33.0, 4.0, 2.7, '#00843d'),
+    S('FPH', 'Fisher & Paykel Healthcare', 'NZX', 'Healthcare', 'NZ', 48.61, 0, 0, 18, 60.0, 9.0, 1.0, '#0a6b8a'),
+    S('MEL', 'Meridian Energy', 'NZX', 'Utilities', 'NZ', 5.59, 0, 0, 10, 40.0, 2.0, 4.0, '#00a3e0'),
+    // Africa
+    S('NPN', 'Naspers', 'JSE', 'Communication', 'ZA', 720.65, 0, 0, 55, 14.0, 9.0, 0.3, '#0f4c81'),
+    S('MTN', 'MTN Group', 'JSE', 'Communication', 'ZA', 189.13, 0, 0, 15, 12.0, 4.0, 3.5, '#ffcb05'),
+    S('SBK', 'Standard Bank', 'JSE', 'Finance', 'ZA', 307.87, 0, 0, 23, 8.5, 6.0, 7.2, '#0033a1'),
+    S('FSR', 'FirstRand', 'JSE', 'Finance', 'ZA', 90.17, 0, 0, 22, 12.0, 6.0, 5.4, '#00a7a7'),
+    S('CPI', 'Capitec Bank', 'JSE', 'Finance', 'ZA', 4454.48, 0, 0, 22, 30.0, 18.0, 1.6, '#004a98'),
+    S('GFI', 'Gold Fields', 'JSE', 'Materials', 'ZA', 627.62, 0, 0, 25, 14.0, 30.0, 2.0, '#c99700'),
+    S('ANG', 'AngloGold Ashanti', 'JSE', 'Materials', 'ZA', 1544.7, 0, 0, 30, 13.0, 35.0, 1.5, '#d4a017'),
+    S('SSL', 'Sasol', 'JSE', 'Energy', 'ZA', 267.34, 0, 0, 7, 6.0, -10.0, 3.0, '#0072ce'),
+    S('SHP', 'Shoprite', 'JSE', 'Consumer', 'ZA', 328.37, 0, 0, 9, 21.0, 9.0, 2.6, '#e30613'),
+    S('COMI', 'Commercial International Bank', 'EGX', 'Finance', 'EG', 81.2, 0, 0, 5, 5.5, 25.0, 3.0, '#0b4b8f'),
+    // Middle East
+    S('ARMCO', 'Saudi Aramco', 'TADAWUL', 'Energy', 'SA', 25.28, 0, 0, 1650, 16.0, -5.0, 6.5, '#00a3e0'),
+    S('RJHI', 'Al Rajhi Bank', 'TADAWUL', 'Finance', 'SA', 61.0, 0, 0, 105, 19.0, 10.0, 3.0, '#1c2f86'),
+    S('SABIC', 'SABIC', 'TADAWUL', 'Materials', 'SA', 44.56, 0, 0, 55, 40.0, -4.0, 3.9, '#003da5'),
+    S('STC', 'Saudi Telecom', 'TADAWUL', 'Communication', 'SA', 42.12, 0, 0, 55, 15.0, 4.0, 4.5, '#4f008c'),
+    S('QNBK', 'Qatar National Bank', 'QSE', 'Finance', 'QA', 15.47, 0, 0, 40, 9.0, 6.0, 4.2, '#5c2d91'),
+    S('EMAAR', 'Emaar Properties', 'DFM', 'Real Estate', 'AE', 11.46, 0, 0, 28, 8.0, 15.0, 4.4, '#0a0a0a'),
+    S('ENBD', 'Emirates NBD', 'DFM', 'Finance', 'AE', 31.58, 0, 0, 55, 7.0, 12.0, 3.8, '#072b61'),
+    S('TEVA', 'Teva Pharmaceutical', 'NYSE', 'Healthcare', 'IL', 41.23, 0, 0, 47, 12.0, 4.0, 0, '#0072bc'),
+    S('CHKP', 'Check Point Software', 'NASDAQ', 'Technology', 'IL', 135.06, 0, 0, 15, 20.0, 6.0, 0, '#e4007c'),
+    S('NICE', 'NICE Ltd', 'NASDAQ', 'Technology', 'IL', 110.82, 0, 0, 7, 16.0, 8.0, 0, '#2b2b9c'),
+  );
+  // Regional indices, bonds, funds and currency pairs
+  assets.push(
+    { s: 'IBEX', n: 'IBEX 35', x: 'INDEX', c: 'indices', p: 19326.3, d: 0, w: 0, logo: '#c60b1e', ext: true },
+    { s: 'FTSEMIB', n: 'FTSE MIB', x: 'INDEX', c: 'indices', p: 49857.18, d: 0, w: 0, logo: '#009246', ext: true },
+    { s: 'SMI', n: 'Swiss Market Index', x: 'INDEX', c: 'indices', p: 14391.31, d: 0, w: 0, logo: '#d52b1e', ext: true },
+    { s: 'AEX', n: 'AEX 25', x: 'INDEX', c: 'indices', p: 1142.88, d: 0, w: 0, logo: '#ff6c00', ext: true },
+    { s: 'NIFTY', n: 'Nifty 50', x: 'INDEX', c: 'indices', p: 23146.15, d: 0, w: 0, logo: '#ff9933', ext: true },
+    { s: 'STI', n: 'Straits Times Index', x: 'INDEX', c: 'indices', p: 5415.53, d: 0, w: 0, logo: '#ef3340', ext: true },
+    { s: 'TWII', n: 'Taiwan Weighted', x: 'INDEX', c: 'indices', p: 47111.26, d: 0, w: 0, logo: '#0b2a8a', ext: true },
+    { s: 'TASI', n: 'Tadawul All Share', x: 'INDEX', c: 'indices', p: 10106.54, d: 0, w: 0, logo: '#006c35', ext: true },
+    { s: 'TA35', n: 'TA-35', x: 'INDEX', c: 'indices', p: 4224.67, d: 0, w: 0, logo: '#0038b8', ext: true },
+    { s: 'ES10Y', n: 'Spain 10-Year Bond', x: 'BOND', c: 'bonds', p: 3.923, d: 0, w: 0, y: true, logo: '#64748b', ext: true },
+    { s: 'CH10Y', n: 'Switzerland 10-Year Bond', x: 'BOND', c: 'bonds', p: 0.59, d: 0, w: 0, y: true, logo: '#64748b', ext: true },
+    { s: 'CA10Y', n: 'Canada 10-Year Bond', x: 'BOND', c: 'bonds', p: 3.883, d: 0, w: 0, y: true, logo: '#64748b', ext: true },
+    { s: 'MX10Y', n: 'Mexico 10-Year Bond', x: 'BOND', c: 'bonds', p: 9.35, d: 0, w: 0, y: true, logo: '#64748b', ext: true },
+    { s: 'AU10Y', n: 'Australia 10-Year Bond', x: 'BOND', c: 'bonds', p: 5.283, d: 0, w: 0, y: true, logo: '#64748b', ext: true },
+    { s: 'KR10Y', n: 'South Korea 10-Year Bond', x: 'BOND', c: 'bonds', p: 4.454, d: 0, w: 0, y: true, logo: '#64748b', ext: true },
+    { s: 'IN10Y', n: 'India 10-Year Bond', x: 'BOND', c: 'bonds', p: 7.06, d: 0, w: 0, y: true, logo: '#64748b', ext: true },
+    { s: 'ZA10Y', n: 'South Africa 10-Year Bond', x: 'BOND', c: 'bonds', p: 8.947, d: 0, w: 0, y: true, logo: '#64748b', ext: true },
+    { s: 'IL10Y', n: 'Israel 10-Year Bond', x: 'BOND', c: 'bonds', p: 4.08, d: 0, w: 0, y: true, logo: '#64748b', ext: true },
+    { s: 'VGK', n: 'Vanguard FTSE Europe ETF', x: 'NYSE ARCA', c: 'funds', p: 87.69, d: 0, w: 0, aum: '$25B', fee: '0.06%', logo: '#96151d', ext: true },
+    { s: 'EWJ', n: 'iShares MSCI Japan ETF', x: 'NYSE ARCA', c: 'funds', p: 95.61, d: 0, w: 0, aum: '$15B', fee: '0.50%', logo: '#111113', ext: true },
+    { s: 'AAXJ', n: 'iShares MSCI All Country Asia ex Japan', x: 'NASDAQ', c: 'funds', p: 108.8, d: 0, w: 0, aum: '$3B', fee: '0.70%', logo: '#111113', ext: true },
+    { s: 'INDA', n: 'iShares MSCI India ETF', x: 'CBOE', c: 'funds', p: 47.85, d: 0, w: 0, aum: '$9B', fee: '0.62%', logo: '#111113', ext: true },
+    { s: 'EEM', n: 'iShares MSCI Emerging Markets ETF', x: 'NYSE ARCA', c: 'funds', p: 63.27, d: 0, w: 0, aum: '$19B', fee: '0.70%', logo: '#111113', ext: true },
+    { s: 'EWC', n: 'iShares MSCI Canada ETF', x: 'NYSE ARCA', c: 'funds', p: 60.68, d: 0, w: 0, aum: '$3B', fee: '0.50%', logo: '#111113', ext: true },
+    { s: 'EWZ', n: 'iShares MSCI Brazil ETF', x: 'NYSE ARCA', c: 'funds', p: 41.82, d: 0, w: 0, aum: '$5B', fee: '0.59%', logo: '#111113', ext: true },
+    { s: 'EWA', n: 'iShares MSCI Australia ETF', x: 'NYSE ARCA', c: 'funds', p: 28.87, d: 0, w: 0, aum: '$1.5B', fee: '0.50%', logo: '#111113', ext: true },
+    { s: 'EZA', n: 'iShares MSCI South Africa ETF', x: 'NYSE ARCA', c: 'funds', p: 65.28, d: 0, w: 0, aum: '$0.4B', fee: '0.59%', logo: '#111113', ext: true },
+    { s: 'KSA', n: 'iShares MSCI Saudi Arabia ETF', x: 'NYSE ARCA', c: 'funds', p: 35.14, d: 0, w: 0, aum: '$0.7B', fee: '0.74%', logo: '#111113', ext: true },
+    { s: 'USDCAD', n: 'US Dollar / Canadian Dollar', x: 'FX', c: 'currencies', p: 1.415, d: 0, w: 0, logo: '#d52b1e', ext: true },
+    { s: 'USDBRL', n: 'US Dollar / Brazilian Real', x: 'FX', c: 'currencies', p: 5.083, d: 0, w: 0, logo: '#009c3b', ext: true },
+    { s: 'USDCNY', n: 'US Dollar / Chinese Yuan', x: 'FX', c: 'currencies', p: 6.6755, d: 0, w: 0, logo: '#de2910', ext: true },
+    { s: 'USDINR', n: 'US Dollar / Indian Rupee', x: 'FX', c: 'currencies', p: 94.95, d: 0, w: 0, logo: '#ff9933', ext: true },
+    { s: 'USDKRW', n: 'US Dollar / South Korean Won', x: 'FX', c: 'currencies', p: 1333.44, d: 0, w: 0, logo: '#0047a0', ext: true },
+    { s: 'NZDUSD', n: 'New Zealand Dollar / US Dollar', x: 'FX', c: 'currencies', p: 0.5657, d: 0, w: 0, logo: '#00247d', ext: true },
+    { s: 'USDILS', n: 'US Dollar / Israeli Shekel', x: 'FX', c: 'currencies', p: 3.1046, d: 0, w: 0, logo: '#0038b8', ext: true },
+    { s: 'USDEGP', n: 'US Dollar / Egyptian Pound', x: 'FX', c: 'currencies', p: 53.4, d: 0, w: 0, logo: '#ce1126', ext: true },
+  );
+  // Region for every asset that has one (commodities and crypto trade globally)
+  const REGION_OF = { US: 'Americas', CA: 'Americas', BR: 'Americas', MX: 'Americas', AR: 'Americas', UK: 'Europe', GB: 'Europe', DE: 'Europe', FR: 'Europe', NL: 'Europe', CH: 'Europe', ES: 'Europe', IT: 'Europe', DK: 'Europe', EU: 'Europe', TR: 'Europe',
+    JP: 'Asia', CN: 'Asia', HK: 'Asia', KR: 'Asia', IN: 'Asia', TW: 'Asia', SG: 'Asia', AU: 'Oceania', NZ: 'Oceania', ZA: 'Africa', EG: 'Africa', NG: 'Africa', SA: 'Middle East', AE: 'Middle East', QA: 'Middle East', IL: 'Middle East' };
+  const PLACE = { SPX: 'US', NDX: 'US', DJI: 'US', RUT: 'US', ES1: 'US', YM1: 'US', NQ1: 'US', TSX: 'CA', IBOV: 'BR', MXX: 'MX', DAX: 'DE', CAC: 'FR', UKX: 'UK', SX5E: 'EU', IBEX: 'ES', FTSEMIB: 'IT', SMI: 'CH', AEX: 'NL',
+    NKY: 'JP', HSI: 'HK', SSEC: 'CN', SENSEX: 'IN', NIFTY: 'IN', KOSPI: 'KR', TWII: 'TW', STI: 'SG', XJO: 'AU', NZ50: 'NZ', J203: 'ZA', EGX30: 'EG', NGSE: 'NG', TASI: 'SA', TA35: 'IL',
+    VGK: 'EU', VWCE: 'Global', EEM: 'Global', EWJ: 'JP', AAXJ: 'CN', INDA: 'IN', EWC: 'CA', EWZ: 'BR', EWA: 'AU', EZA: 'ZA', KSA: 'SA', DXY: 'US' };
+  const CCY_PLACE = { EUR: 'EU', GBP: 'UK', CHF: 'CH', JPY: 'JP', AUD: 'AU', NZD: 'NZ', CAD: 'CA', MXN: 'MX', BRL: 'BR', CNY: 'CN', INR: 'IN', KRW: 'KR', ZAR: 'ZA', EGP: 'EG', TRY: 'TR', ILS: 'IL' };
+  const REGIONS = ['Americas', 'Europe', 'Asia', 'Oceania', 'Africa', 'Middle East', 'Global'];
   const grp = { WTI: 'Energy', BRENT: 'Energy', NG: 'Energy', XAU: 'Metals', XAG: 'Metals', HG: 'Metals' };
   assets.forEach(a => { if (grp[a.s]) a.group = grp[a.s]; if (a.c === 'stocks' && !a.country) a.country = 'US'; if (a.c === 'stocks' && a.g == null) a.g = +(a.w * 3 + 10).toFixed(1); if (a.c === 'stocks' && a.div == null) a.div = { AAPL: 0.4, MSFT: 0.6, JPM: 1.9, XOM: 3.4, V: 0.7, LLY: 0.6, AVGO: 1.2, GOOGL: 0.3, META: 0.3 }[a.s] || 0; });
   // Real prices (assets/quotes.js) replace the sample values wherever we have them
@@ -219,6 +341,15 @@ window.MOCK = (function () {
   }
   const details = sym => Q[sym] ? getJSON('assets/hist/' + sym + '.json') : Promise.resolve(null);
   const intraday = () => getJSON('assets/intraday.json');
+  assets.forEach(a => {
+    if (a.c === 'crypto' || a.c === 'commodities') return;
+    let place = PLACE[a.s] || a.country;
+    if (!place && a.c === 'bonds') place = a.s.slice(0, 2);
+    if (!place && a.c === 'currencies') place = CCY_PLACE[a.s.slice(0, 3)] && a.s.slice(0, 3) !== 'USD' ? CCY_PLACE[a.s.slice(0, 3)] : CCY_PLACE[a.s.slice(3)];
+    if (!place && a.c === 'funds') place = 'US';
+    if (a.corp) place = 'US';
+    a.place = place; a.region = place === 'Global' ? 'Global' : REGION_OF[place] || null;
+  });
   const bySym = Object.fromEntries(assets.map(a => [a.s, a]));
 
   const categories = [
@@ -316,5 +447,5 @@ window.MOCK = (function () {
   const MON = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
   const fixDay = str => { const m = /^\w{3} (\d{1,2}) (\w{3})$/.exec(str || ''); if (!m || MON[m[2]] == null) return str; const d = new Date(new Date().getFullYear(), MON[m[2]], +m[1]); return d.toLocaleDateString('en-GB', { weekday: 'short' }) + ' ' + m[1] + ' ' + m[2]; };
   calendar.forEach(e => e.day = fixDay(e.day)); earnings.forEach(e => e.date = fixDay(e.date));
-  return { assets, bySym, categories, news, analysis, calendar, earnings, realEstate, series, seeded, ohlc, history, details, intraday, updated, newsFor };
+  return { assets, bySym, categories, news, analysis, calendar, earnings, realEstate, series, seeded, ohlc, history, details, intraday, updated, newsFor, REGIONS };
 })();

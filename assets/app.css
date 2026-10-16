@@ -793,3 +793,7 @@ main>.sec:nth-of-type(n+3){content-visibility:auto;contain-intrinsic-size:auto 6
   .dd,.dd.open,.drawer,.drawer.open,.nav>li.nav-pill{transition-duration:.01s!important}
   .dd.open *,.drawer.open>*{animation:none!important}
 }
+/* region filter tabs: scroll sideways on small screens */
+.region-tabs{max-width:100%;overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap}
+.region-tabs::-webkit-scrollbar{display:none}
+.region-tabs .tab{white-space:nowrap}

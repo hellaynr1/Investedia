@@ -35,15 +35,30 @@ YAHOO = {
     # non-US listings
     "SAP": "SAP.DE", "HSBA": "HSBA.L", "SHEL": "SHEL.L", "BNP": "BNP.PA", "TTE": "TTE.PA", "MC": "MC.PA",
     "VWCE": "VWCE.DE", "URW": "URW.PA", "VNA": "VNA.DE",
+    # regional companies on their home exchanges
+    "NESN": "NESN.SW", "NOVN": "NOVN.SW", "ROG": "RO.SW", "AZN": "AZN.L", "ULVR": "ULVR.L", "SIE": "SIE.DE", "ALV": "ALV.DE", "RHM": "RHM.DE",
+    "AIR": "AIR.PA", "OR": "OR.PA", "ITX": "ITX.MC", "SAN": "SAN.MC", "RACE": "RACE.MI", "ENEL": "ENEL.MI",
+    "SMSN": "005930.KS", "HYMTF": "005380.KS", "SONY": "6758.T", "MUFG": "8306.T", "NTDOY": "7974.T", "SFTBY": "9984.T",
+    "TCEHY": "0700.HK", "BYDDY": "1211.HK", "XIACY": "1810.HK", "RELI": "RELIANCE.NS", "INFY": "INFY.NS", "HDB": "HDFCBANK.NS", "DBS": "D05.SI",
+    "BRKB": "BRK-B", "TD": "TD.TO", "ENB": "ENB.TO", "CNQ": "CNQ.TO",
+    "BHP": "BHP.AX", "RIO": "RIO.AX", "FMG": "FMG.AX", "CBA": "CBA.AX", "WBC": "WBC.AX", "NAB": "NAB.AX", "MQG": "MQG.AX", "CSL": "CSL.AX", "WES": "WES.AX",
+    "FPH": "FPH.NZ", "MEL": "MEL.NZ", "NPN": "NPN.JO", "MTN": "MTN.JO", "SBK": "SBK.JO", "FSR": "FSR.JO", "CPI": "CPI.JO", "GFI": "GFI.JO", "ANG": "ANG.JO",
+    "SSL": "SOL.JO", "SHP": "SHP.JO", "COMI": "COMI.CA", "ARMCO": "2222.SR", "RJHI": "1120.SR", "SABIC": "2010.SR", "STC": "7010.SR", "QNBK": "QNBK.QA",
+    "EMAAR": "EMAAR.AE", "ENBD": "EMIRATESNBD.AE",
+    # regional indices
+    "IBEX": "^IBEX", "FTSEMIB": "FTSEMIB.MI", "SMI": "^SSMI", "AEX": "^AEX", "NIFTY": "^NSEI", "STI": "^STI", "TWII": "^TWII", "TASI": "^TASI.SR", "TA35": "TA35.TA",
 }
-FX = ["EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "EURGBP", "EURJPY", "GBPJPY", "EURCHF", "USDTRY", "USDMXN", "USDZAR"]
+FX = ["EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "EURGBP", "EURJPY", "GBPJPY", "EURCHF", "USDTRY", "USDMXN", "USDZAR", "USDCAD", "USDBRL", "USDCNY", "USDINR", "USDKRW", "NZDUSD", "USDILS", "USDEGP"]
 YAHOO.update({s: s + "=X" for s in FX})
 # Bond yields from FRED: (series id, how often it's published)
 FRED = {"US02Y": ("DGS2", "daily"), "USIG": ("BAMLC0A0CMEY", "daily"), "USHY": ("BAMLH0A0HYM2EY", "daily"),
         "DE10Y": ("IRLTLT01DEM156N", "monthly"), "FR10Y": ("IRLTLT01FRM156N", "monthly"),
         "IT10Y": ("IRLTLT01ITM156N", "monthly"), "UK10Y": ("IRLTLT01GBM156N", "monthly"),
-        "JP10Y": ("IRLTLT01JPM156N", "monthly")}
-YIELDS = {"US02Y", "US10Y", "US30Y", "USIG", "USHY", "DE10Y", "FR10Y", "IT10Y", "UK10Y", "JP10Y"}
+        "JP10Y": ("IRLTLT01JPM156N", "monthly"), "ES10Y": ("IRLTLT01ESM156N", "monthly"), "CH10Y": ("IRLTLT01CHM156N", "monthly"),
+        "CA10Y": ("IRLTLT01CAM156N", "monthly"), "MX10Y": ("IRLTLT01MXM156N", "monthly"), "AU10Y": ("IRLTLT01AUM156N", "monthly"),
+        "KR10Y": ("IRLTLT01KRM156N", "monthly"), "IN10Y": ("INDIRLTLT01STM", "monthly"), "ZA10Y": ("IRLTLT01ZAM156N", "monthly"),
+        "IL10Y": ("IRLTLT01ILM156N", "monthly")}
+YIELDS = {"ES10Y", "CH10Y", "CA10Y", "MX10Y", "AU10Y", "KR10Y", "IN10Y", "ZA10Y", "IL10Y", "US02Y", "US10Y", "US30Y", "USIG", "USHY", "DE10Y", "FR10Y", "IT10Y", "UK10Y", "JP10Y"}
 CENTS = {"GBp", "GBX", "ZAc", "USX", "ILA"}  # quoted in pence/cents -> convert to main unit
 
 
