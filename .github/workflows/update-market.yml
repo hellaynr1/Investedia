@@ -1,9 +1,9 @@
 name: Update market data and news
-# Free price refresh: every 30 minutes while markets are open, every 3 hours otherwise.
+# Free price refresh: every 10 minutes while markets are open, every 3 hours otherwise (news every 30 minutes).
 # Long-term history is rebuilt once a day after the US close.
 on:
   schedule:
-    - cron: "7,37 6-21 * * 1-5"    # weekdays, European open to US close (UTC)
+    - cron: "*/10 6-21 * * 1-5"    # weekdays, Asian close / European open to US close (UTC)
     - cron: "22 0,3,22 * * 1-5"    # weekday evenings and nights
     - cron: "22 */3 * * 0,6"       # weekends (crypto keeps trading)
     - cron: "45 21 * * 1-5"        # daily history rebuild
@@ -34,7 +34,11 @@ jobs:
             python3 update_market.py
           fi
       - name: Fetch news
-        run: python3 update_news.py || echo "News update failed; keeping the previous headlines"
+        run: |
+          M=$(date -u +%M)
+          if [ "${{ github.event.schedule }}" != "*/10 6-21 * * 1-5" ] || [ $((10#$M % 30)) -lt 10 ]; then
+            python3 update_news.py || echo "News update failed; keeping the previous headlines"
+          fi
       - name: Publish
         run: |
           git config user.name "github-actions[bot]"

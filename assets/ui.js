@@ -71,7 +71,7 @@
   // and round flags (circle-flags, MIT) for indices, bonds and currencies. Anything else gets a coloured ticker tile.
   const COIN = new Set(['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX', 'LINK', 'UNI', 'AAVE', 'USDT', 'USDC']);
   const GLYPH = new Set(['NVDA', 'AAPL', 'GOOGL', 'META', 'TSLA', 'AVGO', 'V', 'DELL', 'INTC', 'NFLX', 'AMD', 'BA', 'SAP', 'KO', 'BAC', 'HSBA', 'SHEL', 'TM', 'BABA', 'SHOP', 'NU', 'MSFT', 'ADBE', 'CRM', 'MELI', 'ULVR', 'SIE', 'AIR', 'RACE', 'SMSN', 'HYMTF', 'SONY', 'XIACY', 'INFY', 'HDB']);
-  const ICON = new Set(['ALV', 'AMZN', 'ARKK', 'ARMCO', 'ASML', 'AZN', 'BHP', 'BNP', 'CHKP', 'COMI', 'COST', 'CRWV', 'CVX', 'DBS', 'EMAAR', 'ENB', 'ENBD', 'ENEL', 'ENPH', 'FMX', 'FXAIX', 'GLD', 'GS', 'ITUB', 'ITX', 'JNJ', 'JPM', 'LLY', 'MEL', 'MTN', 'MUFG', 'NAB', 'NESN', 'NTDOY', 'NVO', 'OR', 'ORCL', 'PBR', 'PEP', 'PFE', 'QQQ', 'ROG', 'RY', 'SAN', 'SBK', 'SCHD', 'SHP', 'STC', 'TCEHY', 'TD', 'TSM', 'VALE', 'VTI', 'WFC', 'WMT', 'WULF', 'XOM']), ICON_ALIAS = { VOO: 'VTI', VFIAX: 'VTI', VWCE: 'VTI', VGK: 'VTI' };
+  const ICON = new Set(['ALV', 'AMZN', 'ARKK', 'ARMCO', 'ASML', 'AZN', 'BHP', 'BNP', 'CBA', 'CHKP', 'COMI', 'COST', 'CRWV', 'CVX', 'DBS', 'EMAAR', 'ENB', 'ENBD', 'ENEL', 'ENPH', 'FMX', 'FXAIX', 'GLD', 'GS', 'ITUB', 'ITX', 'JNJ', 'JPM', 'LLY', 'MEL', 'MQG', 'MTN', 'MUFG', 'NAB', 'NESN', 'NTDOY', 'NVO', 'OR', 'ORCL', 'PBR', 'PEP', 'PFE', 'QNBK', 'QQQ', 'RIO', 'RJHI', 'ROG', 'RY', 'SAN', 'SBK', 'SCHD', 'SHP', 'STC', 'TCEHY', 'TD', 'TEVA', 'TSM', 'VALE', 'VTI', 'WFC', 'WMT', 'WULF', 'XOM']), ICON_ALIAS = { VOO: 'VTI', VFIAX: 'VTI', VWCE: 'VTI', VGK: 'VTI' };
   const FLAG = { SPX: 'us', NDX: 'us', DJI: 'us', RUT: 'us', ES1: 'us', YM1: 'us', NQ1: 'us', DAX: 'de', CAC: 'fr', UKX: 'gb', NKY: 'jp', SX5E: 'eu', HSI: 'hk', TSX: 'ca', IBOV: 'br', MXX: 'mx', XJO: 'au', NZ50: 'nz', J203: 'za', EGX30: 'eg', NGSE: 'ng', SENSEX: 'in', KOSPI: 'kr', SSEC: 'cn',
     US02Y: 'us', US10Y: 'us', US30Y: 'us', USIG: 'us', USHY: 'us', DE10Y: 'de', FR10Y: 'fr', JP10Y: 'jp', UK10Y: 'gb', IT10Y: 'it', DXY: 'us' };
   const CCY = { EUR: 'eu', USD: 'us', GBP: 'gb', JPY: 'jp', CHF: 'ch', AUD: 'au', TRY: 'tr', MXN: 'mx', ZAR: 'za', CAD: 'ca', CNY: 'cn', BRL: 'br', INR: 'in', KRW: 'kr', NZD: 'nz', ILS: 'il', EGP: 'eg' };
@@ -327,6 +327,34 @@
   tk.innerHTML = `<div class="ticker-track">${items}${items}</div>`;
   drawer.after(tk);
 
+  // ---------- live prices: one helper updates every price and change shown for an asset ----------
+  function setPrice(s, p, d) {
+    const a = M.bySym[s]; if (!a || !isFinite(p) || p <= 0) return;
+    const up = p >= a.p;
+    if (d == null) { if (a.base == null) a.base = a.p / (1 + a.d / 100); d = +((p / a.base - 1) * 100).toFixed(2); }
+    if (p === a.p && d === a.d) return;
+    a.p = p; a.d = d;
+    document.querySelectorAll(`[data-lp="${s}"]`).forEach(el => { const t = fmtP(a); if (el.textContent === t) return; el.textContent = t; el.classList.remove('tick-up', 'tick-down'); void el.offsetWidth; el.classList.add(up ? 'tick-up' : 'tick-down'); });
+    document.querySelectorAll(`[data-lc="${s}"]`).forEach(el => { el.textContent = fmtC(a.d, a.y); el.classList.remove('up', 'down', 'muted'); el.classList.add(cls(a.d)); });
+  }
+  const whenVisible = (fn, ms) => { let t = 0; const run = () => { clearTimeout(t); if (!document.hidden) fn(); t = setTimeout(run, ms); }; document.addEventListener('visibilitychange', () => { if (!document.hidden) run(); }); setTimeout(run, 4000); };
+
+  // Live currencies: Coinbase's free exchange-rate feed, every 30 seconds while the page is open
+  whenVisible(() => fetch('https://api.coinbase.com/v2/exchange-rates?currency=USD', { cache: 'no-store' }).then(r => r.json()).then(j => {
+    const R = j.data.rates; R.USD = '1';
+    M.assets.filter(a => a.c === 'currencies' && a.s.length === 6).forEach(a => { const b = +R[a.s.slice(0, 3)], q = +R[a.s.slice(3)]; if (b && q) { a.live = true; setPrice(a.s, +(q / b).toFixed(a.p > 20 ? 3 : 5)); } });
+    document.dispatchEvent(new CustomEvent('inv:tick'));
+  }).catch(() => {}), 30000);
+
+  // Everything else: pick up the robot's newest prices every 2 minutes without reloading the page
+  whenVisible(() => fetch('assets/quotes.js?t=' + Date.now(), { cache: 'no-store' }).then(r => r.text()).then(t => {
+    const j = JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1)); if (!j.q || (M.updated && new Date(j.updated) <= M.updated)) return;
+    for (const s in j.q) { const a = M.bySym[s]; if (!a || a.live) continue; a.base = null; setPrice(s, j.q[s].p, j.q[s].d); Object.assign(a, { w: j.q[s].w, m1: j.q[s].m1 }); }
+    M.updated = new Date(j.updated);
+    document.querySelectorAll('[data-asof]').forEach(el => el.textContent = 'Delayed · updated ' + M.updated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    document.dispatchEvent(new CustomEvent('inv:tick'));
+  }).catch(() => {}), 120000);
+
   // ---------- live crypto: Coinbase's free public feed, applied at most once a second ----------
   (function liveCrypto() {
     const syms = M.assets.filter(a => a.c === 'crypto' && a.real && !['BNB', 'USDC'].includes(a.s)).map(a => a.s);
@@ -335,10 +363,7 @@
     const flush = () => {
       timer = 0;
       for (const s in pending) {
-        const a = M.bySym[s], { p } = pending[s], up = p >= a.p;
-        if (a.base == null) a.base = a.p / (1 + a.d / 100); a.p = p; a.d = +((p / a.base - 1) * 100).toFixed(2); a.live = true;
-        document.querySelectorAll(`[data-lp="${s}"]`).forEach(el => { const t = fmtP(a); if (el.textContent === t) return; el.textContent = t; el.classList.remove('tick-up', 'tick-down'); void el.offsetWidth; el.classList.add(up ? 'tick-up' : 'tick-down'); });
-        document.querySelectorAll(`[data-lc="${s}"]`).forEach(el => { el.textContent = fmtC(a.d); el.classList.remove('up', 'down', 'muted'); el.classList.add(cls(a.d)); });
+        const a = M.bySym[s]; a.live = true; setPrice(s, pending[s].p);
       }
       pending = {};
       document.dispatchEvent(new CustomEvent('inv:tick'));

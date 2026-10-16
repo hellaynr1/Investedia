@@ -949,3 +949,21 @@ html.csel-lock{overflow:hidden}
   .fxm-detail{font-size:13.5px}
 }
 .fxm .rowh{box-shadow:-14px 0 0 var(--card)}.fxm .rowh.on,.fxm .rowh:hover{box-shadow:-14px 0 0 var(--card)}
+
+/* ---------- phones: open fitted to the screen, never auto-zoomed ---------- */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:clip}
+/* iPhone zooms in when a text box under 16px is tapped; 16px keeps the page where it is (pinch-zoom still works) */
+@media (hover:none),(max-width:900px){
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),textarea{font-size:16px!important}
+}
+/* currency heatmap fits the whole phone screen */
+@media (max-width:600px){
+  .fxm{min-width:0!important;gap:2px;grid-template-columns:38px repeat(8,minmax(0,1fr))!important}
+  .fxm-c{height:36px;font-size:9.5px;border-radius:6px;letter-spacing:-.03em}
+  .fxm-h{height:40px;flex-direction:column;gap:2px;font-size:8.5px;padding:0}
+  .fxm-h img{width:16px;height:16px}
+  .fxm-self img{width:14px;height:14px}
+  .fxm .rowh{position:static;box-shadow:none!important}
+  #heatmap .tbl-wrap{padding:8px!important;overflow:visible}
+}
