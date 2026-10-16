@@ -670,3 +670,18 @@ body:has(.galaxy){--bg:#050506;overflow-x:clip}
 .dd-ic{display:grid;place-items:center}
 .dd-ic svg{width:18px;height:18px;flex:none}
 .tool .dd-ic svg,.pillar .dd-ic svg{width:20px;height:20px}
+/* homepage market filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.chips-row{display:flex;gap:6px;flex-wrap:wrap;margin:-2px 0 14px}
+.tm-rank{width:18px;color:var(--fg-3);font-size:12px;text-align:right;flex:none}
+.tm .idx-top{gap:6px}
+.sel-sm{height:32px;width:auto;font-size:13px;padding-left:10px}
+.toolbar .tabs{max-width:100%}
+@media (max-width:560px){
+  #tm-grid{grid-template-columns:1fr 1fr;gap:10px}
+  #tm-grid .tm{padding:12px}
+  #tm-grid .tm .ident small,#tm-grid .tm .dim,#tm-grid .tm .logo{display:none}
+  #tm-grid .tm .idx-top{flex-direction:column;align-items:flex-start;gap:6px}
+  #tm-grid .tm .idx-val{font-size:15px!important}
+  #tm-grid .tm svg{height:24px}
+}

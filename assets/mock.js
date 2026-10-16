@@ -123,6 +123,17 @@ window.MOCK = (function () {
     { s: 'YM1', n: 'Dow Jones Futures', x: 'CBOT', c: 'indices', p: 52341, d: 0.08, w: 0.4, logo: '#a1a1aa', fut: true, ext: true },
     { s: 'NQ1', n: 'Nasdaq 100 Futures', x: 'CME', c: 'indices', p: 29912.5, d: 0.19, w: 1.3, logo: '#0ea5e9', fut: true, ext: true },
     { s: 'HSI', n: 'Hang Seng', x: 'INDEX', c: 'indices', p: 25841.6, d: 0.94, w: 2.7, logo: '#dc2626', ext: true },
+    { s: 'TSX', n: 'S&P/TSX Composite', x: 'INDEX', c: 'indices', p: 30184.2, d: 0.18, w: 0.6, logo: '#dc2626', ext: true },
+    { s: 'IBOV', n: 'Bovespa', x: 'INDEX', c: 'indices', p: 142310, d: -0.42, w: 1.1, logo: '#16a34a', ext: true },
+    { s: 'MXX', n: 'S&P/BMV IPC', x: 'INDEX', c: 'indices', p: 61240.5, d: 0.27, w: 0.8, logo: '#15803d', ext: true },
+    { s: 'XJO', n: 'S&P/ASX 200', x: 'INDEX', c: 'indices', p: 8912.4, d: 0.33, w: 0.5, logo: '#1d4ed8', ext: true },
+    { s: 'NZ50', n: 'NZX 50', x: 'INDEX', c: 'indices', p: 13185.7, d: -0.12, w: -0.3, logo: '#334155', ext: true },
+    { s: 'J203', n: 'JSE All Share', x: 'INDEX', c: 'indices', p: 104870, d: 0.56, w: 1.4, logo: '#ca8a04', ext: true },
+    { s: 'EGX30', n: 'EGX 30', x: 'INDEX', c: 'indices', p: 36920, d: 1.08, w: 2.3, logo: '#b91c1c', ext: true },
+    { s: 'NGSE', n: 'NGX All-Share', x: 'INDEX', c: 'indices', p: 142650, d: 0.21, w: 0.9, logo: '#15803d', ext: true },
+    { s: 'SENSEX', n: 'BSE Sensex', x: 'INDEX', c: 'indices', p: 83120, d: 0.44, w: 1.2, logo: '#ea580c', ext: true },
+    { s: 'KOSPI', n: 'KOSPI', x: 'INDEX', c: 'indices', p: 3612.5, d: -0.38, w: 1.6, logo: '#2563eb', ext: true },
+    { s: 'SSEC', n: 'Shanghai Composite', x: 'INDEX', c: 'indices', p: 3898.2, d: 0.15, w: 0.4, logo: '#dc2626', ext: true },
     { s: 'ADA', n: 'Cardano', x: 'CRYPTO', c: 'crypto', p: 0.6412, d: -0.84, w: -8.1, m: 23, vol: '$0.9B', logo: '#0033ad', ext: true },
     { s: 'AVAX', n: 'Avalanche', x: 'CRYPTO', c: 'crypto', p: 21.86, d: 3.10, w: -2.4, m: 9, vol: '$0.6B', logo: '#e84142', ext: true },
     { s: 'LINK', n: 'Chainlink', x: 'CRYPTO', c: 'crypto', p: 17.42, d: 1.60, w: -1.1, m: 11, vol: '$0.7B', logo: '#2a5ada', ext: true },
@@ -155,7 +166,7 @@ window.MOCK = (function () {
   );
   const grp = { WTI: 'Energy', BRENT: 'Energy', NG: 'Energy', XAU: 'Metals', XAG: 'Metals', HG: 'Metals' };
   assets.forEach(a => { if (grp[a.s]) a.group = grp[a.s]; if (a.c === 'stocks' && !a.country) a.country = 'US'; if (a.c === 'stocks' && a.g == null) a.g = +(a.w * 3 + 10).toFixed(1); if (a.c === 'stocks' && a.div == null) a.div = { AAPL: 0.4, MSFT: 0.6, JPM: 1.9, XOM: 3.4, V: 0.7, LLY: 0.6, AVGO: 1.2, GOOGL: 0.3, META: 0.3 }[a.s] || 0; });
-  assets.forEach(a => { a.spark = series(a.s, 48, a.p, a.d * 3 + a.w); });
+  assets.forEach(a => { a.m1 = +(a.d * 3 + a.w).toFixed(2); a.spark = series(a.s, 48, a.p, a.m1); });
   const bySym = Object.fromEntries(assets.map(a => [a.s, a]));
 
   const categories = [
