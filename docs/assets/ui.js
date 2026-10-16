@@ -491,6 +491,34 @@
   // Treemap-style heatmap from [asset, colSpan, rowSpan]
   const heatColor = d => { const t = Math.min(1, Math.abs(d) / 4); return d >= 0 ? `rgba(34,197,94,${.16 + t * .64})` : `rgba(240,68,68,${.16 + t * .64})`; };
   function heatmap(el, items) { el.innerHTML = items.map(([a, w, h]) => `<a href="${a.n && M.bySym[a.s] ? href(a) : 'screener.html'}" style="grid-column:span ${w};grid-row:span ${h};background:${heatColor(a.d)}" title="${a.n || a.s}: ${fmtC(a.d)}"><b style="font-size:${Math.min(22, 10 + w * 2)}px">${a.label || a.s}</b><span>${fmtC(a.d)}</span></a>`).join(''); }
+  // ---------- modern heatmap: smooth colours, period switch, hover/tap detail card ----------
+  const heatVar = (d, scale = 4) => { const t = Math.max(-1, Math.min(1, d / scale)); return t >= 0 ? `color-mix(in srgb, var(--up) ${18 + t * 62}%, var(--card))` : `color-mix(in srgb, var(--down) ${18 - t * 62}%, var(--card))`; };
+  let tipEl = null;
+  function heatTip(html, r) {
+    if (!tipEl) { tipEl = document.createElement('div'); tipEl.className = 'hm-tip'; tipEl.setAttribute('role', 'status'); document.body.append(tipEl); }
+    if (!html) { tipEl.classList.remove('show'); return; }
+    tipEl.innerHTML = html; tipEl.classList.add('show');
+    const w = tipEl.offsetWidth, h = tipEl.offsetHeight, x = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)), above = r.top - h - 10 > 8;
+    tipEl.style.left = x + 'px'; tipEl.style.top = (above ? r.top - h - 10 : r.bottom + 10) + 'px';
+  }
+  addEventListener('scroll', () => heatTip(null), { passive: true });
+  function heatmap2(el, items, per = 'd') {
+    const lab = { d: 'today', w: 'this week', m1: 'this month' }[per];
+    el.classList.add('heat', 'heat2');
+    el.innerHTML = items.map(([a, w, h], i) => { const v = a[per] || 0; return `<a href="${href(a)}" data-i="${i}" style="grid-column:span ${w};grid-row:span ${h};--hc:${heatVar(v)}" aria-label="${a.n}: ${fmtC(v)} ${lab}"><b style="font-size:${Math.min(22, 10 + w * 2)}px">${a.label || a.s}</b><span>${fmtC(v)}</span></a>`; }).join('');
+    const card = a => `<div class="hm-tip-h">${logo(a)}<span><b>${a.n}</b><small>${a.s} · ${a.sector || a.x}</small></span></div><div class="hm-tip-p"><span class="num">${fmtP(a)}</span></div><div class="hm-tip-g">${[['1D', a.d], ['1W', a.w], ['1M', a.m1]].map(([k, v]) => `<span><small>${k}</small><b class="num ${cls(v)}">${fmtC(v || 0)}</b></span>`).join('')}</div>`;
+    let armed = null;
+    el.querySelectorAll('a').forEach(t => {
+      const a = items[+t.dataset.i][0];
+      t.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') heatTip(card(a), t.getBoundingClientRect()); });
+      t.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') heatTip(null); });
+      t.addEventListener('focus', () => heatTip(card(a), t.getBoundingClientRect()));
+      t.addEventListener('blur', () => heatTip(null));
+      // On touch screens the first tap shows the details, the second opens the page
+      t.addEventListener('click', e => { if (matchMedia('(hover: none)').matches && armed !== t) { e.preventDefault(); armed = t; el.querySelectorAll('a').forEach(x => x.classList.toggle('on', x === t)); heatTip(card(a), t.getBoundingClientRect()); } });
+    });
+  }
+  function heatLegend2(el, scale = 4, unit = '%') { el.className = 'heat-legend2'; el.innerHTML = `<span class="num">−${scale}${unit}</span><i></i><span class="num">0</span><i class="pos"></i><span class="num">+${scale}${unit}</span>`; }
   function heatLegend(el) { el.className = 'heat-legend'; el.innerHTML = [-4, -3, -2, -1, 0, 1, 2, 3, 4].map(v => `<span style="background:${v === 0 ? '#29292D' : heatColor(v)}">${v > 0 ? '+' : ''}${v}%</span>`).join(''); }
   // Diverging bar row (sectors, strength)
   const divBar = (n, v, mx = 2, suffix) => `<div class="divbar"><span class="muted">${n}</span><div class="divbar-track"><i class="mid"></i><i class="bar" style="${v >= 0 ? `left:50%;width:${v / mx * 50}%;background:var(--up)` : `right:50%;width:${-v / mx * 50}%;background:var(--down)`}"></i></div><span class="num ${cls(v)}">${suffix ? (v > 0 ? '+' : '') + v.toFixed(1) + suffix : fmtC(v)}</span></div>`;
@@ -733,5 +761,5 @@
     el.querySelectorAll('[data-per] button').forEach(b => b.onclick = () => regionMovers(el, list, region, b.dataset.k));
   }
 
-  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, acc: ACC, applyStudio, STUDIO_DEF, regionTabs, inRegion, regionMovers, regionLabel };
+  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, heatmap2, heatLegend2, heatVar, heatTip, acc: ACC, applyStudio, STUDIO_DEF, regionTabs, inRegion, regionMovers, regionLabel };
 })();

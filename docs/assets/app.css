@@ -908,3 +908,44 @@ html.csel-lock{overflow:hidden}
   [data-page="studio"] main{padding-bottom:52vh}
 }
 .logo>.logo-cmd{width:62%!important;height:62%!important;margin:0!important}.logo>img{margin:0!important}
+
+/* ---------- modern heatmaps ---------- */
+.heat2 a{background:var(--hc)!important;color:#fff;transition:background-color .5s ease,transform .25s var(--spring),box-shadow .2s;position:relative}
+:root[data-theme="light"] .heat2 a{color:#0a0a0b}
+.heat2 a:hover,.heat2 a:focus-visible,.heat2 a.on{filter:none;transform:scale(1.03);z-index:2;box-shadow:0 0 0 2px var(--fg),0 10px 24px -10px rgba(0,0,0,.6);outline:none}
+.heat2 a span{transition:opacity .2s}
+.hm-tip{position:fixed;z-index:96;min-width:220px;max-width:280px;background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:0 20px 50px -14px rgba(0,0,0,.7);pointer-events:none;opacity:0;transform:translateY(4px) scale(.98);transition:opacity .15s,transform .3s var(--spring)}
+.hm-tip.show{opacity:1;transform:none}
+.hm-tip-h{display:flex;gap:10px;align-items:center}.hm-tip-h b{display:block;font-weight:600;font-size:14px}.hm-tip-h small{display:block;color:var(--fg-3);font-size:12px}
+.hm-tip-p{font-size:20px;margin:8px 0 6px}
+.hm-tip-g{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.hm-tip-g span{background:var(--card);border-radius:8px;padding:6px 8px}.hm-tip-g small{display:block;color:var(--fg-3);font-size:11px}.hm-tip-g b{font-weight:500;font-size:13px}
+.heat-legend2{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--line-soft);font-size:11.5px;color:var(--fg-3)}
+.heat-legend2 i{flex:1;height:6px;border-radius:3px;background:linear-gradient(90deg,color-mix(in srgb,var(--down) 80%,var(--card)),var(--card))}
+.heat-legend2 i.pos{background:linear-gradient(90deg,var(--card),color-mix(in srgb,var(--up) 80%,var(--card)))}
+/* currency matrix */
+.fxm{display:grid;gap:3px;min-width:560px}
+.fxm-c{height:46px;border-radius:8px;display:grid;place-items:center;font-family:var(--mono);font-size:12.5px;color:#fff;background:var(--hc,var(--card));border:0;cursor:pointer;transition:background-color .5s,opacity .25s,transform .25s var(--spring),box-shadow .2s;padding:0}
+:root[data-theme="light"] .fxm-c{color:#0a0a0b}
+.fxm-h{height:46px;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:12.5px;border:0;background:none;color:var(--fg-2);border-radius:8px;cursor:pointer;transition:background .2s,color .2s}
+.fxm-h img{width:18px;height:18px;border-radius:50%}
+.fxm-h.on,.fxm-h:hover{background:var(--card);color:var(--fg)}
+.fxm-self{background:var(--bg-2);display:grid;place-items:center}.fxm-self img{width:20px;height:20px;border-radius:50%;opacity:.8}
+.fxm.focus .fxm-c:not(.hl),.fxm.focus .fxm-self:not(.hl){opacity:.28}
+.fxm-c.sel{transform:scale(1.06);box-shadow:0 0 0 2px var(--fg);z-index:1}
+.fxm-detail{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-top:1px solid var(--line-soft);min-height:62px}
+.fxm-detail .pair{display:flex;align-items:center;gap:4px}.fxm-detail .pair img{width:22px;height:22px;border-radius:50%}
+.fxm-detail b{font-weight:600}
+.str-row{display:grid;grid-template-columns:70px 1fr 64px;gap:10px;align-items:center;font-size:13px}
+.str-row .ccy{display:flex;align-items:center;gap:6px;font-weight:600}.str-row .ccy img{width:18px;height:18px;border-radius:50%}
+.str-track{position:relative;height:8px;background:var(--card);border-radius:4px;overflow:hidden}
+.str-track i{position:absolute;top:0;bottom:0;border-radius:4px;transition:all .6s var(--spring)}
+.str-track .mid{left:50%;width:1px;background:var(--line)}
+.fxm .rowh{position:sticky;left:0;z-index:2;background:var(--card)}
+.fxm .rowh.on,.fxm .rowh:hover{background:var(--card)}
+@media (max-width:600px){
+  .fxm{min-width:500px;gap:2px}
+  .fxm-c,.fxm-h{height:40px;font-size:11.5px}
+  .fxm-h img{width:15px;height:15px}
+  .fxm-detail{font-size:13.5px}
+}
+.fxm .rowh{box-shadow:-14px 0 0 var(--card)}.fxm .rowh.on,.fxm .rowh:hover{box-shadow:-14px 0 0 var(--card)}
