@@ -108,20 +108,30 @@
       <a class="mega-all" href="markets.html">All markets overview →</a></div>
     <div class="mega-body">${M.categories.map(c => megaPanel(c.k)).join('')}</div>
   </div>`;
-  const tools = [
-    ['screener', 'Stock Screener', 'Filter thousands of stocks by any metric', 'screener.html'],
-    ['calendar', 'Economic Calendar', 'Rate decisions, jobs, inflation', 'calendar.html'],
-    ['earnings', 'Earnings Calendar', 'Who reports this week', 'calendar.html#earnings'],
-    ['indices', 'Stock Comparison', 'Compare up to four stocks side by side', 'compare.html'],
-    ['compound', 'Compound Interest', 'Project long-term growth', 'calculator.html#compound'],
-    ['calc', 'Investment Returns', 'Annualised return on any investment', 'calculator.html#returns'],
-    ['funds', 'Dividend Calculator', 'Income from dividends and reinvesting', 'calculator.html#dividend'],
-    ['currencies', 'Currency Converter', 'Major world currencies at sample rates', 'converter.html'],
-    ['building', 'Mortgage Calculator', 'Monthly payments, rent vs. buy, yields', 'real-estate.html#mortgage'],
-    ['stocks', 'POV Calculator', '“What if I had invested…”', 'calculator.html#pov'],
-    ['heat', 'Market Heatmaps', 'Every sector at a glance', 'stocks.html#heatmap'],
+  const TOOL_GROUPS = [
+    ['Market tools', [
+      ['screener', 'Stock Screener', 'Filter thousands of stocks', 'screener.html'],
+      ['heat', 'Market Heatmaps', 'Every sector at a glance', 'stocks.html#heatmap'],
+      ['indices', 'Stock Comparison', 'Up to four side by side', 'compare.html'],
+      ['calendar', 'Economic Calendar', 'Rates, jobs, inflation', 'calendar.html'],
+      ['earnings', 'Earnings Calendar', 'Who reports this week', 'calendar.html#earnings'],
+      ['currencies', 'Currency Converter', 'Major world currencies', 'converter.html'],
+    ]],
+    ['Calculators', [
+      ['stocks', 'POV Calculator', '“What if I had invested…”', 'calculator.html#pov'],
+      ['compound', 'Compound Interest', 'Project long-term growth', 'calculator.html#compound'],
+      ['calc', 'Investment Returns', 'Annualised return', 'calculator.html#returns'],
+      ['funds', 'Dividend Calculator', 'Income and reinvesting', 'calculator.html#dividend'],
+    ]],
+    ['Real estate', [
+      ['building', 'Mortgage Calculator', 'Monthly payments and interest', 'real-estate.html#mortgage'],
+      ['home', 'Rent vs. Buy', 'Which comes out ahead', 'real-estate.html#rentbuy'],
+      ['pin', 'Rental Yield', 'What a rental would earn', 'real-estate.html#yield'],
+      ['book', 'Real Estate Guides', 'Mortgages, REITs, leverage', 'real-estate.html#learn'],
+    ]],
   ];
-  const ddTools = `<div class="dd dd-tools" id="dd-tools" role="menu">${tools.map(([i, t, d, h]) => `<a class="dd-item" role="menuitem" href="${h}"><span class="dd-ic">${icon(i)}</span><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>`;
+  const tools = TOOL_GROUPS.flatMap(g => g[1]);
+  const ddTools = `<div class="dd dd-tools" id="dd-tools" role="menu">${TOOL_GROUPS.map(([h, items]) => `<div class="tools-col"><h6>${h}</h6>${items.map(([i, t, d, u]) => `<a class="dd-item" role="menuitem" href="${u}"><span class="dd-ic">${icon(i)}</span><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>`).join('')}</div>`;
   const nav = [
     ['home', 'Home', 'index.html'],
     ['dashboard', 'Dashboard', 'dashboard.html'],
@@ -129,14 +139,14 @@
     ['news', 'News', 'news.html'],
     ['analysis', 'Analysis', 'analysis.html'],
     ['ai', 'AI Insights', 'ai-insights.html', null, true],
+    ['education', 'Education', 'education.html'],
     ['tools', 'Tools', null, ddTools],
-    ['realestate', 'Real Estate', 'real-estate.html'],
   ];
   const hdr = document.createElement('header');
   hdr.className = 'hdr';
   hdr.innerHTML = `<div class="wrap">${brand}
     <ul class="nav">${nav.map(([k, t, h, dd, isNew]) => dd
-      ? `<li><button class="nav-link" type="button" aria-expanded="false" aria-haspopup="true" data-dd="dd-${k}" ${page === k || (k === 'tools' && ['screener', 'calendar', 'calc', 'compare', 'converter'].includes(page)) ? 'aria-current="page"' : ''}>${t}${icon('chev', 'chev')}</button>${dd}</li>`
+      ? `<li><button class="nav-link" type="button" aria-expanded="false" aria-haspopup="true" data-dd="dd-${k}" ${page === k || (k === 'tools' && ['screener', 'calendar', 'calc', 'compare', 'converter', 'realestate'].includes(page)) || (k === 'education' && page === 'lesson') ? 'aria-current="page"' : ''}>${t}${icon('chev', 'chev')}</button>${dd}</li>`
       : `<li><a class="nav-link" href="${h}" ${page === k ? 'aria-current="page"' : ''}>${t}${isNew ? '<span class="badge-new">NEW</span>' : ''}</a></li>`).join('')}</ul>
     <div class="hdr-tools">
       <button class="search-btn" type="button" data-search aria-label="Search markets">${icon('search')}<span>Search markets, news…</span><kbd>⌘K</kbd></button>
@@ -202,7 +212,7 @@
     <details><summary>Markets ${icon('chev')}</summary><a href="markets.html">All markets</a>${M.categories.map(c => `<a href="${c.page}">${c.t}</a>`).join('')}</details>
     <a href="news.html">News</a><a href="analysis.html">Analysis</a><a href="ai-insights.html">AI Insights <span class="badge-new">NEW</span></a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details>
-    <a href="real-estate.html">Real Estate</a><a href="watchlist.html">Watchlist</a><a href="profile.html">Profile &amp; notifications</a>`;
+    <a href="education.html">Education</a><a href="watchlist.html">Watchlist</a><a href="profile.html">Profile &amp; notifications</a>`;
   hdr.after(drawer);
   const mt = hdr.querySelector('.menu-toggle');
   function closeDrawer() { drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.innerHTML = icon('menu'); document.body.style.overflow = ''; }
@@ -244,7 +254,7 @@
     <div>${brand}<p class="muted" style="margin:14px 0 0;max-width:34ch">Markets, news and tools for people who want to understand their money.</p>
       <div class="socials"><a class="icon-btn" href="https://www.instagram.com/investedia/" aria-label="Instagram">${icon('ig')}</a></div></div>
     <div><h6>Markets</h6><ul>${M.categories.map(c => `<li><a href="${c.page}">${c.t}</a></li>`).join('')}</ul></div>
-    <div><h6>Content</h6><ul><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li><li><a href="ai-insights.html">AI Insights</a></li><li><a href="real-estate.html">Real Estate</a></li></ul></div>
+    <div><h6>Content</h6><ul><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li><li><a href="ai-insights.html">AI Insights</a></li><li><a href="education.html">Education</a></li><li><a href="real-estate.html">Real Estate</a></li></ul></div>
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
     <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#careers">Careers</a></li><li><a href="about.html#advertise">Advertise</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li></ul></div>
   </div>
