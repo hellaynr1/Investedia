@@ -39,6 +39,18 @@ def build():
         html = HEAD.format(title=meta["title"], desc=meta["desc"], key=meta["key"], extra=extra) + body.rstrip() + "\n" + TAIL
         (ROOT / p.name).write_text(html)
     print(f"Built {len(pages)} pages: " + ", ".join(p.name for p in pages))
+    mirror_docs()
+
+def mirror_docs():
+    """GitHub Pages may publish from /docs: keep an identical copy of the site there."""
+    import shutil
+    docs = ROOT / "docs"
+    shutil.rmtree(docs, ignore_errors=True)
+    docs.mkdir()
+    for f in list(ROOT.glob("*.html")) + [ROOT / n for n in ("CNAME", ".nojekyll", "sitemap.xml", "robots.txt")]:
+        if f.exists():
+            shutil.copy2(f, docs / f.name)
+    shutil.copytree(ROOT / "assets", docs / "assets")
 
 if __name__ == "__main__":
     build()

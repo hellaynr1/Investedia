@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Stocks — Investedia</title>
+<meta name="description" content="US, European and global stocks: movers, regions, extended hours, heatmap and ADRs.">
+<meta property="og:title" content="Stocks — Investedia">
+<meta property="og:description" content="US, European and global stocks: movers, regions, extended hours, heatmap and ADRs.">
+<meta name="theme-color" content="#0A0A0B">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="apple-touch-icon" href="assets/logo.png">
+</head>
+<body data-page="markets">
+<script src="assets/mock.js"></script>
+<script src="assets/ui.js"></script>
+<main class="wrap">
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Stocks</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Stocks</h1><p class="lede">Movers, regions, sectors and extended-hours trading across global equity markets.</p></div>
+  <div style="display:flex;gap:8px;align-items:center"><span class="demo">Illustrative data</span><a class="btn btn-primary" href="screener.html">Open screener</a></div></div>
+</div>
+<nav class="subnav" id="subnav"></nav>
+
+<section class="sec">
+  <div class="card"><div class="stats-row" id="breadth"></div></div>
+</section>
+
+<section class="sec" id="movers">
+  <div class="sec-head"><div><h2>Market movers</h2><p>US stocks over $2B market value.</p></div><div class="tabs" id="mv-tabs"><button class="tab" data-tab="trending" aria-selected="true">Trending</button><button class="tab" data-tab="active">Most active</button><button class="tab" data-tab="gainers">Top gainers</button><button class="tab" data-tab="losers">Top losers</button></div></div>
+  <div class="card" id="mv-table"></div>
+</section>
+
+<section class="sec" id="regions">
+  <div class="sec-head"><div><h2>Stocks by region</h2><p>The largest listed companies in each market.</p></div><div class="tabs" id="rg-tabs"><button class="tab" data-tab="us" aria-selected="true">United States</button><button class="tab" data-tab="americas">Americas</button><button class="tab" data-tab="europe">Europe</button></div></div>
+  <div class="grid g-main" style="align-items:start">
+    <div class="card" id="rg-table"></div>
+    <div class="card"><div class="card-head"><h3 id="rg-idx-title">Benchmark</h3><span class="meta">1 year</span></div><div style="padding:10px 10px 4px 16px"><div id="rg-chart"></div></div><div class="stats-row" style="border-top:1px solid var(--line)" id="rg-stats"></div></div>
+  </div>
+</section>
+
+<section class="sec" id="extended">
+  <div class="sec-head"><div><h2>Extended-hours trading</h2><p>Moves before the opening bell and after the close.</p></div><div class="tabs" id="ex-tabs"><button class="tab" data-tab="premarket" aria-selected="true">Pre-market</button><button class="tab" data-tab="afterhours">After hours</button></div></div>
+  <div class="card" id="ex-table"></div>
+</section>
+
+<section class="sec" id="heatmap">
+  <div class="sec-head"><div><h2>S&amp;P 500 heatmap</h2><p>Size shows company value. Color shows today’s move.</p></div></div>
+  <div class="card"><div class="heat" id="heat" style="grid-auto-rows:54px"></div><div class="heat-legend" id="legend"></div></div>
+</section>
+
+<section class="sec">
+  <div class="grid g-2">
+    <div class="card"><div class="card-head"><h3>Sector performance</h3><div class="range" id="sec-range"><button aria-pressed="true">1D</button><button aria-pressed="false">1W</button><button aria-pressed="false">YTD</button></div></div><div class="card-pad" style="display:grid;gap:10px" id="sectors"></div></div>
+    <div class="card" id="adrs"><div class="card-head"><h3>World ADRs</h3><span class="meta">Foreign companies listed in the US</span></div><div id="adr-list"></div></div>
+  </div>
+</section>
+
+<section class="sec" data-newsletter></section>
+<script>
+const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, assetTable, tabs, row, routeHash } = UI, M = MOCK;
+UI.subnav('stocks');
+const st = M.assets.filter(a => a.c === 'stocks');
+document.getElementById('breadth').innerHTML = [['Advancing', '2,184', 'up'], ['Declining', '2,611', 'down'], ['New 52W highs', '142', 'up'], ['New 52W lows', '67', 'down'], ['Volume', '11.8B', ''], ['VIX', '17.42', '']].map(([k, v, c]) => `<div class="stat"><span>${k}</span><b class="${c}">${v}</b></div>`).join('');
+const mv = { trending: ['NVDA', 'TSLA', 'AAPL', 'DELL', 'LLY', 'AMD', 'GME', 'META'], active: [...st].sort((a, b) => parseFloat(b.vol) - parseFloat(a.vol)).slice(0, 8).map(a => a.s), gainers: [...st].sort((a, b) => b.d - a.d).slice(0, 8).map(a => a.s), losers: [...st].sort((a, b) => a.d - b.d).slice(0, 8).map(a => a.s) };
+tabs(document.getElementById('mv-tabs'), k => document.getElementById('mv-table').innerHTML = assetTable(mv[k].map(s => M.bySym[s]), ['price', 'chg', 'week', 'cap', 'vol', 'spark']));
+document.getElementById('mv-table').innerHTML = assetTable(mv.trending.map(s => M.bySym[s]), ['price', 'chg', 'week', 'cap', 'vol', 'spark']);
+
+const rg = { us: [st.filter(a => a.country === 'US').sort((a, b) => b.m - a.m).slice(0, 10), 'SPX', 'S&P 500'], americas: [st.filter(a => ['CA', 'AR', 'BR'].includes(a.country)).concat(['AAPL', 'MSFT', 'NVDA'].map(s => M.bySym[s])), 'SPX', 'S&P 500 · Americas reference'], europe: [st.filter(a => ['DE', 'FR', 'UK', 'NL', 'DK'].includes(a.country)).sort((a, b) => b.m - a.m), 'SX5E', 'EURO STOXX 50'] };
+function region(k) {
+  const [rows, idx, t] = rg[k], ia = M.bySym[idx];
+  document.getElementById('rg-table').innerHTML = assetTable(rows, ['price', 'chg', 'cap', 'pe', 'spark']);
+  document.getElementById('rg-idx-title').textContent = t;
+  areaChart(document.getElementById('rg-chart'), M.series(idx + 'rg', 120, ia.p, k === 'europe' ? 9.4 : 14.6, .007), { height: 220, labels: ['Nov', 'Feb', 'May', 'Aug', 'Oct'], fmt: v => v.toLocaleString('en-US', { maximumFractionDigits: 0 }) });
+  document.getElementById('rg-stats').innerHTML = [['Last', fmtP(ia)], ['Today', `<span class="${cls(ia.d)}">${fmtC(ia.d)}</span>`], ['1 year', `<span class="up">${k === 'europe' ? '+9.4%' : '+14.6%'}</span>`]].map(([a, b]) => `<div class="stat"><span>${a}</span><b>${b}</b></div>`).join('');
+}
+tabs(document.getElementById('rg-tabs'), region); region('us');
+
+function ext(k) {
+  const rows = ['NVDA', 'TSLA', 'AAPL', 'AMD', 'DELL', 'WULF', 'GME', 'NFLX'].map(s => M.bySym[s]);
+  const f = k === 'premarket' ? .6 : -.45;
+  document.getElementById('ex-table').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th><th>Last close</th><th>${k === 'premarket' ? 'Pre-market' : 'After hours'}</th><th>Change</th><th>Volume</th><th>Updated</th></tr></thead><tbody>${rows.map((a, i) => { const c = +((a.d * f) + (i % 3 - 1) * .4).toFixed(2); return `<tr data-href="${href(a)}"><td><a class="ident" href="${href(a)}">${logo(a)}<span><b>${a.s}</b><small>${a.n}</small></span></a></td><td class="num muted">${fmtP(a)}</td><td class="num">${fmtP(a, a.p * (1 + c / 100))}</td><td><span class="pill ${cls(c)}">${fmtC(c)}</span></td><td class="num muted">${(Math.abs(c) * 0.8 + .2).toFixed(1)}M</td><td class="num dim">${k === 'premarket' ? '08:5' + i : '19:4' + i} ET</td></tr>`; }).join('')}</tbody></table></div>`;
+}
+tabs(document.getElementById('ex-tabs'), ext); ext('premarket');
+
+UI.heatmap(document.getElementById('heat'), [['NVDA', 3, 3], ['AAPL', 3, 3], ['MSFT', 3, 2], ['GOOGL', 3, 2], ['AMZN', 2, 2], ['META', 2, 2], ['AVGO', 2, 2], ['TSLA', 2, 1], ['LLY', 2, 1], ['JPM', 2, 1], ['V', 2, 1], ['WMT', 1, 1], ['ORCL', 1, 1], ['XOM', 1, 1], ['COST', 1, 1], ['NFLX', 1, 1], ['AMD', 1, 1], ['BAC', 1, 1], ['KO', 1, 1], ['CVX', 1, 1], ['INTC', 1, 1], ['DELL', 1, 1]].map(([s, w, h]) => [M.bySym[s], w, h]));
+UI.heatLegend(document.getElementById('legend'));
+const secData = { '1D': [['Healthcare', 1.38], ['Utilities', 0.66], ['Financials', 0.51], ['Industrials', 0.35], ['Communication', 0.22], ['Materials', -0.12], ['Consumer', -0.21], ['Technology', -0.42], ['Energy', -1.24]], '1W': [['Utilities', 2.9], ['Healthcare', 2.4], ['Financials', 1.8], ['Technology', 1.1], ['Communication', 0.9], ['Industrials', 0.3], ['Consumer', -0.4], ['Materials', -0.8], ['Energy', -3.1]], 'YTD': [['Technology', 21.4], ['Utilities', 14.8], ['Communication', 13.2], ['Financials', 12.1], ['Industrials', 10.6], ['Healthcare', 8.9], ['Consumer', 5.2], ['Materials', 3.4], ['Energy', -4.2]] };
+const sectors = r => { const mx = Math.max(...secData[r].map(x => Math.abs(x[1]))); document.getElementById('sectors').innerHTML = secData[r].map(([n, v]) => UI.divBar(n, v, mx)).join(''); };
+document.querySelectorAll('#sec-range button').forEach(b => b.onclick = () => { document.querySelectorAll('#sec-range button').forEach(x => x.setAttribute('aria-pressed', x === b)); sectors(b.textContent); });
+sectors('1D');
+document.getElementById('adr-list').innerHTML = ['TSM', 'ASML', 'BABA', 'TM', 'NVO', 'SHEL'].map(s => row(M.bySym[s])).join('');
+routeHash({ trending: ['mv-tabs', 'trending'], active: ['mv-tabs', 'active'], gainers: ['mv-tabs', 'gainers'], losers: ['mv-tabs', 'losers'], 'region-us': ['rg-tabs', 'us'], 'region-americas': ['rg-tabs', 'americas'], 'region-europe': ['rg-tabs', 'europe'], premarket: ['ex-tabs', 'premarket'], afterhours: ['ex-tabs', 'afterhours'] });
+</script>
+</main>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Real Estate — Investedia</title>
+<meta name="description" content="Mortgage, rent vs. buy and rental yield calculators, plus plain-English guides to property investing.">
+<meta property="og:title" content="Real Estate — Investedia">
+<meta property="og:description" content="Mortgage, rent vs. buy and rental yield calculators, plus plain-English guides to property investing.">
+<meta name="theme-color" content="#0A0A0B">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="apple-touch-icon" href="assets/logo.png">
+</head>
+<body data-page="realestate">
+<script src="assets/mock.js"></script>
+<script src="assets/ui.js"></script>
+<main class="wrap">
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>Real Estate</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Real estate, in numbers.</h1><p class="lede">Work out what a property really costs, whether to rent or buy, and what a rental would earn. Works in any currency.</p></div><span class="demo">Estimates only</span></div>
+</div>
+<nav class="subnav" id="re-nav"><a href="#mortgage" aria-current="page">Mortgage</a><a href="#rentbuy">Rent vs. buy</a><a href="#yield">Rental yield</a><a href="#learn">Guides</a></nav>
+
+<section class="sec" id="mortgage">
+  <div class="calc-grid">
+    <div class="card card-pad" style="display:grid;gap:16px">
+      <div><span class="eyebrow">Mortgage calculator</span><h2 style="margin-top:8px">What will I pay each month?</h2></div>
+      <div class="field"><label for="m-price">Property price · <span class="num" id="m-price-v"></span></label><input type="range" id="m-price" min="50000" max="2000000" step="5000" value="350000"></div>
+      <div class="field"><label for="m-down">Down payment · <span class="num" id="m-down-v"></span></label><input type="range" id="m-down" min="0" max="50" step="1" value="20"></div>
+      <div class="field"><label for="m-rate">Interest rate · <span class="num" id="m-rate-v"></span></label><input type="range" id="m-rate" min="0.5" max="10" step="0.05" value="3.6"></div>
+      <div class="field"><label>Loan term</label><div class="seg" id="m-term"><button type="button" data-v="15">15 yrs</button><button type="button" data-v="20">20 yrs</button><button type="button" data-v="25" class="on">25 yrs</button><button type="button" data-v="30">30 yrs</button></div></div>
+    </div>
+    <div class="card">
+      <div class="stats-row" style="border-bottom:1px solid var(--line)"><div class="stat"><span>Monthly payment</span><b class="accent" style="font-size:24px" id="m-pay"></b></div><div class="stat"><span>Loan amount</span><b id="m-loan"></b></div><div class="stat"><span>Total interest</span><b class="down" id="m-int"></b></div><div class="stat"><span>Total cost</span><b id="m-total"></b></div></div>
+      <div class="card-pad"><h3 style="font-size:14px;margin-bottom:12px">Balance and interest over time</h3><div class="bars" id="m-bars" style="height:220px;gap:3px"></div><div style="display:flex;justify-content:space-between;margin-top:8px" class="mono dim" id="m-axis"></div>
+      <div style="display:flex;gap:18px;margin-top:12px;font-size:12.5px" class="muted"><span><i class="sw" style="background:#3a3a40"></i>Principal paid</span><span><i class="sw" style="background:var(--accent)"></i>Interest paid</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="rentbuy">
+  <div class="calc-grid">
+    <div class="card card-pad" style="display:grid;gap:16px">
+      <div><span class="eyebrow">Rent vs. buy</span><h2 style="margin-top:8px">Is buying worth it?</h2></div>
+      <div class="field"><label for="r-rent">Monthly rent today</label><input class="input num" id="r-rent" type="number" value="1400"></div>
+      <div class="field"><label for="r-grow">Home price growth per year · <span class="num" id="r-grow-v"></span></label><input type="range" id="r-grow" min="0" max="8" step="0.5" value="3"></div>
+      <div class="field"><label for="r-inv">Return if you invest the down payment · <span class="num" id="r-inv-v"></span></label><input type="range" id="r-inv" min="0" max="12" step="0.5" value="7"></div>
+      <div class="field"><label for="r-yrs">Years you’ll stay · <span class="num" id="r-yrs-v"></span></label><input type="range" id="r-yrs" min="2" max="30" value="10"></div>
+      <small class="dim">Uses the price, down payment and rate from the mortgage calculator above.</small>
+    </div>
+    <div class="card card-pad" style="display:grid;gap:18px;align-content:start">
+      <div id="rb-verdict"></div>
+      <div style="display:grid;gap:12px" id="rb-bars"></div>
+      <p class="dim" style="margin:0;font-size:12.5px">Simplified: includes mortgage interest, 1% yearly upkeep and taxes, 5% buying costs and rent rising 2.5% a year. It leaves out tax breaks and selling fees, which vary by country.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="yield">
+  <div class="calc-grid">
+    <div class="card card-pad" style="display:grid;gap:16px">
+      <div><span class="eyebrow">Rental yield</span><h2 style="margin-top:8px">What would a rental earn?</h2></div>
+      <div class="field"><label for="y-price">Purchase price</label><input class="input num" id="y-price" type="number" value="250000"></div>
+      <div class="field"><label for="y-rent">Monthly rent</label><input class="input num" id="y-rent" type="number" value="1250"></div>
+      <div class="field"><label for="y-cost">Yearly costs (tax, insurance, repairs, fees)</label><input class="input num" id="y-cost" type="number" value="3200"></div>
+      <div class="field"><label for="y-vac">Empty months per year · <span class="num" id="y-vac-v"></span></label><input type="range" id="y-vac" min="0" max="4" step="0.5" value="1"></div>
+    </div>
+    <div class="card">
+      <div class="stats-row" style="border-bottom:1px solid var(--line)"><div class="stat"><span>Gross yield</span><b id="y-gross"></b></div><div class="stat"><span>Net yield</span><b class="accent" style="font-size:24px" id="y-net"></b></div><div class="stat"><span>Net income / year</span><b class="up" id="y-inc"></b></div></div>
+      <div class="card-pad"><h3 style="font-size:14px;margin-bottom:14px">How it compares</h3><div style="display:grid;gap:12px" id="y-cmp"></div><p class="dim" style="margin:14px 0 0;font-size:12.5px">Comparison yields are illustrative. Rental income is before income tax and mortgage costs.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="learn">
+  <div class="sec-head"><div><h2>Real estate guides</h2><p>The basics, explained simply.</p></div></div>
+  <div class="grid g-3" id="guides"></div>
+</section>
+<section class="sec" data-newsletter></section>
+<script>
+const { icon } = UI;
+const $ = id => document.getElementById(id), v = id => +$(id).value || 0;
+const money = x => Math.round(x).toLocaleString('en-US');
+let term = 25;
+document.querySelectorAll('#m-term button').forEach(b => b.onclick = () => { document.querySelectorAll('#m-term button').forEach(x => x.classList.toggle('on', x === b)); term = +b.dataset.v; all(); });
+function mortgage() {
+  const price = v('m-price'), down = price * v('m-down') / 100, loan = price - down, r = v('m-rate') / 100 / 12, n = term * 12;
+  const pay = r ? loan * r / (1 - Math.pow(1 + r, -n)) : loan / n;
+  $('m-price-v').textContent = money(price); $('m-down-v').textContent = v('m-down') + '% · ' + money(down); $('m-rate-v').textContent = v('m-rate').toFixed(2) + '%';
+  $('m-pay').textContent = money(pay); $('m-loan').textContent = money(loan); $('m-int').textContent = money(pay * n - loan); $('m-total').textContent = money(pay * n + down);
+  let bal = loan, cp = 0, ci = 0; const yrs = [];
+  for (let y = 1; y <= term; y++) { for (let k = 0; k < 12; k++) { const i = bal * r, p = pay - i; bal -= p; cp += p; ci += i; } yrs.push([cp, ci]); }
+  const mx = cp + ci;
+  $('m-bars').innerHTML = yrs.map(([p, i], k) => `<div title="Year ${k + 1}: principal ${money(p)}, interest ${money(i)}" style="display:flex;flex-direction:column;justify-content:flex-end;height:100%"><i style="height:${i / mx * 200}px;background:var(--accent);border-radius:2px 2px 0 0;max-width:none"></i><i style="height:${p / mx * 200}px;background:#3a3a40;border-radius:0;max-width:none"></i></div>`).join('');
+  $('m-axis').innerHTML = `<span>Year 1</span><span>Year ${Math.round(term / 2)}</span><span>Year ${term}</span>`;
+  return { price, down, loan, r, pay };
+}
+function rentBuy(m) {
+  const yrs = v('r-yrs'), g = v('r-grow') / 100, inv = v('r-inv') / 100;
+  $('r-grow-v').textContent = v('r-grow') + '%'; $('r-inv-v').textContent = v('r-inv') + '%'; $('r-yrs-v').textContent = yrs;
+  let bal = m.loan, interest = 0, rent = v('r-rent'), rentTotal = 0;
+  for (let k = 0; k < yrs * 12; k++) { const i = bal * m.r; interest += i; bal -= m.pay - i; if (k % 12 === 0 && k) rent *= 1.025; rentTotal += rent; }
+  const value = m.price * Math.pow(1 + g, yrs), upkeep = m.price * .01 * yrs, buyCosts = m.price * .05;
+  const buyCost = interest + upkeep + buyCosts - (value - m.price);
+  const rentCost = rentTotal - (m.down + buyCosts) * (Math.pow(1 + inv, yrs) - 1);
+  const better = buyCost < rentCost ? 'Buying' : 'Renting', diff = Math.abs(rentCost - buyCost);
+  $('rb-verdict').innerHTML = `<span class="muted" style="font-size:13px">Over ${yrs} years</span><div style="font-size:26px;font-weight:600;letter-spacing:-.02em;margin-top:2px">${better} comes out <span class="accent num">${money(diff)}</span> ahead</div>`;
+  const mx = Math.max(Math.abs(buyCost), Math.abs(rentCost), 1);
+  $('rb-bars').innerHTML = [['Net cost of buying', buyCost], ['Net cost of renting', rentCost]].map(([n, c]) => `<div style="display:grid;grid-template-columns:150px 1fr 100px;gap:12px;align-items:center;font-size:13.5px"><span class="muted">${n}</span><div class="meter" style="height:12px"><i style="width:${Math.max(2, Math.abs(c) / mx * 100)}%;background:${n.includes(better.toLowerCase().slice(0, 3)) ? 'var(--accent)' : '#52525b'}"></i></div><span class="num" style="text-align:right">${c < 0 ? '−' : ''}${money(Math.abs(c))}</span></div>`).join('');
+}
+function rental() {
+  const p = v('y-price') || 1, rent = v('y-rent'), cost = v('y-cost'), vac = v('y-vac');
+  $('y-vac-v').textContent = vac;
+  const gross = rent * 12 / p * 100, net = (rent * (12 - vac) - cost) / p * 100;
+  $('y-gross').textContent = gross.toFixed(2) + '%'; $('y-net').textContent = net.toFixed(2) + '%'; $('y-inc').textContent = money(rent * (12 - vac) - cost);
+  const cmp = [['Your rental (net)', net], ['Global stocks, dividend yield', 1.9], ['10-year government bond', 4.0], ['Listed REITs, dividend yield', 4.2], ['Savings account', 3.0]], mx = Math.max(...cmp.map(c => Math.abs(c[1])), 1);
+  $('y-cmp').innerHTML = cmp.map(([n, x], i) => `<div style="display:grid;grid-template-columns:190px 1fr 56px;gap:12px;align-items:center;font-size:13px"><span class="${i ? 'muted' : ''}" style="${i ? '' : 'font-weight:550'}">${n}</span><div class="meter" style="height:10px"><i style="width:${Math.max(0, x) / mx * 100}%;background:${i ? '#52525b' : 'var(--accent)'}"></i></div><span class="num" style="text-align:right">${x.toFixed(1)}%</span></div>`).join('');
+}
+function all() { const m = mortgage(); rentBuy(m); rental(); }
+document.querySelectorAll('input').forEach(i => i.addEventListener('input', all));
+all();
+$('guides').innerHTML = [['building', 'How a mortgage works', 'Principal, interest, fixed vs. variable rates, and why the first years are mostly interest.'], ['calc', 'The real cost of owning', 'Taxes, insurance, repairs and fees: the costs people forget to budget for.'], ['funds', 'REITs vs. buying property', 'Own real estate through the stock market, with less money and no tenants.'], ['compound', 'Leverage, explained', 'How borrowing magnifies gains and losses, with simple examples.'], ['globe', 'What moves property prices', 'Interest rates, supply, jobs and population, and how they connect.'], ['book', 'Real estate glossary', 'LTV, cap rate, gross vs. net yield, amortisation and more.']].map(([i, t, d]) => `<a class="card tool" href="analysis-article.html"><span class="dd-ic">${icon(i)}</span><h3>${t}</h3><p>${d}</p><span class="link">Read guide ${icon('arrow')}</span></a>`).join('');
+const rn = document.querySelectorAll('#re-nav a'); rn.forEach(l => l.onclick = () => rn.forEach(x => x.toggleAttribute('aria-current', x === l)));
+UI.routeHash({});
+</script>
+</main>
+</body>
+</html>
