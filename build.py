@@ -21,7 +21,23 @@ HEAD = """<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/app.css">
-<link rel="apple-touch-icon" href="assets/logo.png">
+<link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Investedia">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="assets/app/splash-1320x2868.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="assets/app/splash-1290x2796.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="assets/app/splash-1206x2622.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="assets/app/splash-1179x2556.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="assets/app/splash-1284x2778.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="assets/app/splash-1170x2532.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="assets/app/splash-1125x2436.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="assets/app/splash-1242x2688.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="assets/app/splash-828x1792.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="assets/app/splash-750x1334.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="assets/app/splash-640x1136.png">
 </head>
 <body data-page="{key}">
 <script src="assets/quotes.js"></script>
@@ -39,8 +55,18 @@ def build():
         extra = "".join(f'<script src="{s}"></script>\n' for s in meta.get("scripts", []))
         html = HEAD.format(title=meta["title"], desc=meta["desc"], key=meta["key"], extra=extra) + body.rstrip() + "\n" + TAIL
         (ROOT / p.name).write_text(html)
+    write_sw(pages)
     print(f"Built {len(pages)} pages: " + ", ".join(p.name for p in pages))
     mirror_docs()
+
+def write_sw(pages):
+    """Offline support for the home-screen app. The version changes whenever the site's code changes."""
+    import hashlib
+    h = hashlib.sha1()
+    for f in sorted(list((ROOT / "assets").glob("*.*")) + [ROOT / p.name for p in pages]):
+        h.update(f.read_bytes())
+    tpl = (ROOT / "src" / "sw.js").read_text()
+    (ROOT / "sw.js").write_text(tpl.replace("__VERSION__", h.hexdigest()[:10]))
 
 def mirror_docs():
     """GitHub Pages may publish from /docs: keep an identical copy of the site there."""
@@ -48,7 +74,7 @@ def mirror_docs():
     docs = ROOT / "docs"
     shutil.rmtree(docs, ignore_errors=True)
     docs.mkdir()
-    for f in list(ROOT.glob("*.html")) + [ROOT / n for n in ("CNAME", ".nojekyll", "sitemap.xml", "robots.txt")]:
+    for f in list(ROOT.glob("*.html")) + [ROOT / n for n in ("CNAME", ".nojekyll", "sitemap.xml", "robots.txt", "manifest.webmanifest", "sw.js")]:
         if f.exists():
             shutil.copy2(f, docs / f.name)
     shutil.copytree(ROOT / "assets", docs / "assets")

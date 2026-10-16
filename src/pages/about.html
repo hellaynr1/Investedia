@@ -55,8 +55,19 @@
   </div>
 </section>
 
+<section class="sec" id="app">
+  <div class="card card-pad app-card">
+    <div style="display:flex;gap:16px;align-items:center;margin-bottom:22px"><img src="assets/app/icon-192.png" alt="" width="56" height="56" style="border-radius:13px"><div><span class="eyebrow">Investedia app</span><h2 style="margin-top:6px">Put Investedia on your home screen.</h2></div></div>
+    <p class="muted" style="margin:0 0 22px;max-width:620px">Our app installs straight from the website. It's free, takes a few seconds, and opens full screen like any other app. No App Store needed.</p>
+    <div class="grid g-2">
+      <div><h3 style="font-size:15px;margin:0 0 14px">iPhone and iPad</h3><ol class="app-steps"><li><span>Open <b>investedia.com</b> in Safari.</span></li><li><span>Tap the <b>Share</b> button at the bottom of the screen.</span></li><li><span>Choose <b>Add to Home Screen</b>, then <b>Add</b>.</span></li></ol></div>
+      <div><h3 style="font-size:15px;margin:0 0 14px">Android</h3><ol class="app-steps"><li><span>Open <b>investedia.com</b> in Chrome.</span></li><li><span>Tap the <b>⋮</b> menu in the top corner.</span></li><li><span>Choose <b>Install app</b> or <b>Add to Home screen</b>.</span></li></ol><button class="btn btn-primary btn-sm" type="button" id="install-now" hidden style="margin-top:18px">Install now</button></div>
+    </div>
+  </div>
+</section>
+
 <section class="sec" id="contact"><div class="grid g-2">
   <div class="card card-pad" style="display:grid;gap:12px;align-content:start"><span class="eyebrow">Contact</span><h2>Talk to us.</h2><p class="muted" style="margin:0">Questions, feedback or partnership ideas? The fastest way to reach the team is a message on Instagram.</p><a class="btn btn-primary" href="https://www.instagram.com/investedia/" target="_blank" rel="noopener" style="justify-self:start">Message us on Instagram</a></div>
   <div class="card card-pad" id="terms" style="display:grid;gap:10px;align-content:start"><span class="eyebrow">Terms &amp; privacy</span><p class="muted" style="margin:0;font-size:14px">Investedia provides information and education only. Nothing on this site is investment advice or a recommendation to buy or sell any asset. Investing involves risk, and you can lose money. Market data comes from free public sources (Yahoo Finance, FRED and Coinbase), may be delayed by up to 30 minutes and can contain errors. Some figures, such as fundamentals, are still estimates.</p><p class="dim" style="margin:0;font-size:13px">Full terms of use and a privacy policy will be published before launch.</p></div>
 </div></section>
-<script>UI.routeHash({});</script>
+<script>UI.routeHash({}); addEventListener('beforeinstallprompt', () => { const b = document.getElementById('install-now'); b.hidden = false; b.onclick = () => window.installApp(); });</script>

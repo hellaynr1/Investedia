@@ -296,7 +296,7 @@
     <div><h6>Markets</h6><ul>${M.categories.map(c => `<li><a href="${c.page}">${c.t}</a></li>`).join('')}</ul></div>
     <div><h6>Content</h6><ul><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li><li><a href="ai-insights.html">AI Insights</a></li><li><a href="education.html">Education</a></li><li><a href="real-estate.html">Real Estate</a></li></ul></div>
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li></ul></div>
+    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li></ul></div>
   </div>
   <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Market data from Yahoo Finance, FRED and Coinbase. Prices may be delayed up to 30 minutes; crypto is live.</span></div></div>`;
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
@@ -449,6 +449,26 @@
       addEventListener('scroll', onScroll, { passive: true });
     }
   });
+  // ---------- home-screen app ----------
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  if (standalone) document.documentElement.classList.add('is-app');
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  let installEvt = null;
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; });
+  const shareIc = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+  function installBanner() {
+    if (standalone || innerWidth > 900 || store('inv-app-x') || !store('inv-pop') || (!isIOS && !installEvt)) return;
+    const b = document.createElement('div'); b.className = 'app-banner'; b.setAttribute('role', 'dialog'); b.setAttribute('aria-label', 'Install the Investedia app');
+    b.innerHTML = `<img src="assets/app/icon-192.png" alt="" width="44" height="44"><div><b>Get the Investedia app</b><span>${isIOS ? `Tap ${shareIc} then <b>Add to Home Screen</b>` : 'Full screen, faster, works offline'}</span></div>${isIOS ? '' : '<button class="btn btn-primary btn-sm" type="button" data-install>Install</button>'}<button class="app-x" type="button" aria-label="Close">×</button>`;
+    const close = () => { store('inv-app-x', '1'); b.classList.remove('show'); setTimeout(() => b.remove(), 250); };
+    b.querySelector('.app-x').onclick = close;
+    const ib = b.querySelector('[data-install]'); if (ib) ib.onclick = async () => { installEvt.prompt(); await installEvt.userChoice; close(); };
+    document.body.append(b); requestAnimationFrame(() => requestAnimationFrame(() => b.classList.add('show')));
+  }
+  document.addEventListener('DOMContentLoaded', () => setTimeout(installBanner, 4000));
+  window.installApp = () => installEvt ? installEvt.prompt() : null;
+
   // Deep links: #hash selects a tab (routes = { hash: [tabsId, tabKey] }) or scrolls to an element id
   function routeHash(routes = {}) {
     const go = () => {
