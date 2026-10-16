@@ -19,6 +19,7 @@
 <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
 <body data-page="home">
+<script src="assets/quotes.js"></script>
 <script src="assets/mock.js"></script>
 <script src="assets/ui.js"></script>
 <main class="wrap">
@@ -40,8 +41,8 @@
   </div>
   <div class="card">
     <div class="card-head">
-      <div class="ident"><span id="hero-logo"></span><span><b>S&amp;P 500</b><small>SPX · Index · Illustrative</small></span></div>
-      <div style="text-align:right"><div class="num" style="font-size:20px">7,732.50</div><div class="num down" style="font-size:12.5px">−6.20 (−0.08%)</div></div>
+      <div class="ident"><span id="hero-logo"></span><span><b>S&amp;P 500</b><small>SPX · Index · <span data-asof>Delayed</span></small></span></div>
+      <div style="text-align:right"><div class="num" style="font-size:20px" id="hero-p"></div><div class="num" style="font-size:12.5px" id="hero-c"></div></div>
     </div>
     <div style="padding:8px 8px 4px 16px"><div id="hero-chart"></div></div>
     <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 16px 14px;gap:8px;flex-wrap:wrap">
@@ -168,11 +169,19 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
 const spx = M.bySym.SPX, ranges = { '1D': 78, '1W': 70, '1M': 64, '1Y': 120, '5Y': 130 };
 const lab = { '1D': ['09:30', '11:00', '12:30', '14:00', '16:00'], '1W': ['Fri', 'Mon', 'Tue', 'Wed', 'Thu'], '1M': ['16 Sep', '23 Sep', '30 Sep', '7 Oct', '16 Oct'], '1Y': ['Nov', 'Jan', 'Mar', 'May', 'Jul', 'Sep'], '5Y': ['2022', '2023', '2024', '2025', '2026'] };
 const chg = { '1D': -0.08, '1W': 0.9, '1M': 2.4, '1Y': 14.6, '5Y': 76.2 };
-const hero = r => areaChart(document.getElementById('hero-chart'), M.series('SPX' + r, ranges[r], spx.p, chg[r], r === '5Y' ? .02 : .006), { height: 300, labels: lab[r], fmt: v => v.toLocaleString('en-US', { maximumFractionDigits: 0 }) });
+document.getElementById('hero-p').textContent = spx.p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+{ const ab = spx.p - spx.p / (1 + spx.d / 100), hc = document.getElementById('hero-c'); hc.className = 'num ' + cls(spx.d); hc.textContent = `${ab >= 0 ? '+' : '−'}${Math.abs(ab).toFixed(2)} (${fmtC(spx.d)})`; }
+let heroSeq = 0;
+const hero = async r => {
+  const my = ++heroSeq, real = await M.history('SPX', r); if (my !== heroSeq) return;
+  const fmt = v => v.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  if (real) return areaChart(document.getElementById('hero-chart'), real.vals, { height: 300, labels: real.labels, color: real.chg >= 0 ? '#FF7A1A' : '#F04444', fmt });
+  areaChart(document.getElementById('hero-chart'), M.series('SPX' + r, ranges[r], spx.p, chg[r], r === '5Y' ? .02 : .006), { height: 300, labels: lab[r], fmt });
+};
 document.querySelectorAll('#hero-range button').forEach(b => b.onclick = () => { document.querySelectorAll('#hero-range button').forEach(x => x.setAttribute('aria-pressed', x === b)); hero(b.textContent); });
 hero('1Y');
 
-const card = a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' || a.c === 'bonds' ? a.n : a.s}</b><small>${a.c === 'indices' ? 'Index' : a.n}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`;
+const card = a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' || a.c === 'bonds' ? a.n : a.s}</b><small>${a.c === 'indices' ? 'Index' : a.n}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`;
 const GL = { overview: ['SPX', 'NDX', 'DAX', 'NKY', 'BTC', 'XAU', 'EURUSD', 'US10Y'], indices: ['SPX', 'DJI', 'DAX', 'UKX', 'NKY', 'HSI', 'XJO', 'IBOV'], crypto: ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX'], currencies: ['EURUSD', 'GBPUSD', 'USDJPY', 'EURGBP', 'AUDUSD', 'USDCHF', 'DXY', 'USDMXN'], commodities: ['XAU', 'XAG', 'WTI', 'BRENT', 'NG', 'HG', 'PL', 'KC'], bonds: ['US10Y', 'US02Y', 'US30Y', 'DE10Y', 'UK10Y', 'FR10Y', 'IT10Y', 'JP10Y'] };
 const gl = k => document.getElementById('global').innerHTML = GL[k].map(s => card(M.bySym[s])).join('');
 tabs(document.getElementById('gl-tabs'), gl); gl('overview');
@@ -182,13 +191,13 @@ const CLASSES = [['all', 'All markets'], ['stocks', 'Stocks'], ['crypto', 'Crypt
 const inClass = (a, k) => k === 'all' ? a.c !== 'bonds' && !a.stable : k === 'futures' ? (a.fut || a.c === 'commodities') : a.c === k && !a.fut && !a.stable;
 const tm = { mode: 'up', per: 'd', cls: 'all' };
 const perName = { d: 'today', w: 'this week', m1: 'this month' };
-document.getElementById('tm-sub').textContent = `Updated daily · ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · illustrative data`;
+document.getElementById('tm-sub').textContent = `Updated daily · ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · real prices, delayed`;
 document.getElementById('tm-class').innerHTML = CLASSES.map(([k, t], i) => `<button class="chip ${i ? '' : 'on'}" type="button" data-k="${k}">${t}</button>`).join('');
 function trendingMarkets() {
   const v = a => a[tm.per];
   let list = M.assets.filter(a => inClass(a, tm.cls));
   list.sort((x, y) => tm.mode === 'up' ? v(y) - v(x) : tm.mode === 'down' ? v(x) - v(y) : Math.abs(v(y)) - Math.abs(v(x)));
-  document.getElementById('tm-grid').innerHTML = list.slice(0, 8).map((a, i) => `<a class="card idx tm" href="${href(a)}"><div class="idx-top"><span class="ident"><span class="tm-rank num">${i + 1}</span>${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? a.s : a.n}</small></span></span><span class="pill ${cls(v(a))}">${fmtC(v(a), a.y)}</span></div><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="idx-val" style="font-size:17px">${fmtP(a)}</span><span class="dim" style="font-size:11.5px">${perName[tm.per]}</span></div>${spark(a.spark, colorFor(v(a)), 240, 30)}</a>`).join('');
+  document.getElementById('tm-grid').innerHTML = list.slice(0, 8).map((a, i) => `<a class="card idx tm" href="${href(a)}"><div class="idx-top"><span class="ident"><span class="tm-rank num">${i + 1}</span>${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? a.s : a.n}</small></span></span><span class="pill ${cls(v(a))}">${fmtC(v(a), a.y)}</span></div><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="idx-val" style="font-size:17px" data-lp="${a.s}">${fmtP(a)}</span><span class="dim" style="font-size:11.5px">${perName[tm.per]}</span></div>${spark(a.spark, colorFor(v(a)), 240, 30)}</a>`).join('');
 }
 const segBind = (id, key) => document.querySelectorAll(`#${id} button`).forEach(b => b.onclick = () => { document.querySelectorAll(`#${id} button`).forEach(x => x.classList.toggle('on', x === b)); tm[key] = b.dataset.v; trendingMarkets(); });
 segBind('tm-mode', 'mode'); segBind('tm-period', 'per');
@@ -230,7 +239,7 @@ tabs(document.getElementById('idx-tabs'), idx); idx('all');
 document.getElementById('sectors').innerHTML = [['Healthcare', 1.38], ['Utilities', 0.66], ['Financials', 0.51], ['Industrials', 0.35], ['Communication', 0.22], ['Materials', -0.12], ['Consumer', -0.21], ['Technology', -0.42], ['Energy', -1.24]].map(([n, v]) => `<div style="display:grid;grid-template-columns:110px 1fr 64px;gap:10px;align-items:center;font-size:13px"><span class="muted">${n}</span><div style="position:relative;height:16px"><div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line)"></div><div style="position:absolute;top:2px;bottom:2px;border-radius:2px;${v >= 0 ? `left:50%;width:${v / 1.5 * 50}%;background:var(--up)` : `right:50%;width:${-v / 1.5 * 50}%;background:var(--down)`}"></div></div><span class="num ${cls(v)}" style="text-align:right">${fmtC(v)}</span></div>`).join('');
 
 document.getElementById('crypto-stats').innerHTML = [['Total market cap', '$2.84T', '+0.9%'], ['24h volume', '$96.4B', '−12.1%'], ['Bitcoin dominance', '57.4%', '+0.3%'], ['Ethereum dominance', '10.3%', '−0.1%'], ['Fear & Greed', '34 · Fear', '']].map(([k, v, c]) => `<div class="stat"><span>${k}</span><b>${v} ${c ? `<span class="${c.startsWith('+') ? 'up' : 'down'}" style="font-size:12px">${c}</span>` : ''}</b></div>`).join('');
-document.getElementById('coins').innerHTML = ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · ${cap(a.m)}</small></span></span><span style="text-align:right"><div class="num">${fmtP(a)}</div><div class="num ${cls(a.d)}" style="font-size:12.5px">${fmtC(a.d)}</div></span><div style="grid-column:1/-1">${spark(a.spark, colorFor(a.w), 300, 34)}</div></a>`).join('');
+document.getElementById('coins').innerHTML = ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · ${cap(a.m)}</small></span></span><span style="text-align:right"><div class="num" data-lp="${a.s}">${fmtP(a)}</div><div class="num ${cls(a.d)}" data-lc="${a.s}" style="font-size:12.5px">${fmtC(a.d)}</div></span><div style="grid-column:1/-1">${spark(a.spark, colorFor(a.w), 300, 34)}</div></a>`).join('');
 
 document.getElementById('ai-points').innerHTML = [['Morning brief', 'the five things that moved markets overnight.'], ['Sentiment scores', 'for every stock, coin and sector.'], ['Bull and bear scenarios', 'so you see both sides before you decide.']].map(([b, t]) => `<li>${icon('check')}<span><b>${b}:</b> ${t}</span></li>`).join('');
 

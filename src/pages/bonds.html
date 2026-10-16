@@ -1,7 +1,7 @@
 {"title":"Bonds — Investedia","desc":"Government bond yields, the yield curve, corporate and high-yield bonds.","key":"markets"}
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Bonds</span></div>
-  <div class="sec-head" style="margin:0"><div><h1>Bonds</h1><p class="lede">Yields set the price of money for everything else. Here’s where they stand.</p></div><span class="demo">Illustrative data</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Bonds</h1><p class="lede">Yields set the price of money for everything else. Here’s where they stand.</p></div><span class="demo" data-asof>Delayed data</span></div>
 </div>
 <nav class="subnav" id="subnav"></nav>
 
@@ -28,7 +28,7 @@
 <script>
 const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, areaChart, tabs, routeHash } = UI, M = MOCK;
 UI.subnav('bonds');
-document.getElementById('keys').innerHTML = ['US10Y', 'US02Y', 'DE10Y', 'UK10Y'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span>${a.n}</span><span class="pill ${cls(a.d)}">${fmtC(a.d, true)}</span></div><div class="idx-val">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`).join('');
+document.getElementById('keys').innerHTML = ['US10Y', 'US02Y', 'DE10Y', 'UK10Y'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span>${a.n}</span><span class="pill ${cls(a.d)}">${fmtC(a.d, true)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`).join('');
 const today = [3.92, 3.71, 3.48, 3.42, 3.51, 3.70, 4.03, 4.38, 4.61], ago = [4.85, 4.62, 4.21, 4.05, 4.02, 4.08, 4.21, 4.49, 4.42], lab = ['1M', '6M', '2Y', '3Y', '5Y', '7Y', '10Y', '20Y', '30Y'];
 areaChart(document.getElementById('curve-chart'), today, { compare: ago, height: 300, labels: lab, fmt: v => v.toFixed(2) + '%', tipLabel: i => lab[i] + ' maturity' });
 areaChart(document.getElementById('spread'), M.series('2s10s', 100, 0.55, 300, .05).map(v => v - 0.3), { height: 160, labels: ['2024', '2025', '2026'], color: '#22C55E', fmt: v => (v * 100).toFixed(0) + ' bp' });

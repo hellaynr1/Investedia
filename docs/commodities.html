@@ -19,12 +19,13 @@
 <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
 <body data-page="markets">
+<script src="assets/quotes.js"></script>
 <script src="assets/mock.js"></script>
 <script src="assets/ui.js"></script>
 <main class="wrap">
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Commodities</span></div>
-  <div class="sec-head" style="margin:0"><div><h1>Commodities</h1><p class="lede">Energy, metals and crops: the raw materials behind inflation and growth.</p></div><span class="demo">Illustrative data</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Commodities</h1><p class="lede">Energy, metals and crops: the raw materials behind inflation and growth.</p></div><span class="demo" data-asof>Delayed data</span></div>
 </div>
 <nav class="subnav" id="subnav"></nav>
 
@@ -52,7 +53,7 @@
 const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, areaChart, assetTable, routeHash } = UI, M = MOCK;
 UI.subnav('commodities');
 const co = M.assets.filter(a => a.c === 'commodities');
-const card = a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.n}</b><small>${a.s} · ${a.x}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d)}</span></div><div class="idx-val">${fmtP(a)}<span class="dim" style="font-size:13px">${a.unit}</span></div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`;
+const card = a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.n}</b><small>${a.s} · ${a.x}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}<span class="dim" style="font-size:13px">${a.unit}</span></div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`;
 document.getElementById('g-energy').innerHTML = co.filter(a => a.group === 'Energy').map(card).join('');
 document.getElementById('g-metals').innerHTML = co.filter(a => a.group === 'Metals').map(card).join('');
 document.getElementById('g-agri').innerHTML = co.filter(a => a.group === 'Agriculture').map(card).join('');

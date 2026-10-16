@@ -1,4 +1,5 @@
-// Sample data for the UI preview. Nothing here is live; it will be replaced by real feeds later.
+// Asset list and page content. Real prices come from assets/quotes.js (written by update_market.py);
+// anything without a real feed falls back to the sample values below.
 window.MOCK = (function () {
   // Deterministic random generator so every chart looks the same on each visit
   function seeded(str) {
@@ -166,7 +167,58 @@ window.MOCK = (function () {
   );
   const grp = { WTI: 'Energy', BRENT: 'Energy', NG: 'Energy', XAU: 'Metals', XAG: 'Metals', HG: 'Metals' };
   assets.forEach(a => { if (grp[a.s]) a.group = grp[a.s]; if (a.c === 'stocks' && !a.country) a.country = 'US'; if (a.c === 'stocks' && a.g == null) a.g = +(a.w * 3 + 10).toFixed(1); if (a.c === 'stocks' && a.div == null) a.div = { AAPL: 0.4, MSFT: 0.6, JPM: 1.9, XOM: 3.4, V: 0.7, LLY: 0.6, AVGO: 1.2, GOOGL: 0.3, META: 0.3 }[a.s] || 0; });
-  assets.forEach(a => { a.m1 = +(a.d * 3 + a.w).toFixed(2); a.spark = series(a.s, 48, a.p, a.m1); });
+  // Real prices (assets/quotes.js) replace the sample values wherever we have them
+  const QD = window.QUOTES || {}, Q = QD.q || {};
+  const vfmt = (v, usd) => (usd ? '$' : '') + (v >= 1e9 ? (v / 1e9).toFixed(1) + 'B' : v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : (v / 1e3).toFixed(0) + 'K');
+  assets.forEach(a => {
+    const q = Q[a.s];
+    if (!q) { a.m1 = +(a.d * 3 + a.w).toFixed(2); a.spark = series(a.s, 48, a.p, a.m1); return; }
+    const k = q.p / a.p;
+    if (a.m != null) a.m = +(a.m * k).toFixed(a.m * k < 10 ? 1 : 0);
+    if (a.pe != null) a.pe = +(a.pe * k).toFixed(1);
+    Object.assign(a, { p: q.p, d: q.d, w: q.w, m1: q.m1, spark: q.sp.length > 2 ? q.sp : series(a.s, 48, q.p, q.m1), real: true, at: q.t, cur: q.cur, hi: q.hi, lo: q.lo, freq: q.freq, asof: q.asof });
+    if (q.v) a.vol = vfmt(q.v, a.c === 'crypto');
+  });
+  const reitQ = r => { const q = Q[r.s]; if (q) Object.assign(r, { p: q.p, d: q.d, real: true }); };
+  const updated = QD.updated ? new Date(QD.updated) : null;
+
+  // Real chart history, loaded on demand: assets/hist/<SYM>.json (daily + weekly bars) and assets/intraday.json
+  const cache = {};
+  const getJSON = u => cache[u] || (cache[u] = fetch(u).then(r => r.ok ? r.json() : null).catch(() => null));
+  const D = t => new Date(t * 1000);
+  const fmtLab = { time: d => d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }), wd: d => d.toLocaleDateString('en-GB', { weekday: 'short' }), day: d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }), mon: d => d.toLocaleDateString('en-GB', { month: 'short' }), yr: d => String(d.getFullYear()) };
+  const labelsFor = (ts, kind, n = 5) => { if (ts.length < 2) return []; const out = []; for (let i = 0; i < n; i++) out.push(fmtLab[kind](D(ts[Math.round(i * (ts.length - 1) / (n - 1))]))); return out.filter((x, i, arr) => i === 0 || x !== arr[i - 1]); };
+  // Returns { bars:[{o,h,l,c,v,t}], vals:[closes], labels, chg } for a range, or null when there's no real data
+  async function history(sym, range) {
+    if (!Q[sym]) return null;
+    const a = bySym[sym], fromCloses = (ts, cs) => cs.map((c, i) => { const o = i ? cs[i - 1] : c; return { t: ts[i], o, h: Math.max(o, c), l: Math.min(o, c), c, v: 0 }; });
+    let bars = null, kind = 'day';
+    if (range === '1D' || range === '5D' || range === '1W') {
+      const j = await getJSON('assets/intraday.json'), it = j && j.s[sym];
+      if (it && range === '1D' && it.d1 && it.d1.c.length > 3) {
+        const [t0, t1] = it.d1.t, n = it.d1.c.length, ts = it.d1.c.map((_, i) => t0 + (t1 - t0) * i / (n - 1));
+        bars = fromCloses(ts, it.d1.c); kind = 'time';
+      } else if (it && it.d5 && it.d5.length) {
+        const ts = [], cs = []; it.d5.forEach(d => d.c.forEach((c, i) => { ts.push(d.t + i * 3600); cs.push(c); }));
+        bars = fromCloses(ts, cs); kind = 'wd';
+      }
+    }
+    if (!bars) {
+      const h = await getJSON('assets/hist/' + sym + '.json'); if (!h) return null;
+      const toBars = rows => rows.map(r => ({ t: r[0], o: r[1], h: r[2], l: r[3], c: r[4], v: r[5] }));
+      const daily = toBars(h.daily), jan1 = new Date(new Date().getFullYear(), 0, 1) / 1000;
+      if (h.freq === 'monthly') { bars = toBars(h.weekly).slice(range === '5Y' ? -60 : -12); kind = range === '5Y' ? 'yr' : 'mon'; }
+      else if (range === '5Y') { bars = toBars(h.weekly); kind = 'yr'; }
+      else if (range === 'YTD') { bars = daily.filter(b => b.t >= jan1); kind = 'mon'; }
+      else { const n = { '1D': 2, '5D': 5, '1W': 5, '1M': 22, '3M': 64, '6M': 126, '1Y': 252 }[range] || 252; bars = daily.slice(-n - 1); kind = n <= 5 ? 'wd' : n <= 22 ? 'day' : 'mon'; }
+    }
+    if (!bars || bars.length < 2) return null;
+    const last = bars[bars.length - 1]; last.c = a.p; last.h = Math.max(last.h, a.p); last.l = Math.min(last.l, a.p);
+    const first = bars[0].c, chg = a.y ? +((last.c - first) * 100).toFixed(1) : +((last.c / first - 1) * 100).toFixed(2);
+    return { bars, vals: bars.map(b => b.c), labels: labelsFor(bars.map(b => b.t), kind), chg };
+  }
+  const details = sym => Q[sym] ? getJSON('assets/hist/' + sym + '.json') : Promise.resolve(null);
+  const intraday = () => getJSON('assets/intraday.json');
   const bySym = Object.fromEntries(assets.map(a => [a.s, a]));
 
   const categories = [
@@ -254,5 +306,6 @@ window.MOCK = (function () {
     });
   }
 
-  return { assets, bySym, categories, news, analysis, calendar, earnings, realEstate, series, seeded, ohlc };
+  realEstate.reits.forEach(reitQ);
+  return { assets, bySym, categories, news, analysis, calendar, earnings, realEstate, series, seeded, ohlc, history, details, intraday, updated };
 })();

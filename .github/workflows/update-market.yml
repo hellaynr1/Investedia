@@ -1,0 +1,44 @@
+name: Update market data
+# Free price refresh: every 30 minutes while markets are open, every 3 hours otherwise.
+# Long-term history is rebuilt once a day after the US close.
+on:
+  schedule:
+    - cron: "7,37 6-21 * * 1-5"    # weekdays, European open to US close (UTC)
+    - cron: "22 0,3,22 * * 1-5"    # weekday evenings and nights
+    - cron: "22 */3 * * 0,6"       # weekends (crypto keeps trading)
+    - cron: "45 21 * * 1-5"        # daily history rebuild
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "Rebuild long-term history too"
+        type: boolean
+        default: true
+permissions:
+  contents: write
+concurrency:
+  group: market-data
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Fetch prices
+        run: |
+          if [ "${{ github.event.schedule }}" = "45 21 * * 1-5" ] || [ "${{ inputs.full }}" = "true" ]; then
+            python3 update_market.py --full
+          else
+            python3 update_market.py
+          fi
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add assets/quotes.js assets/intraday.json assets/hist docs/assets
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Update market data"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q && exit 0; sleep 5; done
+          exit 1

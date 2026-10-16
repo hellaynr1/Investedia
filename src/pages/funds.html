@@ -2,7 +2,7 @@
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Funds</span></div>
   <div class="sec-head" style="margin:0"><div><h1>Funds</h1><p class="lede">ETFs, index funds and mutual funds: low-cost building blocks for long-term investors.</p></div>
-  <div style="display:flex;gap:8px;align-items:center"><span class="demo">Illustrative data</span><a class="btn btn-ghost" href="compare.html?type=funds">Compare funds</a></div></div>
+  <div style="display:flex;gap:8px;align-items:center"><span class="demo" data-asof>Delayed data</span><a class="btn btn-ghost" href="compare.html?type=funds">Compare funds</a></div></div>
 </div>
 <nav class="subnav" id="subnav"></nav>
 
@@ -32,7 +32,7 @@
 const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, assetTable, tabs, row, routeHash } = UI, M = MOCK;
 UI.subnav('funds');
 const fu = M.assets.filter(a => a.c === 'funds');
-document.getElementById('top-cards').innerHTML = ['VOO', 'SPY', 'VTI', 'QQQ'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.s}</b><small>${a.n}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d)}</span></div><div class="idx-val">${fmtP(a)}</div><div style="display:flex;justify-content:space-between;font-size:12px" class="muted"><span>AUM ${a.aum}</span><span>Fee ${a.fee}</span></div>${spark(a.spark, colorFor(a.w), 240, 34)}</a>`).join('');
+document.getElementById('top-cards').innerHTML = ['VOO', 'SPY', 'VTI', 'QQQ'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.s}</b><small>${a.n}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div><div style="display:flex;justify-content:space-between;font-size:12px" class="muted"><span>AUM ${a.aum}</span><span>Fee ${a.fee}</span></div>${spark(a.spark, colorFor(a.w), 240, 34)}</a>`).join('');
 const types = { etfs: fu.filter(a => !['FXAIX', 'VFIAX'].includes(a.s)), index: ['VOO', 'SPY', 'VTI', 'VWCE', 'FXAIX', 'VFIAX'].map(s => M.bySym[s]), mutual: ['FXAIX', 'VFIAX'].map(s => M.bySym[s]), dividend: ['SCHD', 'VTI', 'VOO'].map(s => M.bySym[s]) };
 const ty = k => document.getElementById('ty-table').innerHTML = assetTable(types[k], ['price', 'chg', 'week', 'aum', 'fee', 'spark']);
 tabs(document.getElementById('ty-tabs'), ty); ty('etfs');

@@ -49,7 +49,7 @@
   const fmtP = (a, v = a.p) => {
     if (a.y) return v.toFixed(3) + '%';
     const d = v >= 1000 ? 2 : v >= 10 ? 2 : v >= 1 ? 4 : 4;
-    return (a.c === 'currencies' || a.c === 'indices' || a.c === 'bonds' ? '' : (a.x === 'XETRA' ? '€' : '$')) + v.toLocaleString('en-US', { minimumFractionDigits: a.c === 'currencies' ? 4 : d, maximumFractionDigits: a.c === 'currencies' ? 4 : d });
+    return (a.c === 'currencies' || a.c === 'indices' || a.c === 'bonds' ? '' : ({ EUR: '€', GBP: '£', JPY: '¥', USD: '$' }[a.cur] || (a.x === 'XETRA' || a.x === 'EURONEXT' ? '€' : a.x === 'LSE' ? '£' : '$'))) + v.toLocaleString('en-US', { minimumFractionDigits: a.c === 'currencies' ? 4 : d, maximumFractionDigits: a.c === 'currencies' ? 4 : d });
   };
   const fmtC = (v, bps) => bps ? `${v > 0 ? '+' : ''}${(v * 1).toFixed(1)} bp` : `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`;
   const cls = v => v > 0 ? 'up' : v < 0 ? 'down' : 'muted';
@@ -102,8 +102,8 @@
     const m = MENU[k], c = M.categories.find(x => x.k === k);
     return `<div class="mega-panel" data-panel="${k}" ${k === 'stocks' ? '' : 'hidden'}>
       <div class="mega-cols" style="grid-template-columns:repeat(${m.cols.length},minmax(0,1fr))">${m.cols.map(([h, links]) => `<div><h6>${h}</h6>${links.map(([t, u]) => `<a class="mega-link" role="menuitem" href="${u}">${t}</a>`).join('')}</div>`).join('')}</div>
-      <div class="mega-pop"><h6>Popular ${c.t.toLowerCase()}</h6>${m.pop.map(s => M.bySym[s]).map(a => `<a class="dd-row" href="${href(a)}"><span class="ident">${logo(a)}<span><b>${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? a.x : a.n}</small></span></span><span class="num">${fmtP(a)}</span><span class="num ${cls(a.d)}">${fmtC(a.d, a.y)}</span></a>`).join('')}</div>
-      <div class="dd-foot"><span class="preview-flag"><i></i>Illustrative data</span><a href="${c.page}">Open ${c.t} overview →</a></div>
+      <div class="mega-pop"><h6>Popular ${c.t.toLowerCase()}</h6>${m.pop.map(s => M.bySym[s]).map(a => `<a class="dd-row" href="${href(a)}"><span class="ident">${logo(a)}<span><b>${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? a.x : a.n}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a.d)}" data-lc="${a.s}">${fmtC(a.d, a.y)}</span></a>`).join('')}</div>
+      <div class="dd-foot"><span class="preview-flag"><i></i>Delayed prices · crypto live</span><a href="${c.page}">Open ${c.t} overview →</a></div>
     </div>`;
   };
   const megaMarkets = `<div class="dd dd-mega" id="dd-markets" role="menu">
@@ -234,7 +234,7 @@
     const s = q.value.trim().toLowerCase();
     const hits = M.assets.filter(a => !s || a.s.toLowerCase().includes(s) || a.n.toLowerCase().includes(s)).slice(0, s ? 8 : 6);
     const nh = M.news.filter(n => s && n.t.toLowerCase().includes(s)).slice(0, 3);
-    list.innerHTML = `<h6>${s ? 'Markets' : 'Trending'}</h6>` + (hits.length ? hits.map((a, i) => `<a class="pal-item" href="${href(a)}" ${i === 0 ? 'aria-selected="true"' : ''}><span>${logo(a)}</span><span class="ident"><span><b>${a.s}</b><small>${a.n} · ${a.x}</small></span></span><span class="num">${fmtP(a)}</span><span class="num ${cls(a.d)}">${fmtC(a.d, a.y)}</span></a>`).join('') : `<div class="pal-item muted">No markets match “${q.value}”.</div>`)
+    list.innerHTML = `<h6>${s ? 'Markets' : 'Trending'}</h6>` + (hits.length ? hits.map((a, i) => `<a class="pal-item" href="${href(a)}" ${i === 0 ? 'aria-selected="true"' : ''}><span>${logo(a)}</span><span class="ident"><span><b>${a.s}</b><small>${a.n} · ${a.x}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a.d)}" data-lc="${a.s}">${fmtC(a.d, a.y)}</span></a>`).join('') : `<div class="pal-item muted">No markets match “${q.value}”.</div>`)
       + (nh.length ? `<h6>News</h6>` + nh.map(n => `<a class="pal-item" href="article.html" style="grid-template-columns:auto 1fr"><span class="dd-ic" style="width:28px;height:28px">${icon('news')}</span><span>${n.t}</span></a>`).join('') : '');
   }
   function openPalette() { closeDrawer(); pal.hidden = false; q.value = ''; renderPal(); setTimeout(() => q.focus(), 10); }
@@ -249,9 +249,43 @@
   const tickSyms = ['SPX', 'NDX', 'DJI', 'BTC', 'ETH', 'NVDA', 'AAPL', 'MSFT', 'AMZN', 'TSLA', 'XAU', 'WTI', 'EURUSD', 'US10Y', 'DAX', 'NKY'];
   const tk = document.createElement('div');
   tk.className = 'ticker'; tk.setAttribute('aria-label', 'Market ticker');
-  const items = tickSyms.map(s => M.bySym[s]).map(a => `<a class="tk" href="${href(a)}"><b>${a.c === 'indices' ? a.n : a.s}</b><span class="num">${fmtP(a)}</span><span class="num ${cls(a.d)}">${fmtC(a.d, a.y)}</span></a>`).join('');
+  const items = tickSyms.map(s => M.bySym[s]).map(a => `<a class="tk" href="${href(a)}"><b>${a.c === 'indices' ? a.n : a.s}</b><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a.d)}" data-lc="${a.s}">${fmtC(a.d, a.y)}</span></a>`).join('');
   tk.innerHTML = `<div class="ticker-track">${items}${items}</div>`;
   drawer.after(tk);
+
+  // ---------- live crypto: Coinbase's free public feed, applied at most once a second ----------
+  (function liveCrypto() {
+    const syms = M.assets.filter(a => a.c === 'crypto' && a.real && !['BNB', 'USDC'].includes(a.s)).map(a => a.s);
+    if (!('WebSocket' in window) || !syms.length) return;
+    let ws = null, pending = {}, timer = 0, retry = 2000;
+    const flush = () => {
+      timer = 0;
+      for (const s in pending) {
+        const a = M.bySym[s], { p, o } = pending[s], up = p >= a.p;
+        a.p = p; if (o) a.d = +((p / o - 1) * 100).toFixed(2); a.live = true;
+        document.querySelectorAll(`[data-lp="${s}"]`).forEach(el => { const t = fmtP(a); if (el.textContent === t) return; el.textContent = t; el.classList.remove('tick-up', 'tick-down'); void el.offsetWidth; el.classList.add(up ? 'tick-up' : 'tick-down'); });
+        document.querySelectorAll(`[data-lc="${s}"]`).forEach(el => { el.textContent = fmtC(a.d); el.classList.remove('up', 'down', 'muted'); el.classList.add(cls(a.d)); });
+      }
+      pending = {};
+      document.dispatchEvent(new CustomEvent('inv:tick'));
+    };
+    const connect = () => {
+      if (ws || document.hidden) return;
+      ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
+      ws.onopen = () => { retry = 2000; ws.send(JSON.stringify({ type: 'subscribe', product_ids: syms.map(s => s + '-USD'), channels: ['ticker'] })); };
+      ws.onmessage = e => { const m = JSON.parse(e.data); if (m.type !== 'ticker') return; pending[m.product_id.split('-')[0]] = { p: +m.price, o: +m.open_24h }; if (!timer) timer = setTimeout(() => requestAnimationFrame(flush), 1000); };
+      ws.onclose = () => { ws = null; if (!document.hidden) setTimeout(connect, retry = Math.min(retry * 2, 60000)); };
+    };
+    document.addEventListener('visibilitychange', () => { if (document.hidden) { if (ws) { ws.onclose = null; ws.close(); ws = null; } } else connect(); });
+    connect();
+  })();
+
+  // ---------- data freshness badges ----------
+  document.addEventListener('DOMContentLoaded', () => document.querySelectorAll('[data-asof]').forEach(el => {
+    const u = M.updated;
+    el.textContent = u ? 'Delayed · updated ' + u.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Sample data';
+    el.title = u ? 'Prices refresh about every 30 minutes (crypto live). Data: Yahoo Finance, FRED, Coinbase. Last update ' + u.toLocaleString() : '';
+  }));
 
   // ---------- footer ----------
   const ftr = document.createElement('footer');
@@ -264,7 +298,7 @@
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
     <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li></ul></div>
   </div>
-  <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Design preview · all market figures are illustrative demo data</span></div></div>`;
+  <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Market data from Yahoo Finance, FRED and Coinbase. Prices may be delayed up to 30 minutes; crypto is live.</span></div></div>`;
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
 
   // ---------- charts ----------
@@ -357,7 +391,7 @@
   }
 
   // Compact asset row used in lists (movers, related, mentioned)
-  const row = a => `<a class="arow" href="${href(a)}"><span class="ident">${logo(a)}<span><b>${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? a.x : a.n}</small></span></span><span class="num">${fmtP(a)}</span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></a>`;
+  const row = a => `<a class="arow" href="${href(a)}"><span class="ident">${logo(a)}<span><b>${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? a.x : a.n}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></a>`;
   // Impact bars for calendar events
   const impact = n => `<span class="impact" title="${['', 'Low', 'Medium', 'High'][n]} impact">${[1, 2, 3].map(k => `<i style="height:${6 + k * 3}px;background:${k <= n ? (n === 3 ? 'var(--accent)' : 'var(--fg-2)') : 'var(--line)'}"></i>`).join('')}</span>`;
   const sTag = s => `<span class="tag ${s === 'Bullish' ? 'bull' : s === 'Bearish' ? 'bear' : ''}">${s}</span>`;
@@ -436,7 +470,7 @@
       let mn = Math.min(...bars.map(b => b.l)), mx = Math.max(...bars.map(b => b.h)); const pd = (mx - mn) * .06; mn -= pd; mx += pd;
       const n = bars.length, step = (W - padL - padR) / n, bw = Math.max(1, step * .64);
       const sx = i => padL + step * i + step / 2, sy = v => padT + (1 - (v - mn) / (mx - mn)) * pH;
-      const vmax = Math.max(...bars.map(b => b.v)), vy0 = padT + pH + 8 + volH;
+      const vmax = Math.max(...bars.map(b => b.v)) || 1, vy0 = padT + pH + 8 + volH;
       let g = '';
       for (let k = 0; k <= 5; k++) { const v = mn + (mx - mn) * k / 5; g += `<line class="grid-l" x1="${padL}" x2="${W - padR}" y1="${sy(v)}" y2="${sy(v)}"/><text class="ax" x="${W - padR + 8}" y="${sy(v) + 4}">${fmt(v)}</text>`; }
       g += labels.map((l, k) => { const i = Math.round(k / Math.max(1, labels.length - 1) * (n - 1)); return `<text class="ax" x="${sx(i)}" y="${H - 8}" text-anchor="${k === 0 ? 'start' : k === labels.length - 1 ? 'end' : 'middle'}">${l}</text>`; }).join('');

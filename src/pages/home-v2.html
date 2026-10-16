@@ -35,7 +35,7 @@
 </section>
 
 <section class="sec">
-  <div class="sec-head"><div><h2>Global markets</h2><p>Major benchmarks across asset classes.</p></div><span class="demo">Illustrative data</span></div>
+  <div class="sec-head"><div><h2>Global markets</h2><p>Major benchmarks across asset classes.</p></div><span class="demo" data-asof>Delayed data</span></div>
   <div class="grid g-4" id="global"></div>
 </section>
 
@@ -197,7 +197,7 @@ const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, assetTable, tab
 })();
 
 // ---- markets sections ----
-document.getElementById('global').innerHTML = ['SPX', 'NDX', 'DAX', 'NKY', 'BTC', 'XAU', 'EURUSD', 'US10Y'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? 'Index' : a.n}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`).join('');
+document.getElementById('global').innerHTML = ['SPX', 'NDX', 'DAX', 'NKY', 'BTC', 'XAU', 'EURUSD', 'US10Y'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? 'Index' : a.n}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`).join('');
 const stocks = M.assets.filter(a => a.c === 'stocks').sort((a, b) => b.d - a.d);
 document.getElementById('gainers').innerHTML = stocks.slice(0, 5).map(a => row(a)).join('');
 document.getElementById('losers').innerHTML = stocks.slice(-5).reverse().map(a => row(a)).join('');
@@ -207,5 +207,5 @@ const idx = k => document.getElementById('indices').innerHTML = assetTable((k ==
 tabs(document.getElementById('idx-tabs'), idx); idx('all');
 document.getElementById('sectors').innerHTML = [['Healthcare', 1.38], ['Utilities', 0.66], ['Financials', 0.51], ['Industrials', 0.35], ['Communication', 0.22], ['Materials', -0.12], ['Consumer', -0.21], ['Technology', -0.42], ['Energy', -1.24]].map(([n, v]) => divBar(n, v, 1.5)).join('');
 document.getElementById('crypto-stats').innerHTML = [['Total market cap', '$2.84T', '+0.9%'], ['24h volume', '$96.4B', '−12.1%'], ['Bitcoin dominance', '57.4%', '+0.3%'], ['Ethereum dominance', '10.3%', '−0.1%'], ['Fear & Greed', '34 · Fear', '']].map(([k, v, c]) => `<div class="stat"><span>${k}</span><b>${v} ${c ? `<span class="${c.startsWith('+') ? 'up' : 'down'}" style="font-size:12px">${c}</span>` : ''}</b></div>`).join('');
-document.getElementById('coins').innerHTML = ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · ${cap(a.m)}</small></span></span><span style="text-align:right"><div class="num">${fmtP(a)}</div><div class="num ${cls(a.d)}" style="font-size:12.5px">${fmtC(a.d)}</div></span><div style="grid-column:1/-1">${spark(a.spark, colorFor(a.w), 300, 34)}</div></a>`).join('');
+document.getElementById('coins').innerHTML = ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · ${cap(a.m)}</small></span></span><span style="text-align:right"><div class="num" data-lp="${a.s}">${fmtP(a)}</div><div class="num ${cls(a.d)}" data-lc="${a.s}" style="font-size:12.5px">${fmtC(a.d)}</div></span><div style="grid-column:1/-1">${spark(a.spark, colorFor(a.w), 300, 34)}</div></a>`).join('');
 </script>

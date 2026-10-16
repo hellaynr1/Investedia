@@ -707,3 +707,6 @@ a.card:hover,a.panel:hover{box-shadow:none}
 /* Skip rendering work for sections until they're near the screen */
 main>.sec:nth-of-type(n+3){content-visibility:auto;contain-intrinsic-size:auto 640px}
 @media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}.btn:active,.chip:active,.tab:active{transform:none}}
+/* live price tick */
+@keyframes tickUp{from{color:var(--up)}}@keyframes tickDown{from{color:var(--down)}}
+.tick-up{animation:tickUp 1.2s ease-out}.tick-down{animation:tickDown 1.2s ease-out}

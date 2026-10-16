@@ -1,7 +1,7 @@
 {"title":"Cryptocurrencies — Investedia","desc":"Crypto prices, market cap, Bitcoin dominance, DeFi and stablecoins.","key":"markets"}
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Cryptocurrencies</span></div>
-  <div class="sec-head" style="margin:0"><div><h1>Cryptocurrencies</h1><p class="lede">Prices, market size and the trends shaping digital assets. Markets never close.</p></div><span class="demo">Illustrative data</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Cryptocurrencies</h1><p class="lede">Prices, market size and the trends shaping digital assets. Markets never close.</p></div><span class="demo" data-asof>Delayed data</span></div>
 </div>
 <nav class="subnav" id="subnav"></nav>
 
@@ -49,7 +49,7 @@ document.getElementById('dom-legend').innerHTML = dom.map(([n, v, c]) => `<div s
 
 const big = cr.filter(a => !a.stable);
 const mvs = { trending: ['BTC', 'SOL', 'DOGE', 'ETH', 'AVAX', 'LINK'], gainers: [...big].sort((a, b) => b.d - a.d).slice(0, 6).map(a => a.s), losers: [...big].sort((a, b) => a.d - b.d).slice(0, 6).map(a => a.s), active: ['BTC', 'ETH', 'SOL', 'XRP', 'DOGE', 'BNB'] };
-const mvCards = k => document.getElementById('mv-cards').innerHTML = mvs[k].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · Vol ${a.vol}</small></span></span><span style="text-align:right"><div class="num">${fmtP(a)}</div><div class="num ${cls(a.d)}" style="font-size:12.5px">${fmtC(a.d)}</div></span><div style="grid-column:1/-1">${spark(a.spark, colorFor(a.w), 300, 34)}</div></a>`).join('');
+const mvCards = k => document.getElementById('mv-cards').innerHTML = mvs[k].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · Vol ${a.vol}</small></span></span><span style="text-align:right"><div class="num" data-lp="${a.s}">${fmtP(a)}</div><div class="num ${cls(a.d)}" data-lc="${a.s}" style="font-size:12.5px">${fmtC(a.d)}</div></span><div style="grid-column:1/-1">${spark(a.spark, colorFor(a.w), 300, 34)}</div></a>`).join('');
 tabs(document.getElementById('mv-tabs'), mvCards); mvCards('trending');
 
 let filt = 'all';

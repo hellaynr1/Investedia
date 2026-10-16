@@ -2,7 +2,7 @@
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Stocks</span></div>
   <div class="sec-head" style="margin:0"><div><h1>Stocks</h1><p class="lede">Movers, regions, sectors and extended-hours trading across global equity markets.</p></div>
-  <div style="display:flex;gap:8px;align-items:center"><span class="demo">Illustrative data</span><a class="btn btn-primary" href="screener.html">Open screener</a></div></div>
+  <div style="display:flex;gap:8px;align-items:center"><span class="demo" data-asof>Delayed data</span><a class="btn btn-primary" href="screener.html">Open screener</a></div></div>
 </div>
 <nav class="subnav" id="subnav"></nav>
 
@@ -63,7 +63,7 @@ tabs(document.getElementById('rg-tabs'), region); region('us');
 function ext(k) {
   const rows = ['NVDA', 'TSLA', 'AAPL', 'AMD', 'DELL', 'WULF', 'GME', 'NFLX'].map(s => M.bySym[s]);
   const f = k === 'premarket' ? .6 : -.45;
-  document.getElementById('ex-table').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th><th>Last close</th><th>${k === 'premarket' ? 'Pre-market' : 'After hours'}</th><th>Change</th><th>Volume</th><th>Updated</th></tr></thead><tbody>${rows.map((a, i) => { const c = +((a.d * f) + (i % 3 - 1) * .4).toFixed(2); return `<tr data-href="${href(a)}"><td><a class="ident" href="${href(a)}">${logo(a)}<span><b>${a.s}</b><small>${a.n}</small></span></a></td><td class="num muted">${fmtP(a)}</td><td class="num">${fmtP(a, a.p * (1 + c / 100))}</td><td><span class="pill ${cls(c)}">${fmtC(c)}</span></td><td class="num muted">${(Math.abs(c) * 0.8 + .2).toFixed(1)}M</td><td class="num dim">${k === 'premarket' ? '08:5' + i : '19:4' + i} ET</td></tr>`; }).join('')}</tbody></table></div>`;
+  document.getElementById('ex-table').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th><th>Last close</th><th>${k === 'premarket' ? 'Pre-market' : 'After hours'}</th><th>Change</th><th>Volume</th><th>Updated</th></tr></thead><tbody>${rows.map((a, i) => { const c = +((a.d * f) + (i % 3 - 1) * .4).toFixed(2); return `<tr data-href="${href(a)}"><td><a class="ident" href="${href(a)}">${logo(a)}<span><b>${a.s}</b><small>${a.n}</small></span></a></td><td class="num muted" data-lp="${a.s}">${fmtP(a)}</td><td class="num">${fmtP(a, a.p * (1 + c / 100))}</td><td><span class="pill ${cls(c)}">${fmtC(c)}</span></td><td class="num muted">${(Math.abs(c) * 0.8 + .2).toFixed(1)}M</td><td class="num dim">${k === 'premarket' ? '08:5' + i : '19:4' + i} ET</td></tr>`; }).join('')}</tbody></table></div>`;
 }
 tabs(document.getElementById('ex-tabs'), ext); ext('premarket');
 

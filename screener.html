@@ -19,13 +19,14 @@
 <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
 <body data-page="screener">
+<script src="assets/quotes.js"></script>
 <script src="assets/mock.js"></script>
 <script src="assets/ui.js"></script>
 <main class="wrap">
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>Tools</span><span>/</span><span>Stock screener</span></div>
   <div class="sec-head" style="margin:0"><div><h1>Stock screener</h1><p class="lede">Narrow thousands of stocks down to the few worth a closer look.</p></div>
-  <div style="display:flex;gap:8px;align-items:center"><span class="demo">Sample dataset</span><button class="btn btn-ghost" type="button" id="save">Save screen</button><button class="btn btn-primary" type="button" id="export">Export CSV</button></div></div>
+  <div style="display:flex;gap:8px;align-items:center"><span class="demo" data-asof>Delayed data</span><button class="btn btn-ghost" type="button" id="save">Save screen</button><button class="btn btn-primary" type="button" id="export">Export CSV</button></div></div>
 </div>
 
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
@@ -71,7 +72,7 @@ const V = {
   div: [['p', 'Price'], ['div', 'Dividend yield'], ['pe', 'P/E'], ['m', 'Market cap']],
 };
 function cell(a, k) {
-  if (k === 'p') return `<td class="num">${fmtP(a)}</td>`;
+  if (k === 'p') return `<td class="num" data-lp="${a.s}">${fmtP(a)}</td>`;
   if (k === 'd') return `<td><span class="pill ${cls(a.d)}">${fmtC(a.d)}</span></td>`;
   if (['w', 'ytd', 'y1', 'g'].includes(k)) return `<td class="num ${cls(a[k])}">${fmtC(a[k])}</td>`;
   if (k === 'm') return `<td class="num">${cap(a.m)}</td>`;

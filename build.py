@@ -24,6 +24,7 @@ HEAD = """<!doctype html>
 <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
 <body data-page="{key}">
+<script src="assets/quotes.js"></script>
 <script src="assets/mock.js"></script>
 <script src="assets/ui.js"></script>
 {extra}<main class="wrap">

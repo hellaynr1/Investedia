@@ -19,12 +19,13 @@
 <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
 <body data-page="markets">
+<script src="assets/quotes.js"></script>
 <script src="assets/mock.js"></script>
 <script src="assets/ui.js"></script>
 <main class="wrap">
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>Markets</span></div>
-  <div class="sec-head" style="margin:0"><div><h1>Markets</h1><p class="lede">Prices, performance and trends across every asset class.</p></div><span class="demo">Illustrative data</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Markets</h1><p class="lede">Prices, performance and trends across every asset class.</p></div><span class="demo" data-asof>Delayed data</span></div>
 </div>
 <nav class="subnav" id="subnav"></nav>
 <section class="sec"><div class="grid g-4" id="snap"></div></section>
@@ -33,7 +34,7 @@
 <script>
 const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, row } = UI, M = MOCK;
 UI.subnav('');
-document.getElementById('snap').innerHTML = ['SPX', 'BTC', 'XAU', 'US10Y'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span>${a.n}</span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`).join('');
+document.getElementById('snap').innerHTML = ['SPX', 'BTC', 'XAU', 'US10Y'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span>${a.n}</span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`).join('');
 const pick = { stocks: ['NVDA', 'AAPL', 'MSFT', 'TSLA'], indices: ['SPX', 'NDX', 'DAX', 'NKY'], crypto: ['BTC', 'ETH', 'SOL', 'XRP'], currencies: ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD'], commodities: ['XAU', 'WTI', 'XAG', 'NG'], bonds: ['US10Y', 'US02Y', 'DE10Y', 'UK10Y'], funds: ['VOO', 'QQQ', 'SCHD', 'IBIT'] };
 document.getElementById('cats').innerHTML = M.categories.map(c => `<div class="card"><div class="card-head"><span class="ident"><span class="dd-ic">${icon(c.k)}</span><span><b style="font-size:15px">${c.t}</b><small>${c.d}</small></span></span><a class="link" href="${c.page}">Open ${icon('arrow')}</a></div>${pick[c.k].map(s => row(M.bySym[s])).join('')}</div>`).join('');
 </script>

@@ -19,6 +19,7 @@
 <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
 <body data-page="markets">
+<script src="assets/quotes.js"></script>
 <script src="assets/mock.js"></script>
 <script src="assets/ui.js"></script>
 <script src="assets/profiles.js"></script>
@@ -32,7 +33,7 @@
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap" id="a-tags"></div></div>
     </div>
     <div style="display:flex;gap:28px;align-items:flex-end;flex-wrap:wrap">
-      <div><div class="num" style="font-size:34px;font-weight:500;letter-spacing:-.03em" id="a-price"></div><div style="display:flex;gap:8px;align-items:center;margin-top:2px;flex-wrap:wrap"><span class="num" id="a-chg"></span><span class="dim" style="font-size:12px" id="a-time"></span><span class="demo">Illustrative</span></div></div>
+      <div><div class="num" style="font-size:34px;font-weight:500;letter-spacing:-.03em" id="a-price"></div><div style="display:flex;gap:8px;align-items:center;margin-top:2px;flex-wrap:wrap"><span class="num" id="a-chg"></span><span class="dim" style="font-size:12px" id="a-time"></span><span class="demo" id="a-src"></span></div></div>
       <div style="display:flex;gap:8px"><button class="btn btn-ghost" type="button" id="b-watch"></button><button class="btn btn-ghost" type="button" id="b-alert"></button></div>
     </div>
   </div>
@@ -74,10 +75,13 @@ document.getElementById('a-logo').innerHTML = logo(a, 'lg');
 document.getElementById('a-name').textContent = a.n;
 const kind = { stocks: 'Stock', indices: a.fut ? 'Index future' : 'Index', crypto: a.stable ? 'Stablecoin' : 'Cryptocurrency', currencies: 'Currency pair', commodities: 'Commodity future', bonds: a.corp ? 'Corporate bond index' : 'Government bond', funds: a.kind || 'ETF' }[K];
 document.getElementById('a-tags').innerHTML = `<span class="tag">${a.s}</span><span class="tag">${a.x}</span><span class="tag">${kind}</span>${a.sector ? `<span class="tag">${a.sector}</span>` : ''}${a.group ? `<span class="tag">${a.group}</span>` : ''}`;
-document.getElementById('a-price').innerHTML = fmtP(a) + (a.unit ? `<span class="dim" style="font-size:16px">${a.unit}</span>` : '');
+document.getElementById('a-price').innerHTML = `<span data-lp="${a.s}">${fmtP(a)}</span>` + (a.unit ? `<span class="dim" style="font-size:16px">${a.unit}</span>` : '');
 const abs = a.p - a.p / (1 + a.d / 100);
 document.getElementById('a-chg').innerHTML = `<span class="${cls(a.d)}">${a.y ? fmtC(a.d, true) + ' today' : (abs >= 0 ? '+' : '−') + Math.abs(abs).toLocaleString('en-US', { maximumFractionDigits: a.p < 10 ? 4 : 2 }) + ' (' + fmtC(a.d) + ')'}</span>`;
-document.getElementById('a-time').textContent = K === 'crypto' ? 'Live · 24/7' : K === 'currencies' ? 'Live · 16 Oct, 22:14 GMT' : 'At close · 16 Oct, 16:00 ET';
+const when = t => new Date(t * 1000).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+document.getElementById('a-time').textContent = !a.real ? 'Sample data' : K === 'crypto' && !['BNB', 'USDC'].includes(a.s) ? 'Live · 24/7' : a.freq === 'monthly' ? 'Monthly average · ' + new Date(a.asof).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }) : a.asof ? 'As of ' + new Date(a.asof).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : a.at ? 'Delayed · ' + when(a.at) : 'Delayed';
+document.getElementById('a-src').textContent = !a.real ? 'Sample data' : a.freq ? 'Source: FRED' : 'Real data';
+if (K === 'crypto') document.addEventListener('inv:tick', () => { const ab = a.p - a.p / (1 + a.d / 100); document.getElementById('a-chg').innerHTML = `<span class="${cls(a.d)}">${(ab >= 0 ? '+' : '−') + Math.abs(ab).toLocaleString('en-US', { maximumFractionDigits: a.p < 10 ? 4 : 2 })} (${fmtC(a.d)})</span>`; });
 const wb = document.getElementById('b-watch'); wb.innerHTML = icon('star') + 'Watchlist';
 wb.onclick = () => { const on = wb.classList.toggle('on'); wb.innerHTML = icon('star') + (on ? 'Watching' : 'Watchlist'); if (on) wb.querySelector('svg').setAttribute('fill', 'var(--accent)'); };
 const ab = document.getElementById('b-alert'); ab.innerHTML = icon('bell') + 'Set alert'; ab.onclick = () => ab.innerHTML = icon('check') + 'Alert set';
@@ -90,11 +94,21 @@ const isY = !!a.y, f = v => isY ? v.toFixed(3) + '%' : v >= 1000 ? v.toLocaleStr
 const R = { '1D': [78, a.d, .003, ['Open', 'Midday', 'Close']], '5D': [90, a.w * .8, .006, ['Fri', 'Mon', 'Tue', 'Wed', 'Thu']], '1M': [66, a.w * 1.6 + 2, .01, ['16 Sep', '1 Oct', '16 Oct']], '6M': [126, 9 + a.w * 2, .014, ['May', 'Jul', 'Sep', 'Oct']], 'YTD': [200, 14 + a.w * 3, .016, ['Jan', 'Apr', 'Jul', 'Oct']], '1Y': [252, 18 + a.w * 3, .016, ['Nov', 'Feb', 'May', 'Aug', 'Oct']], '5Y': [260, K === 'currencies' || K === 'bonds' ? 12 : 120, .03, ['2022', '2023', '2024', '2025', '2026']], 'Max': [300, K === 'currencies' || K === 'bonds' ? 25 : 900, .05, ['Start', '', '', '', 'Now']] };
 if (K === 'stable' || a.stable) Object.values(R).forEach(r => { r[1] = 0; r[2] = .0004; });
 let range = '1Y', compare = false;
-const cmpName = { stocks: 'S&P 500', indices: 'MSCI World', crypto: 'Bitcoin', currencies: 'DXY', commodities: 'S&P 500', bonds: 'US 2Y', funds: 'S&P 500' }[K];
-document.getElementById('cmp').textContent = '+ ' + (a.s === 'BTC' ? 'Ethereum' : cmpName);
+const cmpSym = a.s === 'BTC' ? 'ETH' : a.s === 'SPX' ? 'NDX' : a.s === 'US02Y' ? 'US10Y' : { stocks: 'SPX', indices: 'SPX', crypto: 'BTC', currencies: 'DXY', commodities: 'SPX', bonds: 'US02Y', funds: 'SPX' }[K];
+const cmpName = { stocks: 'S&P 500', indices: 'S&P 500', crypto: 'Bitcoin', currencies: 'DXY', commodities: 'S&P 500', bonds: 'US 2Y', funds: 'S&P 500' }[K];
+document.getElementById('cmp').textContent = '+ ' + (a.real ? M.bySym[cmpSym].n : a.s === 'BTC' ? 'Ethereum' : cmpName);
 document.getElementById('rng').innerHTML = Object.keys(R).map(k => `<button aria-pressed="${k === range}">${k}</button>`).join('');
-function chart() {
-  const [n, ch, vol, labels] = R[range];
+// Resample a series to n points and rebase it to start where `base` starts, for the comparison line
+const rebase = (v, n, base) => Array.from({ length: n }, (_, i) => v[Math.round(i * (v.length - 1) / (n - 1))] / v[0] * base);
+let seq = 0;
+async function chart() {
+  const my = ++seq, [n, ch, vol, labels] = R[range];
+  const real = await M.history(a.s, range), other = real && compare ? await M.history(cmpSym, range) : null;
+  if (my !== seq) return;
+  if (real) {
+    const cmp = other ? rebase(other.vals, real.vals.length, real.vals[0]) : null;
+    return areaChart(document.getElementById('chart'), real.vals, { height: 360, labels: real.labels, compare: cmp, color: real.chg >= 0 ? '#FF7A1A' : '#F04444', fmt: f });
+  }
   const vals = M.series(a.s + range, n, a.p, ch, vol), cmp = compare ? M.series('cmp' + a.s + range, n, a.p, ch * .4, vol * .6) : null;
   areaChart(document.getElementById('chart'), vals, { height: 360, labels, compare: cmp, color: ch >= 0 ? '#FF7A1A' : '#F04444', fmt: f });
 }
@@ -103,20 +117,35 @@ document.getElementById('cmp').onclick = e => { compare = !compare; e.currentTar
 chart();
 
 // stats by asset class
-const P = a.p, prev = P / (1 + a.d / 100), fp = v => fmtP(a, v);
+const P = a.p, prev = a.y ? P - a.d / 100 : P / (1 + a.d / 100), fp = v => fmtP(a, v), HI = a.hi || P * 1.006, LO = a.lo || P * .981;
 const stats = {
-  stocks: [['Open', fp(prev * 1.002)], ['High', fp(P * 1.006)], ['Low', fp(P * .981)], ['Prev. close', fp(prev)], ['Volume', a.vol], ['Market cap', cap(a.m)], ['P/E', a.pe ? a.pe.toFixed(1) : '—'], ['52W range', `${(P * .62).toFixed(0)}–${(P * 1.12).toFixed(0)}`]],
-  indices: [['Open', fp(prev * 1.001)], ['High', fp(P * 1.004)], ['Low', fp(P * .993)], ['Prev. close', fp(prev)], ['52W high', fp(P * 1.03)], ['52W low', fp(P * .79)], ['YTD', '+14.2%']],
-  crypto: [['Market cap', cap(a.m)], ['24h volume', a.vol], ['24h high', fp(P * 1.021)], ['24h low', fp(P * .978)], ['All-time high', fp(P * (a.stable ? 1.01 : 1.52))], ['Rank', '#' + (M.assets.filter(x => x.c === 'crypto').sort((p, q) => q.m - p.m).indexOf(a) + 1)]],
-  currencies: [['Bid', P.toFixed(5)], ['Ask', (P * 1.00005).toFixed(5)], ['Spread', '0.6 pips'], ['Day range', `${(P * .9962).toFixed(4)}–${(P * 1.0021).toFixed(4)}`], ['52W range', `${(P * .93).toFixed(4)}–${(P * 1.04).toFixed(4)}`], ['Prev. close', prev.toFixed(4)]],
-  commodities: [['Open', fp(prev * 1.001)], ['High', fp(P * 1.009)], ['Low', fp(P * .988)], ['Prev. settle', fp(prev)], ['Contract', 'Dec 2026'], ['Unit', (a.unit || '').slice(1)], ['Open interest', '512K']],
+  stocks: [['Open', fp(prev * 1.002)], ['High', fp(HI)], ['Low', fp(LO)], ['Prev. close', fp(prev)], ['Volume', a.vol], ['Market cap', cap(a.m)], ['P/E', a.pe ? a.pe.toFixed(1) : '—'], ['52W range', `${(P * .62).toFixed(0)}–${(P * 1.12).toFixed(0)}`]],
+  indices: [['Open', fp(prev * 1.001)], ['High', fp(a.hi || P * 1.004)], ['Low', fp(a.lo || P * .993)], ['Prev. close', fp(prev)], ['52W high', fp(P * 1.03)], ['52W low', fp(P * .79)], ['YTD', '+14.2%']],
+  crypto: [['Market cap', cap(a.m)], ['24h volume', a.vol], ['Day high', fp(a.hi || P * 1.021)], ['Day low', fp(a.lo || P * .978)], ['All-time high', fp(P * (a.stable ? 1.01 : 1.52))], ['Rank', '#' + (M.assets.filter(x => x.c === 'crypto').sort((p, q) => q.m - p.m).indexOf(a) + 1)]],
+  currencies: [['Bid', P.toFixed(5)], ['Ask', (P * 1.00005).toFixed(5)], ['Spread', '0.6 pips'], ['Day range', `${(a.lo || P * .9962).toFixed(4)}–${(a.hi || P * 1.0021).toFixed(4)}`], ['52W range', `${(P * .93).toFixed(4)}–${(P * 1.04).toFixed(4)}`], ['Prev. close', prev.toFixed(4)]],
+  commodities: [['Open', fp(prev * 1.001)], ['High', fp(a.hi || P * 1.009)], ['Low', fp(a.lo || P * .988)], ['Prev. settle', fp(prev)], ['Contract', 'Dec 2026'], ['Unit', (a.unit || '').slice(1)], ['Open interest', '512K']],
   bonds: [['Yield', P.toFixed(3) + '%'], ['Prev. yield', (P - a.d / 100).toFixed(3) + '%'], ['Price', (100 - (P - 4) * 7.8).toFixed(2)], ['Coupon', (P - .2).toFixed(3) + '%'], ['Maturity', a.s.includes('02') ? 'Sep 2028' : a.s.includes('30') ? 'Aug 2056' : 'Aug 2036'], ['52W range', `${(P * .86).toFixed(2)}–${(P * 1.14).toFixed(2)}%`]],
   funds: [['NAV', fp(P * .9998)], ['Assets (AUM)', a.aum], ['Expense ratio', a.fee], ['Holdings', a.s === 'IBIT' || a.s === 'GLD' ? '1' : a.s === 'QQQ' ? '101' : '503'], ['Dividend yield', a.s === 'SCHD' ? '3.8%' : '1.1%'], ['Prev. close', fp(prev)]],
 }[K];
 document.getElementById('stats').innerHTML = stats.map(([k, v]) => `<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
 const perfV = [['1W', a.w], ['1M', +(a.w * 1.6 + 2).toFixed(1)], ['3M', +(5 + a.w).toFixed(1)], ['YTD', +(14 + a.w * 3).toFixed(1)], ['1Y', +(18 + a.w * 3).toFixed(1)], ['5Y', K === 'currencies' || K === 'bonds' ? 12 : 120]];
 if (a.stable) perfV.forEach(p => p[1] = 0);
-document.getElementById('perf').innerHTML = perfV.map(([k, v]) => `<div class="stat"><span>${k}</span><b class="${cls(v)}">${fmtC(v, isY)}</b></div>`).join('');
+const drawPerf = pv => document.getElementById('perf').innerHTML = pv.map(([k, v]) => `<div class="stat"><span>${k}</span><b class="${v == null ? 'muted' : cls(v)}">${v == null ? '—' : fmtC(v, isY)}</b></div>`).join('');
+drawPerf(perfV);
+// Real 52-week range and performance from the history file
+M.details(a.s).then(h => {
+  if (!h) return;
+  const p = h.perf || {};
+  if (Object.keys(p).length) drawPerf([['1W', a.w], ['1M', p['1M']], ['3M', p['3M']], ['YTD', p.YTD], ['1Y', p['1Y']], ['5Y', p['5Y']]]);
+  const r52 = isY ? `${h.lo52.toFixed(2)}–${h.hi52.toFixed(2)}%` : `${fp(h.lo52)} – ${fp(h.hi52)}`, d = h.daily[h.daily.length - 1];
+  document.querySelectorAll('#stats .stat').forEach(el => {
+    const k = el.firstElementChild.textContent, b = el.lastElementChild;
+    if (k === '52W range') b.textContent = r52;
+    if (k === '52W high') b.textContent = isY ? h.hi52.toFixed(3) + '%' : fp(h.hi52);
+    if (k === '52W low') b.textContent = isY ? h.lo52.toFixed(3) + '%' : fp(h.lo52);
+    if (k === 'Open' && d && !isY) b.textContent = fp(d[1]);
+  });
+});
 
 // class-specific blocks
 const kv = rows => rows.map(([k, v]) => `<div class="kv"><span>${k}</span><b style="font-weight:500">${v}</b></div>`).join('');

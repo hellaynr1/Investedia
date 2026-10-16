@@ -19,6 +19,7 @@
 <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
 <body data-page="dashboard">
+<script src="assets/quotes.js"></script>
 <script src="assets/mock.js"></script>
 <script src="assets/ui.js"></script>
 <main class="wrap">
@@ -27,7 +28,7 @@
     <h1 style="font-size:24px">Dashboard</h1>
     <div class="tabs" id="ws"><button class="tab" data-tab="main" aria-selected="true">My markets</button><button class="tab" data-tab="crypto">Crypto desk</button><button class="tab" data-tab="macro">Macro</button></div>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="demo">Illustrative data</span><button class="btn btn-ghost btn-sm" type="button" id="customize"><span data-icon="heat"></span>Customize</button></div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="demo" data-asof>Delayed data</span><button class="btn btn-ghost btn-sm" type="button" id="customize"><span data-icon="heat"></span>Customize</button></div>
 </div>
 <div class="sessions" id="sessions"></div>
 
@@ -114,7 +115,7 @@ function renderList() {
   const q = document.getElementById('wl-q').value.trim().toLowerCase();
   const syms = LISTS[list].filter(s => !q || s.toLowerCase().includes(q) || M.bySym[s].n.toLowerCase().includes(q));
   document.getElementById('wl-count').textContent = LISTS[list].length + ' symbols';
-  document.getElementById('wl-rows').innerHTML = syms.map(s => { const a = M.bySym[s]; return `<button type="button" role="option" class="wl-row" aria-selected="${s === sel}" data-s="${s}"><span class="ident">${logo(a)}<span><b>${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? a.s : a.n}</small></span></span><span class="num">${fmtP(a)}</span><span class="num ${cls(a.d)}">${fmtC(a.d, a.y)}</span>${spark(a.spark.slice(-24), colorFor(a.d), 260, 18, false)}</button>`; }).join('') || `<p class="muted" style="padding:14px;margin:0;font-size:13px">No match. Press Enter to search all markets.</p>`;
+  document.getElementById('wl-rows').innerHTML = syms.map(s => { const a = M.bySym[s]; return `<button type="button" role="option" class="wl-row" aria-selected="${s === sel}" data-s="${s}"><span class="ident">${logo(a)}<span><b>${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? a.s : a.n}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a.d)}" data-lc="${a.s}">${fmtC(a.d, a.y)}</span>${spark(a.spark.slice(-24), colorFor(a.d), 260, 18, false)}</button>`; }).join('') || `<p class="muted" style="padding:14px;margin:0;font-size:13px">No match. Press Enter to search all markets.</p>`;
   document.querySelectorAll('.wl-row').forEach(b => b.onclick = () => select(b.dataset.s));
 }
 document.getElementById('wl-q').oninput = renderList;
@@ -138,9 +139,13 @@ let pal = 'classic'; try { pal = localStorage.getItem('inv-pal') || 'classic'; }
 const palSel = document.getElementById('palette'); palSel.value = pal; palSel.onchange = e => { pal = e.target.value; try { localStorage.setItem('inv-pal', pal); } catch {} chart(); };
 const fmtV = a => v => a.y ? v.toFixed(3) : v >= 1000 ? v.toLocaleString('en-US', { maximumFractionDigits: 0 }) : v >= 10 ? v.toFixed(2) : v.toFixed(4);
 function ohlcText(a, b) { const f = fmtV(a); const up = b.c >= b.o; return `<span>O <b>${f(b.o)}</b></span><span>H <b>${f(b.h)}</b></span><span>L <b>${f(b.l)}</b></span><span>C <b class="${up ? 'up' : 'down'}">${f(b.c)}</b></span>`; }
-function chart() {
-  const a = M.bySym[sel], [n, vol, labels] = TF[tf], ch = tf === '1D' ? a.d : tf === '5D' ? a.w : tf === '5Y' ? 90 : 6 + a.w * 2;
-  bars = M.ohlc(a.s + tf, n, a.p, a.stable ? 0 : ch, a.stable ? .0005 : vol);
+let cseq = 0;
+async function chart() {
+  const my = ++cseq, a = M.bySym[sel], [n, vol, fake] = TF[tf], ch = tf === '1D' ? a.d : tf === '5D' ? a.w : tf === '5Y' ? 90 : 6 + a.w * 2;
+  const real = await M.history(a.s, tf);
+  if (my !== cseq) return;
+  bars = real ? real.bars : M.ohlc(a.s + tf, n, a.p, a.stable ? 0 : ch, a.stable ? .0005 : vol);
+  const labels = real ? real.labels : fake;
   document.getElementById('ohlc').innerHTML = ohlcText(a, bars[bars.length - 1]);
   proChart(document.getElementById('pro'), bars, { type: ctype, height: 440, labels, sma: [...ind].filter(x => x !== 'vol').map(Number), volume: ind.has('vol'), fmt: fmtV(a), upCol: PAL[pal][0], downCol: PAL[pal][1], lineCol: PAL[pal][2], onHover: b => document.getElementById('ohlc').innerHTML = ohlcText(a, b || bars[bars.length - 1]) });
 }
@@ -148,11 +153,12 @@ function select(s) {
   sel = s; const a = M.bySym[s], pf = (window.PROFILES || {})[s];
   history.replaceState(null, '', '?s=' + s);
   renderList();
-  document.getElementById('c-ident').innerHTML = `${logo(a, 'lg')}<span><b style="font-size:17px">${a.n}</b><small>${a.s} · ${a.x}</small></span><span style="margin-left:14px"><span class="num" style="font-size:24px;font-weight:500;display:block;line-height:1.1">${fmtP(a)}</span><span class="num ${cls(a.d)}" style="font-size:12.5px">${fmtC(a.d, a.y)} today</span></span><button class="star on" type="button" aria-label="In watchlist" style="margin-left:8px">${icon('star')}</button>`;
+  document.getElementById('c-ident').innerHTML = `${logo(a, 'lg')}<span><b style="font-size:17px">${a.n}</b><small>${a.s} · ${a.x}</small></span><span style="margin-left:14px"><span class="num" style="font-size:24px;font-weight:500;display:block;line-height:1.1" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a.d)}" data-lc="${a.s}" style="font-size:12.5px">${fmtC(a.d, a.y)} today</span></span><button class="star on" type="button" aria-label="In watchlist" style="margin-left:8px">${icon('star')}</button>`;
   document.querySelector('#c-ident .star svg').setAttribute('fill', 'currentColor');
   const P = a.p;
   document.getElementById('c-stats').innerHTML = (a.c === 'stocks' ? [['Market cap', cap(a.m)], ['P/E', a.pe ? a.pe.toFixed(1) : '—'], ['Volume', a.vol], ['52W high', fmtP(a, P * 1.12)], ['52W low', fmtP(a, P * .62)], ['1 week', `<span class="${cls(a.w)}">${fmtC(a.w)}</span>`]]
     : [['Day high', fmtP(a, P * 1.006)], ['Day low', fmtP(a, P * .992)], ['1 week', `<span class="${cls(a.w)}">${fmtC(a.w, a.y)}</span>`], ['52W high', fmtP(a, P * 1.1)], ['52W low', fmtP(a, P * .7)], ['Asset class', M.categories.find(c => c.k === a.c).t]]).map(([k, v]) => `<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
+  M.details(s).then(h => { if (!h || sel !== s) return; document.querySelectorAll('#c-stats .stat').forEach(el => { const k = el.firstElementChild.textContent; if (k === '52W high') el.lastElementChild.textContent = fmtP(a, h.hi52); if (k === '52W low') el.lastElementChild.textContent = fmtP(a, h.lo52); }); });
   document.getElementById('c-ai').innerHTML = pf && pf.ai ? `<p style="margin:0 0 12px;color:#d4d4d8;font-size:14px">${pf.ai.why}</p><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px"><span class="muted">Sentiment</span><span class="${pf.ai.score >= 60 ? 'up' : pf.ai.score < 40 ? 'down' : 'muted'} num">${pf.ai.score}/100</span></div><div class="meter"><i style="width:${pf.ai.score}%;background:${pf.ai.score >= 60 ? 'var(--up)' : pf.ai.score < 40 ? 'var(--down)' : 'var(--fg-2)'}"></i></div><div class="scen" style="margin:14px 0 0"><div><span class="tag bull">Bull case</span><p>${pf.ai.bull}</p></div><div><span class="tag bear">Bear case</span><p>${pf.ai.bear}</p></div></div>`
     : `<p class="muted" style="margin:0 0 12px;font-size:14px">${a.n} ${a.d >= 0 ? 'rose' : 'fell'} ${fmtC(a.d, a.y).replace(/^[+−]/, '')} today, ${Math.abs(a.d) > 2 ? 'a larger move than usual' : 'in line with its normal range'}. A full AI breakdown is available for featured assets in this preview.</p><a class="btn btn-ghost btn-sm" href="?s=NVDA">See an example</a>`;
   document.getElementById('c-news-t').textContent = 'News · ' + a.s;
@@ -163,7 +169,7 @@ function select(s) {
 
 // right panels
 const MK = { indices: ['SPX', 'NDX', 'DJI', 'DAX', 'UKX', 'NKY', 'HSI'], crypto: ['BTC', 'ETH', 'SOL', 'XRP', 'BNB'], fx: ['EURUSD', 'GBPUSD', 'USDJPY', 'DXY', 'USDCHF'] };
-const compact = a => `<a class="arow arow-sm" href="?s=${a.s}"><span class="ident">${logo(a)}<span><b>${a.c === 'indices' ? a.n : a.s}</b></span></span><span class="num">${fmtP(a)}</span><span class="num ${cls(a.d)}" style="text-align:right">${fmtC(a.d, a.y)}</span></a>`;
+const compact = a => `<a class="arow arow-sm" href="?s=${a.s}"><span class="ident">${logo(a)}<span><b>${a.c === 'indices' ? a.n : a.s}</b></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a.d)}" data-lc="${a.s}" style="text-align:right">${fmtC(a.d, a.y)}</span></a>`;
 const seg = (id, fn) => document.querySelectorAll(`#${id} button`).forEach(b => b.onclick = () => { document.querySelectorAll(`#${id} button`).forEach(x => x.classList.toggle('on', x === b)); fn(b.dataset.v); });
 const mk = k => document.getElementById('mk-rows').innerHTML = MK[k].map(s => compact(M.bySym[s])).join('');
 seg('mk', mk); mk('indices');
