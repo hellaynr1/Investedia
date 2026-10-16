@@ -151,7 +151,7 @@ let heroSeq = 0;
 const hero = async r => {
   const my = ++heroSeq, real = await M.history('SPX', r); if (my !== heroSeq) return;
   const fmt = v => v.toLocaleString('en-US', { maximumFractionDigits: 0 });
-  if (real) return areaChart(document.getElementById('hero-chart'), real.vals, { height: 300, labels: real.labels, color: real.chg >= 0 ? '#FF7A1A' : '#F04444', fmt });
+  if (real) return areaChart(document.getElementById('hero-chart'), real.vals, { height: 300, labels: real.labels, color: real.chg >= 0 ? UI.acc() : '#F04444', fmt });
   areaChart(document.getElementById('hero-chart'), M.series('SPX' + r, ranges[r], spx.p, chg[r], r === '5Y' ? .02 : .006), { height: 300, labels: lab[r], fmt });
 };
 document.querySelectorAll('#hero-range button').forEach(b => b.onclick = () => { document.querySelectorAll('#hero-range button').forEach(x => x.setAttribute('aria-pressed', x === b)); hero(b.textContent); });

@@ -82,10 +82,10 @@ async function chart() {
   if (my !== seq) return;
   if (real) {
     const cmp = other ? rebase(other.vals, real.vals.length, real.vals[0]) : null;
-    return areaChart(document.getElementById('chart'), real.vals, { height: 360, labels: real.labels, compare: cmp, color: real.chg >= 0 ? '#FF7A1A' : '#F04444', fmt: f });
+    return areaChart(document.getElementById('chart'), real.vals, { height: 360, labels: real.labels, compare: cmp, color: real.chg >= 0 ? UI.acc() : '#F04444', fmt: f });
   }
   const vals = M.series(a.s + range, n, a.p, ch, vol), cmp = compare ? M.series('cmp' + a.s + range, n, a.p, ch * .4, vol * .6) : null;
-  areaChart(document.getElementById('chart'), vals, { height: 360, labels, compare: cmp, color: ch >= 0 ? '#FF7A1A' : '#F04444', fmt: f });
+  areaChart(document.getElementById('chart'), vals, { height: 360, labels, compare: cmp, color: ch >= 0 ? UI.acc() : '#F04444', fmt: f });
 }
 document.querySelectorAll('#rng button').forEach(b => b.onclick = () => { document.querySelectorAll('#rng button').forEach(x => x.setAttribute('aria-pressed', x === b)); range = b.textContent; chart(); });
 document.getElementById('cmp').onclick = e => { compare = !compare; e.currentTarget.classList.toggle('on', compare); chart(); };

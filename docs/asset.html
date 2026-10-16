@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=ecdd62ab04">
+<link rel="stylesheet" href="assets/app.css?v=15cbda607d">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,9 +37,9 @@
 <body data-page="markets">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=ecdd62ab04"></script>
-<script src="assets/ui.js?v=ecdd62ab04"></script>
-<script src="assets/profiles.js?v=ecdd62ab04"></script>
+<script src="assets/mock.js?v=15cbda607d"></script>
+<script src="assets/ui.js?v=15cbda607d"></script>
+<script src="assets/profiles.js?v=15cbda607d"></script>
 <main class="wrap">
 <div class="page-head" style="padding-bottom:20px">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><a id="crumb-cat"></a><span>/</span><span id="crumb-sym"></span></div>
@@ -124,10 +124,10 @@ async function chart() {
   if (my !== seq) return;
   if (real) {
     const cmp = other ? rebase(other.vals, real.vals.length, real.vals[0]) : null;
-    return areaChart(document.getElementById('chart'), real.vals, { height: 360, labels: real.labels, compare: cmp, color: real.chg >= 0 ? '#FF7A1A' : '#F04444', fmt: f });
+    return areaChart(document.getElementById('chart'), real.vals, { height: 360, labels: real.labels, compare: cmp, color: real.chg >= 0 ? UI.acc() : '#F04444', fmt: f });
   }
   const vals = M.series(a.s + range, n, a.p, ch, vol), cmp = compare ? M.series('cmp' + a.s + range, n, a.p, ch * .4, vol * .6) : null;
-  areaChart(document.getElementById('chart'), vals, { height: 360, labels, compare: cmp, color: ch >= 0 ? '#FF7A1A' : '#F04444', fmt: f });
+  areaChart(document.getElementById('chart'), vals, { height: 360, labels, compare: cmp, color: ch >= 0 ? UI.acc() : '#F04444', fmt: f });
 }
 document.querySelectorAll('#rng button').forEach(b => b.onclick = () => { document.querySelectorAll('#rng button').forEach(x => x.setAttribute('aria-pressed', x === b)); range = b.textContent; chart(); });
 document.getElementById('cmp').onclick = e => { compare = !compare; e.currentTarget.classList.toggle('on', compare); chart(); };

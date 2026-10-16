@@ -48,7 +48,7 @@
 UI.newsNav('analysis');
 const { icon, fmtP, fmtC, cls, logo, href, cover, tabs, sTag, analysisCard } = UI, M = MOCK;
 const f = M.analysis[0];
-document.getElementById('feature').innerHTML = `<div class="cover" style="min-height:320px">${cover('feat', '#FF7A1A')}</div><div style="padding:clamp(20px,3vw,36px);display:grid;gap:14px;align-content:center"><div class="news-meta"><span class="tag acc">Featured · ${f.kind}</span>${sTag(f.sentiment)}</div><h2 style="font-size:clamp(24px,2.6vw,32px);line-height:1.15">${f.t}</h2><p class="muted" style="margin:0;font-size:16px">${f.d}</p><div class="ident" style="margin-top:6px"><span class="avatar">IR</span><span><b>${f.a}</b><small>${f.role} · ${f.read} min read</small></span></div></div>`;
+document.getElementById('feature').innerHTML = `<div class="cover" style="min-height:320px">${cover('feat', UI.acc())}</div><div style="padding:clamp(20px,3vw,36px);display:grid;gap:14px;align-content:center"><div class="news-meta"><span class="tag acc">Featured · ${f.kind}</span>${sTag(f.sentiment)}</div><h2 style="font-size:clamp(24px,2.6vw,32px);line-height:1.15">${f.t}</h2><p class="muted" style="margin:0;font-size:16px">${f.d}</p><div class="ident" style="margin-top:6px"><span class="avatar">IR</span><span><b>${f.a}</b><small>${f.role} · ${f.read} min read</small></span></div></div>`;
 const by = k => M.analysis.filter(x => x.kind === k);
 document.getElementById('outlook-cards').innerHTML = by('Market outlook').concat(by('Fundamental').slice(1)).slice(0, 3).map(analysisCard).join('');
 const s0 = by('Stock analysis')[0], sa = M.bySym[s0.tag];

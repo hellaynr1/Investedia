@@ -46,6 +46,18 @@
   };
   const icon = (n, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n] || ''}</svg>`;
 
+  // ---------- design studio (studio.html): saved look, applied on this device only ----------
+  const STUDIO_DEF = { accent: '#FF7A1A', corners: 'default', size: 'default', font: 'geist', icons: 'box', motion: 'full', cards: 'bordered', numbers: 'mono', dropdown: 'sheet' };
+  function applyStudio(c) {
+    const h = document.documentElement, cfg = Object.assign({}, STUDIO_DEF, c || {});
+    [...h.classList].filter(k => k.startsWith('st-')).forEach(k => h.classList.remove(k));
+    h.style.setProperty('--accent', cfg.accent); h.style.setProperty('--accent-hi', `color-mix(in srgb, ${cfg.accent} 82%, #fff)`);
+    ['corners', 'size', 'font', 'icons', 'motion', 'cards', 'numbers', 'dropdown'].forEach(k => cfg[k] !== STUDIO_DEF[k] && h.classList.add(`st-${k}-${cfg[k]}`));
+    if (cfg.font === 'inter' && !document.getElementById('st-inter')) document.head.insertAdjacentHTML('beforeend', '<link id="st-inter" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">');
+  }
+  let studio = null; try { studio = JSON.parse(localStorage.getItem('inv-studio') || 'null'); } catch {}
+  if (studio && studio.apply) applyStudio(studio);
+  const ACC = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#FF7A1A';
   // ---------- formatters ----------
   const fmtP = (a, v = a.p) => {
     if (a.y) return v.toFixed(3) + '%';
@@ -376,7 +388,7 @@
 
   // Full area chart with axes, crosshair and tooltip
   function areaChart(el, vals, opts = {}) {
-    const { color = '#FF7A1A', labels, fmt = v => v.toFixed(2), height = 320, compare } = opts;
+    const { color = ACC(), labels, fmt = v => v.toFixed(2), height = 320, compare } = opts;
     el.classList.add('chart'); el.style.height = height + 'px';
     const draw = () => {
       const W = el.clientWidth, H = height, padL = 8, padR = 64, padT = 12, padB = 28;
@@ -413,7 +425,7 @@
   }
 
   // Abstract cover art for news cards (no stock photos): a chart-like composition
-  function cover(key, accent = '#FF7A1A') {
+  function cover(key, accent = ACC()) {
     const r = M.seeded(String(key)), vals = M.series(String(key), 40, 100, (r() - .4) * 40, .04);
     const mn = Math.min(...vals), mx = Math.max(...vals);
     const d = vals.map((v, i) => `${i ? 'L' : 'M'}${(i / 39 * 400).toFixed(1)} ${(170 - (v - mn) / (mx - mn) * 120).toFixed(1)}`).join('');
@@ -457,7 +469,7 @@
   // Impact bars for calendar events
   const impact = n => `<span class="impact" title="${['', 'Low', 'Medium', 'High'][n]} impact">${[1, 2, 3].map(k => `<i style="height:${6 + k * 3}px;background:${k <= n ? (n === 3 ? 'var(--accent)' : 'var(--fg-2)') : 'var(--line)'}"></i>`).join('')}</span>`;
   const sTag = s => `<span class="tag ${s === 'Bullish' ? 'bull' : s === 'Bearish' ? 'bear' : ''}">${s}</span>`;
-  const analysisCard = (x, i = 0) => `<a class="card n-card" href="analysis-article.html"><div class="cover">${cover('an' + x.t.length + i, i % 3 === 1 ? '#A1A1AA' : '#FF7A1A')}</div><div class="body"><div class="news-meta"><span class="tag">${x.kind}</span>${sTag(x.sentiment)}${x.tag ? `<span class="mono">${x.tag}</span>` : ''}</div><h3>${x.t}</h3><p>${x.d}</p><div class="news-meta"><span>${x.a}</span><i></i><span>${x.read} min read</span></div></div></a>`;
+  const analysisCard = (x, i = 0) => `<a class="card n-card" href="analysis-article.html"><div class="cover">${cover('an' + x.t.length + i, i % 3 === 1 ? '#A1A1AA' : ACC())}</div><div class="body"><div class="news-meta"><span class="tag">${x.kind}</span>${sTag(x.sentiment)}${x.tag ? `<span class="mono">${x.tag}</span>` : ''}</div><h3>${x.t}</h3><p>${x.d}</p><div class="news-meta"><span>${x.a}</span><i></i><span>${x.read} min read</span></div></div></a>`;
   // Newsletter band (UI only)
   const late = () => document.querySelectorAll('[data-newsletter]').forEach(el => {
     el.innerHTML = `<div class="panel cta-band ai-glow"><div><span class="eyebrow">The Investedia Brief</span><h2 style="margin-top:10px;font-size:26px">Markets in five minutes, every morning.</h2><p class="lede" style="font-size:15px">The moves that matter, the news behind them and one chart worth your time. Free.</p></div>
@@ -543,7 +555,7 @@
   }
   // Pro chart: candles / line / area with volume pane, moving averages and crosshair readout
   function proChart(el, bars, opts = {}) {
-    const { type = 'candles', height = 460, labels = [], sma = [], volume = true, fmt = v => v.toFixed(2), onHover, upCol = '#22C55E', downCol = '#F04444', lineCol = '#FF7A1A' } = opts;
+    const { type = 'candles', height = 460, labels = [], sma = [], volume = true, fmt = v => v.toFixed(2), onHover, upCol = '#22C55E', downCol = '#F04444', lineCol = ACC() } = opts;
     el.classList.add('chart'); el.style.height = height + 'px';
     const avg = (k) => bars.map((_, i) => i < k - 1 ? null : bars.slice(i - k + 1, i + 1).reduce((s, b) => s + b.c, 0) / k);
     const draw = () => {
@@ -640,7 +652,7 @@
   function csOpen(sel, btn) {
     if (csCur && csCur.sel === sel) return csClose(true);
     csClose(); csCur = { sel, btn, t: Date.now() };
-    const sheet = innerWidth <= 600, check = icon('check');
+    const sheet = innerWidth <= 600 && !document.documentElement.classList.contains('st-dropdown-popover'), check = icon('check');
     const opt = o => `<button type="button" role="option" class="csel-opt" data-i="${o.index}" aria-selected="${o.selected}" ${o.disabled ? 'disabled' : ''}><span>${esc(o.text)}</span>${check}</button>`;
     let html = '';
     [...sel.children].forEach(ch => { if (ch.tagName === 'OPTGROUP') html += `<div class="csel-group">${esc(ch.label)}</div>` + [...ch.children].map(opt).join(''); else if (ch.tagName === 'OPTION') html += opt(ch); });
@@ -669,7 +681,7 @@
     else if (e.key.length === 1 && /\S/.test(e.key)) { clearTimeout(csTypeT); csType += e.key.toLowerCase(); csTypeT = setTimeout(() => csType = '', 600); const hit = list.find(o => o.textContent.trim().toLowerCase().startsWith(csType)); hit && hit.focus(); }
   });
   document.addEventListener('pointerdown', e => { if (csCur && !csMenu.contains(e.target) && !csCur.btn.contains(e.target)) csClose(); }, true);
-  addEventListener('resize', () => csCur && (csMenu.classList.contains('sheet') !== (innerWidth <= 600) ? csClose() : csPlace()));
+  addEventListener('resize', () => csCur && (csMenu.classList.contains('sheet') !== (innerWidth <= 600 && !document.documentElement.classList.contains('st-dropdown-popover')) ? csClose() : csPlace()));
   addEventListener('scroll', e => { if (csCur && !csMenu.classList.contains('sheet') && Date.now() - csCur.t > 300 && !csMenu.contains(e.target)) csClose(); }, { passive: true, capture: true });
   function enhanceSelect(sel) {
     if (sel._cs || sel.multiple || sel.size > 1 || sel.closest('[data-native]')) return; sel._cs = true;
@@ -721,5 +733,5 @@
     el.querySelectorAll('[data-per] button').forEach(b => b.onclick = () => regionMovers(el, list, region, b.dataset.k));
   }
 
-  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, regionTabs, inRegion, regionMovers, regionLabel };
+  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, acc: ACC, applyStudio, STUDIO_DEF, regionTabs, inRegion, regionMovers, regionLabel };
 })();

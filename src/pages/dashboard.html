@@ -110,7 +110,7 @@ document.querySelectorAll('#tf button').forEach(b => b.onclick = () => { documen
 document.querySelectorAll('#ctype button').forEach(b => b.onclick = () => { document.querySelectorAll('#ctype button').forEach(x => x.classList.toggle('on', x === b)); ctype = b.dataset.v; chart(); });
 document.querySelectorAll('#ind .chip').forEach(b => b.onclick = () => { b.classList.toggle('on'); ind.has(b.dataset.v) ? ind.delete(b.dataset.v) : ind.add(b.dataset.v); chart(); });
 let bars = [];
-const PAL = { classic: ['#22C55E', '#F04444', '#FF7A1A'], blue: ['#3B82F6', '#FF7A1A', '#3B82F6'], mono: ['#E4E4E7', '#71717A', '#E4E4E7'], cb: ['#0EA5E9', '#F59E0B', '#0EA5E9'] };
+const PAL = { classic: ['#22C55E', '#F04444', UI.acc()], blue: ['#3B82F6', UI.acc(), '#3B82F6'], mono: ['#E4E4E7', '#71717A', '#E4E4E7'], cb: ['#0EA5E9', '#F59E0B', '#0EA5E9'] };
 let pal = 'classic'; try { pal = localStorage.getItem('inv-pal') || 'classic'; } catch {}
 const palSel = document.getElementById('palette'); palSel.value = pal; palSel.onchange = e => { pal = e.target.value; try { localStorage.setItem('inv-pal', pal); } catch {} chart(); };
 const fmtV = a => v => a.y ? v.toFixed(3) : v >= 1000 ? v.toLocaleString('en-US', { maximumFractionDigits: 0 }) : v >= 10 ? v.toFixed(2) : v.toFixed(4);

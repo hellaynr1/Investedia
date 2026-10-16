@@ -22,7 +22,7 @@
 <section class="sec" data-newsletter></section>
 <script>
 const { icon, fmtP, fmtC, cls, cap, logo, href, tabs } = UI, M = MOCK;
-const COLORS = ['#FF7A1A', '#38BDF8', '#A78BFA', '#F472B6'];
+const COLORS = [UI.acc(), '#38BDF8', '#A78BFA', '#F472B6'];
 let type = new URLSearchParams(location.search).get('type') === 'funds' ? 'funds' : 'stocks';
 let picked = type === 'funds' ? ['VOO', 'QQQ', 'SCHD'] : ['AAPL', 'MSFT', 'NVDA'], range = '1Y';
 const R = { '1M': [30, .2], '6M': [126, 1], '1Y': [252, 1.6], '5Y': [260, 6] };

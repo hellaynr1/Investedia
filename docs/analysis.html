@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=ecdd62ab04">
+<link rel="stylesheet" href="assets/app.css?v=15cbda607d">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,8 +37,8 @@
 <body data-page="analysis">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=ecdd62ab04"></script>
-<script src="assets/ui.js?v=ecdd62ab04"></script>
+<script src="assets/mock.js?v=15cbda607d"></script>
+<script src="assets/ui.js?v=15cbda607d"></script>
 <main class="wrap">
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>Analysis</span></div>
@@ -89,7 +89,7 @@
 UI.newsNav('analysis');
 const { icon, fmtP, fmtC, cls, logo, href, cover, tabs, sTag, analysisCard } = UI, M = MOCK;
 const f = M.analysis[0];
-document.getElementById('feature').innerHTML = `<div class="cover" style="min-height:320px">${cover('feat', '#FF7A1A')}</div><div style="padding:clamp(20px,3vw,36px);display:grid;gap:14px;align-content:center"><div class="news-meta"><span class="tag acc">Featured · ${f.kind}</span>${sTag(f.sentiment)}</div><h2 style="font-size:clamp(24px,2.6vw,32px);line-height:1.15">${f.t}</h2><p class="muted" style="margin:0;font-size:16px">${f.d}</p><div class="ident" style="margin-top:6px"><span class="avatar">IR</span><span><b>${f.a}</b><small>${f.role} · ${f.read} min read</small></span></div></div>`;
+document.getElementById('feature').innerHTML = `<div class="cover" style="min-height:320px">${cover('feat', UI.acc())}</div><div style="padding:clamp(20px,3vw,36px);display:grid;gap:14px;align-content:center"><div class="news-meta"><span class="tag acc">Featured · ${f.kind}</span>${sTag(f.sentiment)}</div><h2 style="font-size:clamp(24px,2.6vw,32px);line-height:1.15">${f.t}</h2><p class="muted" style="margin:0;font-size:16px">${f.d}</p><div class="ident" style="margin-top:6px"><span class="avatar">IR</span><span><b>${f.a}</b><small>${f.role} · ${f.read} min read</small></span></div></div>`;
 const by = k => M.analysis.filter(x => x.kind === k);
 document.getElementById('outlook-cards').innerHTML = by('Market outlook').concat(by('Fundamental').slice(1)).slice(0, 3).map(analysisCard).join('');
 const s0 = by('Stock analysis')[0], sa = M.bySym[s0.tag];
