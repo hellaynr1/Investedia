@@ -3,6 +3,7 @@
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>News</span></div>
   <div class="sec-head" style="margin:0"><div><h1>News</h1><p class="lede">What happened, why it matters and what it means for your money.</p></div></div>
 </div>
+<nav class="subnav" id="news-nav"></nav>
 
 <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px" id="cats"></div>
 
@@ -27,6 +28,7 @@
 
 <section class="sec" data-newsletter></section>
 <script>
+UI.newsNav('news');
 const { icon, fmtP, fmtC, cls, logo, href, cover } = UI, M = MOCK;
 document.getElementById('ai').innerHTML = icon('sparkle') + 'AI summary';
 document.getElementById('cats').innerHTML = ['All', 'Markets', 'Stocks', 'Earnings', 'Economy', 'Crypto', 'Currencies', 'Commodities', 'Real Estate'].map((c, i) => `<button class="chip ${i === 0 ? 'on' : ''}" type="button">${c}</button>`).join('');

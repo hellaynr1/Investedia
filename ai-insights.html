@@ -35,6 +35,7 @@
     <div class="card card-pad" style="display:grid;gap:10px"><span class="muted" style="font-size:12.5px">Overall market mood</span><div id="big-gauge"></div></div>
   </div>
 </div>
+<nav class="subnav" id="news-nav"></nav>
 
 <section class="sec" id="answer" hidden>
   <div class="card ai-glow card-pad" style="max-width:900px">
@@ -92,6 +93,7 @@
   <div class="panel card-pad" style="display:flex;gap:16px;align-items:flex-start"><span class="dd-ic" data-icon="shield"></span><p class="muted" style="margin:0;font-size:13.5px">Investedia AI summarises public information to help you understand markets. It is not personal investment advice and can be wrong. Always check the sources and consider your own situation before investing. Everything on this page is sample content for a design preview.</p></div>
 </section>
 <script>
+UI.newsNav('ai');
 const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, areaChart, sTag, impact, tabs } = UI, M = MOCK;
 const ask = q => { const s = document.getElementById('answer'); s.hidden = false; document.getElementById('aq').textContent = q; s.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
 document.getElementById('ask').onsubmit = e => { e.preventDefault(); ask(document.getElementById('q').value || 'Why did Nvidia fall today?'); };

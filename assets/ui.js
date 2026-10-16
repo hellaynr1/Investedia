@@ -137,8 +137,6 @@
     ['dashboard', 'Dashboard', 'dashboard.html'],
     ['markets', 'Markets', null, megaMarkets],
     ['news', 'News', 'news.html'],
-    ['analysis', 'Analysis', 'analysis.html'],
-    ['ai', 'AI Insights', 'ai-insights.html', null, true],
     ['education', 'Education', 'education.html'],
     ['tools', 'Tools', null, ddTools],
   ];
@@ -147,7 +145,7 @@
   hdr.innerHTML = `<div class="wrap">${brand}
     <ul class="nav">${nav.map(([k, t, h, dd, isNew]) => dd
       ? `<li><button class="nav-link" type="button" aria-expanded="false" aria-haspopup="true" data-dd="dd-${k}" ${page === k || (k === 'tools' && ['screener', 'calendar', 'calc', 'compare', 'converter', 'realestate'].includes(page)) || (k === 'education' && page === 'lesson') ? 'aria-current="page"' : ''}>${t}${icon('chev', 'chev')}</button>${dd}</li>`
-      : `<li><a class="nav-link" href="${h}" ${page === k ? 'aria-current="page"' : ''}>${t}${isNew ? '<span class="badge-new">NEW</span>' : ''}</a></li>`).join('')}</ul>
+      : `<li><a class="nav-link" href="${h}" ${page === k || (k === 'news' && ['analysis', 'article'].includes(page)) || (k === 'dashboard' && page === 'ai') || (k === 'education' && page === 'lesson') ? 'aria-current="page"' : ''}>${t}${isNew ? '<span class="badge-new">NEW</span>' : ''}</a></li>`).join('')}</ul>
     <div class="hdr-tools">
       <button class="search-btn" type="button" data-search aria-label="Search markets">${icon('search')}<span>Search markets, news…</span><kbd>⌘K</kbd></button>
       <a class="icon-btn hide-sm" href="watchlist.html" aria-label="Watchlist" title="Watchlist">${icon('star')}</a>
@@ -210,7 +208,7 @@
   drawer.innerHTML = `<button class="search-btn" type="button" data-search>${icon('search')}<span>Search markets, news…</span></button>
     <a href="index.html">Home</a><a href="dashboard.html">Dashboard</a>
     <details><summary>Markets ${icon('chev')}</summary><a href="markets.html">All markets</a>${M.categories.map(c => `<a href="${c.page}">${c.t}</a>`).join('')}</details>
-    <a href="news.html">News</a><a href="analysis.html">Analysis</a><a href="ai-insights.html">AI Insights <span class="badge-new">NEW</span></a>
+    <a href="news.html">News &amp; analysis</a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details>
     <a href="education.html">Education</a><a href="watchlist.html">Watchlist</a><a href="profile.html">Profile &amp; notifications</a>`;
   hdr.after(drawer);
@@ -370,6 +368,11 @@
     const el = document.getElementById('subnav'); if (!el) return;
     el.innerHTML = `<a href="markets.html" ${!k ? 'aria-current="page"' : ''}>Overview</a>` + M.categories.map(c => `<a href="${c.page}" ${c.k === k ? 'aria-current="page"' : ''}>${icon(c.k)}${c.t}</a>`).join('');
   }
+  // News section tabs: News · Analysis · AI brief
+  function newsNav(k) {
+    const el = document.getElementById('news-nav'); if (!el) return;
+    el.innerHTML = [['news', 'Latest news', 'news.html'], ['analysis', 'Analysis', 'analysis.html'], ['ai', 'AI brief', 'ai-insights.html']].map(([key, t, h]) => `<a href="${h}" ${key === k ? 'aria-current="page"' : ''}>${key === 'ai' ? icon('sparkle') : ''}${t}</a>`).join('');
+  }
   // Treemap-style heatmap from [asset, colSpan, rowSpan]
   const heatColor = d => { const t = Math.min(1, Math.abs(d) / 4); return d >= 0 ? `rgba(34,197,94,${.16 + t * .64})` : `rgba(240,68,68,${.16 + t * .64})`; };
   function heatmap(el, items) { el.innerHTML = items.map(([a, w, h]) => `<a href="${a.n && M.bySym[a.s] ? href(a) : 'screener.html'}" style="grid-column:span ${w};grid-row:span ${h};background:${heatColor(a.d)}" title="${a.n || a.s}: ${fmtC(a.d)}"><b style="font-size:${Math.min(22, 10 + w * 2)}px">${a.label || a.s}</b><span>${fmtC(a.d)}</span></a>`).join(''); }
@@ -454,5 +457,5 @@
     draw();
     let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(draw, 60); }).observe(el);
   }
-  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, heatmap, heatLegend, heatColor, divBar, proChart };
+  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart };
 })();
