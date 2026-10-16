@@ -664,3 +664,9 @@ body:has(.galaxy){--bg:#050506;overflow-x:clip}
 .quote blockquote{margin:0;font-size:16px;line-height:1.55}
 .quote figcaption{color:var(--fg-3);font-size:13px}
 .quote-empty{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:28px}
+/* filled icons: inline icons sit on the text line, boxed icons stay centred in their square */
+.ic-inline{display:inline-flex;align-items:center;justify-content:center;vertical-align:-3px}
+.ic-inline svg{width:16px;height:16px;flex:none}
+.dd-ic{display:grid;place-items:center}
+.dd-ic svg{width:18px;height:18px;flex:none}
+.tool .dd-ic svg,.pillar .dd-ic svg{width:20px;height:20px}

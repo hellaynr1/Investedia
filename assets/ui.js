@@ -360,7 +360,7 @@
       <form class="subscribe" onsubmit="event.preventDefault();this.querySelector('button').textContent='Subscribed ✓'"><input class="input" type="email" placeholder="you@email.com" aria-label="Email address" required><button class="btn btn-primary" type="submit">Subscribe</button>
       <div class="chips" style="display:flex;gap:6px;flex-wrap:wrap;width:100%;margin-top:6px">${['Daily brief', 'Crypto weekly', 'Earnings alerts', 'Real estate monthly'].map((t, i) => `<button type="button" class="chip ${i === 0 ? 'on' : ''}" onclick="this.classList.toggle('on')">${t}</button>`).join('')}</div></form></div>`;
   });
-  document.addEventListener('DOMContentLoaded', () => { late(); document.querySelectorAll('[data-icon]').forEach(e => { e.innerHTML = icon(e.dataset.icon); e.style.display = 'inline-flex'; const v = e.querySelector('svg'); v.style.width = v.style.height = '16px'; }); document.querySelectorAll('[data-search]').forEach(b => b.onclick = openPalette); });
+  document.addEventListener('DOMContentLoaded', () => { late(); document.querySelectorAll('[data-icon]').forEach(e => { e.innerHTML = icon(e.dataset.icon); if (!e.classList.contains('dd-ic')) e.classList.add('ic-inline'); }); document.querySelectorAll('[data-search]').forEach(b => b.onclick = openPalette); });
 
   // Category navigation strip shown on every market page
   function subnav(k) {
