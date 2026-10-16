@@ -260,12 +260,22 @@
   function renderPal() {
     const s = q.value.trim().toLowerCase();
     const hits = M.assets.filter(a => !s || a.s.toLowerCase().includes(s) || a.n.toLowerCase().includes(s)).slice(0, s ? 8 : 6);
-    const nh = M.news.filter(n => s && n.t.toLowerCase().includes(s)).slice(0, 3);
+    const wre = s && new RegExp('(^|[^a-z0-9])' + s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'), nh = M.news.filter(n => wre && wre.test(n.t)).slice(0, 3);
     list.innerHTML = `<h6>${s ? 'Markets' : 'Trending'}</h6>` + (hits.length ? hits.map((a, i) => `<a class="pal-item" href="${href(a)}" ${i === 0 ? 'aria-selected="true"' : ''}><span>${logo(a)}</span><span class="ident"><span><b>${a.s}</b><small>${a.n} · ${a.x}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a.d)}" data-lc="${a.s}">${fmtC(a.d, a.y)}</span></a>`).join('') : `<div class="pal-item muted">No markets match “${q.value}”.</div>`)
       + (nh.length ? `<h6>News</h6>` + nh.map(n => `<a class="pal-item" ${nhref(n)} style="grid-template-columns:auto 1fr"><span class="dd-ic" style="width:28px;height:28px">${icon('news')}</span><span>${n.t}</span></a>`).join('') : '');
   }
-  function openPalette() { closeDrawer(); pal.hidden = false; q.value = ''; renderPal(); setTimeout(() => q.focus(), 10); }
-  function closePalette() { pal.hidden = true; }
+  // Open dialogs (search, email pop-up): the page behind doesn't scroll, Tab stays inside, focus returns on close
+  let lastFocus = null;
+  const modalOpen = el => { lastFocus = document.activeElement; document.documentElement.style.overflow = 'hidden'; el.dataset.modal = '1'; };
+  const modalClose = el => { if (!el.dataset.modal) return; delete el.dataset.modal; if (!document.querySelector('[data-modal]')) document.documentElement.style.overflow = ''; if (lastFocus && lastFocus.focus) lastFocus.focus(); };
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Tab') return; const m = [...document.querySelectorAll('[data-modal]')].find(x => !x.hidden); if (!m) return;
+    const f = [...m.querySelectorAll('a[href],button:not([disabled]),input:not([type=hidden]):not([hidden]),select,textarea,[tabindex]:not([tabindex="-1"])')].filter(x => x.offsetParent !== null);
+    if (!f.length) return; const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } else if (!m.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+  });
+  function openPalette() { closeDrawer(); if (pal.hidden) modalOpen(pal); pal.hidden = false; q.value = ''; renderPal(); setTimeout(() => q.focus(), 10); }
+  function closePalette() { if (pal.hidden) return; pal.hidden = true; modalClose(pal); }
   q.oninput = renderPal;
   q.onkeydown = e => {
     const its = [...list.querySelectorAll('a.pal-item')], cur = its.findIndex(a => a.getAttribute('aria-selected') === 'true');
@@ -466,8 +476,8 @@
     <p class="pop-ok up" hidden style="margin:14px 0 0;font-weight:550">You’re on the list. Check your inbox to confirm.</p>
   </div>`;
   const store = (k, v) => { try { return v === undefined ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch { return null; } };
-  const openPop = () => { pop.hidden = false; store('inv-pop', '1'); setTimeout(() => pop.querySelector('input').focus(), 30); };
-  const closePop = () => { pop.hidden = true; };
+  const openPop = () => { if (pop.hidden) modalOpen(pop); pop.hidden = false; store('inv-pop', '1'); setTimeout(() => pop.querySelector('input').focus(), 30); };
+  const closePop = () => { if (pop.hidden) return; pop.hidden = true; modalClose(pop); };
   pop.querySelector('.pop-x').onclick = closePop;
   pop.onclick = e => { if (e.target === pop) closePop(); };
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
