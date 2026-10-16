@@ -907,3 +907,4 @@ html.csel-lock{overflow:hidden}
   .st-grab{cursor:pointer}.st-hint{display:inline}
   [data-page="studio"] main{padding-bottom:52vh}
 }
+.logo>.logo-cmd{width:62%!important;height:62%!important;margin:0!important}.logo>img{margin:0!important}
