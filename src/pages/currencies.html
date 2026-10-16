@@ -64,14 +64,9 @@ tabs(document.getElementById('pr-tabs'), pr); pr('major');
 const pairName = a => [a.s.length === 6 ? a.s.slice(0, 3) + '/' + a.s.slice(3) : a.s, a.n];
 const draw = () => { movers(document.getElementById('rg-movers'), UI.inRegion(pairs, rg), rg, per, p => { per = p; draw(); }, pairName); pr(grpK); };
 regionNav(document.getElementById('rg-tabs'), pairs, r => { rg = r; draw(); }); draw();
-areaChart(document.getElementById('eur'), M.series('eurusd', 90, (M.bySym.EURUSD && M.bySym.EURUSD.p) || 1.1642, 1.8, .003), { height: 200, labels: ['Jul', 'Aug', 'Sep', 'Oct'], fmt: v => v.toFixed(4) });
-const cur = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'CAD', 'NZD'], str = { USD: -0.08, EUR: 0.12, GBP: -0.04, JPY: -0.21, CHF: 0.06, AUD: 0.31, CAD: 0.02, NZD: 0.18 };
-document.getElementById('matrix').innerHTML = `<table class="tbl" style="table-layout:fixed;min-width:640px"><thead><tr><th></th>${cur.map(c => `<th style="text-align:center">${c}</th>`).join('')}</tr></thead><tbody>${cur.map(r => `<tr><td><b>${r}</b></td>${cur.map(c => { if (r === c) return '<td style="background:var(--bg-2)"></td>'; const v = +(str[r] - str[c]).toFixed(2); return `<td class="num" style="text-align:center;background:${UI.heatColor(v * 8)};color:#fff">${v > 0 ? '+' : ''}${v.toFixed(2)}%</td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
-document.getElementById('str').innerHTML = Object.entries(str).sort((a, b) => b[1] - a[1]).map(([c, v]) => divBar(c, v, 0.4)).join('');
-document.getElementById('vol').innerHTML = [['GBP/JPY', 142, 0.70], ['USD/TRY', 410, 0.97], ['USD/JPY', 98, 0.65], ['GBP/USD', 81, 0.61], ['AUD/USD', 58, 0.88], ['EUR/USD', 64, 0.55], ['USD/CHF', 52, 0.65]].map(([p, pips, pc]) => `<tr><td><b style="font-weight:550">${p}</b></td><td class="num">${pips}</td><td class="num muted">${pc.toFixed(2)}%</td><td><div class="meter"><i style="width:${pc / 1 * 100}%;background:var(--accent)"></i></div></td></tr>`).join('');
 document.getElementById('banks').innerHTML = [['Federal Reserve', 'USD', '3.75–4.00%', 'Next: 10 Dec'], ['European Central Bank', 'EUR', '2.00%', 'Next: 23 Oct'], ['Bank of England', 'GBP', '4.00%', 'Next: 6 Nov'], ['Bank of Japan', 'JPY', '0.50%', 'Next: 30 Oct']].map(([b, c, r, n]) => `<div class="card card-pad" style="display:grid;gap:4px"><span class="tag" style="width:max-content">${c}</span><b style="font-weight:550;margin-top:6px">${b}</b><span class="num" style="font-size:22px">${r}</span><span class="dim" style="font-size:12.5px">${n}</span></div>`).join('');
-// ---------- preview (?preview): live currency heatmap, strength, volatility and chart from real rates ----------
-if (new URLSearchParams(location.search).has('preview')) {
+// ---------- live currency heatmap, strength, volatility and chart from real rates ----------
+{
   const CC = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'CAD', 'NZD'], FL = { USD: 'us', EUR: 'eu', GBP: 'gb', JPY: 'jp', CHF: 'ch', AUD: 'au', CAD: 'ca', NZD: 'nz' };
   const flag = c => `<img src="assets/logos/flags/${FL[c]}.svg" alt="">`;
   // Each currency's move against the US dollar, from the real pairs

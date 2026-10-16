@@ -102,12 +102,12 @@ function ext(k) {
 tabs($('mv-tabs'), movers);
 tabs($('ex-tabs'), ext); ext('premarket');
 
-const PREVIEW = new URLSearchParams(location.search).has('preview'); let HPER = 'd';
+let HPER = 'd';
 const SPX_HEAT = [['NVDA', 3, 3], ['AAPL', 3, 3], ['MSFT', 3, 2], ['GOOGL', 3, 2], ['AMZN', 2, 2], ['META', 2, 2], ['AVGO', 2, 2], ['TSLA', 2, 1], ['LLY', 2, 1], ['JPM', 2, 1], ['V', 2, 1], ['WMT', 1, 1], ['ORCL', 1, 1], ['XOM', 1, 1], ['COST', 1, 1], ['NFLX', 1, 1], ['AMD', 1, 1], ['BAC', 1, 1], ['KO', 1, 1], ['CVX', 1, 1], ['INTC', 1, 1]];
 const SIZES = [[3, 3], [3, 3], [3, 2], [3, 2], [2, 2], [2, 2], [2, 2], [2, 1], [2, 1], [2, 1], [2, 1]];
 function heat() {
   const items = R === 'All' ? SPX_HEAT.map(([s, w, h]) => [M.bySym[s], w, h]) : byCap(pool()).slice(0, 21).map((a, i) => [a, ...(SIZES[i] || [1, 1])]);
-  if (PREVIEW) UI.heatmap2($('heat'), items, HPER); else UI.heatmap($('heat'), items);
+  UI.heatmap2($('heat'), items, HPER);
   $('heat-h').textContent = R === 'All' ? 'S&P 500 heatmap' : `${R} heatmap`;
 }
 const PERK = { '1D': 'd', '1W': 'w', '1M': 'm1' };
@@ -144,13 +144,13 @@ function selectRegion(r, scroll) {
   b.click(); if (scroll) $('rg-bar').scrollIntoView({ block: 'start' }); return true;
 }
 setRegion('All');
-if (PREVIEW) {
+{
   UI.heatLegend2($('legend'), 4);
   const hd = document.querySelector('#heatmap .sec-head');
   hd.insertAdjacentHTML('beforeend', `<div class="range" id="heat-per"><button type="button" aria-pressed="true" data-k="d">1D</button><button type="button" aria-pressed="false" data-k="w">1W</button><button type="button" aria-pressed="false" data-k="m1">1M</button></div>`);
   hd.querySelector('p').textContent = 'Size shows company value. Colour shows the move. Hover or tap a tile for details.';
   $('heat-per').onclick = e => { const b = e.target.closest('[data-k]'); if (!b) return; HPER = b.dataset.k; document.querySelectorAll('#heat-per button').forEach(x => x.setAttribute('aria-pressed', x === b)); heat(); };
-} else UI.heatLegend($('legend'));
+}
 const fromHash = () => {
   const h = decodeURIComponent(location.hash.slice(1)).toLowerCase().replace(/^region-/, '').replace(/^us$/, 'americas');
   const r = M.REGIONS.find(x => slug(x) === h); if (r) selectRegion(r, true);
