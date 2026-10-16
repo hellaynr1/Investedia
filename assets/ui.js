@@ -206,10 +206,10 @@
   paintNotif();
   nb.onclick = e => { e.stopPropagation(); const o = !nd.classList.contains('open'); closeAll(); nd.classList.toggle('open', o); nb.setAttribute('aria-expanded', o); };
   document.addEventListener('click', e => { if (!e.target.closest('.notif-wrap')) { nd.classList.remove('open'); nb.setAttribute('aria-expanded', 'false'); } });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') nd.classList.remove('open'); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && nd.classList.contains('open')) { nd.classList.remove('open'); nb.setAttribute('aria-expanded', 'false'); nb.focus(); } });
   const tb = hdr.querySelector('#theme-btn');
   const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>', moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
-  const setTheme = t => { document.documentElement.dataset.theme = t; tb.innerHTML = t === 'light' ? moon : sun; try { localStorage.setItem('inv-theme', t); } catch {} };
+  const setTheme = t => { document.documentElement.dataset.theme = t; document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'light' ? '#FFFFFF' : '#0A0A0B'); tb.innerHTML = t === 'light' ? moon : sun; try { localStorage.setItem('inv-theme', t); } catch {} };
   let th = 'dark'; try { th = localStorage.getItem('inv-theme') || 'dark'; } catch {}
   setTheme(th); window.setInvTheme = setTheme; tb.onclick = () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
   const skip = document.createElement('a'); skip.className = 'skip'; skip.href = '#main'; skip.textContent = 'Skip to content'; document.body.prepend(skip);
@@ -225,7 +225,7 @@
   const closeAll = except => hdr.querySelectorAll('[data-dd]').forEach(b => { if (b === except) return; b.setAttribute('aria-expanded', 'false'); document.getElementById(b.dataset.dd).classList.remove('open'); });
   hdr.querySelectorAll('[data-dd]').forEach(btn => {
     const dd = document.getElementById(btn.dataset.dd), li = btn.parentElement;
-    const open = v => { closeAll(btn); btn.setAttribute('aria-expanded', v); dd.classList.toggle('open', v); };
+    const open = v => { if (v) closeAll(btn); btn.setAttribute('aria-expanded', v); dd.classList.toggle('open', v); };
     btn.addEventListener('click', () => open(btn.getAttribute('aria-expanded') !== 'true'));
     let t;
     li.addEventListener('mouseenter', () => { if (matchMedia('(hover:hover)').matches) { clearTimeout(t); open(true); } });
@@ -267,7 +267,12 @@
   function openPalette() { closeDrawer(); pal.hidden = false; q.value = ''; renderPal(); setTimeout(() => q.focus(), 10); }
   function closePalette() { pal.hidden = true; }
   q.oninput = renderPal;
-  q.onkeydown = e => { if (e.key === 'Enter') { const a = list.querySelector('a'); if (a) location.href = a.href; } };
+  q.onkeydown = e => {
+    const its = [...list.querySelectorAll('a.pal-item')], cur = its.findIndex(a => a.getAttribute('aria-selected') === 'true');
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (!its.length) return; const n = (cur + (e.key === 'ArrowDown' ? 1 : -1) + its.length) % its.length; its.forEach((a, i) => a.setAttribute('aria-selected', i === n)); its[n].scrollIntoView({ block: 'nearest' }); }
+    if (e.key === 'Enter') { const a = its[cur] || its[0]; if (a) location.href = a.href; }
+  };
+  pal.querySelector('kbd').onclick = closePalette; pal.querySelector('kbd').style.cursor = 'pointer';
   pal.onclick = e => { if (e.target === pal) closePalette(); };
   document.querySelectorAll('[data-search]').forEach(b => b.onclick = openPalette);
   document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openPalette(); } });

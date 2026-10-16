@@ -145,7 +145,7 @@ function pov() {
   const g = last - inv, ge = document.getElementById('r-gain'); ge.textContent = (g < 0 ? '−' : '+') + money(Math.abs(g)); ge.className = g < 0 ? 'down' : 'up';
   const span = 2026 - +ys.value, step = Math.max(1, Math.ceil(span / 5)), labels = []; for (let y = +ys.value; y <= 2026; y += step) labels.push(String(y));
   const y0 = +ys.value;
-  areaChart(document.getElementById('pov-chart'), r.v, { compare: r.iv, height: 340, labels, fmt: v => v >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' : v >= 1e3 ? '$' + (v / 1e3).toFixed(0) + 'K' : '$' + v.toFixed(0), tipLabel: i => `${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i % 12]} ${y0 + Math.floor(i / 12)} · put in ${money(r.iv[i])}` });
+  areaChart(document.getElementById('pov-chart'), r.v, { compare: r.iv, height: 340, labels, fmt: v => (v < 0 ? '−' : '') + (Math.abs(v) >= 1e6 ? '$' + (Math.abs(v) / 1e6).toFixed(2) + 'M' : Math.abs(v) >= 1e3 ? '$' + (Math.abs(v) / 1e3).toFixed(0) + 'K' : '$' + Math.abs(v).toFixed(0)), tipLabel: i => `${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i % 12]} ${y0 + Math.floor(i / 12)} · put in ${money(r.iv[i])}` });
 }
 as.onchange = () => { years(A[as.value], +ys.value); pov(); }; ys.onchange = pov; am.oninput = pov; pov();
 
@@ -160,7 +160,7 @@ lb.onchange = board; board();
 const ids = ['start', 'month', 'rate', 'years'], el = k => document.getElementById('c-' + k);
 function compound() {
   const s = +el('start').value, m = +el('month').value, r = +el('rate').value / 100, n = +el('years').value;
-  el('start-v').textContent = money(s); el('month-v').textContent = money(m); el('rate-v').textContent = r * 100 + '%'; el('years-v').textContent = n;
+  el('start-v').textContent = money(s); el('month-v').textContent = money(m); el('rate-v').textContent = +(r * 100).toFixed(1) + '%'; el('years-v').textContent = n;
   let bal = s, contrib = s; const bars = [];
   for (let y = 1; y <= n; y++) { for (let k = 0; k < 12; k++) { bal = bal * (1 + r / 12) + m; contrib += m; } bars.push([contrib, bal]); }
   el('final').textContent = money(bal); el('contrib').textContent = money(contrib); el('growth').textContent = '+' + money(bal - contrib);

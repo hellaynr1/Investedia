@@ -51,7 +51,7 @@
   <div class="sec-head"><div><h2>Currency pairs</h2></div><div class="tabs" id="pr-tabs"><button class="tab" data-tab="major" aria-selected="true">Major</button><button class="tab" data-tab="minor">Minor</button><button class="tab" data-tab="exotic">Exotic</button></div></div>
   <div class="grid g-main" style="align-items:start">
     <div class="card" id="pr-table"></div>
-    <div class="card"><div class="card-head"><h3>EUR/USD</h3><a class="link" href="asset.html?s=EURUSD">Open</a></div><div style="padding:8px 8px 4px 14px"><div id="eur"></div></div><div class="stats-row" style="border-top:1px solid var(--line)"><div class="stat"><span>Bid</span><b>1.16418</b></div><div class="stat"><span>Ask</span><b>1.16424</b></div><div class="stat"><span>Spread</span><b>0.6 pips</b></div></div></div>
+    <div class="card"><div class="card-head"><h3>EUR/USD</h3><a class="link" href="asset.html?s=EURUSD">Open</a></div><div style="padding:8px 8px 4px 14px"><div id="eur"></div></div><div class="stats-row" style="border-top:1px solid var(--line)"><div class="stat"><span>Bid</span><b id="eur-bid">1.16418</b></div><div class="stat"><span>Ask</span><b id="eur-ask">1.16424</b></div><div class="stat"><span>Spread</span><b>0.6 pips</b></div></div></div>
   </div>
 </section>
 
@@ -79,13 +79,14 @@ const fx = M.assets.filter(a => a.c === 'currencies');
 const groups = { major: fx.filter(a => !a.minor && !a.exotic && a.s !== 'DXY' && a.s !== 'EURGBP'), minor: fx.filter(a => a.minor || a.s === 'EURGBP'), exotic: fx.filter(a => a.exotic) };
 const pr = k => document.getElementById('pr-table').innerHTML = assetTable(groups[k], ['price', 'chg', 'week', 'spark']);
 tabs(document.getElementById('pr-tabs'), pr); pr('major');
-areaChart(document.getElementById('eur'), M.series('eurusd', 90, 1.1642, 1.8, .003), { height: 200, labels: ['Jul', 'Aug', 'Sep', 'Oct'], fmt: v => v.toFixed(4) });
+areaChart(document.getElementById('eur'), M.series('eurusd', 90, (M.bySym.EURUSD && M.bySym.EURUSD.p) || 1.1642, 1.8, .003), { height: 200, labels: ['Jul', 'Aug', 'Sep', 'Oct'], fmt: v => v.toFixed(4) });
 const cur = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'CAD', 'NZD'], str = { USD: -0.08, EUR: 0.12, GBP: -0.04, JPY: -0.21, CHF: 0.06, AUD: 0.31, CAD: 0.02, NZD: 0.18 };
 document.getElementById('matrix').innerHTML = `<table class="tbl" style="table-layout:fixed;min-width:640px"><thead><tr><th></th>${cur.map(c => `<th style="text-align:center">${c}</th>`).join('')}</tr></thead><tbody>${cur.map(r => `<tr><td><b>${r}</b></td>${cur.map(c => { if (r === c) return '<td style="background:var(--bg-2)"></td>'; const v = +(str[r] - str[c]).toFixed(2); return `<td class="num" style="text-align:center;background:${UI.heatColor(v * 8)};color:#fff">${v > 0 ? '+' : ''}${v.toFixed(2)}%</td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
 document.getElementById('str').innerHTML = Object.entries(str).sort((a, b) => b[1] - a[1]).map(([c, v]) => divBar(c, v, 0.4)).join('');
 document.getElementById('vol').innerHTML = [['GBP/JPY', 142, 0.70], ['USD/TRY', 410, 0.97], ['USD/JPY', 98, 0.65], ['GBP/USD', 81, 0.61], ['AUD/USD', 58, 0.88], ['EUR/USD', 64, 0.55], ['USD/CHF', 52, 0.65]].map(([p, pips, pc]) => `<tr><td><b style="font-weight:550">${p}</b></td><td class="num">${pips}</td><td class="num muted">${pc.toFixed(2)}%</td><td><div class="meter"><i style="width:${pc / 1 * 100}%;background:var(--accent)"></i></div></td></tr>`).join('');
 document.getElementById('banks').innerHTML = [['Federal Reserve', 'USD', '3.75–4.00%', 'Next: 10 Dec'], ['European Central Bank', 'EUR', '2.00%', 'Next: 23 Oct'], ['Bank of England', 'GBP', '4.00%', 'Next: 6 Nov'], ['Bank of Japan', 'JPY', '0.50%', 'Next: 30 Oct']].map(([b, c, r, n]) => `<div class="card card-pad" style="display:grid;gap:4px"><span class="tag" style="width:max-content">${c}</span><b style="font-weight:550;margin-top:6px">${b}</b><span class="num" style="font-size:22px">${r}</span><span class="dim" style="font-size:12.5px">${n}</span></div>`).join('');
 routeHash({ major: ['pr-tabs', 'major'], minor: ['pr-tabs', 'minor'], exotic: ['pr-tabs', 'exotic'] });
+{ const e = MOCK.bySym.EURUSD; if (e && isFinite(e.p)) { document.getElementById('eur-bid').textContent = (e.p - 0.00003).toFixed(5); document.getElementById('eur-ask').textContent = (e.p + 0.00003).toFixed(5); } }
 </script>
 </main>
 </body>

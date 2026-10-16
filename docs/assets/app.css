@@ -345,7 +345,7 @@ a.card:hover,a.panel:hover{border-color:#3a3a40;background:var(--card-hi)}
 .demo::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent)}
 .impact{display:inline-flex;gap:2px;align-items:flex-end;height:15px}
 .impact i{width:4px;border-radius:1px}
-.dd-tools{left:auto;right:-8px}
+.dd-tools{position:fixed;top:calc(var(--head) - 4px);left:50%;right:auto;transform:translate(-50%,-4px)}.dd-tools.open{transform:translate(-50%,0)}
 [id]{scroll-margin-top:90px}
 .subnav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin:-8px 0 24px;padding-bottom:2px;border-bottom:1px solid var(--line-soft)}
 .subnav::-webkit-scrollbar{display:none}
@@ -498,7 +498,11 @@ main.enter{animation:enter .35s cubic-bezier(.2,.8,.2,1) both}
 :root[data-theme="light"] .card,:root[data-theme="light"] .panel{box-shadow:0 1px 2px rgba(0,0,0,.05)}
 :root[data-theme="light"] .hero h1{background:none;color:var(--fg)}
 :root[data-theme="light"] .prose,:root[data-theme="light"] [style*="#d4d4d8"]{color:#3f3f46!important}
-:root[data-theme="light"] .drawer,:root[data-theme="light"] .ticker::before{background:var(--bg)}
+:root[data-theme="light"] .drawer{background:var(--bg)}
+:root[data-theme="light"]{--up:#15803D;--down:#DC2626;--up-soft:rgba(22,163,74,.12);--down-soft:rgba(220,38,38,.10)}
+:root[data-theme="light"] .avatar{background:linear-gradient(135deg,#F4F4F5,#E4E4E7);color:var(--fg)}
+.palette-in input:focus-visible{box-shadow:none}
+:root[data-theme="light"] :is(.nav-link:hover,.nav-link[aria-expanded="true"],.icon-btn:hover,.mega-link:hover,.dd-item:hover,.dd-item:focus-visible,.pal-item[aria-selected="true"],.pal-item:hover,.notif-item:hover,.notif-foot:hover){background:var(--card-hi)}
 :root[data-theme="light"] .brand-mark rect{fill:#0A0A0B}
 :root[data-theme="light"] .res-item{color:#9a9aa3}
 :root[data-theme="light"] .res-item:hover{color:var(--fg)}

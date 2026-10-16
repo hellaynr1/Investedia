@@ -77,7 +77,7 @@
 const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, assetTable, tabs, row, routeHash } = UI, M = MOCK;
 UI.subnav('crypto');
 const cr = M.assets.filter(a => a.c === 'crypto');
-document.getElementById('stats').innerHTML = [['Market cap', '$2.84T', 0.9], ['24h volume', '$96.4B', -12.1], ['BTC dominance', '57.4%', 0.3], ['DeFi TVL', '$118.4B', 1.6], ['Stablecoin supply', '$268B', 0.2], ['Fear & Greed', '34 · Fear', null]].map(([k, v, c]) => `<div class="stat"><span>${k}</span><b>${v}${c != null ? ` <span class="${cls(c)}" style="font-size:12px">${fmtC(c)}</span>` : ''}</b></div>`).join('');
+document.getElementById('stats').innerHTML = [['Market cap', '$2.84T', 0.9], ['24h volume', '$96.4B', -12.1], ['BTC dominance', '57.4%', 0.3], ['DeFi TVL', '$118.4B', 1.6], ['Stablecoin supply', '$268B', 0.2], ['Fear & Greed', '34 · Fear', null]].map(([k, v, c]) => `<div class="stat"><span>${k}</span><b>${v}${c != null ? ` <i class="${cls(c)}" style="font-size:12px;font-style:normal">${fmtC(c)}</i>` : ''}</b></div>`).join('');
 const mc = { '7D': [84, -2.1, .012, ['Thu', 'Sat', 'Mon', 'Wed']], '1M': [90, -6.4, .015, ['16 Sep', '30 Sep', '16 Oct']], '1Y': [120, 28.5, .03, ['Nov', 'Feb', 'May', 'Aug', 'Oct']], 'All': [140, 900, .05, ['2015', '2018', '2021', '2024', '2026']] };
 const mcDraw = r => areaChart(document.getElementById('mc-chart'), M.series('mc' + r, mc[r][0], 2.84, mc[r][1], mc[r][2]), { height: 280, labels: mc[r][3], fmt: v => '$' + v.toFixed(2) + 'T' });
 document.querySelectorAll('#mc-range button').forEach(b => b.onclick = () => { document.querySelectorAll('#mc-range button').forEach(x => x.setAttribute('aria-pressed', x === b)); mcDraw(b.textContent); });
