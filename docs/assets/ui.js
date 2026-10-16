@@ -420,7 +420,7 @@
   }
   // Pro chart: candles / line / area with volume pane, moving averages and crosshair readout
   function proChart(el, bars, opts = {}) {
-    const { type = 'candles', height = 460, labels = [], sma = [], volume = true, fmt = v => v.toFixed(2), onHover, upCol = upCol, downCol = downCol, lineCol = '#FF7A1A' } = opts;
+    const { type = 'candles', height = 460, labels = [], sma = [], volume = true, fmt = v => v.toFixed(2), onHover, upCol = '#22C55E', downCol = '#F04444', lineCol = '#FF7A1A' } = opts;
     el.classList.add('chart'); el.style.height = height + 'px';
     const avg = (k) => bars.map((_, i) => i < k - 1 ? null : bars.slice(i - k + 1, i + 1).reduce((s, b) => s + b.c, 0) / k);
     const draw = () => {

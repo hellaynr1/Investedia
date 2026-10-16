@@ -592,3 +592,51 @@ main.enter{animation:enter .35s cubic-bezier(.2,.8,.2,1) both}
 .quiz-r{margin:12px 0 0;font-weight:550}
 .nav-link .chev{flex:none;min-width:14px}
 .drawer summary svg{width:18px;height:18px;flex:none;color:var(--fg-3);transition:transform .2s}
+/* landing v2: market galaxy */
+body:has(.galaxy){--bg:#050506;overflow-x:clip}
+:root[data-theme="light"] body:has(.galaxy){--bg:#F7F7F8}
+.galaxy{position:relative;width:100vw;margin-left:calc(50% - 50vw);min-height:calc(100vh - var(--head) - 38px);min-height:calc(100svh - var(--head) - 38px);display:grid;place-items:center;overflow:hidden;background:radial-gradient(1200px 600px at 50% 110%,rgba(255,122,26,.16),transparent 60%),radial-gradient(900px 500px at 15% 10%,rgba(120,80,255,.10),transparent 60%),radial-gradient(800px 500px at 90% 20%,rgba(255,122,26,.08),transparent 60%),#050506;border-bottom:1px solid var(--line-soft)}
+.galaxy canvas{position:absolute;inset:0;width:100%;height:100%}
+.galaxy-glow{position:absolute;left:50%;top:46%;width:min(900px,90vw);height:420px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(5,5,6,.85),rgba(5,5,6,.4) 60%,transparent);pointer-events:none}
+.galaxy-in{position:relative;z-index:1;text-align:center;display:grid;justify-items:center;gap:18px;padding:48px max(16px,env(safe-area-inset-left,0px)) 96px;max-width:860px}
+.galaxy-badge{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,122,26,.35);background:rgba(255,122,26,.08);color:#ffb37a;font-size:13px;font-weight:500}
+.galaxy-badge i{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.galaxy h1{font-size:clamp(42px,7.2vw,92px);line-height:1;letter-spacing:-.045em;color:#fff;background:none}
+.galaxy h1 .grad{background:linear-gradient(90deg,#FF7A1A,#FFB36B);-webkit-background-clip:text;background-clip:text;color:transparent}
+.galaxy p{margin:0;max-width:60ch;color:#b4b4bd;font-size:clamp(16px,1.6vw,19px);line-height:1.6}
+.galaxy-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.btn-lg{height:50px;padding:0 26px;font-size:15.5px;border-radius:10px}
+.galaxy .btn-ghost{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.14);color:#fff;backdrop-filter:blur(6px)}
+.galaxy-search{display:flex;align-items:center;gap:10px;width:min(440px,100%);height:44px;margin-top:6px;padding:0 12px 0 14px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:#8a8a93;font-size:14px;backdrop-filter:blur(6px)}
+.galaxy-search>span:nth-child(2){flex:1;text-align:left}
+.galaxy-search:hover{border-color:rgba(255,122,26,.4)}
+.galaxy-scroll{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);width:26px;height:42px;border:1.5px solid rgba(255,255,255,.25);border-radius:14px;z-index:1}
+.galaxy-scroll span{position:absolute;left:50%;top:8px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:var(--accent);animation:scrollcue 1.8s ease-in-out infinite}
+@keyframes scrollcue{0%{transform:translateY(0);opacity:1}70%{transform:translateY(14px);opacity:0}100%{opacity:0}}
+.intro{padding-top:72px}
+.intro-head{text-align:center;display:grid;justify-items:center;gap:6px;margin-bottom:36px}
+.intro-head h2{font-size:clamp(32px,4.4vw,52px);letter-spacing:-.035em}
+.intro-head .lede{margin-inline:auto;font-size:17px;text-align:center}
+.pillar{display:grid;gap:12px;padding:24px;align-content:start}
+.pillar .dd-ic{width:44px;height:44px}
+.pillar p{margin:0;color:var(--fg-2)}
+.intro-facts{display:grid;grid-template-columns:repeat(4,1fr);margin-top:24px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg-2)}
+.intro-facts div{padding:20px;text-align:center;border-right:1px solid var(--line-soft)}
+.intro-facts div:last-child{border-right:0}
+.intro-facts b{display:block;font-size:28px;font-weight:500}
+.intro-facts span{color:var(--fg-3);font-size:13px}
+@media (max-width:700px){.intro-facts{grid-template-columns:1fr 1fr}.intro-facts div:nth-child(2){border-right:0}.intro-facts div:nth-child(-n+2){border-bottom:1px solid var(--line-soft)}}
+.cta-dash{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;padding:clamp(22px,3vw,40px);background:radial-gradient(600px 240px at 100% 0%,rgba(255,122,26,.14),transparent 60%),var(--bg-2)}
+@media (prefers-reduced-motion:reduce){.galaxy-scroll span{animation:none}}
+/* quiet hero variants */
+.galaxy.quiet{background:#070708}
+.galaxy.quiet .galaxy-glow{display:none}
+.galaxy.quiet h1 .grad{background:none;color:#fff;-webkit-text-fill-color:#fff}
+.galaxy.quiet h1{font-weight:600;letter-spacing:-.04em}
+.galaxy.quiet .galaxy-badge{border-color:rgba(255,255,255,.12);background:transparent;color:#a1a1aa}
+.galaxy.quiet .galaxy-badge i{box-shadow:none}
+.galaxy.quiet .btn-primary{box-shadow:none}
+.galaxy.quiet .galaxy-scroll{display:none}
+.galaxy[data-bg="product"]{min-height:0;padding-bottom:0}
+.galaxy[data-bg="product"] .galaxy-in{padding-bottom:0;max-width:1000px}
+.hero-product{width:min(920px,100%);margin-top:36px;text-align:left;border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:0;box-shadow:0 -1px 0 rgba(255,255,255,.04),0 40px 80px -30px rgba(0,0,0,.9)}
