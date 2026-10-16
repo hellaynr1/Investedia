@@ -615,8 +615,7 @@
 
   // ---------- regions ----------
   // Tabs for the regions that actually have assets in `list`; calls onChange('All' | 'Europe' | …)
-  const GLOBE = { Americas: '🌎', Europe: '🌍', Africa: '🌍', 'Middle East': '🌍', Asia: '🌏', Oceania: '🌏', Global: '🌐' };
-  const regionLabel = r => GLOBE[r] ? `<span class="rg-emoji" aria-hidden="true">${GLOBE[r]}</span>${r}` : r;
+  const regionLabel = r => r;
   function regionTabs(el, list, onChange, cur = 'All') {
     const have = M.REGIONS.filter(r => list.some(a => a.region === r));
     el.classList.add('tabs', 'region-tabs'); el.setAttribute('role', 'tablist'); el.setAttribute('aria-label', 'Region');
