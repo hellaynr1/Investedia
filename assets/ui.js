@@ -116,7 +116,8 @@
     ['compound', 'Compound Interest', 'Project long-term growth', 'calculator.html#compound'],
     ['calc', 'Investment Returns', 'Annualised return on any investment', 'calculator.html#returns'],
     ['funds', 'Dividend Calculator', 'Income from dividends and reinvesting', 'calculator.html#dividend'],
-    ['currencies', 'Currency Converter', '160+ currencies at sample rates', 'converter.html'],
+    ['currencies', 'Currency Converter', 'Major world currencies at sample rates', 'converter.html'],
+    ['building', 'Mortgage Calculator', 'Monthly payments, rent vs. buy, yields', 'real-estate.html#mortgage'],
     ['stocks', 'POV Calculator', '“What if I had invested…”', 'calculator.html#pov'],
     ['heat', 'Market Heatmaps', 'Every sector at a glance', 'stocks.html#heatmap'],
   ];
@@ -201,7 +202,7 @@
     <details><summary>Markets ${icon('chev')}</summary><a href="markets.html">All markets</a>${M.categories.map(c => `<a href="${c.page}">${c.t}</a>`).join('')}</details>
     <a href="news.html">News</a><a href="analysis.html">Analysis</a><a href="ai-insights.html">AI Insights <span class="badge-new">NEW</span></a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details>
-    <a href="real-estate.html">Real Estate <span class="tag">Soon</span></a><a href="watchlist.html">Watchlist</a><a href="profile.html">Profile &amp; notifications</a>`;
+    <a href="real-estate.html">Real Estate</a><a href="watchlist.html">Watchlist</a><a href="profile.html">Profile &amp; notifications</a>`;
   hdr.after(drawer);
   const mt = hdr.querySelector('.menu-toggle');
   function closeDrawer() { drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.innerHTML = icon('menu'); document.body.style.overflow = ''; }

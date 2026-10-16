@@ -535,3 +535,4 @@ main.enter{animation:enter .35s cubic-bezier(.2,.8,.2,1) both}
 .toggle-row small{color:var(--fg-3);font-size:12.5px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;z-index:90;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:8px;font-weight:550;transition:opacity .2s,transform .2s;pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
