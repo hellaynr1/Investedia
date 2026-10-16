@@ -145,6 +145,9 @@
       <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">${icon('menu')}</button>
     </div></div>`;
   document.body.prepend(hdr);
+  const skip = document.createElement('a'); skip.className = 'skip'; skip.href = '#main'; skip.textContent = 'Skip to content'; document.body.prepend(skip);
+  const onScrollHdr = () => hdr.classList.toggle('scrolled', scrollY > 8); addEventListener('scroll', onScrollHdr, { passive: true }); onScrollHdr();
+  document.addEventListener('DOMContentLoaded', () => { const m = document.querySelector('main'); if (m) { m.id = m.id || 'main'; m.classList.add('enter'); } });
 
   // dropdown behaviour: hover on desktop, click anywhere, Escape closes
   const closeAll = except => hdr.querySelectorAll('[data-dd]').forEach(b => { if (b === except) return; b.setAttribute('aria-expanded', 'false'); document.getElementById(b.dataset.dd).classList.remove('open'); });
