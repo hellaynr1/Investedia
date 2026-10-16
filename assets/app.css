@@ -591,3 +591,4 @@ main.enter{animation:enter .35s cubic-bezier(.2,.8,.2,1) both}
 .quiz-a.wrong{border-color:var(--down);background:var(--down-soft)}
 .quiz-r{margin:12px 0 0;font-weight:550}
 .nav-link .chev{flex:none;min-width:14px}
+.drawer summary svg{width:18px;height:18px;flex:none;color:var(--fg-3);transition:transform .2s}
