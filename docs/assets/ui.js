@@ -786,21 +786,5 @@
     el.querySelectorAll('[data-per] button').forEach(b => b.onclick = () => regionMovers(el, list, region, b.dataset.k));
   }
 
-  // AI notes written by scripts/ai_brief.py through the owner's OmniRoute gateway. Hidden until assets/ai.json exists.
-  let aiP;
-  const aiData = () => aiP || (aiP = fetch('assets/ai.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null));
-  const aiEsc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-  const aiFoot = d => `<p class="ai-foot">AI-generated from real prices and headlines · ${new Date(d.updated).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })} · Not investment advice</p>`;
-  function aiBrief(el) {
-    if (!el) return;
-    aiData().then(d => { if (!d || !d.brief || !d.brief.length) return; el.hidden = false;
-      el.innerHTML = `<div class="card ai-card"><div class="card-head"><h3>Market brief</h3><span class="ai-tag">AI</span></div><div class="card-pad"><ul class="ai-list">${d.brief.map(t => `<li>${aiEsc(t)}</li>`).join('')}</ul>${aiFoot(d)}</div></div>`; });
-  }
-  function aiWhy(el, sym) {
-    if (!el) return;
-    aiData().then(d => { const t = d && d.why && d.why[sym]; if (!t) return; el.hidden = false;
-      el.innerHTML = `<div class="card ai-card"><div class="card-head"><h3>Why it's moving</h3><span class="ai-tag">AI</span></div><div class="card-pad"><p class="ai-why">${aiEsc(t)}</p>${aiFoot(d)}</div></div>`; });
-  }
-
-  window.UI = { aiBrief, aiWhy, icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, heatmap2, heatLegend2, heatVar, heatTip, acc: ACC, applyStudio, STUDIO_DEF, regionTabs, inRegion, regionMovers, regionLabel };
+  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, heatmap2, heatLegend2, heatVar, heatTip, acc: ACC, applyStudio, STUDIO_DEF, regionTabs, inRegion, regionMovers, regionLabel };
 })();

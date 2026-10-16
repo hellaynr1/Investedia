@@ -27,7 +27,6 @@
     </div>
     <div class="card"><div class="card-head"><h3>Performance</h3><span class="meta">Price return</span></div><div class="stats-row" id="perf"></div></div>
     <div id="class-blocks" class="grid" style="gap:16px"></div>
-    <div id="a-ai" hidden></div>
     <div class="card" id="news"><div class="card-head"><h3>Latest news</h3><a class="link" href="news.html">More news</a></div><div id="a-news"></div></div>
   </div>
 
@@ -49,7 +48,6 @@ const ce = document.getElementById('crumb-cat'); ce.textContent = cat.t; ce.href
 document.getElementById('crumb-sym').textContent = a.s;
 document.getElementById('a-logo').innerHTML = logo(a, 'lg');
 document.getElementById('a-name').textContent = a.n;
-UI.aiWhy(document.getElementById('a-ai'), a.s);
 const kind = { stocks: 'Stock', indices: a.fut ? 'Index future' : 'Index', crypto: a.stable ? 'Stablecoin' : 'Cryptocurrency', currencies: 'Currency pair', commodities: 'Commodity future', bonds: a.corp ? 'Corporate bond index' : 'Government bond', funds: a.kind || 'ETF' }[K];
 document.getElementById('a-tags').innerHTML = `<span class="tag">${a.s}</span><span class="tag">${a.x}</span><span class="tag">${kind}</span>${a.sector ? `<span class="tag">${a.sector}</span>` : ''}${a.group ? `<span class="tag">${a.group}</span>` : ''}`;
 document.getElementById('a-price').innerHTML = `<span data-lp="${a.s}">${fmtP(a)}</span>` + (a.unit ? `<span class="dim" style="font-size:16px">${a.unit}</span>` : '');

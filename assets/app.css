@@ -967,8 +967,3 @@ body{overflow-x:clip}
   .fxm .rowh{position:static;box-shadow:none!important}
   #heatmap .tbl-wrap{padding:8px!important;overflow:visible}
 }
-/* AI notes (scripts/ai_brief.py) */
-.ai-tag{font:600 10.5px/1 var(--mono,inherit);letter-spacing:.06em;padding:4px 7px;border-radius:6px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
-.ai-list{margin:0;padding-left:18px;display:grid;gap:8px;line-height:1.55}
-.ai-why{margin:0;line-height:1.55}
-.ai-foot{margin:12px 0 0;font-size:12px;color:var(--muted,#8a8f98)}

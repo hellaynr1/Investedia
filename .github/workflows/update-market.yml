@@ -39,21 +39,11 @@ jobs:
           if [ "${{ github.event.schedule }}" != "*/10 6-21 * * 1-5" ] || [ $((10#$M % 30)) -lt 10 ]; then
             python3 update_news.py || echo "News update failed; keeping the previous headlines"
           fi
-      - name: AI notes (only if OmniRoute secrets are set)
-        env:
-          OMNIROUTE_URL: ${{ secrets.OMNIROUTE_URL }}
-          OMNIROUTE_KEY: ${{ secrets.OMNIROUTE_KEY }}
-        run: |
-          H=$(date -u +%H); M=$(date -u +%M)
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || { [ $((10#$M)) -lt 10 ] && [ $((10#$H % 2)) -eq 0 ]; }; then
-            python3 scripts/ai_brief.py || echo "AI notes failed; keeping the previous ones"
-          fi
       - name: Publish
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
           git add assets/quotes.js assets/intraday.json assets/hist assets/news.js assets/news docs/assets
-          [ -f assets/ai.json ] && git add assets/ai.json
           git diff --cached --quiet && exit 0
           git commit -q -m "Update market data and news"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q && exit 0; sleep 5; done
