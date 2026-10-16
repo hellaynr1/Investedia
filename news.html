@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>News — Investedia</title>
+<meta name="description" content="Financial news that moves markets: stocks, crypto, economy, commodities and real estate.">
+<meta property="og:title" content="News — Investedia">
+<meta property="og:description" content="Financial news that moves markets: stocks, crypto, economy, commodities and real estate.">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="news">
+<script src="assets/mock.js"></script>
+<script src="assets/ui.js"></script>
+<main class="wrap">
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>News</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>News</h1><p class="lede">What happened, why it matters and what it means for your money.</p></div></div>
+</div>
+
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px" id="cats"></div>
+
+<section class="sec">
+  <div class="grid g-main-l">
+    <a class="card n-card" href="article.html" style="grid-template-rows:300px auto" id="lead"></a>
+    <div class="grid" style="align-content:start;gap:16px" id="second"></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="grid g-main" style="align-items:start">
+    <div class="card"><div class="card-head"><h3>Latest</h3><span class="status"><i></i>Updating</span></div><div id="latest"></div>
+      <div style="padding:14px;border-top:1px solid var(--line-soft);text-align:center"><button class="btn btn-ghost btn-sm" type="button">Load more stories</button></div></div>
+    <aside class="grid" style="gap:16px">
+      <div class="card"><div class="card-head"><h3>Most read</h3></div><ol style="margin:0;padding:0;list-style:none" id="most"></ol></div>
+      <div class="card"><div class="card-head"><h3>Trending tickers</h3></div><div id="trend"></div></div>
+      <div class="card card-pad ai-glow"><span class="ai-badge" id="ai"></span><h3 style="margin:8px 0 6px">News in 30 seconds</h3><p class="muted" style="margin:0 0 12px;font-size:13.5px">A hot inflation print cooled rate-cut hopes. Chips lagged, healthcare led, and Bitcoin slid toward $80,000.</p><a class="link" href="ai-insights.html">Open AI Insights</a></div>
+    </aside>
+  </div>
+</section>
+
+<section class="sec" data-newsletter></section>
+<script>
+const { icon, fmtP, fmtC, cls, logo, href, cover } = UI, M = MOCK;
+document.getElementById('ai').innerHTML = icon('sparkle') + 'AI summary';
+document.getElementById('cats').innerHTML = ['All', 'Markets', 'Stocks', 'Earnings', 'Economy', 'Crypto', 'Currencies', 'Commodities', 'Real Estate'].map((c, i) => `<button class="chip ${i === 0 ? 'on' : ''}" type="button">${c}</button>`).join('');
+document.querySelectorAll('#cats .chip').forEach(b => b.onclick = () => { document.querySelectorAll('#cats .chip').forEach(x => x.classList.toggle('on', x === b)); render(b.textContent); });
+const meta = n => `<div class="news-meta"><span class="accent" style="font-weight:600">${n.cat}</span><i></i><span>${n.time}</span><i></i><span>${n.read} min read</span></div>`;
+function render(c) {
+  const list = c === 'All' ? M.news : M.news.filter(n => n.cat === c).concat(M.news.filter(n => n.cat !== c));
+  const [l, ...rest] = list;
+  document.getElementById('lead').innerHTML = `<div class="cover">${cover('nl' + l.id)}</div><div class="body" style="padding:20px 22px 22px">${meta(l)}<h2 style="font-size:26px">${l.t}</h2><p style="font-size:15px">${l.d}</p><div class="news-meta"><span>By ${l.a}</span></div></div>`;
+  document.getElementById('second').innerHTML = rest.slice(0, 3).map(n => `<a class="card news-item" href="article.html" style="grid-template-columns:110px 1fr;gap:14px;align-items:center;border:1px solid var(--line)"><div class="cover" style="min-height:76px;border-radius:6px">${cover('ns' + n.id)}</div><div style="display:grid;gap:6px">${meta(n)}<h3>${n.t}</h3></div></a>`).join('');
+  document.getElementById('latest').innerHTML = list.concat(list.slice(0, 3)).map((n, i) => `<a class="news-item" href="article.html" style="grid-template-columns:72px 1fr;gap:16px"><span class="mono dim" style="font-size:12px;padding-top:2px">${['17:42', '17:15', '16:58', '16:31', '16:04', '15:47', '15:20', '14:55', '14:32', '14:10', '13:48'][i]}</span><div style="display:grid;gap:6px"><h3>${n.t}</h3><p class="muted" style="margin:0;font-size:13.5px">${n.d}</p><div class="news-meta"><span class="tag acc">${n.cat}</span><span class="mono">${n.tag}</span><i></i><span>${n.a}</span></div></div></a>`).join('');
+}
+render('All');
+document.getElementById('most').innerHTML = M.news.slice(0, 5).map((n, i) => `<li><a class="news-item" href="article.html" style="grid-template-columns:28px 1fr;gap:10px"><span class="num accent" style="font-size:18px;font-weight:600">${i + 1}</span><h3 style="font-size:14px">${n.t}</h3></a></li>`).join('');
+document.getElementById('trend').innerHTML = ['DELL', 'LLY', 'BTC', 'NVDA', 'XAU'].map(s => M.bySym[s]).map(r => `<a class="dd-row" style="padding:10px 18px;border-radius:0;border-bottom:1px solid var(--line-soft)" href="${href(r)}"><span class="ident">${logo(r)}<span><b>${r.s}</b><small>${r.n}</small></span></span><span class="num">${fmtP(r)}</span><span class="pill ${cls(r.d)}">${fmtC(r.d)}</span></a>`).join('');
+</script>
+</main>
+</body>
+</html>

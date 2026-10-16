@@ -1,0 +1,62 @@
+{"title":"Cryptocurrencies — Investedia","desc":"Crypto prices, market cap, Bitcoin dominance, DeFi and stablecoins.","key":"markets"}
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Cryptocurrencies</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Cryptocurrencies</h1><p class="lede">Prices, market size and the trends shaping digital assets. Markets never close.</p></div><span class="demo">Illustrative data</span></div>
+</div>
+<nav class="subnav" id="subnav"></nav>
+
+<section class="sec"><div class="card"><div class="stats-row" id="stats"></div></div></section>
+
+<section class="sec">
+  <div class="grid g-main-l">
+    <div class="card" id="marketcap"><div class="card-head"><h3>Total crypto market cap</h3><div class="range" id="mc-range"><button aria-pressed="false">7D</button><button aria-pressed="false">1M</button><button aria-pressed="true">1Y</button><button aria-pressed="false">All</button></div></div><div style="padding:10px 10px 4px 18px"><div id="mc-chart"></div></div></div>
+    <div class="card" id="dominance"><div class="card-head"><h3>Market dominance</h3><span class="meta">Share of total value</span></div>
+      <div class="card-pad"><div id="donut" style="display:grid;place-items:center"></div><div style="display:grid;gap:8px;margin-top:16px" id="dom-legend"></div></div></div>
+  </div>
+</section>
+
+<section class="sec" id="movers">
+  <div class="sec-head"><div><h2>Crypto movers</h2><p>Last 24 hours, coins over $1B market value.</p></div><div class="tabs" id="mv-tabs"><button class="tab" data-tab="trending" aria-selected="true">Trending</button><button class="tab" data-tab="gainers">Top gainers</button><button class="tab" data-tab="losers">Top losers</button><button class="tab" data-tab="active">Most active</button></div></div>
+  <div class="grid g-3" id="mv-cards"></div>
+</section>
+
+<section class="sec" id="all">
+  <div class="sec-head"><div><h2>Crypto screener</h2><p>Every tracked coin by market value.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><input class="input" id="q" placeholder="Filter coins…" style="width:200px;height:34px" aria-label="Filter coins"><div class="tabs" id="cf"><button class="tab" data-tab="all" aria-selected="true">All</button><button class="tab" data-tab="l1">Layer 1</button><button class="tab" data-tab="defi">DeFi</button><button class="tab" data-tab="stable">Stablecoins</button></div></div></div>
+  <div class="card" id="all-table"></div>
+</section>
+
+<section class="sec">
+  <div class="grid g-2">
+    <div class="card" id="defi"><div class="card-head"><h3>DeFi</h3><span class="meta">Total value locked $118.4B</span></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Protocol</th><th>Category</th><th>TVL</th><th>7D</th></tr></thead><tbody id="defi-t"></tbody></table></div></div>
+    <div class="card" id="stablecoins"><div class="card-head"><h3>Stablecoins</h3><span class="meta">Total supply $268B</span></div><div id="stable-l"></div><div class="card-pad" style="border-top:1px solid var(--line-soft)"><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px" class="muted"><span>Share of supply</span><span class="num">USDT 68% · USDC 28% · Other 4%</span></div><div style="display:flex;height:8px;border-radius:4px;overflow:hidden;gap:2px"><i style="flex:68;background:#26a17b"></i><i style="flex:28;background:#2775ca"></i><i style="flex:4;background:#71717A"></i></div></div></div>
+  </div>
+</section>
+<section class="sec" data-newsletter></section>
+<script>
+const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, assetTable, tabs, row, routeHash } = UI, M = MOCK;
+UI.subnav('crypto');
+const cr = M.assets.filter(a => a.c === 'crypto');
+document.getElementById('stats').innerHTML = [['Market cap', '$2.84T', 0.9], ['24h volume', '$96.4B', -12.1], ['BTC dominance', '57.4%', 0.3], ['DeFi TVL', '$118.4B', 1.6], ['Stablecoin supply', '$268B', 0.2], ['Fear & Greed', '34 · Fear', null]].map(([k, v, c]) => `<div class="stat"><span>${k}</span><b>${v}${c != null ? ` <span class="${cls(c)}" style="font-size:12px">${fmtC(c)}</span>` : ''}</b></div>`).join('');
+const mc = { '7D': [84, -2.1, .012, ['Thu', 'Sat', 'Mon', 'Wed']], '1M': [90, -6.4, .015, ['16 Sep', '30 Sep', '16 Oct']], '1Y': [120, 28.5, .03, ['Nov', 'Feb', 'May', 'Aug', 'Oct']], 'All': [140, 900, .05, ['2015', '2018', '2021', '2024', '2026']] };
+const mcDraw = r => areaChart(document.getElementById('mc-chart'), M.series('mc' + r, mc[r][0], 2.84, mc[r][1], mc[r][2]), { height: 280, labels: mc[r][3], fmt: v => '$' + v.toFixed(2) + 'T' });
+document.querySelectorAll('#mc-range button').forEach(b => b.onclick = () => { document.querySelectorAll('#mc-range button').forEach(x => x.setAttribute('aria-pressed', x === b)); mcDraw(b.textContent); });
+mcDraw('1Y');
+// donut
+const dom = [['Bitcoin', 57.4, '#f7931a'], ['Ethereum', 10.3, '#627eea'], ['Stablecoins', 9.4, '#26a17b'], ['Solana', 3.2, '#14f195'], ['Others', 19.7, '#3a3a40']];
+let acc = 0; const R = 70, C = 2 * Math.PI * R;
+document.getElementById('donut').innerHTML = `<svg viewBox="0 0 200 200" style="width:190px;height:190px"><g transform="rotate(-90 100 100)">${dom.map(([n, v, c]) => { const seg = `<circle cx="100" cy="100" r="${R}" fill="none" stroke="${c}" stroke-width="26" stroke-dasharray="${(v / 100 * C - 2).toFixed(2)} ${C.toFixed(2)}" stroke-dashoffset="${(-acc / 100 * C).toFixed(2)}"/>`; acc += v; return seg; }).join('')}</g><text x="100" y="96" text-anchor="middle" font-family="Geist Mono,monospace" font-size="24" fill="#fff">57.4%</text><text x="100" y="118" text-anchor="middle" font-size="12" fill="#71717A">BTC dominance</text></svg>`;
+document.getElementById('dom-legend').innerHTML = dom.map(([n, v, c]) => `<div style="display:flex;justify-content:space-between;font-size:13px"><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${c};margin-right:8px;vertical-align:-1px"></i>${n}</span><span class="num">${v.toFixed(1)}%</span></div>`).join('');
+
+const big = cr.filter(a => !a.stable);
+const mvs = { trending: ['BTC', 'SOL', 'DOGE', 'ETH', 'AVAX', 'LINK'], gainers: [...big].sort((a, b) => b.d - a.d).slice(0, 6).map(a => a.s), losers: [...big].sort((a, b) => a.d - b.d).slice(0, 6).map(a => a.s), active: ['BTC', 'ETH', 'SOL', 'XRP', 'DOGE', 'BNB'] };
+const mvCards = k => document.getElementById('mv-cards').innerHTML = mvs[k].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · Vol ${a.vol}</small></span></span><span style="text-align:right"><div class="num">${fmtP(a)}</div><div class="num ${cls(a.d)}" style="font-size:12.5px">${fmtC(a.d)}</div></span><div style="grid-column:1/-1">${spark(a.spark, colorFor(a.w), 300, 34)}</div></a>`).join('');
+tabs(document.getElementById('mv-tabs'), mvCards); mvCards('trending');
+
+let filt = 'all';
+const table = () => { const q = document.getElementById('q').value.trim().toLowerCase(); const rows = cr.filter(a => (filt === 'all' || (filt === 'defi' && a.defi) || (filt === 'stable' && a.stable) || (filt === 'l1' && !a.defi && !a.stable)) && (!q || a.s.toLowerCase().includes(q) || a.n.toLowerCase().includes(q))).sort((a, b) => b.m - a.m); document.getElementById('all-table').innerHTML = rows.length ? assetTable(rows, ['price', 'chg', 'week', 'cap', 'vol', 'spark']) : '<p class="muted card-pad" style="margin:0">No coins match that search.</p>'; };
+tabs(document.getElementById('cf'), k => { filt = k; table(); }); document.getElementById('q').oninput = table; table();
+
+document.getElementById('defi-t').innerHTML = [['Aave', 'Lending', '$31.2B', 4.4, 'AAVE'], ['Lido', 'Liquid staking', '$24.8B', -1.2], ['EigenLayer', 'Restaking', '$12.1B', 2.1], ['Uniswap', 'Exchange', '$5.9B', 3.6, 'UNI'], ['Ethena', 'Synthetic dollar', '$5.2B', 0.8], ['Maker / Sky', 'Lending', '$4.9B', -0.6]].map(([n, c, t, d, s]) => `<tr ${s ? `data-href="asset.html?s=${s}"` : ''}><td><b style="font-weight:550">${n}</b></td><td class="muted">${c}</td><td class="num">${t}</td><td class="num ${cls(d)}">${fmtC(d)}</td></tr>`).join('');
+document.getElementById('stable-l').innerHTML = ['USDT', 'USDC'].map(s => row(M.bySym[s])).join('');
+routeHash({ trending: ['mv-tabs', 'trending'], gainers: ['mv-tabs', 'gainers'], losers: ['mv-tabs', 'losers'], active: ['mv-tabs', 'active'] });
+</script>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Indices — Investedia</title>
+<meta name="description" content="Major, world and global stock indices plus index futures.">
+<meta property="og:title" content="Indices — Investedia">
+<meta property="og:description" content="Major, world and global stock indices plus index futures.">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="markets">
+<script src="assets/mock.js"></script>
+<script src="assets/ui.js"></script>
+<main class="wrap">
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Indices</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Indices</h1><p class="lede">The benchmarks that sum up each market, in real time and in futures.</p></div><span class="demo">Illustrative data</span></div>
+</div>
+<nav class="subnav" id="subnav"></nav>
+
+<section class="sec" id="major">
+  <div class="sec-head" id="realtime"><div><h2>Major indices</h2><p>Real-time levels for the four main US benchmarks.</p></div><span class="status"><i class="off"></i>US cash session closed</span></div>
+  <div class="grid g-2" id="majors"></div>
+</section>
+
+<section class="sec" id="world">
+  <div class="sec-head"><div><h2>World indices</h2><p>Grouped by region, in local trading hours.</p></div></div>
+  <div class="grid g-3" id="regions"></div>
+</section>
+
+<section class="sec" id="futures">
+  <div class="sec-head"><div><h2>Index futures</h2><p>Futures trade almost around the clock and hint at the next open.</p></div></div>
+  <div class="card"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Contract</th><th>Last</th><th>Change</th><th>Fair value</th><th>Implied open</th><th>Expiry</th><th>Open interest</th></tr></thead><tbody id="fut"></tbody></table></div></div>
+</section>
+
+<section class="sec" id="global">
+  <div class="sec-head"><div><h2>Global indices</h2><p>Every tracked index, sortable by performance.</p></div></div>
+  <div class="card" id="all"></div>
+</section>
+<section class="sec" data-newsletter></section>
+<script>
+const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, areaChart, assetTable, row, routeHash } = UI, M = MOCK;
+UI.subnav('indices');
+document.getElementById('majors').innerHTML = ['SPX', 'NDX', 'DJI', 'RUT'].map(s => M.bySym[s]).map(a => `<a class="card" href="${href(a)}"><div class="card-head"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · Index</small></span></span><span style="text-align:right"><div class="num" style="font-size:18px">${fmtP(a)}</div><div class="num ${cls(a.d)}" style="font-size:12.5px">${fmtC(a.d)} today</div></span></div><div style="padding:6px 8px 6px 14px" data-chart="${a.s}"></div></a>`).join('');
+document.querySelectorAll('[data-chart]').forEach(el => { const a = M.bySym[el.dataset.chart]; areaChart(el, M.series(a.s + 'intra', 78, a.p, a.d, .0018), { height: 150, labels: ['09:30', '12:00', '14:00', '16:00'], color: a.d >= 0 ? '#22C55E' : '#F04444', fmt: v => v.toLocaleString('en-US', { maximumFractionDigits: 0 }) }); });
+const regions = [['Americas', 'Opens 09:30 ET', ['SPX', 'NDX', 'DJI', 'RUT']], ['Europe', 'Opens 09:00 CET', ['DAX', 'CAC', 'UKX', 'SX5E']], ['Asia-Pacific', 'Open now', ['NKY', 'HSI']]];
+document.getElementById('regions').innerHTML = regions.map(([r, st, syms]) => `<div class="card"><div class="card-head"><h3>${r}</h3><span class="status"><i class="${st === 'Open now' ? '' : 'off'}"></i>${st}</span></div>${syms.map(s => row(M.bySym[s])).join('')}</div>`).join('');
+document.getElementById('fut').innerHTML = ['ES1', 'NQ1', 'YM1'].map(s => M.bySym[s]).map((a, i) => { const fv = [24.1, 98.6, 168][i], cash = M.bySym[['SPX', 'NDX', 'DJI'][i]]; const io = a.p - fv - cash.p; return `<tr data-href="${href(a)}"><td><a class="ident" href="${href(a)}">${logo(a)}<span><b>${a.n}</b><small>${a.s} · ${a.x}</small></span></a></td><td class="num">${fmtP(a)}</td><td><span class="pill ${cls(a.d)}">${fmtC(a.d)}</span></td><td class="num muted">${fv.toFixed(1)}</td><td class="num ${cls(io)}">${io >= 0 ? '+' : '−'}${Math.abs(io).toFixed(1)} pts</td><td class="muted">Dec 2026</td><td class="num muted">${['2.14M', '284K', '91K'][i]}</td></tr>`; }).join('');
+document.getElementById('all').innerHTML = assetTable(M.assets.filter(a => a.c === 'indices' && !a.fut), ['price', 'chg', 'week', 'spark']);
+routeHash({});
+</script>
+</main>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{"title":"Bonds — Investedia","desc":"Government bond yields, the yield curve, corporate and high-yield bonds.","key":"markets"}
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Bonds</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Bonds</h1><p class="lede">Yields set the price of money for everything else. Here’s where they stand.</p></div><span class="demo">Illustrative data</span></div>
+</div>
+<nav class="subnav" id="subnav"></nav>
+
+<section class="sec"><div class="grid g-4" id="keys"></div></section>
+
+<section class="sec" id="curve">
+  <div class="grid g-main" style="align-items:start">
+    <div class="card"><div class="card-head"><h3>US Treasury yield curve</h3><span class="meta">Today vs. one year ago</span></div><div style="padding:12px 12px 8px 18px"><div id="curve-chart"></div></div>
+      <div style="display:flex;gap:18px;padding:0 18px 14px;font-size:12.5px" class="muted"><span><span class="lg-line"></span>Today</span><span><span class="lg-dash"></span>One year ago</span></div></div>
+    <div class="card"><div class="card-head"><h3>2s10s spread</h3><span class="meta">10Y minus 2Y</span></div><div class="card-pad"><div class="num up" style="font-size:30px">+55 bp</div><p class="muted" style="margin:6px 0 14px;font-size:13.5px">The curve turned positive in early 2025 after two years of inversion.</p><div id="spread"></div></div></div>
+  </div>
+</section>
+
+<section class="sec" id="government">
+  <div class="sec-head"><div><h2>Government bonds</h2><p>10-year benchmarks and the full curve by country.</p></div><div class="tabs" id="gv-tabs"><button class="tab" data-tab="treasuries" aria-selected="true">US Treasuries</button><button class="tab" data-tab="europe">European bonds</button><button class="tab" data-tab="gilts">UK Gilts</button></div></div>
+  <div class="card" id="gv-table"></div>
+</section>
+
+<section class="sec" id="corporate">
+  <div class="sec-head"><div><h2>Corporate bonds</h2><p>What companies pay to borrow, and the extra yield over Treasuries.</p></div></div>
+  <div class="card"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Index</th><th>Yield</th><th>Change</th><th>Spread vs. Treasuries</th><th>Duration</th><th>Rating</th></tr></thead><tbody id="corp"></tbody></table></div></div>
+</section>
+<section class="sec" data-newsletter></section>
+<script>
+const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, areaChart, tabs, routeHash } = UI, M = MOCK;
+UI.subnav('bonds');
+document.getElementById('keys').innerHTML = ['US10Y', 'US02Y', 'DE10Y', 'UK10Y'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span>${a.n}</span><span class="pill ${cls(a.d)}">${fmtC(a.d, true)}</span></div><div class="idx-val">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`).join('');
+const today = [3.92, 3.71, 3.48, 3.42, 3.51, 3.70, 4.03, 4.38, 4.61], ago = [4.85, 4.62, 4.21, 4.05, 4.02, 4.08, 4.21, 4.49, 4.42], lab = ['1M', '6M', '2Y', '3Y', '5Y', '7Y', '10Y', '20Y', '30Y'];
+areaChart(document.getElementById('curve-chart'), today, { compare: ago, height: 300, labels: lab, fmt: v => v.toFixed(2) + '%', tipLabel: i => lab[i] + ' maturity' });
+areaChart(document.getElementById('spread'), M.series('2s10s', 100, 0.55, 300, .05).map(v => v - 0.3), { height: 160, labels: ['2024', '2025', '2026'], color: '#22C55E', fmt: v => (v * 100).toFixed(0) + ' bp' });
+const curves = {
+  treasuries: [['US 1-Month', 3.92, -0.2], ['US 6-Month', 3.71, -0.3], ['US 2-Year', 3.48, -0.6, 'US02Y'], ['US 5-Year', 3.51, -0.5], ['US 10-Year', 4.03, -0.4, 'US10Y'], ['US 30-Year', 4.61, -0.2, 'US30Y']],
+  europe: [['Germany 10Y', 2.61, 0.3, 'DE10Y'], ['France 10Y', 3.38, 0.5, 'FR10Y'], ['Italy 10Y', 3.40, 0.4, 'IT10Y'], ['Spain 10Y', 3.12, 0.3], ['Netherlands 10Y', 2.84, 0.2], ['Belgium 10Y', 3.21, 0.4]],
+  gilts: [['UK 2-Year', 3.86, -0.4], ['UK 5-Year', 3.98, -0.3], ['UK 10-Year', 4.51, -0.3, 'UK10Y'], ['UK 30-Year', 5.18, -0.1]],
+};
+const gv = k => document.getElementById('gv-table').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Bond</th><th>Yield</th><th>Change</th><th>1W</th><th>Price</th><th>Coupon</th><th>7 days</th></tr></thead><tbody>${curves[k].map(([n, y, d, s], i) => `<tr ${s ? `data-href="asset.html?s=${s}"` : ''}><td><b style="font-weight:550">${n}</b></td><td class="num">${y.toFixed(3)}%</td><td><span class="pill ${cls(d)}">${fmtC(d, true)}</span></td><td class="num ${cls(d * 2.4)}">${fmtC(+(d * 2.4).toFixed(1), true)}</td><td class="num muted">${(100 - (y - 3.5) * 6.2).toFixed(2)}</td><td class="num muted">${(y - 0.25).toFixed(3)}%</td><td>${spark(M.series(n, 28, y, d * 3), d <= 0 ? '#22C55E' : '#F04444')}</td></tr>`).join('')}</tbody></table></div>`;
+tabs(document.getElementById('gv-tabs'), gv); gv('treasuries');
+document.getElementById('corp').innerHTML = [['US Investment Grade', 'USIG', 4.98, -0.5, 82, 6.9, 'A–BBB'], ['US High Yield', 'USHY', 6.87, 0.8, 284, 3.4, 'BB–CCC'], ['Euro Investment Grade', null, 3.21, -0.2, 96, 4.6, 'A–BBB'], ['Euro High Yield', null, 5.64, 0.5, 312, 3.1, 'BB–CCC'], ['Emerging Markets USD', null, 6.42, 0.3, 238, 6.2, 'BBB–B']].map(([n, s, y, d, sp, du, r]) => `<tr ${s ? `data-href="asset.html?s=${s}"` : ''}><td><b style="font-weight:550">${n}</b></td><td class="num">${y.toFixed(2)}%</td><td><span class="pill ${cls(-d)}">${fmtC(d, true)}</span></td><td class="num">${sp} bp</td><td class="num muted">${du} yrs</td><td class="muted">${r}</td></tr>`).join('');
+routeHash({ treasuries: ['gv-tabs', 'treasuries'], europe: ['gv-tabs', 'europe'], gilts: ['gv-tabs', 'gilts'] });
+</script>

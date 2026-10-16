@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Commodities — Investedia</title>
+<meta name="description" content="Energy, metals and agricultural commodity prices and trends.">
+<meta property="og:title" content="Commodities — Investedia">
+<meta property="og:description" content="Energy, metals and agricultural commodity prices and trends.">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="markets">
+<script src="assets/mock.js"></script>
+<script src="assets/ui.js"></script>
+<main class="wrap">
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Commodities</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Commodities</h1><p class="lede">Energy, metals and crops: the raw materials behind inflation and growth.</p></div><span class="demo">Illustrative data</span></div>
+</div>
+<nav class="subnav" id="subnav"></nav>
+
+<section class="sec">
+  <div class="grid g-main" style="align-items:start">
+    <div class="card"><div class="card-head"><span class="ident" id="feat-id"></span><div class="range" id="feat-pick"><button aria-pressed="true">Gold</button><button aria-pressed="false">Crude Oil</button><button aria-pressed="false">Copper</button></div></div><div style="padding:10px 10px 4px 18px"><div id="feat"></div></div></div>
+    <div class="grid" style="gap:16px">
+      <div class="card card-pad"><span class="muted" style="font-size:12.5px">Gold / silver ratio</span><div class="num" style="font-size:26px;margin-top:2px">79.6</div><p class="dim" style="margin:6px 0 0;font-size:12.5px">Ounces of silver to buy one ounce of gold. 10-year average: 78.</p></div>
+      <div class="card card-pad"><span class="muted" style="font-size:12.5px">Brent – WTI spread</span><div class="num" style="font-size:26px;margin-top:2px">$3.65</div><p class="dim" style="margin:6px 0 0;font-size:12.5px">Narrowest in 4 months as US exports rise.</p></div>
+      <div class="card card-pad"><span class="muted" style="font-size:12.5px">Bloomberg Commodity Index</span><div class="num" style="font-size:26px;margin-top:2px">108.42 <span class="up" style="font-size:13px">+0.38%</span></div><p class="dim" style="margin:6px 0 0;font-size:12.5px">Broad basket of 24 commodities.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="energy"><div class="sec-head"><div><h2>Energy</h2><p>Oil and gas futures, front-month contracts.</p></div></div><div class="grid g-3" id="g-energy"></div></section>
+<section class="sec" id="metals"><div class="sec-head"><div><h2>Metals</h2><p>Precious and industrial metals.</p></div></div><div class="grid g-4" id="g-metals"></div></section>
+<section class="sec" id="agriculture"><div class="sec-head"><div><h2>Agriculture</h2><p>Grains and soft commodities.</p></div></div><div class="grid g-4" id="g-agri"></div></section>
+
+<section class="sec">
+  <div class="sec-head"><div><h2>All commodities</h2></div></div>
+  <div class="card" id="all"></div>
+</section>
+<section class="sec" data-newsletter></section>
+<script>
+const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, areaChart, assetTable, routeHash } = UI, M = MOCK;
+UI.subnav('commodities');
+const co = M.assets.filter(a => a.c === 'commodities');
+const card = a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.n}</b><small>${a.s} · ${a.x}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d)}</span></div><div class="idx-val">${fmtP(a)}<span class="dim" style="font-size:13px">${a.unit}</span></div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`;
+document.getElementById('g-energy').innerHTML = co.filter(a => a.group === 'Energy').map(card).join('');
+document.getElementById('g-metals').innerHTML = co.filter(a => a.group === 'Metals').map(card).join('');
+document.getElementById('g-agri').innerHTML = co.filter(a => a.group === 'Agriculture').map(card).join('');
+document.getElementById('all').innerHTML = assetTable(co, ['price', 'chg', 'week', 'spark']);
+const feats = { Gold: ['XAU', 38.2], 'Crude Oil': ['WTI', -14.6], Copper: ['HG', 17.9] };
+function feat(n) { const [s, ch] = feats[n], a = M.bySym[s]; document.getElementById('feat-id').innerHTML = `${logo(a)}<span><b>${a.n}</b><small>${fmtP(a)}${a.unit} · <span class="${cls(ch)}">${fmtC(ch)} 1Y</span></small></span>`; areaChart(document.getElementById('feat'), M.series(s + 'feat', 120, a.p, ch, .012), { height: 300, labels: ['Nov', 'Feb', 'May', 'Aug', 'Oct'], color: ch >= 0 ? '#FF7A1A' : '#F04444', fmt: v => '$' + (v >= 100 ? v.toFixed(0) : v.toFixed(2)) }); }
+document.querySelectorAll('#feat-pick button').forEach(b => b.onclick = () => { document.querySelectorAll('#feat-pick button').forEach(x => x.setAttribute('aria-pressed', x === b)); feat(b.textContent); });
+feat('Gold');
+routeHash({});
+</script>
+</main>
+</body>
+</html>

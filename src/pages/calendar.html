@@ -1,0 +1,40 @@
+{"title":"Calendar — Investedia","desc":"Economic events and company earnings, with forecasts and previous values.","key":"calendar"}
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>Tools</span><span>/</span><span>Calendar</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Calendar</h1><p class="lede">The events that move markets this week, with what’s expected and what came before.</p></div>
+  <div class="tabs" id="mode"><button class="tab" data-tab="economic" aria-selected="true">Economic</button><button class="tab" data-tab="earnings">Earnings</button></div></div>
+</div>
+
+<div class="card" style="margin-bottom:16px"><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr))" id="week"></div></div>
+
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+  <div style="display:flex;gap:6px;flex-wrap:wrap" id="countries"></div>
+  <div style="display:flex;gap:6px" id="imp"></div>
+</div>
+
+<div class="card" id="table"></div>
+<section class="sec" style="margin-top:44px" data-newsletter></section>
+<script>
+const { icon, logo, href, tabs } = UI, M = MOCK;
+const days = [['Mon', 13], ['Tue', 14], ['Wed', 15], ['Thu', 16], ['Fri', 17], ['Sat', 18], ['Sun', 19]];
+document.getElementById('week').innerHTML = days.map(([d, n], i) => `<button type="button" style="background:${n === 16 ? 'var(--accent-soft)' : 'none'};border:0;border-right:${i < 6 ? '1px solid var(--line-soft)' : '0'};padding:12px 6px;display:grid;gap:2px;justify-items:center;${n === 16 ? 'box-shadow:inset 0 -2px 0 var(--accent)' : ''}"><span class="dim" style="font-size:12px">${d}</span><b class="num" style="font-size:18px;font-weight:500;${n === 16 ? 'color:var(--accent)' : ''}">${n}</b><span class="dim" style="font-size:11px">${[3, 5, 4, 9, 6, 0, 1][i]} events</span></button>`).join('');
+const flags = { US: '#3b82f6', EU: '#1d4ed8', UK: '#ef4444', CN: '#dc2626', JP: '#f43f5e' };
+document.getElementById('countries').innerHTML = ['All', 'US', 'EU', 'UK', 'CN', 'JP'].map((c, i) => `<button class="chip ${i === 0 ? 'on' : ''}" type="button">${c === 'All' ? 'All regions' : c}</button>`).join('');
+document.getElementById('imp').innerHTML = ['All', 'Medium+', 'High'].map((c, i) => `<button class="chip ${i === 0 ? 'on' : ''}" type="button">${c}</button>`).join('');
+document.querySelectorAll('#countries .chip,#imp .chip').forEach(b => b.onclick = () => b.parentElement.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b)));
+const bars = n => `<span style="display:inline-flex;gap:2px;vertical-align:middle">${[1, 2, 3].map(k => `<i style="width:4px;height:${6 + k * 3}px;border-radius:1px;background:${k <= n ? (n === 3 ? 'var(--accent)' : 'var(--fg-2)') : 'var(--line)'}"></i>`).join('')}</span>`;
+function economic() {
+  let html = '', last = '';
+  M.calendar.forEach(e => {
+    if (e.day !== last) { html += `<tr><td colspan="7" class="l" style="background:var(--bg-2);font-weight:600;font-size:12.5px;color:var(--fg-2);padding:8px 16px">${e.day}${e.day.includes('16') ? ' · Today' : ''}</td></tr>`; last = e.day; }
+    html += `<tr><td class="num muted">${e.time}</td><td class="l"><span class="tag" style="border-color:${flags[e.c]}55;color:#fff;background:${flags[e.c]}22">${e.c}</span></td><td class="l"><b style="font-weight:550">${e.e}</b></td><td>${bars(e.imp)}</td><td class="num">${e.act === '—' ? '<span class="dim">—</span>' : `<span class="up">${e.act}</span>`}</td><td class="num muted">${e.fc}</td><td class="num muted">${e.prev}</td></tr>`;
+  });
+  document.getElementById('table').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Time (ET)</th><th style="text-align:left">Region</th><th style="text-align:left">Event</th><th>Impact</th><th>Actual</th><th>Forecast</th><th>Previous</th></tr></thead><tbody>${html}</tbody></table></div>`;
+}
+function earnings() {
+  const L = s => M.bySym[s] || { s, n: s, logo: '#e50914' };
+  document.getElementById('table').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Company</th><th>Date</th><th>Time</th><th>EPS estimate</th><th>Revenue estimate</th><th></th></tr></thead><tbody>${M.earnings.map(e => { const a = L(e.s); return `<tr ${M.bySym[e.s] ? `data-href="${href(a)}"` : ''}><td><span class="ident">${logo(a)}<span><b>${e.s}</b><small>${e.n}</small></span></span></td><td>${e.date}</td><td class="muted">${e.when}</td><td class="num">$${e.eps}</td><td class="num">${e.rev}</td><td><button class="btn btn-ghost btn-sm" type="button">${icon('bell')}Remind me</button></td></tr>`; }).join('')}</tbody></table></div>`;
+}
+tabs(document.getElementById('mode'), m => { history.replaceState(null, '', m === 'earnings' ? '#earnings' : '#'); m === 'earnings' ? earnings() : economic(); document.getElementById('countries').hidden = document.getElementById('imp').hidden = m === 'earnings'; });
+if (location.hash === '#earnings') document.querySelector('#mode [data-tab=earnings]').click(); else economic();
+</script>

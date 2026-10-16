@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Real Estate — Investedia</title>
+<meta name="description" content="Coming soon: property investment insights, real estate market trends and investment analysis.">
+<meta property="og:title" content="Real Estate — Investedia">
+<meta property="og:description" content="Coming soon: property investment insights, real estate market trends and investment analysis.">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="realestate">
+<script src="assets/mock.js"></script>
+<script src="assets/ui.js"></script>
+<main class="wrap">
+<section class="re-hero">
+  <div>
+    <span class="tag acc" style="height:26px;padding:0 10px;font-size:12px">Coming soon</span>
+    <h1 style="margin-top:18px;font-size:clamp(34px,4.6vw,58px)">Real estate, analysed like a market.</h1>
+    <p class="lede" style="font-size:17px">We’re building tools to compare property markets, understand rental yields and see how real estate fits next to stocks and bonds. No listings, no sales pitch, just clear analysis.</p>
+    <form class="subscribe" style="margin-top:26px;max-width:520px" onsubmit="event.preventDefault();this.querySelector('button').textContent='You’re on the list ✓';this.querySelector('input').value=''">
+      <input class="input" type="email" placeholder="you@email.com" aria-label="Email address" required><button class="btn btn-primary" type="submit">Join the waitlist</button>
+    </form>
+    <p class="dim" style="font-size:12.5px;margin-top:10px">Planned launch: early 2027. We’ll email you once, when it’s ready.</p>
+  </div>
+  <div class="card re-preview" aria-label="Concept preview">
+    <div class="card-head"><h3>Concept preview</h3><span class="demo">Design concept · no real data</span></div>
+    <div class="card-pad" style="display:grid;gap:14px">
+      <div class="skel-row"><span class="skel" style="width:38%"></span><span class="skel" style="width:18%"></span></div>
+      <div class="re-chart"><svg viewBox="0 0 400 140" preserveAspectRatio="none"><defs><linearGradient id="reg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FF7A1A" stop-opacity=".25"/><stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/></linearGradient></defs><path d="M0 110 C60 100 90 104 140 86 S220 70 260 60 330 40 400 30 L400 140 L0 140Z" fill="url(#reg)"/><path d="M0 110 C60 100 90 104 140 86 S220 70 260 60 330 40 400 30" fill="none" stroke="#FF7A1A" stroke-width="2.5"/><path d="M0 118 C80 116 150 108 220 100 S330 86 400 80" fill="none" stroke="#52525b" stroke-width="2" stroke-dasharray="5 5"/></svg></div>
+      <div class="grid g-3" style="gap:10px"><div class="skel-tile"><span class="skel" style="width:60%"></span><span class="skel big" style="width:80%"></span></div><div class="skel-tile"><span class="skel" style="width:50%"></span><span class="skel big" style="width:70%"></span></div><div class="skel-tile"><span class="skel" style="width:55%"></span><span class="skel big" style="width:60%"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-head"><div><h2>What we’re building</h2><p>Three tools, designed for investors rather than home buyers.</p></div></div>
+  <div class="grid g-3" id="plans"></div>
+</section>
+
+<section class="sec">
+  <div class="grid g-2" style="align-items:stretch">
+    <div class="card card-pad" style="display:grid;gap:14px;align-content:start">
+      <h3>Questions we want to answer</h3>
+      <ul class="bullets" id="questions"></ul>
+    </div>
+    <div class="card card-pad" style="display:grid;gap:14px;align-content:start">
+      <h3>Roadmap</h3>
+      <div class="timeline" id="roadmap"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="panel card-pad" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+    <div><h3>Real estate stocks are already here</h3><p class="muted" style="margin:4px 0 0">While you wait, explore listed property companies and REIT ETFs in our markets section.</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-ghost" href="screener.html">Screen stocks</a><a class="btn btn-ghost" href="analysis.html#sectors">Read sector outlook</a></div>
+  </div>
+</section>
+<script>
+const { icon } = UI;
+document.getElementById('plans').innerHTML = [['building', 'Market trends', 'Price and rent trends for major cities, with the drivers behind them: rates, supply, jobs and migration.'], ['calc', 'Yield & return analysis', 'Gross and net rental yields, financing costs and total return, compared with stocks and bonds.'], ['globe', 'City comparisons', 'Side-by-side comparisons of cities and regions, so you can see where your money works hardest.']].map(([i, t, d]) => `<div class="card tool"><span class="dd-ic">${icon(i)}</span><h3>${t}</h3><p>${d}</p><span class="tag" style="width:max-content">In development</span></div>`).join('');
+document.getElementById('questions').innerHTML = ['Is it better to buy property or invest the deposit in index funds?', 'Which cities offer the best rental yield after costs?', 'How do interest rates change what a property is worth?', 'How do REITs compare with owning property directly?'].map(t => `<li>${icon('check')}<span>${t}</span></li>`).join('');
+document.getElementById('roadmap').innerHTML = [['Now', 'Research and data partnerships', true], ['Q1 2027', 'Market trends and city dashboards', false], ['Q2 2027', 'Yield and return calculators', false], ['Later', 'AI insights for property markets', false]].map(([w, t, on]) => `<div class="tl-item ${on ? 'on' : ''}"><i></i><div><b class="mono" style="font-size:12px;color:${on ? 'var(--accent)' : 'var(--fg-3)'}">${w}</b><div>${t}</div></div></div>`).join('');
+</script>
+</main>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Watchlist — Investedia</title>
+<meta name="description" content="Your watchlist, price alerts and portfolio overview (preview).">
+<meta property="og:title" content="Watchlist — Investedia">
+<meta property="og:description" content="Your watchlist, price alerts and portfolio overview (preview).">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="watchlist">
+<script src="assets/mock.js"></script>
+<script src="assets/ui.js"></script>
+<main class="wrap">
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>Watchlist</span></div>
+  <div class="sec-head" style="margin:0"><div style="display:flex;gap:16px;align-items:center"><span class="avatar" style="width:52px;height:52px;font-size:16px">AK</span><div><h1 style="font-size:clamp(26px,3vw,36px)">My watchlist</h1><p class="muted" style="margin:4px 0 0">Preview of a signed-in account · accounts are not built yet</p></div></div>
+  <div style="display:flex;gap:8px;align-items:center"><span class="demo">Demo account</span><button class="btn btn-primary" type="button" data-search>+ Add asset</button></div></div>
+</div>
+
+<section class="sec"><div class="card"><div class="stats-row" id="sum"></div></div></section>
+
+<section class="sec">
+  <div class="sec-head"><div class="tabs" id="lists"><button class="tab" data-tab="main" aria-selected="true">Main list</button><button class="tab" data-tab="tech">AI &amp; tech</button><button class="tab" data-tab="income">Income</button><button class="tab" data-tab="crypto">Crypto</button></div><button class="btn btn-ghost btn-sm" type="button">New list</button></div>
+  <div class="card" id="wl"></div>
+</section>
+
+<section class="sec">
+  <div class="grid g-2">
+    <div class="card"><div class="card-head"><h3>Price alerts</h3><button class="btn btn-ghost btn-sm" type="button">New alert</button></div><div id="alerts"></div></div>
+    <div class="card"><div class="card-head"><h3>News for your watchlist</h3><a class="link" href="news.html">All news</a></div><div id="wnews"></div></div>
+  </div>
+</section>
+<script>
+const { icon, fmtP, fmtC, cls, logo, href, assetTable, tabs } = UI, M = MOCK;
+const L = { main: ['NVDA', 'AAPL', 'MSFT', 'BTC', 'XAU', 'SPY'], tech: ['NVDA', 'AMD', 'AVGO', 'TSM', 'ASML', 'CRWV'], income: ['KO', 'SCHD', 'JNJ', 'V', 'O' in M.bySym ? 'O' : 'PEP'], crypto: ['BTC', 'ETH', 'SOL', 'IBIT'] };
+const show = k => { document.getElementById('wl').innerHTML = assetTable(L[k].map(s => M.bySym[s]).filter(Boolean), ['price', 'chg', 'week', 'spark']); document.querySelectorAll('#wl .star').forEach(s => { s.classList.add('on'); s.querySelector('svg').setAttribute('fill', 'currentColor'); }); };
+tabs(document.getElementById('lists'), show); show('main');
+document.getElementById('sum').innerHTML = [['Assets watched', '18'], ['Up today', '<span class="up">11</span>'], ['Down today', '<span class="down">7</span>'], ['Active alerts', '4'], ['Best today', '<span class="up">LLY +3.55%</span>'], ['Worst today', '<span class="down">DELL −6.80%</span>']].map(([k, v]) => `<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
+document.getElementById('alerts').innerHTML = [['NVDA', 'Price falls below', '$200.00', true], ['BTC', 'Price rises above', '$90,000', true], ['XAU', 'Moves more than', '±2% in a day', true], ['AAPL', 'Earnings released', '30 Oct', false]].map(([s, c, v, on]) => { const a = M.bySym[s]; return `<div class="arow" style="grid-template-columns:minmax(0,1fr) auto auto"><span class="ident">${logo(a)}<span><b>${a.s}</b><small>${c} ${v}</small></span></span><span class="num muted" style="font-size:12.5px">Now ${fmtP(a)}</span><button class="switch ${on ? 'on' : ''}" type="button" aria-pressed="${on}" aria-label="Toggle alert" onclick="this.classList.toggle('on');this.setAttribute('aria-pressed',this.classList.contains('on'))"><i></i></button></div>`; }).join('');
+document.getElementById('wnews').innerHTML = M.news.filter(n => ['BTC', 'XAU', 'SPX', 'DELL'].includes(n.tag)).map(n => `<a class="news-item" href="article.html"><div class="news-meta"><span class="accent" style="font-weight:600">${n.tag}</span><i></i><span>${n.time}</span></div><h3 style="font-size:14px">${n.t}</h3></a>`).join('');
+</script>
+</main>
+</body>
+</html>

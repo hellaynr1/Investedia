@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>About — Investedia</title>
+<meta name="description" content="About Investedia: our mission, careers, advertising, contact and terms.">
+<meta property="og:title" content="About — Investedia">
+<meta property="og:description" content="About Investedia: our mission, careers, advertising, contact and terms.">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="about">
+<script src="assets/mock.js"></script>
+<script src="assets/ui.js"></script>
+<main class="wrap">
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>About</span></div>
+  <h1>Investing, explained clearly.</h1>
+  <p class="lede">Investedia started as a series of charts on Instagram showing what steady investing can do. Today we’re building a platform where anyone can follow markets, understand the news and make better decisions with their money.</p>
+</div>
+<nav class="subnav"><a href="#mission" aria-current="page">Mission</a><a href="#careers">Careers</a><a href="#advertise">Advertise</a><a href="#contact">Contact</a><a href="#terms">Terms &amp; privacy</a></nav>
+<section class="sec" id="mission"><div class="grid g-3">
+  <div class="card tool"><span class="dd-ic" data-icon="shield"></span><h3>Independent</h3><p>We don’t sell investment products or take payment to cover companies. Our analysis says what we think.</p></div>
+  <div class="card tool"><span class="dd-ic" data-icon="book"></span><h3>Plain English</h3><p>Every chart, article and AI answer is written so a first-time investor can follow it.</p></div>
+  <div class="card tool"><span class="dd-ic" data-icon="globe"></span><h3>Every market</h3><p>Stocks, crypto, currencies, commodities, bonds, funds and soon real estate, in one place.</p></div>
+</div></section>
+<section class="sec" id="careers"><div class="sec-head"><div><h2>Careers</h2><p>We’re a small team. These roles are planned for 2027.</p></div></div>
+  <div class="card"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Role</th><th style="text-align:left">Team</th><th style="text-align:left">Location</th><th></th></tr></thead><tbody>
+  <tr><td><b style="font-weight:550">Senior frontend engineer</b></td><td class="l muted">Product</td><td class="l muted">Remote · Europe</td><td><span class="tag">Opening soon</span></td></tr>
+  <tr><td><b style="font-weight:550">Markets editor</b></td><td class="l muted">Editorial</td><td class="l muted">Brussels or Paris</td><td><span class="tag">Opening soon</span></td></tr>
+  <tr><td><b style="font-weight:550">Data engineer, market data</b></td><td class="l muted">Platform</td><td class="l muted">Remote</td><td><span class="tag">Opening soon</span></td></tr>
+  </tbody></table></div></div></section>
+<section class="sec" id="advertise"><div class="panel card-pad" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center"><div><h2>Advertise with Investedia</h2><p class="muted" style="margin:6px 0 0">Reach an audience of engaged, growing investors on the site, in the newsletter and on Instagram.</p></div><a class="btn btn-ghost" href="#contact">Get in touch</a></div></section>
+<section class="sec" id="contact"><div class="grid g-2">
+  <div class="card card-pad" style="display:grid;gap:14px"><h2>Contact</h2><div class="field"><label for="c-name">Name</label><input class="input" id="c-name"></div><div class="field"><label for="c-mail">Email</label><input class="input" id="c-mail" type="email"></div><div class="field"><label for="c-msg">Message</label><textarea class="input" id="c-msg" rows="4" style="height:auto;padding:10px 12px"></textarea></div><button class="btn btn-primary" type="button" style="justify-self:start" onclick="this.textContent='Message sent (demo)'">Send message</button></div>
+  <div class="card card-pad" style="display:grid;gap:10px;align-content:start"><h3>Follow us</h3><a class="arow" href="https://www.instagram.com/investedia/" style="grid-template-columns:auto 1fr;padding-inline:0"><span class="dd-ic" data-icon="ig"></span><span><b>@investedia</b><small class="dim" style="display:block">Instagram · POV investing charts</small></span></a></div>
+</div></section>
+<section class="sec" id="terms"><div class="card card-pad prose" style="max-width:none;font-size:15px"><h2 style="margin-top:0">Terms &amp; privacy</h2><p>Investedia provides information and education only. Nothing on this site is investment advice or a recommendation to buy or sell any asset. All market data in this preview is illustrative sample data.</p><p style="margin:0">Full terms of use and a privacy policy will be published before launch.</p></div></section>
+<script>UI.routeHash({}); const al = document.querySelectorAll('.subnav a'); al.forEach(l => l.onclick = () => al.forEach(x => x.toggleAttribute('aria-current', x === l)));</script>
+</main>
+</body>
+</html>
