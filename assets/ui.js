@@ -139,12 +139,18 @@
       : `<li><a class="nav-link" href="${h}" ${page === k ? 'aria-current="page"' : ''}>${t}${isNew ? '<span class="badge-new">NEW</span>' : ''}</a></li>`).join('')}</ul>
     <div class="hdr-tools">
       <button class="search-btn" type="button" data-search aria-label="Search markets">${icon('search')}<span>Search markets, news…</span><kbd>⌘K</kbd></button>
+      <button class="icon-btn" type="button" id="theme-btn" aria-label="Switch light or dark mode" title="Light / dark mode"></button>
       <a class="icon-btn hide-sm" href="watchlist.html" aria-label="Watchlist" title="Watchlist">${icon('star')}</a>
       <button class="icon-btn hide-sm" type="button" aria-label="Alerts" title="Alerts">${icon('bell')}<span class="dot"></span></button>
       <a class="avatar hide-sm" href="watchlist.html" aria-label="Your profile" title="Your profile">AK</a>
       <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">${icon('menu')}</button>
     </div></div>`;
   document.body.prepend(hdr);
+  const tb = hdr.querySelector('#theme-btn');
+  const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>', moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
+  const setTheme = t => { document.documentElement.dataset.theme = t; tb.innerHTML = t === 'light' ? moon : sun; try { localStorage.setItem('inv-theme', t); } catch {} };
+  let th = 'dark'; try { th = localStorage.getItem('inv-theme') || 'dark'; } catch {}
+  setTheme(th); tb.onclick = () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
   const skip = document.createElement('a'); skip.className = 'skip'; skip.href = '#main'; skip.textContent = 'Skip to content'; document.body.prepend(skip);
   const onScrollHdr = () => hdr.classList.toggle('scrolled', scrollY > 8); addEventListener('scroll', onScrollHdr, { passive: true }); onScrollHdr();
   document.addEventListener('DOMContentLoaded', () => { const m = document.querySelector('main'); if (m) { m.id = m.id || 'main'; m.classList.add('enter'); } });
@@ -378,7 +384,7 @@
   }
   // Pro chart: candles / line / area with volume pane, moving averages and crosshair readout
   function proChart(el, bars, opts = {}) {
-    const { type = 'candles', height = 460, labels = [], sma = [], volume = true, fmt = v => v.toFixed(2), onHover } = opts;
+    const { type = 'candles', height = 460, labels = [], sma = [], volume = true, fmt = v => v.toFixed(2), onHover, upCol = upCol, downCol = downCol, lineCol = '#FF7A1A' } = opts;
     el.classList.add('chart'); el.style.height = height + 'px';
     const avg = (k) => bars.map((_, i) => i < k - 1 ? null : bars.slice(i - k + 1, i + 1).reduce((s, b) => s + b.c, 0) / k);
     const draw = () => {
@@ -392,13 +398,13 @@
       for (let k = 0; k <= 5; k++) { const v = mn + (mx - mn) * k / 5; g += `<line class="grid-l" x1="${padL}" x2="${W - padR}" y1="${sy(v)}" y2="${sy(v)}"/><text class="ax" x="${W - padR + 8}" y="${sy(v) + 4}">${fmt(v)}</text>`; }
       g += labels.map((l, k) => { const i = Math.round(k / Math.max(1, labels.length - 1) * (n - 1)); return `<text class="ax" x="${sx(i)}" y="${H - 8}" text-anchor="${k === 0 ? 'start' : k === labels.length - 1 ? 'end' : 'middle'}">${l}</text>`; }).join('');
       let body = '';
-      if (volume) body += bars.map((b, i) => `<rect x="${sx(i) - bw / 2}" y="${vy0 - b.v / vmax * volH}" width="${bw}" height="${b.v / vmax * volH}" fill="${b.c >= b.o ? '#22C55E' : '#F04444'}" opacity=".28"/>`).join('');
-      if (type === 'candles') body += bars.map((b, i) => { const up = b.c >= b.o, col = up ? '#22C55E' : '#F04444', y1 = sy(Math.max(b.o, b.c)), y2 = sy(Math.min(b.o, b.c)); return `<line x1="${sx(i)}" x2="${sx(i)}" y1="${sy(b.h)}" y2="${sy(b.l)}" stroke="${col}" stroke-width="1"/><rect x="${sx(i) - bw / 2}" y="${y1}" width="${bw}" height="${Math.max(1, y2 - y1)}" fill="${up ? col : col}" ${up ? 'fill-opacity=".9"' : ''} rx="${bw > 4 ? 1 : 0}"/>`; }).join('');
+      if (volume) body += bars.map((b, i) => `<rect x="${sx(i) - bw / 2}" y="${vy0 - b.v / vmax * volH}" width="${bw}" height="${b.v / vmax * volH}" fill="${b.c >= b.o ? upCol : downCol}" opacity=".28"/>`).join('');
+      if (type === 'candles') body += bars.map((b, i) => { const up = b.c >= b.o, col = up ? upCol : downCol, y1 = sy(Math.max(b.o, b.c)), y2 = sy(Math.min(b.o, b.c)); return `<line x1="${sx(i)}" x2="${sx(i)}" y1="${sy(b.h)}" y2="${sy(b.l)}" stroke="${col}" stroke-width="1"/><rect x="${sx(i) - bw / 2}" y="${y1}" width="${bw}" height="${Math.max(1, y2 - y1)}" fill="${up ? col : col}" ${up ? 'fill-opacity=".9"' : ''} rx="${bw > 4 ? 1 : 0}"/>`; }).join('');
       else { const d = bars.map((b, i) => (i ? 'L' : 'M') + sx(i).toFixed(1) + ' ' + sy(b.c).toFixed(1)).join(''); const id = 'p' + Math.random().toString(36).slice(2, 7);
-        body += (type === 'area' ? `<defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FF7A1A" stop-opacity=".25"/><stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/></linearGradient></defs><path d="${d}L${sx(n - 1)} ${padT + pH}L${sx(0)} ${padT + pH}Z" fill="url(#${id})"/>` : '') + `<path d="${d}" fill="none" stroke="#FF7A1A" stroke-width="2" stroke-linejoin="round"/>`; }
+        body += (type === 'area' ? `<defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${lineCol}" stop-opacity=".25"/><stop offset="1" stop-color="${lineCol}" stop-opacity="0"/></linearGradient></defs><path d="${d}L${sx(n - 1)} ${padT + pH}L${sx(0)} ${padT + pH}Z" fill="url(#${id})"/>` : '') + `<path d="${d}" fill="none" stroke="${lineCol}" stroke-width="2" stroke-linejoin="round"/>`; }
       const maCol = { 20: '#38BDF8', 50: '#A78BFA', 200: '#F472B6' };
       sma.forEach(k => { const a = avg(k); body += `<path d="${a.map((v, i) => v == null ? '' : (a[i - 1] == null ? 'M' : 'L') + sx(i).toFixed(1) + ' ' + sy(v).toFixed(1)).join('')}" fill="none" stroke="${maCol[k] || '#fff'}" stroke-width="1.4" opacity=".9"/>`; });
-      const last = bars[n - 1], lc = last.c >= last.o ? '#22C55E' : '#F04444';
+      const last = bars[n - 1], lc = last.c >= last.o ? upCol : downCol;
       body += `<line x1="${padL}" x2="${W - padR}" y1="${sy(last.c)}" y2="${sy(last.c)}" stroke="${lc}" stroke-dasharray="2 3" opacity=".7"/><rect x="${W - padR + 3}" y="${sy(last.c) - 10}" width="${padR - 5}" height="20" rx="4" fill="${lc}"/><text x="${W - padR + 8}" y="${sy(last.c) + 4}" font-family="Geist Mono,monospace" font-size="11" font-weight="600" fill="#0A0A0B">${fmt(last.c)}</text>`;
       el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price chart">${g}${body}<g class="hover" style="display:none"><line class="xh" y1="${padT}" y2="${H - padB}"/><line class="xh yh" x1="${padL}" x2="${W - padR}"/><rect class="ytag" x="${W - padR + 3}" width="${padR - 5}" height="20" rx="4" fill="#3f3f46"/><text class="ytxt" x="${W - padR + 8}" font-family="Geist Mono,monospace" font-size="11" fill="#fff"></text></g></svg>`;
       const svg = el.querySelector('svg'), hv = el.querySelector('.hover');

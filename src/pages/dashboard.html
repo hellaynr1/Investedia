@@ -36,6 +36,7 @@
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <div class="seg" id="ctype" style="width:auto"><button type="button" data-v="candles" class="on">Candles</button><button type="button" data-v="line">Line</button><button type="button" data-v="area">Area</button></div>
           <div style="display:flex;gap:6px" id="ind"><button class="chip on" type="button" data-v="20"><i class="dot-l" style="background:#38BDF8"></i>MA 20</button><button class="chip" type="button" data-v="50"><i class="dot-l" style="background:#A78BFA"></i>MA 50</button><button class="chip on" type="button" data-v="vol">Volume</button></div>
+          <select class="select" id="palette" aria-label="Chart colours" style="height:30px;width:auto;font-size:12.5px"><option value="classic">Green / red</option><option value="blue">Blue / orange</option><option value="mono">Monochrome</option><option value="cb">Colour-blind safe</option></select>
         </div>
       </div>
       <div style="padding:6px 6px 2px 14px"><div id="pro"></div></div>
@@ -109,13 +110,16 @@ document.querySelectorAll('#tf button').forEach(b => b.onclick = () => { documen
 document.querySelectorAll('#ctype button').forEach(b => b.onclick = () => { document.querySelectorAll('#ctype button').forEach(x => x.classList.toggle('on', x === b)); ctype = b.dataset.v; chart(); });
 document.querySelectorAll('#ind .chip').forEach(b => b.onclick = () => { b.classList.toggle('on'); ind.has(b.dataset.v) ? ind.delete(b.dataset.v) : ind.add(b.dataset.v); chart(); });
 let bars = [];
+const PAL = { classic: ['#22C55E', '#F04444', '#FF7A1A'], blue: ['#3B82F6', '#FF7A1A', '#3B82F6'], mono: ['#E4E4E7', '#71717A', '#E4E4E7'], cb: ['#0EA5E9', '#F59E0B', '#0EA5E9'] };
+let pal = 'classic'; try { pal = localStorage.getItem('inv-pal') || 'classic'; } catch {}
+const palSel = document.getElementById('palette'); palSel.value = pal; palSel.onchange = e => { pal = e.target.value; try { localStorage.setItem('inv-pal', pal); } catch {} chart(); };
 const fmtV = a => v => a.y ? v.toFixed(3) : v >= 1000 ? v.toLocaleString('en-US', { maximumFractionDigits: 0 }) : v >= 10 ? v.toFixed(2) : v.toFixed(4);
 function ohlcText(a, b) { const f = fmtV(a); const up = b.c >= b.o; return `<span>O <b>${f(b.o)}</b></span><span>H <b>${f(b.h)}</b></span><span>L <b>${f(b.l)}</b></span><span>C <b class="${up ? 'up' : 'down'}">${f(b.c)}</b></span>`; }
 function chart() {
   const a = M.bySym[sel], [n, vol, labels] = TF[tf], ch = tf === '1D' ? a.d : tf === '5D' ? a.w : tf === '5Y' ? 90 : 6 + a.w * 2;
   bars = M.ohlc(a.s + tf, n, a.p, a.stable ? 0 : ch, a.stable ? .0005 : vol);
   document.getElementById('ohlc').innerHTML = ohlcText(a, bars[bars.length - 1]);
-  proChart(document.getElementById('pro'), bars, { type: ctype, height: 440, labels, sma: [...ind].filter(x => x !== 'vol').map(Number), volume: ind.has('vol'), fmt: fmtV(a), onHover: b => document.getElementById('ohlc').innerHTML = ohlcText(a, b || bars[bars.length - 1]) });
+  proChart(document.getElementById('pro'), bars, { type: ctype, height: 440, labels, sma: [...ind].filter(x => x !== 'vol').map(Number), volume: ind.has('vol'), fmt: fmtV(a), upCol: PAL[pal][0], downCol: PAL[pal][1], lineCol: PAL[pal][2], onHover: b => document.getElementById('ohlc').innerHTML = ohlcText(a, b || bars[bars.length - 1]) });
 }
 function select(s) {
   sel = s; const a = M.bySym[s], pf = (window.PROFILES || {})[s];
