@@ -54,11 +54,31 @@
   const fmtC = (v, bps) => bps ? `${v > 0 ? '+' : ''}${(v * 1).toFixed(1)} bp` : `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`;
   const cls = v => v > 0 ? 'up' : v < 0 ? 'down' : 'muted';
   const cap = b => b == null ? '—' : b >= 1000 ? `$${(b / 1000).toFixed(2)}T` : `$${b}B`;
-  // Official coin logos (open-source CC0 set, self-hosted in assets/logos); other assets get a coloured ticker tile
-  const LOGO_IMG = new Set(['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX', 'LINK', 'UNI', 'AAVE', 'USDT', 'USDC']);
+  // Asset logos, all self-hosted in assets/logos: coin logos (CC0 set), company icons, brand glyphs (simple-icons, CC0)
+  // and round flags (circle-flags, MIT) for indices, bonds and currencies. Anything else gets a coloured ticker tile.
+  const COIN = new Set(['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX', 'LINK', 'UNI', 'AAVE', 'USDT', 'USDC']);
+  const GLYPH = new Set(['NVDA', 'V', 'INTC', 'AMD', 'BA', 'SAP', 'TM', 'BABA']);
+  const ICON = new Set(['AAPL','ADBE','AMZN','ARKK','ASML','AVGO','BAC','BNP','COST','CRWV','CVX','DELL','ENPH','FXAIX','GLD','GOOGL','GS','HSBA','JNJ','JPM','KO','LLY','MC','MELI','META','MSFT','NFLX','NU','NVO','PEP','PFE','QQQ','SCHD','SHEL','SHOP','TSLA','VTI','WFC','WMT','WULF','XOM']), ICON_ALIAS = { VOO: 'VTI', VFIAX: 'VTI', VWCE: 'VTI' };
+  const FLAG = { SPX: 'us', NDX: 'us', DJI: 'us', RUT: 'us', ES1: 'us', YM1: 'us', NQ1: 'us', DAX: 'de', CAC: 'fr', UKX: 'gb', NKY: 'jp', SX5E: 'eu', HSI: 'hk', TSX: 'ca', IBOV: 'br', MXX: 'mx', XJO: 'au', NZ50: 'nz', J203: 'za', EGX30: 'eg', NGSE: 'ng', SENSEX: 'in', KOSPI: 'kr', SSEC: 'cn',
+    US02Y: 'us', US10Y: 'us', US30Y: 'us', USIG: 'us', USHY: 'us', DE10Y: 'de', FR10Y: 'fr', JP10Y: 'jp', UK10Y: 'gb', IT10Y: 'it', DXY: 'us' };
+  const CCY = { EUR: 'eu', USD: 'us', GBP: 'gb', JPY: 'jp', CHF: 'ch', AUD: 'au', TRY: 'tr', MXN: 'mx', ZAR: 'za', CAD: 'ca', CNY: 'cn' };
+  const CMD = {
+    bar: '<path d="M3.5 17.5h17l-2.6-6.5H6.1z"/><path d="M7.6 11l1.3-4h6.2l1.3 4"/>',
+    drop: '<path d="M12 3.5c3 4.3 5.8 7.4 5.8 10.7a5.8 5.8 0 0 1-11.6 0c0-3.3 2.8-6.4 5.8-10.7z"/>',
+    flame: '<path d="M12 3c.8 3.4 5 5.3 5 10.2a5 5 0 0 1-10 0c0-2.5 1.2-4 2.6-5.2.2 1.7.9 2.7 2 3.1-.1-3 .1-5.6.4-8.1z"/>',
+    grain: '<path d="M12 21V8"/><path d="M12 10.5c-2-.8-3.2-2.6-3.2-4.8 2.1.2 3.2 1.8 3.2 3.9 0-2.1 1.1-3.7 3.2-3.9 0 2.2-1.2 4-3.2 4.8z"/><path d="M12 15.5c-2-.8-3.2-2.4-3.2-4.4 2.1.2 3.2 1.6 3.2 3.6 0-2 1.1-3.4 3.2-3.6 0 2-1.2 3.6-3.2 4.4z"/>',
+    bean: '<ellipse cx="12" cy="12" rx="6" ry="8.5"/><path d="M12 3.5c-2.2 3 2.2 5.5 0 8.5s2.2 5.5 0 8.5"/>' };
+  const CMD_OF = { XAU: 'bar', XAG: 'bar', PL: 'bar', HG: 'bar', WTI: 'drop', BRENT: 'drop', NG: 'flame', ZW: 'grain', ZC: 'grain', ZS: 'grain', KC: 'bean' };
+  const img = (src, cls) => `<img src="${src}" alt="" width="48" height="48" decoding="async"${cls ? ` class="${cls}"` : ''}>`;
   const logo = (a, size = '') => {
-    if (LOGO_IMG.has(a.s)) return `<span class="logo ${size} logo-img"><img src="assets/logos/${a.s}.svg" alt="" width="48" height="48" decoding="async"></span>`;
-    const t = a.s.length > 4 ? a.s.slice(0, 3) : a.s; return `<span class="logo ${size} ${t.length === 4 && !size ? 'l4' : ''}" style="background:${a.logo}">${t}</span>`;
+    const s = a.s, icon = ICON_ALIAS[s] || s;
+    if (COIN.has(s)) return `<span class="logo ${size} logo-img">${img(`assets/logos/${s}.svg`)}</span>`;
+    if (FLAG[s]) return `<span class="logo ${size} logo-img">${img(`assets/logos/flags/${FLAG[s]}.svg`)}</span>`;
+    if (a.c === 'currencies' && CCY[s.slice(0, 3)] && CCY[s.slice(3)]) return `<span class="logo ${size} logo-fx">${img(`assets/logos/flags/${CCY[s.slice(0, 3)]}.svg`)}${img(`assets/logos/flags/${CCY[s.slice(3)]}.svg`)}</span>`;
+    if (GLYPH.has(s)) return `<span class="logo ${size} logo-tile">${img(`assets/logos/${s}.svg`)}</span>`;
+    if (ICON.has(icon)) return `<span class="logo ${size} logo-tile">${img(`assets/logos/${icon}.png`)}</span>`;
+    if (CMD_OF[s]) return `<span class="logo ${size}" style="background:${a.logo}"><svg class="logo-cmd" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${CMD[CMD_OF[s]]}</svg></span>`;
+    const t = s.length > 4 ? s.slice(0, 3) : s; return `<span class="logo ${size} ${t.length === 4 && !size ? 'l4' : ''}" style="background:${a.logo}">${t}</span>`;
   };
   const href = a => `asset.html?s=${a.s}`;
 
