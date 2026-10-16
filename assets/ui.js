@@ -150,7 +150,7 @@
   document.body.prepend(hdr);
   // profile (stored on this device until accounts exist)
   const getProfile = () => { try { return JSON.parse(localStorage.getItem('inv-profile') || '{}'); } catch { return {}; } };
-  const paintAvatar = () => { const pr = getProfile(), av = hdr.querySelector('#hdr-avatar'), ini = (pr.name || 'AK').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase(); av.innerHTML = pr.photo ? `<img src="${pr.photo}" alt="">` : ini; };
+  const paintAvatar = () => { const pr = getProfile(), av = hdr.querySelector('#hdr-avatar'), ini = (pr.name ? pr.name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase() : 'AK'); av.innerHTML = pr.photo ? `<img src="${pr.photo}" alt="">` : ini; };
   paintAvatar(); window.addEventListener('profile-change', paintAvatar);
   // notifications panel (sample items; settings live on the profile page)
   const NOTIFS = [['news', 'Breaking', 'Fed officials signal no rush to cut rates after hot inflation data', '4 min ago', 'article.html'], ['watch', 'Watchlist', 'NVDA fell 1.84% today. Profit-taking after a 9% two-week run', '1 h ago', 'asset.html?s=NVDA'], ['earn', 'Earnings', 'Tesla reports on Wed 22 Oct after the close', '3 h ago', 'calendar.html#earnings'], ['event', 'Economic event', 'US Retail Sales at 08:30 ET tomorrow. Forecast 0.4%', '5 h ago', 'calendar.html'], ['price', 'Price alert', 'Gold moved more than 2% in a day', 'Yesterday', 'asset.html?s=XAU']];

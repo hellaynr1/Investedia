@@ -53,7 +53,7 @@ const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}');
 let pr = Object.assign({ name: '', email: '', country: 'Belgium', level: 'Some experience', cur: 'USD', photo: '', notif: { breaking: true, watch: true, earn: true, events: false, price: true, brief: true }, ch: { app: true, email: true, push: false } }, load());
 const $ = id => document.getElementById(id);
 const toast = t => { const el = $('toast'); el.textContent = t; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 1800); };
-const initials = () => (pr.name || 'AK').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+const initials = () => (pr.name ? pr.name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase() : 'AK');
 const paintPhoto = () => $('photo').innerHTML = pr.photo ? `<img src="${pr.photo}" alt="Profile picture">` : initials();
 function fill() {
   $('p-name').value = pr.name; $('p-email').value = pr.email; $('p-country').value = pr.country; $('p-level').value = pr.level; $('p-cur').value = pr.cur;
