@@ -46,7 +46,7 @@ function regionNav(el, list, onChange) {
 }
 function movers(el, pool, region, per, setPer, name = a => [a.s, a.n]) {
   const ok = pool.filter(a => isFinite(a[per]) && (per === 'm1' || a.freq !== 'monthly')), pick = s => ok.filter(a => s * a[per] > 0).sort((x, y) => s * (y[per] - x[per])).slice(0, 6);
-  const [k, lab] = PER[per], inR = region === 'All' ? '' : ' in ' + region, mo = per !== 'm1' && pool.some(a => a.freq === 'monthly');
+  const [k, lab] = PER[per], inR = region === 'All' ? '' : ' in ' + UI.regionLabel(region), mo = per !== 'm1' && pool.some(a => a.freq === 'monthly');
   const r = a => { const [b, sm] = name(a); return `<a class="arow" href="${href(a)}" style="grid-template-columns:minmax(0,1fr) auto auto"><span class="ident">${logo(a)}<span><b>${b}</b><small>${sm}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a[per])}" style="min-width:72px;text-align:right">${fmtC(a[per], a.y)}</span></a>`; };
   const list = (xs, w) => xs.length ? xs.map(r).join('') : `<p class="muted" style="padding:16px 18px;margin:0">Nothing${inR} is ${w} ${lab}.${mo ? ' Some yields here update monthly, so try 1M.' : ''}</p>`;
   el.innerHTML = `<div class="grid g-2"><div class="card"><div class="card-head"><h3>Rising ${lab}${inR}</h3><div class="range" data-per>${Object.entries(PER).map(([p, [t]]) => `<button type="button" aria-pressed="${p === per}" data-k="${p}">${t}</button>`).join('')}</div></div><div>${list(pick(1), 'up')}</div></div><div class="card"><div class="card-head"><h3>Falling ${lab}${inR}</h3><span class="meta">${k} change</span></div><div>${list(pick(-1), 'down')}</div></div></div>`;

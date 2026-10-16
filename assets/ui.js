@@ -29,6 +29,7 @@
     home: '<path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
     building: '<path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16M15 9h4a1 1 0 0 1 1 1v11M3 21h18M8 8h3M8 12h3M8 16h3"/>',
     check: '<path d="m5 12 5 5L20 7"/>',
+    trend: '<path d="M22 7l-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
     up: '<path d="m6 15 6-6 6 6"/>', down: '<path d="m6 9 6 6 6-6"/>',
     globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
@@ -579,12 +580,47 @@
     draw();
     let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(draw, 60); }).observe(el);
   }
+  // ---------- smooth segmented controls ----------
+  // Tab groups (.tabs) and range pickers (.range) get one highlight that slides to the selected button
+  function segment(el) {
+    if (el._seg) return; el._seg = true;
+    const th = document.createElement('span'); th.className = 'seg-thumb'; th.setAttribute('aria-hidden', 'true');
+    el.classList.add('has-thumb'); el.prepend(th);
+    const place = anim => {
+      if (!el.contains(th)) el.prepend(th);
+      const b = el.querySelector(':scope > [aria-selected="true"], :scope > [aria-pressed="true"]');
+      if (!b || !b.offsetWidth) { th.style.opacity = 0; return; }
+      if (!anim) th.style.transition = 'none';
+      th.style.width = b.offsetWidth + 'px'; th.style.height = b.offsetHeight + 'px';
+      th.style.transform = `translate(${b.offsetLeft}px,${b.offsetTop}px)`; th.style.opacity = 1;
+      if (!anim) { th.offsetWidth; th.style.transition = ''; }
+    };
+    let first = true;
+    new MutationObserver(() => { requestAnimationFrame(() => place(!first)); }).observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: ['aria-selected', 'aria-pressed'] });
+    if ('ResizeObserver' in window) new ResizeObserver(() => place(false)).observe(el);
+    place(false); requestAnimationFrame(() => { first = false; });
+  }
+  const segAll = root => root.querySelectorAll && root.querySelectorAll('.tabs, .range').forEach(segment);
+  // Quiet line icons in front of section titles
+  const H_IC = { 'Global markets': 'globe', 'World indices': 'globe', 'Global indices': 'globe', 'By region': 'globe', 'Stocks by region': 'globe', 'Rising now': 'trend', 'Trending markets': 'trend',
+    'Market movers': 'heat', 'Top gainers & losers': 'trend', 'Trending stocks': 'stocks', 'Major indices': 'indices', 'Index futures': 'clock', 'Extended-hours trading': 'clock',
+    'Latest news': 'news', 'Featured analysis': 'news', 'Learn to invest': 'book', 'Cryptocurrency overview': 'crypto', 'Crypto movers': 'crypto', 'Crypto screener': 'filter',
+    'Currency pairs': 'currencies', 'Currency heatmap': 'heat', 'S&P 500 heatmap': 'heat', 'Central bank rates': 'building', 'Government bonds': 'bonds', 'Corporate bonds': 'bonds',
+    '10-year yields by country': 'bonds', 'Top ETFs': 'funds', 'ETF screener': 'filter', 'All commodities': 'commodities', 'Energy': 'commodities', 'Metals': 'commodities', 'Agriculture': 'commodities', 'Browse by type': 'filter' };
+  const headIcons = () => document.querySelectorAll('main .sec-head h2').forEach(h => { const k = H_IC[h.textContent.trim()]; if (k && !h.querySelector('.h-ic')) h.insertAdjacentHTML('afterbegin', `<span class="h-ic" aria-hidden="true">${icon(k)}</span>`); });
+  document.addEventListener('DOMContentLoaded', () => {
+    segAll(document); headIcons();
+    new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType !== 1) return; if (n.matches('.tabs, .range')) segment(n); segAll(n); }))).observe(document.body, { childList: true, subtree: true });
+  });
+
   // ---------- regions ----------
   // Tabs for the regions that actually have assets in `list`; calls onChange('All' | 'Europe' | …)
+  const GLOBE = { Americas: '🌎', Europe: '🌍', Africa: '🌍', 'Middle East': '🌍', Asia: '🌏', Oceania: '🌏', Global: '🌐' };
+  const regionLabel = r => GLOBE[r] ? `<span class="rg-emoji" aria-hidden="true">${GLOBE[r]}</span>${r}` : r;
   function regionTabs(el, list, onChange, cur = 'All') {
     const have = M.REGIONS.filter(r => list.some(a => a.region === r));
     el.classList.add('tabs', 'region-tabs'); el.setAttribute('role', 'tablist'); el.setAttribute('aria-label', 'Region');
-    el.innerHTML = ['All', ...have].map(r => `<button class="tab" type="button" role="tab" aria-selected="${r === cur}" data-r="${r}">${r}</button>`).join('');
+    el.innerHTML = ['All', ...have].map(r => `<button class="tab" type="button" role="tab" aria-selected="${r === cur}" data-r="${r}">${regionLabel(r)}</button>`).join('');
     el.onclick = e => { const b = e.target.closest('[data-r]'); if (!b) return; el.querySelectorAll('[data-r]').forEach(x => x.setAttribute('aria-selected', x === b)); onChange(b.dataset.r); };
     return have;
   }
@@ -596,12 +632,12 @@
     const big = pool.filter(a => a.m).sort((x, y) => y.m - x.m).slice(0, 6);
     const row = (a, v) => `<a class="arow" href="${href(a)}" style="grid-template-columns:minmax(0,1fr) auto auto"><span class="ident">${logo(a)}<span><b>${a.c === 'indices' || a.c === 'bonds' ? a.n : a.s}</b><small>${a.c === 'indices' || a.c === 'bonds' ? a.s : a.n}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(v)}" style="min-width:72px;text-align:right">${fmtC(v, a.y)}</span></a>`;
     el.innerHTML = `<div class="grid g-2">
-      <div class="card"><div class="card-head"><h3>Rising ${lab}${region === 'All' ? '' : ' · ' + region}</h3><div class="range" data-per>${[['d', '1D'], ['w', '1W'], ['m1', '1M']].map(([k, t]) => `<button type="button" aria-pressed="${k === per}" data-k="${k}">${t}</button>`).join('')}</div></div>
+      <div class="card"><div class="card-head"><h3>Rising ${lab}${region === 'All' ? '' : ' · ' + regionLabel(region)}</h3><div class="range" data-per>${[['d', '1D'], ['w', '1W'], ['m1', '1M']].map(([k, t]) => `<button type="button" aria-pressed="${k === per}" data-k="${k}">${t}</button>`).join('')}</div></div>
         <div>${up.length ? up.map(a => row(a, a[per])).join('') : `<p class="muted" style="padding:16px 18px;margin:0">Nothing in ${region} is up ${lab}.</p>`}</div></div>
-      <div class="card"><div class="card-head"><h3>Largest${region === 'All' ? '' : ' in ' + region}</h3><span class="meta">by market value</span></div>
+      <div class="card"><div class="card-head"><h3>Largest${region === 'All' ? '' : ' in ' + regionLabel(region)}</h3><span class="meta">by market value</span></div>
         <div>${big.map(a => row(a, a.d)).join('') || `<p class="muted" style="padding:16px 18px;margin:0">No companies listed yet.</p>`}</div></div></div>`;
     el.querySelectorAll('[data-per] button').forEach(b => b.onclick = () => regionMovers(el, list, region, b.dataset.k));
   }
 
-  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, regionTabs, inRegion, regionMovers };
+  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, regionTabs, inRegion, regionMovers, regionLabel };
 })();
