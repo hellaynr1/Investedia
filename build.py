@@ -20,7 +20,7 @@ HEAD = """<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/app.css?v={ver}">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -42,32 +42,38 @@ HEAD = """<!doctype html>
 <body data-page="{key}">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js"></script>
-<script src="assets/ui.js"></script>
+<script src="assets/mock.js?v={ver}"></script>
+<script src="assets/ui.js?v={ver}"></script>
 {extra}<main class="wrap">
 """
 TAIL = "</main>\n</body>\n</html>\n"
 
 def build():
     pages = sorted((ROOT / "src" / "pages").glob("*.html"))
+    ver = code_version(pages)
     for p in pages:
         first, body = p.read_text().split("\n", 1)
         meta = json.loads(first)
-        extra = "".join(f'<script src="{s}"></script>\n' for s in meta.get("scripts", []))
-        html = HEAD.format(title=meta["title"], desc=meta["desc"], key=meta["key"], extra=extra) + body.rstrip() + "\n" + TAIL
+        extra = "".join(f'<script src="{s}?v={ver}"></script>\n' for s in meta.get("scripts", []))
+        html = HEAD.format(title=meta["title"], desc=meta["desc"], key=meta["key"], extra=extra, ver=ver) + body.rstrip() + "\n" + TAIL
         (ROOT / p.name).write_text(html)
     write_sw(pages)
     print(f"Built {len(pages)} pages: " + ", ".join(p.name for p in pages))
     mirror_docs()
 
-def write_sw(pages):
-    """Offline support for the home-screen app. The version changes whenever the site's code changes."""
+def code_version(pages):
+    """Short hash of the site's code and pages (not the price/news data), used to bust phone caches."""
     import hashlib
     h = hashlib.sha1()
-    for f in sorted(list((ROOT / "assets").glob("*.*")) + [ROOT / p.name for p in pages]):
+    data = {"quotes.js", "news.js", "intraday.json", "data.js"}
+    for f in sorted([f for f in (ROOT / "assets").glob("*.*") if f.name not in data] + list(pages) + [ROOT / "src" / "sw.js"]):
         h.update(f.read_bytes())
+    return h.hexdigest()[:10]
+
+def write_sw(pages):
+    """Offline support for the home-screen app. The version changes whenever the site's code changes."""
     tpl = (ROOT / "src" / "sw.js").read_text()
-    (ROOT / "sw.js").write_text(tpl.replace("__VERSION__", h.hexdigest()[:10]))
+    (ROOT / "sw.js").write_text(tpl.replace("__VERSION__", code_version(pages)))
 
 def mirror_docs():
     """GitHub Pages may publish from /docs: keep an identical copy of the site there."""
