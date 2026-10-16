@@ -81,6 +81,8 @@
     const t = s.length > 4 ? s.slice(0, 3) : s; return `<span class="logo ${size} ${t.length === 4 && !size ? 'l4' : ''}" style="background:${a.logo}">${t}</span>`;
   };
   const href = a => `asset.html?s=${a.s}`;
+  // Real headlines open the publisher's article in a new tab; our own stories open on the site
+  const nhref = n => n.url ? `href="${n.url}" target="_blank" rel="noopener"` : 'href="article.html"';
 
   // One update per display frame, whatever the screen's refresh rate
   const rafMove = fn => { let last = null; return e => { if (last === null) requestAnimationFrame(() => { const ev = last; last = null; fn(ev); }); last = e; }; };
@@ -260,7 +262,7 @@
     const hits = M.assets.filter(a => !s || a.s.toLowerCase().includes(s) || a.n.toLowerCase().includes(s)).slice(0, s ? 8 : 6);
     const nh = M.news.filter(n => s && n.t.toLowerCase().includes(s)).slice(0, 3);
     list.innerHTML = `<h6>${s ? 'Markets' : 'Trending'}</h6>` + (hits.length ? hits.map((a, i) => `<a class="pal-item" href="${href(a)}" ${i === 0 ? 'aria-selected="true"' : ''}><span>${logo(a)}</span><span class="ident"><span><b>${a.s}</b><small>${a.n} · ${a.x}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a.d)}" data-lc="${a.s}">${fmtC(a.d, a.y)}</span></a>`).join('') : `<div class="pal-item muted">No markets match “${q.value}”.</div>`)
-      + (nh.length ? `<h6>News</h6>` + nh.map(n => `<a class="pal-item" href="article.html" style="grid-template-columns:auto 1fr"><span class="dd-ic" style="width:28px;height:28px">${icon('news')}</span><span>${n.t}</span></a>`).join('') : '');
+      + (nh.length ? `<h6>News</h6>` + nh.map(n => `<a class="pal-item" ${nhref(n)} style="grid-template-columns:auto 1fr"><span class="dd-ic" style="width:28px;height:28px">${icon('news')}</span><span>${n.t}</span></a>`).join('') : '');
   }
   function openPalette() { closeDrawer(); pal.hidden = false; q.value = ''; renderPal(); setTimeout(() => q.focus(), 10); }
   function closePalette() { pal.hidden = true; }
@@ -543,5 +545,5 @@
     draw();
     let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(draw, 60); }).observe(el);
   }
-  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart };
+  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref };
 })();

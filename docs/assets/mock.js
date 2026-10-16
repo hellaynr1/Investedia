@@ -307,5 +307,10 @@ window.MOCK = (function () {
   }
 
   realEstate.reits.forEach(reitQ);
-  return { assets, bySym, categories, news, analysis, calendar, earnings, realEstate, series, seeded, ohlc, history, details, intraday, updated };
+  // Real headlines (assets/news.js and assets/news/<SYM>.json, written by update_news.py) replace the sample stories
+  const ago = ts => { const m = Math.max(1, Math.round((Date.now() / 1000 - ts) / 60)); return m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + 'h ago' : Math.round(m / 1440) + 'd ago'; };
+  const toItem = (x, id) => ({ id, cat: x.cat, tag: (x.syms || [])[0] || '', syms: x.syms || [], t: x.t, d: x.d || '', a: x.src, time: ago(x.ts), ts: x.ts, read: null, img: id, url: x.u });
+  if (window.NEWS && NEWS.items.length) news.splice(0, news.length, ...NEWS.items.map((x, i) => toItem(x, 'n' + i)));
+  const newsFor = sym => getJSON('assets/news/' + sym + '.json').then(j => j && j.items.length ? j.items.map((x, i) => toItem(Object.assign({ syms: [sym] }, x), sym + i)) : news.filter(n => n.syms && n.syms.includes(sym)));
+  return { assets, bySym, categories, news, analysis, calendar, earnings, realEstate, series, seeded, ohlc, history, details, intraday, updated, newsFor };
 })();

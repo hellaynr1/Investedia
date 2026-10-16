@@ -139,7 +139,7 @@ function select(s) {
     : `<p class="muted" style="margin:0 0 12px;font-size:14px">${a.n} ${a.d >= 0 ? 'rose' : 'fell'} ${fmtC(a.d, a.y).replace(/^[+−]/, '')} today, ${Math.abs(a.d) > 2 ? 'a larger move than usual' : 'in line with its normal range'}. A full AI breakdown is available for featured assets in this preview.</p><a class="btn btn-ghost btn-sm" href="?s=NVDA">See an example</a>`;
   document.getElementById('c-news-t').textContent = 'News · ' + a.s;
   document.getElementById('c-open').href = href(a);
-  document.getElementById('c-news').innerHTML = M.news.filter(n => n.tag === a.s).concat(M.news.filter(n => n.tag !== a.s)).slice(0, 4).map(n => `<a class="news-item" href="article.html" style="padding:12px 16px"><div class="news-meta"><span class="accent" style="font-weight:600">${n.cat}</span><i></i><span>${n.time}</span></div><h3 style="font-size:13.5px">${n.t}</h3></a>`).join('');
+  M.newsFor(s).then(list => sel === s && (document.getElementById('c-news').innerHTML = (list.length ? list : M.news).slice(0, 4).map(n => `<a class="news-item" ${UI.nhref(n)} style="padding:12px 16px"><div class="news-meta"><span class="accent" style="font-weight:600">${n.cat}</span><i></i><span>${n.time}</span></div><h3 style="font-size:13.5px">${n.t}</h3></a>`).join('')));
   chart();
 }
 

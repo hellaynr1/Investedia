@@ -1,4 +1,4 @@
-name: Update market data
+name: Update market data and news
 # Free price refresh: every 30 minutes while markets are open, every 3 hours otherwise.
 # Long-term history is rebuilt once a day after the US close.
 on:
@@ -33,12 +33,14 @@ jobs:
           else
             python3 update_market.py
           fi
+      - name: Fetch news
+        run: python3 update_news.py || echo "News update failed; keeping the previous headlines"
       - name: Publish
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add assets/quotes.js assets/intraday.json assets/hist docs/assets
+          git add assets/quotes.js assets/intraday.json assets/hist assets/news.js assets/news docs/assets
           git diff --cached --quiet && exit 0
-          git commit -q -m "Update market data"
+          git commit -q -m "Update market data and news"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q && exit 0; sleep 5; done
           exit 1
