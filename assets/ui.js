@@ -57,6 +57,9 @@
   const logo = (a, size = '') => { const t = a.s.length > 4 ? a.s.slice(0, 3) : a.s; return `<span class="logo ${size} ${t.length === 4 && !size ? 'l4' : ''}" style="background:${a.logo}">${t}</span>`; };
   const href = a => `asset.html?s=${a.s}`;
 
+  // One update per display frame, whatever the screen's refresh rate
+  const rafMove = fn => { let last = null; return e => { if (last === null) requestAnimationFrame(() => { const ev = last; last = null; fn(ev); }); last = e; }; };
+
   // ---------- brand ----------
   const mark = `<svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" fill="#000"/><path d="M0 31 11 24.5l7 4.5 10-10 12 6.5V40H0z" fill="#1e1e21"/><path d="M0 28 11 21.5l7 4.5 10-10 12 6.5" fill="none" stroke="#FF7A1A" stroke-width="4"/></svg>`;
   const brand = `<a class="brand" href="index.html" aria-label="Investedia home">${mark}<b>Invested<span class="i">i</span>a</b></a>`;
@@ -184,7 +187,12 @@
   setTheme(th); window.setInvTheme = setTheme; tb.onclick = () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
   const skip = document.createElement('a'); skip.className = 'skip'; skip.href = '#main'; skip.textContent = 'Skip to content'; document.body.prepend(skip);
   const onScrollHdr = () => hdr.classList.toggle('scrolled', scrollY > 8); addEventListener('scroll', onScrollHdr, { passive: true }); onScrollHdr();
-  document.addEventListener('DOMContentLoaded', () => { const m = document.querySelector('main'); if (m) { m.id = m.id || 'main'; m.classList.add('enter'); } });
+  document.addEventListener('DOMContentLoaded', () => { const m = document.querySelector('main'); if (m) { m.id = m.id || 'main'; if (!('onpagereveal' in window)) m.classList.add('enter'); } });
+  // Prefetch internal pages on hover or touch so clicks open instantly
+  const fetched = new Set();
+  const prefetch = e => { const a = e.target.closest && e.target.closest('a[href]'); if (!a) return; const u = new URL(a.href, location.href); if (u.origin !== location.origin || !u.pathname.endsWith('.html') || u.pathname === location.pathname || fetched.has(u.pathname)) return; fetched.add(u.pathname); const l = document.createElement('link'); l.rel = 'prefetch'; l.href = u.pathname; document.head.append(l); };
+  document.addEventListener('pointerover', prefetch, { passive: true });
+  document.addEventListener('touchstart', prefetch, { passive: true });
 
   // dropdown behaviour: hover on desktop, click anywhere, Escape closes
   const closeAll = except => hdr.querySelectorAll('[data-dd]').forEach(b => { if (b === except) return; b.setAttribute('aria-expanded', 'false'); document.getElementById(b.dataset.dd).classList.remove('open'); });
@@ -294,14 +302,14 @@
         <rect x="${W - padR + 4}" y="${sy(last) - 10}" width="${padR - 6}" height="20" rx="4" fill="${color}"/><text x="${W - padR + 10}" y="${sy(last) + 4}" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="#0A0A0B">${fmt(last)}</text>
         <g class="hover" style="display:none"><line class="xh" y1="${padT}" y2="${H - padB}"/><circle r="4.5" fill="${color}" stroke="#0A0A0B" stroke-width="2"/></g></svg><div class="tip" style="display:none"></div>`;
       const svg = el.querySelector('svg'), g = el.querySelector('.hover'), tip = el.querySelector('.tip');
-      svg.addEventListener('pointermove', e => {
+      svg.addEventListener('pointermove', rafMove(e => {
         const r = svg.getBoundingClientRect(), x = (e.clientX - r.left) * W / r.width;
         const i = Math.max(0, Math.min(vals.length - 1, Math.round((x - padL) / (W - padL - padR) * (vals.length - 1))));
         g.style.display = ''; g.querySelector('line').setAttribute('x1', sx(i)); g.querySelector('line').setAttribute('x2', sx(i));
         g.querySelector('circle').setAttribute('cx', sx(i)); g.querySelector('circle').setAttribute('cy', sy(vals[i]));
         tip.style.display = ''; tip.style.left = sx(i) / W * 100 + '%'; tip.style.top = sy(vals[i]) + 'px';
         tip.innerHTML = `<b>${fmt(vals[i])}</b>${opts.tipLabel ? `<div class="dim">${opts.tipLabel(i)}</div>` : ''}`;
-      });
+      }), { passive: true });
       svg.addEventListener('pointerleave', () => { g.style.display = 'none'; tip.style.display = 'none'; });
     };
     draw();
@@ -443,14 +451,14 @@
       body += `<line x1="${padL}" x2="${W - padR}" y1="${sy(last.c)}" y2="${sy(last.c)}" stroke="${lc}" stroke-dasharray="2 3" opacity=".7"/><rect x="${W - padR + 3}" y="${sy(last.c) - 10}" width="${padR - 5}" height="20" rx="4" fill="${lc}"/><text x="${W - padR + 8}" y="${sy(last.c) + 4}" font-family="Geist Mono,monospace" font-size="11" font-weight="600" fill="#0A0A0B">${fmt(last.c)}</text>`;
       el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price chart">${g}${body}<g class="hover" style="display:none"><line class="xh" y1="${padT}" y2="${H - padB}"/><line class="xh yh" x1="${padL}" x2="${W - padR}"/><rect class="ytag" x="${W - padR + 3}" width="${padR - 5}" height="20" rx="4" fill="#3f3f46"/><text class="ytxt" x="${W - padR + 8}" font-family="Geist Mono,monospace" font-size="11" fill="#fff"></text></g></svg>`;
       const svg = el.querySelector('svg'), hv = el.querySelector('.hover');
-      svg.addEventListener('pointermove', e => {
+      svg.addEventListener('pointermove', rafMove(e => {
         const r = svg.getBoundingClientRect(), x = (e.clientX - r.left) * W / r.width, y = (e.clientY - r.top) * H / r.height;
         const i = Math.max(0, Math.min(n - 1, Math.floor((x - padL) / step)));
         hv.style.display = ''; const [vx, hy] = hv.querySelectorAll('line');
         vx.setAttribute('x1', sx(i)); vx.setAttribute('x2', sx(i)); const yy = Math.max(padT, Math.min(padT + pH, y)); hy.setAttribute('y1', yy); hy.setAttribute('y2', yy);
         hv.querySelector('.ytag').setAttribute('y', yy - 10); const t = hv.querySelector('.ytxt'); t.setAttribute('y', yy + 4); t.textContent = fmt(mn + (1 - (yy - padT) / pH) * (mx - mn));
         onHover && onHover(bars[i], i);
-      });
+      }), { passive: true });
       svg.addEventListener('pointerleave', () => { hv.style.display = 'none'; onHover && onHover(null); });
     };
     draw();
