@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=419338c466">
+<link rel="stylesheet" href="assets/app.css?v=80d146024d">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,8 +37,8 @@
 <body data-page="news">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=419338c466"></script>
-<script src="assets/ui.js?v=419338c466"></script>
+<script src="assets/mock.js?v=80d146024d"></script>
+<script src="assets/ui.js?v=80d146024d"></script>
 <main class="wrap">
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>News</span></div>
@@ -47,6 +47,7 @@
 <nav class="subnav" id="news-nav"></nav>
 
 <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px" id="cats"></div>
+<section class="sec" id="ai-brief" hidden></section>
 
 <section class="sec">
   <div class="grid g-main-l">
@@ -99,6 +100,7 @@ const counts = {}; M.news.forEach(n => (n.syms || [n.tag]).forEach(s => { if (M.
 const trending = Object.keys(counts).sort((x, y) => counts[y] - counts[x]).slice(0, 5);
 document.getElementById('trend').innerHTML = (trending.length ? trending : ['NVDA', 'BTC', 'AAPL', 'XAU', 'SPX']).map(s => M.bySym[s]).map(r => `<a class="dd-row" style="padding:10px 18px;border-radius:0;border-bottom:1px solid var(--line-soft)" href="${href(r)}"><span class="ident">${logo(r)}<span><b>${r.s}</b><small>${r.n}</small></span></span><span class="num">${fmtP(r)}</span><span class="pill ${cls(r.d)}">${fmtC(r.d)}</span></a>`).join('');
 document.querySelectorAll('[data-news-asof]').forEach(e => { if (window.NEWS) e.textContent = 'Updated ' + new Date(NEWS.updated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); });
+UI.aiBrief(document.getElementById('ai-brief'));
 </script>
 </main>
 </body>

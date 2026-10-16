@@ -1,0 +1,49 @@
+name: AI task
+# Add the label "ai-task" to an issue (works from the GitHub phone app). An open-source coding agent
+# (Aider) does the task through your OmniRoute gateway and opens a pull request for you to review.
+# Only the repository owner can start it. Nothing is merged without you.
+on:
+  issues:
+    types: [labeled]
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+concurrency:
+  group: ai-task-${{ github.event.issue.number }}
+jobs:
+  run:
+    if: github.event.label.name == 'ai-task' && github.event.sender.login == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Install Aider
+        run: pip install -q aider-chat
+      - name: Do the task
+        env:
+          OPENAI_API_BASE: ${{ secrets.OMNIROUTE_URL }}/v1
+          OPENAI_API_KEY: ${{ secrets.OMNIROUTE_KEY }}
+          MODEL: ${{ vars.OMNIROUTE_CODE_MODEL || 'auto/coding' }}
+          TITLE: ${{ github.event.issue.title }}
+          BODY: ${{ github.event.issue.body }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then echo "Add the OMNIROUTE_URL and OMNIROUTE_KEY secrets first (see AI-SETUP.md)"; exit 1; fi
+          printf 'Task: %s\n\n%s\n\nThis is a static site: edit src/pages/*.html and assets/*, never the root or docs/ html (they are generated). Keep the existing style.\n' "$TITLE" "$BODY" > /tmp/task.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git checkout -b ai/issue-${{ github.event.issue.number }}
+          aider --model "openai/$MODEL" --yes-always --no-auto-lint --no-show-model-warnings --no-check-update --message-file /tmp/task.md
+          python3 build.py
+          git add -A && (git diff --cached --quiet || git commit -q -m "Build after AI task")
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          N: ${{ github.event.issue.number }}
+        run: |
+          if [ "$(git rev-list --count origin/main..HEAD)" = "0" ]; then gh issue comment "$N" --body "The AI made no changes for this task."; exit 0; fi
+          git push -q -u origin "ai/issue-$N"
+          URL=$(gh pr create --base main --head "ai/issue-$N" --title "AI: $(gh issue view "$N" --json title -q .title)" --body "Made by Aider through OmniRoute for #$N. Review the changes before merging.")
+          gh issue comment "$N" --body "Pull request ready for review: $URL"
