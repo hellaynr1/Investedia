@@ -193,7 +193,7 @@ def from_fred(s):
     if freq == "daily":
         q = {"p": round(p, 3), "d": back(1), "w": back(5), "m1": back(21), "sp": [round(v, 3) for v in vals[-48:]]}
     else:  # monthly averages: "today" shows the latest monthly move
-        q = {"p": round(p, 3), "d": back(1), "w": back(1), "m1": back(1), "sp": [round(v, 3) for v in vals[-48:]]}
+        q = {"p": round(p, 3), "d": 0.0, "w": 0.0, "m1": back(1), "sp": [round(v, 3) for v in vals[-48:]]}  # no daily data: only the monthly move is real
     q.update(asof=pts[-1][0], freq=freq)
     ts = lambda d: int(dt.datetime.strptime(d, "%Y-%m-%d").replace(tzinfo=dt.timezone.utc).timestamp())
     tail = pts[-1300:] if freq == "daily" else pts[-60:]

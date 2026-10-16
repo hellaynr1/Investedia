@@ -229,7 +229,7 @@ a.card:hover,a.panel:hover{border-color:#3a3a40;background:var(--card-hi)}
 .idx svg{height:38px;width:100%;margin-top:6px}
 .stat{padding:14px 16px;border-right:1px solid var(--line-soft)}
 .stat:last-child{border-right:0}
-.stat span{display:block;color:var(--fg-3);font-size:12px}
+.stat>span{display:block;color:var(--fg-3);font-size:12px}
 .stat b{display:block;font-family:var(--mono);font-weight:500;font-size:15px;margin-top:2px}
 .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
 .kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line-soft);font-size:13.5px}

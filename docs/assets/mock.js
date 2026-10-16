@@ -312,5 +312,9 @@ window.MOCK = (function () {
   const toItem = (x, id) => ({ id, cat: x.cat, tag: (x.syms || [])[0] || '', syms: x.syms || [], t: x.t, d: x.d || '', a: x.src, time: ago(x.ts), ts: x.ts, read: null, img: id, url: x.u });
   if (window.NEWS && NEWS.items.length) news.splice(0, news.length, ...NEWS.items.map((x, i) => toItem(x, 'n' + i)));
   const newsFor = sym => getJSON('assets/news/' + sym + '.json').then(j => j && j.items.length ? j.items.map((x, i) => toItem(Object.assign({ syms: [sym] }, x), sym + i)) : news.filter(n => n.syms && n.syms.includes(sym)));
+  // Sample calendar dates: recompute the weekday so "Fri 16 Oct" always matches the real calendar
+  const MON = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+  const fixDay = str => { const m = /^\w{3} (\d{1,2}) (\w{3})$/.exec(str || ''); if (!m || MON[m[2]] == null) return str; const d = new Date(new Date().getFullYear(), MON[m[2]], +m[1]); return d.toLocaleDateString('en-GB', { weekday: 'short' }) + ' ' + m[1] + ' ' + m[2]; };
+  calendar.forEach(e => e.day = fixDay(e.day)); earnings.forEach(e => e.date = fixDay(e.date));
   return { assets, bySym, categories, news, analysis, calendar, earnings, realEstate, series, seeded, ohlc, history, details, intraday, updated, newsFor };
 })();
