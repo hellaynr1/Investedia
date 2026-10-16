@@ -254,9 +254,8 @@
     <div><h6>Markets</h6><ul>${M.categories.map(c => `<li><a href="${c.page}">${c.t}</a></li>`).join('')}</ul></div>
     <div><h6>Content</h6><ul><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li><li><a href="ai-insights.html">AI Insights</a></li><li><a href="education.html">Education</a></li><li><a href="real-estate.html">Real Estate</a></li></ul></div>
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#careers">Careers</a></li><li><a href="about.html#advertise">Advertise</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li></ul></div>
+    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li></ul></div>
   </div>
-  <div class="partner"><span class="dim">In partnership with</span><a href="about.html#partners"><b>Guidify</b></a><span class="dim">· growth partner for Shopify brands</span></div>
   <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Design preview · all market figures are illustrative demo data</span></div></div>`;
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
 
