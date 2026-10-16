@@ -47,6 +47,12 @@
   </div>
 </section>
 
+<section class="sec resources" aria-label="Recommended resources">
+  <p class="res-label">Learn alongside the best free resources</p>
+  <div class="res-strip"><div class="res-track" id="res-track"></div></div>
+  <p class="res-note">Independent recommendations. Investedia is not affiliated with or endorsed by these organizations.</p>
+</section>
+
 <section class="sec">
   <div class="sec-head"><div><h2>Global markets</h2><p>Major benchmarks across asset classes.</p></div><span class="demo">Illustrative data</span></div>
   <div class="grid g-4" id="global"></div>
@@ -137,6 +143,9 @@
 <script>
 const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row } = UI, M = MOCK;
 document.getElementById('hero-logo').innerHTML = logo(M.bySym.SPX);
+const RES = [['Investopedia', 'https://www.investopedia.com', 'serif'], ['Investor.gov', 'https://www.investor.gov', 'sans'], ['TradingView', 'https://www.tradingview.com', 'sans'], ['Morningstar', 'https://www.morningstar.com', 'serif'], ['Yahoo Finance', 'https://finance.yahoo.com', 'sans'], ['Khan Academy', 'https://www.khanacademy.org/economics-finance-domain', 'sans'], ['FRED', 'https://fred.stlouisfed.org', 'mono'], ['CoinMarketCap', 'https://coinmarketcap.com', 'sans'], ['Bogleheads', 'https://www.bogleheads.org', 'serif'], ['Reuters Markets', 'https://www.reuters.com/markets/', 'sans']];
+const resItems = RES.map(([n, u, f]) => `<a class="res-item res-${f}" href="${u}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('<span class="res-sep" aria-hidden="true"></span>');
+document.getElementById('res-track').innerHTML = resItems + '<span class="res-sep" aria-hidden="true"></span>' + resItems.replace(/<a /g, '<a tabindex="-1" aria-hidden="true" ');
 
 const spx = M.bySym.SPX, ranges = { '1D': 78, '1W': 70, '1M': 64, '1Y': 120, '5Y': 130 };
 const lab = { '1D': ['09:30', '11:00', '12:30', '14:00', '16:00'], '1W': ['Fri', 'Mon', 'Tue', 'Wed', 'Thu'], '1M': ['16 Sep', '23 Sep', '30 Sep', '7 Oct', '16 Oct'], '1Y': ['Nov', 'Jan', 'Mar', 'May', 'Jul', 'Sep'], '5Y': ['2022', '2023', '2024', '2025', '2026'] };

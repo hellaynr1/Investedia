@@ -458,3 +458,16 @@ body[data-page="dashboard"] main.wrap{max-width:1680px}
 .partner-band{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
 a.partner-band:hover{border-color:#3a3a40}
 .search-btn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* recommended resources strip */
+.resources{margin-top:-8px;padding-block:22px;border-block:1px solid var(--line-soft)}
+.res-label{margin:0 0 14px;text-align:center;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3)}
+.res-note{margin:14px 0 0;text-align:center;font-size:11.5px;color:var(--fg-3)}
+.res-strip{position:relative;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.res-track{display:flex;align-items:center;gap:40px;width:max-content;animation:tick 45s linear infinite}
+.res-strip:hover .res-track{animation-play-state:paused}
+.res-item{font-size:22px;font-weight:600;letter-spacing:-.02em;color:#6b6b74;white-space:nowrap;transition:color .2s}
+.res-item:hover{color:var(--fg)}
+.res-serif{font-family:Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:-.01em}
+.res-mono{font-family:var(--mono);font-weight:600;letter-spacing:.04em}
+.res-sep{width:4px;height:4px;border-radius:50%;background:var(--line);flex:none}
+@media (prefers-reduced-motion:reduce){.res-strip{overflow-x:auto}}
