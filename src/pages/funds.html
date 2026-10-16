@@ -6,6 +6,11 @@
 </div>
 <nav class="subnav" id="subnav"></nav>
 
+<section class="sec" id="by-region">
+  <div class="sec-head"><div><h2>By region</h2><p>Regional and country ETFs, plus what is moving in each region. Also filters the ETF screener.</p></div><div id="rg-tabs"></div></div>
+  <div id="rg-movers"></div>
+</section>
+
 <section class="sec" id="top">
   <div class="sec-head"><div><h2>Top ETFs</h2><p>The largest funds by assets under management.</p></div></div>
   <div class="grid g-4" id="top-cards"></div>
@@ -24,13 +29,29 @@
 </section>
 
 <section class="sec" id="all">
-  <div class="sec-head"><div><h2>ETF screener</h2><p>Filter by cost, size and asset class.</p></div><div style="display:flex;gap:6px;flex-wrap:wrap" id="fees"><button class="chip on" type="button" data-v="9">Any fee</button><button class="chip" type="button" data-v="0.1">Fee under 0.10%</button><button class="chip" type="button" data-v="0.25">Under 0.25%</button></div></div>
+  <div class="sec-head"><div><h2>ETF screener</h2><p id="all-p">Filter by cost, size and asset class.</p></div><div style="display:flex;gap:6px;flex-wrap:wrap" id="fees"><button class="chip on" type="button" data-v="9">Any fee</button><button class="chip" type="button" data-v="0.1">Fee under 0.10%</button><button class="chip" type="button" data-v="0.25">Under 0.25%</button></div></div>
   <div class="card" id="all-table"></div>
 </section>
 <section class="sec" data-newsletter></section>
 <script>
 const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, assetTable, tabs, row, routeHash } = UI, M = MOCK;
 UI.subnav('funds');
+// Region filter: tabs with deep links (#europe, #middle-east) plus a rising/falling pair for the selected region
+const slug = r => r.toLowerCase().replace(/\s+/g, '-'), PER = { d: ['1D', 'today'], w: ['1W', 'this week'], m1: ['1M', 'this month'] };
+function regionNav(el, list, onChange) {
+  const have = UI.regionTabs(el, list, r => { onChange(r); const h = r === 'All' ? '' : '#' + slug(r); if (location.hash !== h && (h || have.some(x => location.hash === '#' + slug(x)))) history.replaceState(null, '', location.pathname + location.search + h); });
+  const fromHash = () => { const h = decodeURIComponent(location.hash.slice(1)).toLowerCase(), r = have.find(x => slug(x) === h), b = r && el.querySelector(`[data-r="${r}"]`); if (b) { b.click(); el.closest('section').scrollIntoView({ block: 'start' }); } };
+  addEventListener('hashchange', fromHash); setTimeout(fromHash, 80);
+  return have;
+}
+function movers(el, pool, region, per, setPer, name = a => [a.s, a.n]) {
+  const ok = pool.filter(a => isFinite(a[per]) && (per === 'm1' || a.freq !== 'monthly')), pick = s => ok.filter(a => s * a[per] > 0).sort((x, y) => s * (y[per] - x[per])).slice(0, 6);
+  const [k, lab] = PER[per], inR = region === 'All' ? '' : ' in ' + region, mo = per !== 'm1' && pool.some(a => a.freq === 'monthly');
+  const r = a => { const [b, sm] = name(a); return `<a class="arow" href="${href(a)}" style="grid-template-columns:minmax(0,1fr) auto auto"><span class="ident">${logo(a)}<span><b>${b}</b><small>${sm}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a[per])}" style="min-width:72px;text-align:right">${fmtC(a[per], a.y)}</span></a>`; };
+  const list = (xs, w) => xs.length ? xs.map(r).join('') : `<p class="muted" style="padding:16px 18px;margin:0">Nothing${inR} is ${w} ${lab}.${mo ? ' Some yields here update monthly, so try 1M.' : ''}</p>`;
+  el.innerHTML = `<div class="grid g-2"><div class="card"><div class="card-head"><h3>Rising ${lab}${inR}</h3><div class="range" data-per>${Object.entries(PER).map(([p, [t]]) => `<button type="button" aria-pressed="${p === per}" data-k="${p}">${t}</button>`).join('')}</div></div><div>${list(pick(1), 'up')}</div></div><div class="card"><div class="card-head"><h3>Falling ${lab}${inR}</h3><span class="meta">${k} change</span></div><div>${list(pick(-1), 'down')}</div></div></div>`;
+  el.querySelectorAll('[data-per] button').forEach(b => b.onclick = () => setPer(b.dataset.k));
+}
 const fu = M.assets.filter(a => a.c === 'funds');
 document.getElementById('top-cards').innerHTML = ['VOO', 'SPY', 'VTI', 'QQQ'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.s}</b><small>${a.n}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div><div style="display:flex;justify-content:space-between;font-size:12px" class="muted"><span>AUM ${a.aum}</span><span>Fee ${a.fee}</span></div>${spark(a.spark, colorFor(a.w), 240, 34)}</a>`).join('');
 const types = { etfs: fu.filter(a => !['FXAIX', 'VFIAX'].includes(a.s)), index: ['VOO', 'SPY', 'VTI', 'VWCE', 'FXAIX', 'VFIAX'].map(s => M.bySym[s]), mutual: ['FXAIX', 'VFIAX'].map(s => M.bySym[s]), dividend: ['SCHD', 'VTI', 'VOO'].map(s => M.bySym[s]) };
@@ -39,9 +60,11 @@ tabs(document.getElementById('ty-tabs'), ty); ty('etfs');
 const fl = [['US large-cap equity', 48.2], ['Bitcoin ETFs', -3.6], ['US Treasuries', 21.4], ['Gold', 6.8], ['International equity', 9.1], ['High-yield bonds', -2.2], ['Emerging markets', 1.9]], mx = 50;
 document.getElementById('flow-bars').innerHTML = `<div style="display:grid;gap:12px">${fl.map(([n, v]) => `<div style="display:grid;grid-template-columns:160px minmax(0,1fr) 64px;gap:12px;align-items:center;font-size:13px"><span class="muted">${n}</span><div style="height:18px;border-radius:3px;background:${v >= 0 ? 'var(--accent)' : 'var(--down)'};width:${Math.abs(v) / mx * 100}%;min-width:3px;opacity:${v >= 0 ? 1 : .8}"></div><span class="num ${cls(v)}" style="text-align:right">${v > 0 ? '+' : '−'}$${Math.abs(v).toFixed(1)}B</span></div>`).join('')}</div>`;
 document.getElementById('trend').innerHTML = ['IBIT', 'ARKK', 'GLD', 'TLT', 'SCHD'].map(s => row(M.bySym[s])).join('');
-let fee = 9;
-const all = () => document.getElementById('all-table').innerHTML = assetTable(fu.filter(a => parseFloat(a.fee) <= fee), ['price', 'chg', 'week', 'aum', 'fee', 'spark']);
+let fee = 9, rg = 'All', per = 'd';
+const all = () => { const list = UI.inRegion(fu, rg).filter(a => parseFloat(a.fee) <= fee); document.getElementById('all-p').textContent = rg === 'All' ? 'Filter by cost, size and asset class.' : `Funds investing in ${rg === 'Global' ? 'markets worldwide' : rg}, filtered by cost.`; document.getElementById('all-table').innerHTML = list.length ? assetTable(list, ['price', 'chg', 'week', 'aum', 'fee', 'spark']) : `<p class="muted" style="padding:16px 18px;margin:0">No ${rg === 'All' ? '' : rg + ' '}funds at this fee level. Try “Any fee”.</p>`; };
+const draw = () => { movers(document.getElementById('rg-movers'), UI.inRegion(fu, rg), rg, per, p => { per = p; draw(); }); all(); };
+regionNav(document.getElementById('rg-tabs'), fu, r => { rg = r; draw(); });
 document.querySelectorAll('#fees .chip').forEach(b => b.onclick = () => { document.querySelectorAll('#fees .chip').forEach(x => x.classList.toggle('on', x === b)); fee = +b.dataset.v; all(); });
-all();
+draw();
 routeHash({ etfs: ['ty-tabs', 'etfs'], index: ['ty-tabs', 'index'], mutual: ['ty-tabs', 'mutual'], dividend: ['ty-tabs', 'dividend'] });
 </script>

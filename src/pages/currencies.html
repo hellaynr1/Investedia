@@ -6,6 +6,11 @@
 </div>
 <nav class="subnav" id="subnav"></nav>
 
+<section class="sec" id="by-region">
+  <div class="sec-head"><div><h2>By region</h2><p>Pairs grouped by the region of their non-dollar currency. Also filters the pairs table below.</p></div><div id="rg-tabs"></div></div>
+  <div id="rg-movers"></div>
+</section>
+
 <section class="sec" id="pairs">
   <div class="sec-head"><div><h2>Currency pairs</h2></div><div class="tabs" id="pr-tabs"><button class="tab" data-tab="major" aria-selected="true">Major</button><button class="tab" data-tab="minor">Minor</button><button class="tab" data-tab="exotic">Exotic</button></div></div>
   <div class="grid g-main" style="align-items:start">
@@ -34,10 +39,31 @@
 <script>
 const { icon, fmtP, fmtC, cls, logo, href, areaChart, assetTable, tabs, routeHash, divBar } = UI, M = MOCK;
 UI.subnav('currencies');
+// Region filter: tabs with deep links (#europe, #middle-east) plus a rising/falling pair for the selected region
+const slug = r => r.toLowerCase().replace(/\s+/g, '-'), PER = { d: ['1D', 'today'], w: ['1W', 'this week'], m1: ['1M', 'this month'] };
+function regionNav(el, list, onChange) {
+  const have = UI.regionTabs(el, list, r => { onChange(r); const h = r === 'All' ? '' : '#' + slug(r); if (location.hash !== h && (h || have.some(x => location.hash === '#' + slug(x)))) history.replaceState(null, '', location.pathname + location.search + h); });
+  const fromHash = () => { const h = decodeURIComponent(location.hash.slice(1)).toLowerCase(), r = have.find(x => slug(x) === h), b = r && el.querySelector(`[data-r="${r}"]`); if (b) { b.click(); el.closest('section').scrollIntoView({ block: 'start' }); } };
+  addEventListener('hashchange', fromHash); setTimeout(fromHash, 80);
+  return have;
+}
+function movers(el, pool, region, per, setPer, name = a => [a.s, a.n]) {
+  const ok = pool.filter(a => isFinite(a[per]) && (per === 'm1' || a.freq !== 'monthly')), pick = s => ok.filter(a => s * a[per] > 0).sort((x, y) => s * (y[per] - x[per])).slice(0, 6);
+  const [k, lab] = PER[per], inR = region === 'All' ? '' : ' in ' + region, mo = per !== 'm1' && pool.some(a => a.freq === 'monthly');
+  const r = a => { const [b, sm] = name(a); return `<a class="arow" href="${href(a)}" style="grid-template-columns:minmax(0,1fr) auto auto"><span class="ident">${logo(a)}<span><b>${b}</b><small>${sm}</small></span></span><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a[per])}" style="min-width:72px;text-align:right">${fmtC(a[per], a.y)}</span></a>`; };
+  const list = (xs, w) => xs.length ? xs.map(r).join('') : `<p class="muted" style="padding:16px 18px;margin:0">Nothing${inR} is ${w} ${lab}.${mo ? ' Some yields here update monthly, so try 1M.' : ''}</p>`;
+  el.innerHTML = `<div class="grid g-2"><div class="card"><div class="card-head"><h3>Rising ${lab}${inR}</h3><div class="range" data-per>${Object.entries(PER).map(([p, [t]]) => `<button type="button" aria-pressed="${p === per}" data-k="${p}">${t}</button>`).join('')}</div></div><div>${list(pick(1), 'up')}</div></div><div class="card"><div class="card-head"><h3>Falling ${lab}${inR}</h3><span class="meta">${k} change</span></div><div>${list(pick(-1), 'down')}</div></div></div>`;
+  el.querySelectorAll('[data-per] button').forEach(b => b.onclick = () => setPer(b.dataset.k));
+}
 const fx = M.assets.filter(a => a.c === 'currencies');
-const groups = { major: fx.filter(a => !a.minor && !a.exotic && a.s !== 'DXY' && a.s !== 'EURGBP'), minor: fx.filter(a => a.minor || a.s === 'EURGBP'), exotic: fx.filter(a => a.exotic) };
-const pr = k => document.getElementById('pr-table').innerHTML = assetTable(groups[k], ['price', 'chg', 'week', 'spark']);
+const MAJ = ['EURUSD', 'GBPUSD', 'USDJPY', 'USDCHF', 'AUDUSD', 'USDCAD', 'NZDUSD'], pairs = fx.filter(a => a.s !== 'DXY');
+const groups = { major: pairs.filter(a => MAJ.includes(a.s)), minor: pairs.filter(a => a.minor || a.s === 'EURGBP'), exotic: pairs.filter(a => !MAJ.includes(a.s) && !a.minor && a.s !== 'EURGBP') };
+let grpK = 'major', rg = 'All', per = 'd';
+const pr = k => { grpK = k; const list = UI.inRegion(groups[k], rg), alt = Object.keys(groups).filter(g => g !== k && UI.inRegion(groups[g], rg).length); document.getElementById('pr-table').innerHTML = list.length ? assetTable(list, ['price', 'chg', 'week', 'spark']) : `<p class="muted" style="padding:16px 18px;margin:0">No ${k} pairs in ${rg}.${alt.length ? ` See ${alt.join(' or ')} pairs.` : ''}</p>`; };
 tabs(document.getElementById('pr-tabs'), pr); pr('major');
+const pairName = a => [a.s.length === 6 ? a.s.slice(0, 3) + '/' + a.s.slice(3) : a.s, a.n];
+const draw = () => { movers(document.getElementById('rg-movers'), UI.inRegion(pairs, rg), rg, per, p => { per = p; draw(); }, pairName); pr(grpK); };
+regionNav(document.getElementById('rg-tabs'), pairs, r => { rg = r; draw(); }); draw();
 areaChart(document.getElementById('eur'), M.series('eurusd', 90, (M.bySym.EURUSD && M.bySym.EURUSD.p) || 1.1642, 1.8, .003), { height: 200, labels: ['Jul', 'Aug', 'Sep', 'Oct'], fmt: v => v.toFixed(4) });
 const cur = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'CAD', 'NZD'], str = { USD: -0.08, EUR: 0.12, GBP: -0.04, JPY: -0.21, CHF: 0.06, AUD: 0.31, CAD: 0.02, NZD: 0.18 };
 document.getElementById('matrix').innerHTML = `<table class="tbl" style="table-layout:fixed;min-width:640px"><thead><tr><th></th>${cur.map(c => `<th style="text-align:center">${c}</th>`).join('')}</tr></thead><tbody>${cur.map(r => `<tr><td><b>${r}</b></td>${cur.map(c => { if (r === c) return '<td style="background:var(--bg-2)"></td>'; const v = +(str[r] - str[c]).toFixed(2); return `<td class="num" style="text-align:center;background:${UI.heatColor(v * 8)};color:#fff">${v > 0 ? '+' : ''}${v.toFixed(2)}%</td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
