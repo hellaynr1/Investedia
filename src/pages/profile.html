@@ -1,0 +1,95 @@
+{"title":"Profile — Investedia","desc":"Your Investedia profile, preferences and notification settings.","key":"profile"}
+<div class="page-head">
+  <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>Profile</span></div>
+  <div class="sec-head" style="margin:0"><div><h1>Profile</h1><p class="lede">Saved on this device for now. Your settings move to your account once sign-in is live.</p></div><span class="demo">Preview</span></div>
+</div>
+
+<div class="prof">
+  <nav class="prof-nav" id="pnav"><a href="#account" aria-current="true">Account</a><a href="#preferences">Preferences</a><a href="#notifications">Notifications</a><a href="watchlist.html">My watchlist</a></nav>
+  <div class="grid" style="gap:16px">
+    <section class="card" id="account">
+      <div class="card-head"><h3>Account</h3></div>
+      <div class="card-pad" style="display:grid;gap:20px">
+        <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+          <div class="photo" id="photo"></div>
+          <div style="display:grid;gap:8px">
+            <b>Profile picture</b>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn btn-ghost btn-sm" for="photo-in" style="cursor:pointer">Upload photo</label><button class="btn btn-ghost btn-sm" type="button" id="photo-rm">Remove</button></div>
+            <small class="dim">JPG or PNG, square works best.</small>
+            <input type="file" id="photo-in" accept="image/*" hidden>
+          </div>
+        </div>
+        <div class="grid g-2" style="gap:14px">
+          <div class="field"><label for="p-name">Display name</label><input class="input" id="p-name" autocomplete="name" placeholder="Your name"></div>
+          <div class="field"><label for="p-email">Email</label><input class="input" id="p-email" type="email" autocomplete="email" placeholder="you@email.com"></div>
+          <div class="field"><label for="p-country">Country</label><select class="select" id="p-country"><option>Belgium</option><option>France</option><option>Netherlands</option><option>Germany</option><option>United Kingdom</option><option>United States</option><option>Canada</option><option>Other</option></select></div>
+          <div class="field"><label for="p-level">Investing experience</label><select class="select" id="p-level"><option>Just starting</option><option>Some experience</option><option>Experienced</option><option>Professional</option></select></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="preferences">
+      <div class="card-head"><h3>Preferences</h3></div>
+      <div class="card-pad">
+        <div class="toggle-row"><span><b>Appearance</b><small>Light or dark mode for the whole site</small></span><div class="seg" id="p-theme" style="width:auto"><button type="button" data-v="dark">Dark</button><button type="button" data-v="light">Light</button></div></div>
+        <div class="toggle-row"><span><b>Chart colours</b><small>Used for candles and lines on the dashboard</small></span><select class="select" id="p-pal" style="width:auto;height:34px"><option value="classic">Green / red</option><option value="blue">Blue / orange</option><option value="mono">Monochrome</option><option value="cb">Colour-blind safe</option></select></div>
+        <div class="toggle-row"><span><b>Currency</b><small>Show prices converted to</small></span><select class="select" id="p-cur" style="width:auto;height:34px"><option>USD</option><option>EUR</option><option>GBP</option></select></div>
+      </div>
+    </section>
+
+    <section class="card" id="notifications">
+      <div class="card-head"><h3>Notifications</h3><span class="meta">Choose what you hear about</span></div>
+      <div class="card-pad" id="n-rows"></div>
+      <div class="card-pad" style="border-top:1px solid var(--line);display:grid;gap:10px"><b style="font-size:13.5px">Deliver to</b><div style="display:flex;gap:6px;flex-wrap:wrap" id="n-ch"></div></div>
+    </section>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-ghost" type="button" id="reset">Reset</button><button class="btn btn-primary" type="button" id="save">Save changes</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const KEY = 'inv-profile';
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+let pr = Object.assign({ name: '', email: '', country: 'Belgium', level: 'Some experience', cur: 'USD', photo: '', notif: { breaking: true, watch: true, earn: true, events: false, price: true, brief: true }, ch: { app: true, email: true, push: false } }, load());
+const $ = id => document.getElementById(id);
+const toast = t => { const el = $('toast'); el.textContent = t; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 1800); };
+const initials = () => (pr.name || 'AK').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+const paintPhoto = () => $('photo').innerHTML = pr.photo ? `<img src="${pr.photo}" alt="Profile picture">` : initials();
+function fill() {
+  $('p-name').value = pr.name; $('p-email').value = pr.email; $('p-country').value = pr.country; $('p-level').value = pr.level; $('p-cur').value = pr.cur;
+  let pal = 'classic'; try { pal = localStorage.getItem('inv-pal') || 'classic'; } catch {} $('p-pal').value = pal;
+  const th = document.documentElement.dataset.theme || 'dark';
+  document.querySelectorAll('#p-theme button').forEach(b => b.classList.toggle('on', b.dataset.v === th));
+  paintPhoto(); rows();
+}
+const NR = [['breaking', 'Breaking market news', 'Big moves in stocks, crypto and rates as they happen'], ['watch', 'News about my watchlist', 'Headlines that mention assets you follow'], ['earn', 'Earnings reminders', 'The day before companies on your watchlist report'], ['events', 'Economic events', 'Rate decisions, inflation and jobs data'], ['price', 'Price alerts', 'When an asset crosses a level you set'], ['brief', 'Daily market brief', 'A five-minute summary every morning']];
+function rows() {
+  $('n-rows').innerHTML = NR.map(([k, t, d]) => `<div class="toggle-row"><span><b>${t}</b><small>${d}</small></span><button class="switch ${pr.notif[k] ? 'on' : ''}" type="button" data-k="${k}" aria-pressed="${!!pr.notif[k]}" aria-label="${t}"><i></i></button></div>`).join('');
+  $('n-ch').innerHTML = [['app', 'In-app'], ['email', 'Email'], ['push', 'Browser notifications']].map(([k, t]) => `<button class="chip ${pr.ch[k] ? 'on' : ''}" type="button" data-c="${k}">${t}</button>`).join('');
+  document.querySelectorAll('#n-rows .switch').forEach(b => b.onclick = () => { pr.notif[b.dataset.k] = !pr.notif[b.dataset.k]; b.classList.toggle('on'); b.setAttribute('aria-pressed', pr.notif[b.dataset.k]); });
+  document.querySelectorAll('#n-ch .chip').forEach(b => b.onclick = async () => {
+    const k = b.dataset.c; pr.ch[k] = !pr.ch[k];
+    if (k === 'push' && pr.ch[k] && 'Notification' in window) { try { const r = await Notification.requestPermission(); if (r !== 'granted') { pr.ch[k] = false; toast('Browser notifications are blocked. Allow them in your browser settings.'); } } catch {} }
+    b.classList.toggle('on', pr.ch[k]);
+  });
+}
+$('photo-in').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const img = new Image(), rd = new FileReader();
+  rd.onload = () => { img.onload = () => { const c = document.createElement('canvas'), s = 256; c.width = c.height = s; const m = Math.min(img.width, img.height); c.getContext('2d').drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, s, s); pr.photo = c.toDataURL('image/jpeg', .85); paintPhoto(); toast('Photo added. Save to keep it.'); }; img.src = rd.result; };
+  rd.readAsDataURL(f);
+};
+$('photo-rm').onclick = () => { pr.photo = ''; paintPhoto(); };
+$('p-name').oninput = e => { pr.name = e.target.value; if (!pr.photo) paintPhoto(); };
+document.querySelectorAll('#p-theme button').forEach(b => b.onclick = () => { document.querySelectorAll('#p-theme button').forEach(x => x.classList.toggle('on', x === b)); window.setInvTheme && window.setInvTheme(b.dataset.v); });
+$('save').onclick = () => {
+  const em = $('p-email').value.trim();
+  if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { toast('Enter a full email address, like you@email.com.'); $('p-email').focus(); return; }
+  Object.assign(pr, { name: $('p-name').value.trim(), email: em, country: $('p-country').value, level: $('p-level').value, cur: $('p-cur').value });
+  try { localStorage.setItem(KEY, JSON.stringify(pr)); localStorage.setItem('inv-pal', $('p-pal').value); toast('Saved'); } catch { toast('Could not save. Your photo may be too large.'); }
+  window.dispatchEvent(new Event('profile-change'));
+};
+$('reset').onclick = () => { pr = Object.assign(pr, load()); fill(); toast('Changes discarded'); };
+const pl = document.querySelectorAll('#pnav a[href^="#"]'); pl.forEach(l => l.onclick = () => pl.forEach(x => x.toggleAttribute('aria-current', x === l)));
+fill(); UI.routeHash({});
+</script>

@@ -139,18 +139,40 @@
       : `<li><a class="nav-link" href="${h}" ${page === k ? 'aria-current="page"' : ''}>${t}${isNew ? '<span class="badge-new">NEW</span>' : ''}</a></li>`).join('')}</ul>
     <div class="hdr-tools">
       <button class="search-btn" type="button" data-search aria-label="Search markets">${icon('search')}<span>Search markets, news…</span><kbd>⌘K</kbd></button>
-      <button class="icon-btn" type="button" id="theme-btn" aria-label="Switch light or dark mode" title="Light / dark mode"></button>
       <a class="icon-btn hide-sm" href="watchlist.html" aria-label="Watchlist" title="Watchlist">${icon('star')}</a>
-      <button class="icon-btn hide-sm" type="button" aria-label="Alerts" title="Alerts">${icon('bell')}<span class="dot"></span></button>
-      <a class="avatar hide-sm" href="watchlist.html" aria-label="Your profile" title="Your profile">AK</a>
+      <div class="notif-wrap hide-sm"><button class="icon-btn" type="button" id="notif-btn" aria-label="Notifications" aria-expanded="false" aria-haspopup="true" title="Notifications">${icon('bell')}<span class="dot" id="notif-dot"></span></button>
+        <div class="dd notif-dd" id="notif-dd" role="dialog" aria-label="Notifications"></div></div>
+      <a class="avatar hide-sm" id="hdr-avatar" href="profile.html" aria-label="Your profile" title="Your profile">AK</a>
+      <button class="icon-btn" type="button" id="theme-btn" aria-label="Switch light or dark mode" title="Light / dark mode"></button>
       <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">${icon('menu')}</button>
     </div></div>`;
   document.body.prepend(hdr);
+  // profile (stored on this device until accounts exist)
+  const getProfile = () => { try { return JSON.parse(localStorage.getItem('inv-profile') || '{}'); } catch { return {}; } };
+  const paintAvatar = () => { const pr = getProfile(), av = hdr.querySelector('#hdr-avatar'), ini = (pr.name || 'AK').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase(); av.innerHTML = pr.photo ? `<img src="${pr.photo}" alt="">` : ini; };
+  paintAvatar(); window.addEventListener('profile-change', paintAvatar);
+  // notifications panel (sample items; settings live on the profile page)
+  const NOTIFS = [['news', 'Breaking', 'Fed officials signal no rush to cut rates after hot inflation data', '4 min ago', 'article.html'], ['watch', 'Watchlist', 'NVDA fell 1.84% today. Profit-taking after a 9% two-week run', '1 h ago', 'asset.html?s=NVDA'], ['earn', 'Earnings', 'Tesla reports on Wed 22 Oct after the close', '3 h ago', 'calendar.html#earnings'], ['event', 'Economic event', 'US Retail Sales at 08:30 ET tomorrow. Forecast 0.4%', '5 h ago', 'calendar.html'], ['price', 'Price alert', 'Gold moved more than 2% in a day', 'Yesterday', 'asset.html?s=XAU']];
+  const nIcon = { news: 'news', watch: 'star', earn: 'earnings', event: 'calendar', price: 'bell' };
+  let readN = 0; try { readN = +localStorage.getItem('inv-notif-read') || 0; } catch {}
+  const nb = hdr.querySelector('#notif-btn'), nd = hdr.querySelector('#notif-dd');
+  const paintNotif = () => {
+    const unread = Math.max(0, NOTIFS.length - readN);
+    hdr.querySelector('#notif-dot').hidden = !unread;
+    nd.innerHTML = `<div class="notif-head"><b>Notifications</b>${unread ? `<span class="tag acc">${unread} new</span>` : ''}<button type="button" class="link" id="notif-read" style="background:none;border:0;margin-left:auto">Mark all read</button></div>
+      <div class="notif-list">${NOTIFS.map(([k, t, m, time, h], i) => `<a class="notif-item ${i < unread ? 'unread' : ''}" href="${h}"><span class="dd-ic">${icon(nIcon[k])}</span><span><small class="accent">${t}</small><span class="notif-msg">${m}</span><small class="dim">${time}</small></span></a>`).join('')}</div>
+      <a class="notif-foot" href="profile.html#notifications">${icon('heat')}Notification settings</a>`;
+    nd.querySelector('#notif-read').onclick = e => { e.stopPropagation(); readN = NOTIFS.length; try { localStorage.setItem('inv-notif-read', readN); } catch {} paintNotif(); };
+  };
+  paintNotif();
+  nb.onclick = e => { e.stopPropagation(); const o = !nd.classList.contains('open'); closeAll(); nd.classList.toggle('open', o); nb.setAttribute('aria-expanded', o); };
+  document.addEventListener('click', e => { if (!e.target.closest('.notif-wrap')) { nd.classList.remove('open'); nb.setAttribute('aria-expanded', 'false'); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') nd.classList.remove('open'); });
   const tb = hdr.querySelector('#theme-btn');
   const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>', moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
   const setTheme = t => { document.documentElement.dataset.theme = t; tb.innerHTML = t === 'light' ? moon : sun; try { localStorage.setItem('inv-theme', t); } catch {} };
   let th = 'dark'; try { th = localStorage.getItem('inv-theme') || 'dark'; } catch {}
-  setTheme(th); tb.onclick = () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
+  setTheme(th); window.setInvTheme = setTheme; tb.onclick = () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
   const skip = document.createElement('a'); skip.className = 'skip'; skip.href = '#main'; skip.textContent = 'Skip to content'; document.body.prepend(skip);
   const onScrollHdr = () => hdr.classList.toggle('scrolled', scrollY > 8); addEventListener('scroll', onScrollHdr, { passive: true }); onScrollHdr();
   document.addEventListener('DOMContentLoaded', () => { const m = document.querySelector('main'); if (m) { m.id = m.id || 'main'; m.classList.add('enter'); } });
@@ -179,7 +201,7 @@
     <details><summary>Markets ${icon('chev')}</summary><a href="markets.html">All markets</a>${M.categories.map(c => `<a href="${c.page}">${c.t}</a>`).join('')}</details>
     <a href="news.html">News</a><a href="analysis.html">Analysis</a><a href="ai-insights.html">AI Insights <span class="badge-new">NEW</span></a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details>
-    <a href="real-estate.html">Real Estate <span class="tag">Soon</span></a><a href="watchlist.html">Watchlist</a>`;
+    <a href="real-estate.html">Real Estate <span class="tag">Soon</span></a><a href="watchlist.html">Watchlist</a><a href="profile.html">Profile &amp; notifications</a>`;
   hdr.after(drawer);
   const mt = hdr.querySelector('.menu-toggle');
   function closeDrawer() { drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.innerHTML = icon('menu'); document.body.style.overflow = ''; }
