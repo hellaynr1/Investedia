@@ -613,6 +613,89 @@
     new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType !== 1) return; if (n.matches('.tabs, .range')) segment(n); segAll(n); }))).observe(document.body, { childList: true, subtree: true });
   });
 
+  // ---------- modern dropdowns ----------
+  // Every <select> gets a custom menu in the site's style: a popover on computers, a bottom sheet on phones.
+  // The real <select> stays in the page (hidden) and keeps its value, so existing page code and change handlers keep working.
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const csMenu = document.createElement('div'), csScrim = document.createElement('div');
+  csMenu.className = 'csel-menu'; csMenu.setAttribute('role', 'listbox'); csMenu.hidden = true;
+  csScrim.className = 'csel-scrim'; csScrim.hidden = true;
+  let csCur = null, csType = '', csTypeT = 0;
+  const csOpts = () => [...csMenu.querySelectorAll('.csel-opt:not([disabled])')];
+  function csLabel(sel) { const l = sel.id && document.querySelector(`label[for="${sel.id}"]`); return sel.getAttribute('aria-label') || (l && l.textContent.trim()) || 'Choose an option'; }
+  function csClose(keepFocus) {
+    if (!csCur) return; const { btn } = csCur; csCur = null;
+    btn.setAttribute('aria-expanded', 'false'); csMenu.classList.remove('open'); csScrim.classList.remove('open'); document.documentElement.classList.remove('csel-lock');
+    setTimeout(() => { if (!csCur) { csMenu.hidden = true; csScrim.hidden = true; } }, 220);
+    if (keepFocus) btn.focus();
+  }
+  function csPlace() {
+    if (!csCur || csMenu.classList.contains('sheet')) return;
+    const r = csCur.btn.getBoundingClientRect(), w = Math.max(r.width, 200), below = innerHeight - r.bottom - 12, above = r.top - 12, up = below < 220 && above > below;
+    csMenu.style.width = w + 'px'; csMenu.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
+    csMenu.style.top = up ? 'auto' : r.bottom + 6 + 'px'; csMenu.style.bottom = up ? innerHeight - r.top + 6 + 'px' : 'auto';
+    csMenu.style.transformOrigin = up ? 'bottom' : 'top';
+    csMenu.querySelector('.csel-list').style.maxHeight = Math.min(360, up ? above : below) + 'px';
+  }
+  function csOpen(sel, btn) {
+    if (csCur && csCur.sel === sel) return csClose(true);
+    csClose(); csCur = { sel, btn, t: Date.now() };
+    const sheet = innerWidth <= 600, check = icon('check');
+    const opt = o => `<button type="button" role="option" class="csel-opt" data-i="${o.index}" aria-selected="${o.selected}" ${o.disabled ? 'disabled' : ''}><span>${esc(o.text)}</span>${check}</button>`;
+    let html = '';
+    [...sel.children].forEach(ch => { if (ch.tagName === 'OPTGROUP') html += `<div class="csel-group">${esc(ch.label)}</div>` + [...ch.children].map(opt).join(''); else if (ch.tagName === 'OPTION') html += opt(ch); });
+    csMenu.innerHTML = (sheet ? `<div class="csel-head">${esc(csLabel(sel))}</div>` : '') + `<div class="csel-list">${html}</div>`;
+    csMenu.setAttribute('aria-label', csLabel(sel)); csMenu.classList.toggle('sheet', sheet);
+    if (!csMenu.isConnected) document.body.append(csScrim, csMenu);
+    csMenu.hidden = false; csScrim.hidden = !sheet; if (sheet) document.documentElement.classList.add('csel-lock'); btn.setAttribute('aria-expanded', 'true');
+    csMenu.style.cssText = ''; csPlace();
+    requestAnimationFrame(() => { csMenu.classList.add('open'); if (sheet) csScrim.classList.add('open'); });
+    const on = csMenu.querySelector('[aria-selected="true"]') || csOpts()[0];
+    if (on) { const l = csMenu.querySelector('.csel-list'); l.scrollTop = Math.max(0, on.offsetTop - l.clientHeight / 2); on.focus({ preventScroll: true }); }
+  }
+  function csChoose(i) {
+    if (!csCur) return; const { sel } = csCur;
+    if (sel.selectedIndex !== i) { sel.selectedIndex = i; sel.dispatchEvent(new Event('input', { bubbles: true })); sel.dispatchEvent(new Event('change', { bubbles: true })); }
+    csClose(true);
+  }
+  csMenu.addEventListener('click', e => { const b = e.target.closest('.csel-opt'); if (b && !b.disabled) csChoose(+b.dataset.i); });
+  csScrim.addEventListener('click', () => csClose(true));
+  csMenu.addEventListener('keydown', e => {
+    const list = csOpts(), i = list.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const n = list[Math.max(0, Math.min(list.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))]; n && n.focus(); }
+    else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); (e.key === 'Home' ? list[0] : list[list.length - 1]).focus(); }
+    else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); csClose(true); }
+    else if (e.key === 'Tab') csClose();
+    else if (e.key.length === 1 && /\S/.test(e.key)) { clearTimeout(csTypeT); csType += e.key.toLowerCase(); csTypeT = setTimeout(() => csType = '', 600); const hit = list.find(o => o.textContent.trim().toLowerCase().startsWith(csType)); hit && hit.focus(); }
+  });
+  document.addEventListener('pointerdown', e => { if (csCur && !csMenu.contains(e.target) && !csCur.btn.contains(e.target)) csClose(); }, true);
+  addEventListener('resize', () => csCur && (csMenu.classList.contains('sheet') !== (innerWidth <= 600) ? csClose() : csPlace()));
+  addEventListener('scroll', e => { if (csCur && !csMenu.classList.contains('sheet') && Date.now() - csCur.t > 300 && !csMenu.contains(e.target)) csClose(); }, { passive: true, capture: true });
+  function enhanceSelect(sel) {
+    if (sel._cs || sel.multiple || sel.size > 1 || sel.closest('[data-native]')) return; sel._cs = true;
+    const st = sel.getAttribute('style') || '', inline = /width:\s*auto|inline-block/.test(st) || sel.classList.contains('sel-sm') || getComputedStyle(sel).display === 'inline-block';
+    const wrap = document.createElement('span'), btn = document.createElement('button');
+    wrap.className = 'csel' + (inline ? ' csel-inline' : '');
+    btn.type = 'button'; btn.className = sel.className + ' csel-btn'; btn.setAttribute('style', st.replace(/display:\s*inline-block;?/, ''));
+    btn.setAttribute('aria-haspopup', 'listbox'); btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-label', csLabel(sel));
+    sel.parentNode.insertBefore(wrap, sel); wrap.append(sel, btn);
+    sel.classList.add('csel-native'); sel.tabIndex = -1; sel.setAttribute('aria-hidden', 'true');
+    if (sel.id) document.querySelectorAll(`label[for="${sel.id}"]`).forEach(l => l.addEventListener('click', e => { e.preventDefault(); btn.focus(); }));
+    const refresh = () => { const o = sel.options[sel.selectedIndex]; btn.innerHTML = `<span class="csel-val">${o ? esc(o.text) : ''}</span>`; btn.disabled = sel.disabled; };
+    sel._csRefresh = refresh; refresh();
+    new MutationObserver(refresh).observe(sel, { childList: true, subtree: true, attributes: true, characterData: true });
+    sel.addEventListener('change', refresh);
+    btn.addEventListener('click', () => csOpen(sel, btn));
+    btn.addEventListener('keydown', e => { if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) { e.preventDefault(); csOpen(sel, btn); } });
+  }
+  // Keep the button label right when page code sets select.value or selectedIndex directly
+  ['value', 'selectedIndex'].forEach(k => { const d = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, k); if (d && d.set) Object.defineProperty(HTMLSelectElement.prototype, k, { ...d, set(v) { d.set.call(this, v); if (this._csRefresh) this._csRefresh(); } }); });
+  const selAll = root => root.querySelectorAll && root.querySelectorAll('select').forEach(enhanceSelect);
+  document.addEventListener('DOMContentLoaded', () => {
+    selAll(document);
+    new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType !== 1) return; if (n.tagName === 'SELECT') enhanceSelect(n); else selAll(n); }))).observe(document.body, { childList: true, subtree: true });
+  });
+
   // ---------- regions ----------
   // Tabs for the regions that actually have assets in `list`; calls onChange('All' | 'Europe' | …)
   const regionLabel = r => r;
