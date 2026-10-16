@@ -351,7 +351,7 @@
     const draw = () => {
       const W = el.clientWidth, H = height, padL = 8, padR = 64, padT = 12, padB = 28;
       const all = compare ? vals.concat(compare) : vals;
-      let mn = Math.min(...all), mx = Math.max(...all); const pad = (mx - mn) * .08 || 1; mn -= pad; mx += pad;
+      let mn = Math.min(...all), mx = Math.max(...all); const pad = (mx - mn) * .08 || 1; const lo0 = mn >= 0; mn -= pad; mx += pad; if (lo0 && mn < 0) mn = 0;
       const sx = i => padL + i / (vals.length - 1) * (W - padL - padR), sy = v => padT + (1 - (v - mn) / (mx - mn)) * (H - padT - padB);
       const ticks = 5, grid = [];
       for (let k = 0; k <= ticks; k++) { const v = mn + (mx - mn) * k / ticks; grid.push(`<line class="grid-l" x1="${padL}" x2="${W - padR}" y1="${sy(v)}" y2="${sy(v)}"/><text class="ax" x="${W - padR + 10}" y="${sy(v) + 4}">${fmt(v)}</text>`); }
