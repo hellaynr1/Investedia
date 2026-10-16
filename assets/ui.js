@@ -54,7 +54,12 @@
   const fmtC = (v, bps) => bps ? `${v > 0 ? '+' : ''}${(v * 1).toFixed(1)} bp` : `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`;
   const cls = v => v > 0 ? 'up' : v < 0 ? 'down' : 'muted';
   const cap = b => b == null ? '—' : b >= 1000 ? `$${(b / 1000).toFixed(2)}T` : `$${b}B`;
-  const logo = (a, size = '') => { const t = a.s.length > 4 ? a.s.slice(0, 3) : a.s; return `<span class="logo ${size} ${t.length === 4 && !size ? 'l4' : ''}" style="background:${a.logo}">${t}</span>`; };
+  // Official coin logos (open-source CC0 set, self-hosted in assets/logos); other assets get a coloured ticker tile
+  const LOGO_IMG = new Set(['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX', 'LINK', 'UNI', 'AAVE', 'USDT', 'USDC']);
+  const logo = (a, size = '') => {
+    if (LOGO_IMG.has(a.s)) return `<span class="logo ${size} logo-img"><img src="assets/logos/${a.s}.svg" alt="" width="48" height="48" decoding="async"></span>`;
+    const t = a.s.length > 4 ? a.s.slice(0, 3) : a.s; return `<span class="logo ${size} ${t.length === 4 && !size ? 'l4' : ''}" style="background:${a.logo}">${t}</span>`;
+  };
   const href = a => `asset.html?s=${a.s}`;
 
   // One update per display frame, whatever the screen's refresh rate
@@ -261,8 +266,8 @@
     const flush = () => {
       timer = 0;
       for (const s in pending) {
-        const a = M.bySym[s], { p, o } = pending[s], up = p >= a.p;
-        a.p = p; if (o) a.d = +((p / o - 1) * 100).toFixed(2); a.live = true;
+        const a = M.bySym[s], { p } = pending[s], up = p >= a.p;
+        if (a.base == null) a.base = a.p / (1 + a.d / 100); a.p = p; a.d = +((p / a.base - 1) * 100).toFixed(2); a.live = true;
         document.querySelectorAll(`[data-lp="${s}"]`).forEach(el => { const t = fmtP(a); if (el.textContent === t) return; el.textContent = t; el.classList.remove('tick-up', 'tick-down'); void el.offsetWidth; el.classList.add(up ? 'tick-up' : 'tick-down'); });
         document.querySelectorAll(`[data-lc="${s}"]`).forEach(el => { el.textContent = fmtC(a.d); el.classList.remove('up', 'down', 'muted'); el.classList.add(cls(a.d)); });
       }
@@ -273,7 +278,7 @@
       if (ws || document.hidden) return;
       ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
       ws.onopen = () => { retry = 2000; ws.send(JSON.stringify({ type: 'subscribe', product_ids: syms.map(s => s + '-USD'), channels: ['ticker'] })); };
-      ws.onmessage = e => { const m = JSON.parse(e.data); if (m.type !== 'ticker') return; pending[m.product_id.split('-')[0]] = { p: +m.price, o: +m.open_24h }; if (!timer) timer = setTimeout(() => requestAnimationFrame(flush), 1000); };
+      ws.onmessage = e => { const m = JSON.parse(e.data); if (m.type !== 'ticker') return; pending[m.product_id.split('-')[0]] = { p: +m.price }; if (!timer) timer = setTimeout(() => requestAnimationFrame(flush), 1000); };
       ws.onclose = () => { ws = null; if (!document.hidden) setTimeout(connect, retry = Math.min(retry * 2, 60000)); };
     };
     document.addEventListener('visibilitychange', () => { if (document.hidden) { if (ws) { ws.onclose = null; ws.close(); ws = null; } } else connect(); });

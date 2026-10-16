@@ -1,6 +1,6 @@
 // Investedia app: offline support and instant repeat visits.
 // Pages and market data: network first, saved copy when offline. Code, images, fonts: saved copy first, refreshed in the background.
-const VERSION = '30a3cf09b3', CACHE = 'inv-' + VERSION;
+const VERSION = 'f71df2a6f9', CACHE = 'inv-' + VERSION;
 const CORE = ['index.html', 'dashboard.html', 'markets.html', 'watchlist.html', 'assets/app.css', 'assets/ui.js', 'assets/mock.js', 'assets/quotes.js', 'assets/profiles.js', 'assets/favicon.svg', 'assets/app/icon-192.png'];
 
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
