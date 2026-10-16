@@ -742,3 +742,54 @@ main>.sec:nth-of-type(n+3){content-visibility:auto;contain-intrinsic-size:auto 6
 /* every asset logo is a circle, like on charting platforms */
 .logo,.logo.lg{border-radius:50%;overflow:hidden}
 .logo{font-size:9.5px}.logo.lg{font-size:14px}
+
+/* ---------- modern menus ---------- */
+:root{--spring:cubic-bezier(.16,1,.3,1)}
+/* gliding hover highlight in the nav */
+.nav.has-pill{position:relative;isolation:isolate}
+.nav>li.nav-pill{position:absolute;left:0;top:50%;height:36px;margin-top:-18px;width:0;border-radius:9px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line-soft);opacity:0;pointer-events:none;z-index:-1;transition:transform .38s var(--spring),width .38s var(--spring),opacity .2s ease}
+.nav>li.nav-pill.on{opacity:1}
+.nav.has-pill .nav-link:hover,.nav.has-pill .nav-link[aria-expanded="true"]{background:transparent}
+.nav-link .chev{transition:transform .35s var(--spring)}
+/* dropdowns: soft spring in, quick fade out, frosted glass */
+.dd{transform:translateY(-8px) scale(.98);transform-origin:top left;transition:opacity .14s ease,transform .14s ease,visibility 0s linear .14s}
+.dd.open{transform:none;transition:opacity .22s ease,transform .45s var(--spring),visibility 0s}
+.dd-mega,.dd-tools{transform:translate(-50%,-8px) scale(.985);transform-origin:top center}
+.dd-mega.open,.dd-tools.open{transform:translate(-50%,0)}
+.dd{background:var(--bg-2)}
+@keyframes menuIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes panelIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+.dd.open .dd-item,.dd.open .mega-cat{animation:menuIn .42s var(--spring) both}
+.dd.open :is(.dd-item,.mega-cat):nth-child(2){animation-delay:.025s}.dd.open :is(.dd-item,.mega-cat):nth-child(3){animation-delay:.05s}
+.dd.open :is(.dd-item,.mega-cat):nth-child(4){animation-delay:.075s}.dd.open :is(.dd-item,.mega-cat):nth-child(5){animation-delay:.1s}
+.dd.open :is(.dd-item,.mega-cat):nth-child(6){animation-delay:.125s}.dd.open :is(.dd-item,.mega-cat):nth-child(n+7){animation-delay:.15s}
+.dd.open .mega-panel:not([hidden]){animation:panelIn .38s var(--spring) both}
+.mega-cat,.dd-item,.mega-link,.dd-row{transition:background .18s ease,color .18s ease}
+.dd-item .dd-ic,.mega-cat .dd-ic{transition:color .18s,border-color .18s,background .18s,transform .35s var(--spring)}
+.dd-item:hover .dd-ic,.mega-cat:hover .dd-ic{transform:scale(1.06)}
+.mega-cat .mega-arr{transition:opacity .18s,transform .35s var(--spring)}
+.mega-cat[aria-current] .mega-arr{transform:translateX(2px)}
+/* menu button: three lines morph into an × */
+.burger{position:relative;width:18px;height:14px;display:block}
+.burger i{position:absolute;left:0;right:0;height:1.8px;border-radius:2px;background:currentColor;transition:transform .4s var(--spring),opacity .2s,top .4s var(--spring)}
+.burger i:nth-child(1){top:0}.burger i:nth-child(2){top:6px}.burger i:nth-child(3){top:12px}
+.menu-toggle.is-open .burger i:nth-child(1){top:6px;transform:rotate(45deg)}
+.menu-toggle.is-open .burger i:nth-child(2){opacity:0;transform:scaleX(.3)}
+.menu-toggle.is-open .burger i:nth-child(3){top:6px;transform:rotate(-45deg)}
+/* phone menu: slides in with a spring, items cascade, sections open smoothly */
+.drawer{transform:translateY(-12px);transition:opacity .2s ease,transform .45s var(--spring),visibility 0s linear .2s}
+.drawer.open{transition:opacity .25s ease,transform .5s var(--spring),visibility 0s}
+.drawer.open>*{animation:menuIn .5s var(--spring) both}
+.drawer.open>*:nth-child(2){animation-delay:.03s}.drawer.open>*:nth-child(3){animation-delay:.06s}.drawer.open>*:nth-child(4){animation-delay:.09s}
+.drawer.open>*:nth-child(5){animation-delay:.12s}.drawer.open>*:nth-child(6){animation-delay:.15s}.drawer.open>*:nth-child(7){animation-delay:.18s}.drawer.open>*:nth-child(n+8){animation-delay:.21s}
+.drawer summary svg{transition:transform .4s var(--spring)}
+.drawer a:active,.drawer summary:active{opacity:.6}
+@supports (interpolate-size:allow-keywords){
+  :root{interpolate-size:allow-keywords}
+  .drawer details::details-content{block-size:0;overflow:hidden;transition:block-size .4s var(--spring),content-visibility .4s allow-discrete}
+  .drawer details[open]::details-content{block-size:auto}
+}
+@media (prefers-reduced-motion:reduce){
+  .dd,.dd.open,.drawer,.drawer.open,.nav>li.nav-pill{transition-duration:.01s!important}
+  .dd.open *,.drawer.open>*{animation:none!important}
+}

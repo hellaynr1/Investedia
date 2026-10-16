@@ -183,7 +183,7 @@
         <div class="dd notif-dd" id="notif-dd" role="dialog" aria-label="Notifications"></div></div>
       <a class="avatar hide-sm" id="hdr-avatar" href="profile.html" aria-label="Your profile" title="Your profile">AK</a>
       <button class="icon-btn" type="button" id="theme-btn" aria-label="Switch light or dark mode" title="Light / dark mode"></button>
-      <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">${icon('menu')}</button>
+      <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span></button>
     </div></div>`;
   document.body.prepend(hdr);
   // profile (stored on this device until accounts exist)
@@ -222,7 +222,25 @@
   document.addEventListener('touchstart', prefetch, { passive: true });
 
   // dropdown behaviour: hover on desktop, click anywhere, Escape closes
-  const closeAll = except => hdr.querySelectorAll('[data-dd]').forEach(b => { if (b === except) return; b.setAttribute('aria-expanded', 'false'); document.getElementById(b.dataset.dd).classList.remove('open'); });
+  const closeAll = except => { hdr.querySelectorAll('[data-dd]').forEach(b => { if (b === except) return; b.setAttribute('aria-expanded', 'false'); document.getElementById(b.dataset.dd).classList.remove('open'); }); syncPill(); };
+  // A soft highlight glides between nav items on hover (desktop only)
+  const navUl = hdr.querySelector('.nav'), pill = document.createElement('li');
+  pill.className = 'nav-pill'; pill.setAttribute('aria-hidden', 'true');
+  let hovered = null;
+  function movePill(link) {
+    if (!link) { pill.classList.remove('on'); return; }
+    const r = link.getBoundingClientRect(), n = navUl.getBoundingClientRect(), first = !pill.classList.contains('on');
+    if (first) pill.style.transition = 'none';
+    pill.style.width = r.width + 'px'; pill.style.transform = `translateX(${r.left - n.left}px)`;
+    if (first) { pill.offsetWidth; pill.style.transition = ''; }
+    pill.classList.add('on');
+  }
+  function syncPill() { if (!navUl) return; movePill(hovered || navUl.querySelector('.nav-link[aria-expanded="true"]')); }
+  if (navUl && matchMedia('(hover: hover)').matches) {
+    navUl.prepend(pill); navUl.classList.add('has-pill');
+    navUl.querySelectorAll('.nav-link').forEach(l => l.addEventListener('pointerenter', () => { hovered = l; movePill(l); }));
+    navUl.addEventListener('pointerleave', () => { hovered = null; syncPill(); });
+  }
   hdr.querySelectorAll('[data-dd]').forEach(btn => {
     const dd = document.getElementById(btn.dataset.dd), li = btn.parentElement;
     const open = v => { if (v) closeAll(btn); btn.setAttribute('aria-expanded', v); dd.classList.toggle('open', v); };
@@ -248,8 +266,8 @@
     <a href="education.html">Education</a><a href="watchlist.html">Watchlist</a><a href="profile.html">Profile &amp; notifications</a>`;
   hdr.after(drawer);
   const mt = hdr.querySelector('.menu-toggle');
-  function closeDrawer() { drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.innerHTML = icon('menu'); document.body.style.overflow = ''; }
-  mt.onclick = () => { const o = !drawer.classList.contains('open'); drawer.classList.toggle('open', o); mt.setAttribute('aria-expanded', o); mt.innerHTML = icon(o ? 'x' : 'menu'); document.body.style.overflow = o ? 'hidden' : ''; };
+  function closeDrawer() { drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.classList.remove('is-open'); document.body.style.overflow = ''; }
+  mt.onclick = () => { const o = !drawer.classList.contains('open'); drawer.classList.toggle('open', o); mt.setAttribute('aria-expanded', o); mt.classList.toggle('is-open', o); mt.setAttribute('aria-label', o ? 'Close menu' : 'Open menu'); document.body.style.overflow = o ? 'hidden' : ''; };
 
   // ---------- search palette (UI only, searches sample data) ----------
   const pal = document.createElement('div');
