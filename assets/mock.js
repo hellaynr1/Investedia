@@ -233,5 +233,15 @@ window.MOCK = (function () {
     ],
   };
 
-  return { assets, bySym, categories, news, analysis, calendar, earnings, realEstate, series, seeded };
+  // Candles: open/high/low/close/volume bars that end at `last`
+  function ohlc(key, n, last, chg, vol = 0.014) {
+    const closes = series(key + 'c', n, last, chg, vol), r = seeded(key + 'ohlc');
+    return closes.map((c, i) => {
+      const o = i ? closes[i - 1] * (1 + (r() - .5) * vol * .4) : c * (1 - chg / 100 / n);
+      const hi = Math.max(o, c) * (1 + r() * vol * .7), lo = Math.min(o, c) * (1 - r() * vol * .7);
+      return { o, h: hi, l: lo, c, v: (.55 + r() * .9) * (1 + Math.abs(c - o) / c / vol) };
+    });
+  }
+
+  return { assets, bySym, categories, news, analysis, calendar, earnings, realEstate, series, seeded, ohlc };
 })();

@@ -123,6 +123,7 @@
   const ddTools = `<div class="dd dd-tools" id="dd-tools" role="menu">${tools.map(([i, t, d, h]) => `<a class="dd-item" role="menuitem" href="${h}"><span class="dd-ic">${icon(i)}</span><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>`;
   const nav = [
     ['home', 'Home', 'index.html'],
+    ['dashboard', 'Dashboard', 'dashboard.html'],
     ['markets', 'Markets', null, megaMarkets],
     ['news', 'News', 'news.html'],
     ['analysis', 'Analysis', 'analysis.html'],
@@ -165,7 +166,7 @@
   const drawer = document.createElement('div');
   drawer.className = 'drawer';
   drawer.innerHTML = `<button class="search-btn" type="button" data-search>${icon('search')}<span>Search markets, news…</span></button>
-    <a href="index.html">Home</a>
+    <a href="index.html">Home</a><a href="dashboard.html">Dashboard</a>
     <details><summary>Markets ${icon('chev')}</summary><a href="markets.html">All markets</a>${M.categories.map(c => `<a href="${c.page}">${c.t}</a>`).join('')}</details>
     <a href="news.html">News</a><a href="analysis.html">Analysis</a><a href="ai-insights.html">AI Insights <span class="badge-new">NEW</span></a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details>
@@ -215,6 +216,7 @@
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
     <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#careers">Careers</a></li><li><a href="about.html#advertise">Advertise</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li></ul></div>
   </div>
+  <div class="partner"><span class="dim">In partnership with</span><a href="about.html#partners"><b>Guidify</b></a><span class="dim">· growth partner for Shopify brands</span></div>
   <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Design preview · all market figures are illustrative demo data</span></div></div>`;
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
 
@@ -332,6 +334,35 @@
   function heatLegend(el) { el.className = 'heat-legend'; el.innerHTML = [-4, -3, -2, -1, 0, 1, 2, 3, 4].map(v => `<span style="background:${v === 0 ? '#29292D' : heatColor(v)}">${v > 0 ? '+' : ''}${v}%</span>`).join(''); }
   // Diverging bar row (sectors, strength)
   const divBar = (n, v, mx = 2, suffix) => `<div class="divbar"><span class="muted">${n}</span><div class="divbar-track"><i class="mid"></i><i class="bar" style="${v >= 0 ? `left:50%;width:${v / mx * 50}%;background:var(--up)` : `right:50%;width:${-v / mx * 50}%;background:var(--down)`}"></i></div><span class="num ${cls(v)}">${suffix ? (v > 0 ? '+' : '') + v.toFixed(1) + suffix : fmtC(v)}</span></div>`;
+  // Email sign-up pop-up
+  const pop = document.createElement('div');
+  pop.className = 'palette'; pop.hidden = true;
+  pop.innerHTML = `<div class="palette-box pop" role="dialog" aria-modal="true" aria-labelledby="pop-t">
+    <button class="icon-btn pop-x" type="button" aria-label="Close">${icon('x')}</button>
+    <div class="pop-art">${mark}</div>
+    <span class="eyebrow">The Investedia Brief</span>
+    <h2 id="pop-t" style="margin:10px 0 6px;font-size:24px">Markets in five minutes, every morning.</h2>
+    <p class="muted" style="margin:0 0 18px">Join the list for the daily brief, weekly charts and early access to new dashboard features. Free, unsubscribe anytime.</p>
+    <form class="subscribe" id="pop-f"><input class="input" type="email" id="pop-email" placeholder="you@email.com" aria-label="Email address" required><button class="btn btn-primary" type="submit">Join free</button></form>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${['Daily brief', 'Weekly charts', 'Crypto', 'Product updates'].map((t, i) => `<button type="button" class="chip ${i < 2 ? 'on' : ''}" onclick="this.classList.toggle('on')">${t}</button>`).join('')}</div>
+    <p class="pop-ok up" hidden style="margin:14px 0 0;font-weight:550">You’re on the list. Check your inbox to confirm.</p>
+  </div>`;
+  const store = (k, v) => { try { return v === undefined ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch { return null; } };
+  const openPop = () => { pop.hidden = false; store('inv-pop', '1'); setTimeout(() => pop.querySelector('input').focus(), 30); };
+  const closePop = () => { pop.hidden = true; };
+  pop.querySelector('.pop-x').onclick = closePop;
+  pop.onclick = e => { if (e.target === pop) closePop(); };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
+  pop.querySelector('#pop-f').onsubmit = e => { e.preventDefault(); store('inv-sub', '1'); pop.querySelector('#pop-f').hidden = true; pop.querySelector('.pop-ok').hidden = false; setTimeout(closePop, 2200); };
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.append(pop);
+    document.querySelectorAll('[data-subscribe]').forEach(b => b.onclick = openPop);
+    if (!store('inv-pop') && !store('inv-sub')) {
+      const t = setTimeout(openPop, 12000);
+      const onScroll = () => { if (scrollY > (document.body.scrollHeight - innerHeight) * .6) { clearTimeout(t); removeEventListener('scroll', onScroll); if (!store('inv-pop')) openPop(); } };
+      addEventListener('scroll', onScroll, { passive: true });
+    }
+  });
   // Deep links: #hash selects a tab (routes = { hash: [tabsId, tabKey] }) or scrolls to an element id
   function routeHash(routes = {}) {
     const go = () => {
@@ -342,5 +373,44 @@
     };
     addEventListener('hashchange', go); setTimeout(go, 60);
   }
-  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, heatmap, heatLegend, heatColor, divBar };
+  // Pro chart: candles / line / area with volume pane, moving averages and crosshair readout
+  function proChart(el, bars, opts = {}) {
+    const { type = 'candles', height = 460, labels = [], sma = [], volume = true, fmt = v => v.toFixed(2), onHover } = opts;
+    el.classList.add('chart'); el.style.height = height + 'px';
+    const avg = (k) => bars.map((_, i) => i < k - 1 ? null : bars.slice(i - k + 1, i + 1).reduce((s, b) => s + b.c, 0) / k);
+    const draw = () => {
+      const W = el.clientWidth, H = height, padL = 4, padR = 68, padT = 10, volH = volume ? H * .18 : 0, padB = 26;
+      const pH = H - padT - padB - volH - (volume ? 8 : 0);
+      let mn = Math.min(...bars.map(b => b.l)), mx = Math.max(...bars.map(b => b.h)); const pd = (mx - mn) * .06; mn -= pd; mx += pd;
+      const n = bars.length, step = (W - padL - padR) / n, bw = Math.max(1, step * .64);
+      const sx = i => padL + step * i + step / 2, sy = v => padT + (1 - (v - mn) / (mx - mn)) * pH;
+      const vmax = Math.max(...bars.map(b => b.v)), vy0 = padT + pH + 8 + volH;
+      let g = '';
+      for (let k = 0; k <= 5; k++) { const v = mn + (mx - mn) * k / 5; g += `<line class="grid-l" x1="${padL}" x2="${W - padR}" y1="${sy(v)}" y2="${sy(v)}"/><text class="ax" x="${W - padR + 8}" y="${sy(v) + 4}">${fmt(v)}</text>`; }
+      g += labels.map((l, k) => { const i = Math.round(k / Math.max(1, labels.length - 1) * (n - 1)); return `<text class="ax" x="${sx(i)}" y="${H - 8}" text-anchor="${k === 0 ? 'start' : k === labels.length - 1 ? 'end' : 'middle'}">${l}</text>`; }).join('');
+      let body = '';
+      if (volume) body += bars.map((b, i) => `<rect x="${sx(i) - bw / 2}" y="${vy0 - b.v / vmax * volH}" width="${bw}" height="${b.v / vmax * volH}" fill="${b.c >= b.o ? '#22C55E' : '#F04444'}" opacity=".28"/>`).join('');
+      if (type === 'candles') body += bars.map((b, i) => { const up = b.c >= b.o, col = up ? '#22C55E' : '#F04444', y1 = sy(Math.max(b.o, b.c)), y2 = sy(Math.min(b.o, b.c)); return `<line x1="${sx(i)}" x2="${sx(i)}" y1="${sy(b.h)}" y2="${sy(b.l)}" stroke="${col}" stroke-width="1"/><rect x="${sx(i) - bw / 2}" y="${y1}" width="${bw}" height="${Math.max(1, y2 - y1)}" fill="${up ? col : col}" ${up ? 'fill-opacity=".9"' : ''} rx="${bw > 4 ? 1 : 0}"/>`; }).join('');
+      else { const d = bars.map((b, i) => (i ? 'L' : 'M') + sx(i).toFixed(1) + ' ' + sy(b.c).toFixed(1)).join(''); const id = 'p' + Math.random().toString(36).slice(2, 7);
+        body += (type === 'area' ? `<defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FF7A1A" stop-opacity=".25"/><stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/></linearGradient></defs><path d="${d}L${sx(n - 1)} ${padT + pH}L${sx(0)} ${padT + pH}Z" fill="url(#${id})"/>` : '') + `<path d="${d}" fill="none" stroke="#FF7A1A" stroke-width="2" stroke-linejoin="round"/>`; }
+      const maCol = { 20: '#38BDF8', 50: '#A78BFA', 200: '#F472B6' };
+      sma.forEach(k => { const a = avg(k); body += `<path d="${a.map((v, i) => v == null ? '' : (a[i - 1] == null ? 'M' : 'L') + sx(i).toFixed(1) + ' ' + sy(v).toFixed(1)).join('')}" fill="none" stroke="${maCol[k] || '#fff'}" stroke-width="1.4" opacity=".9"/>`; });
+      const last = bars[n - 1], lc = last.c >= last.o ? '#22C55E' : '#F04444';
+      body += `<line x1="${padL}" x2="${W - padR}" y1="${sy(last.c)}" y2="${sy(last.c)}" stroke="${lc}" stroke-dasharray="2 3" opacity=".7"/><rect x="${W - padR + 3}" y="${sy(last.c) - 10}" width="${padR - 5}" height="20" rx="4" fill="${lc}"/><text x="${W - padR + 8}" y="${sy(last.c) + 4}" font-family="Geist Mono,monospace" font-size="11" font-weight="600" fill="#0A0A0B">${fmt(last.c)}</text>`;
+      el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price chart">${g}${body}<g class="hover" style="display:none"><line class="xh" y1="${padT}" y2="${H - padB}"/><line class="xh yh" x1="${padL}" x2="${W - padR}"/><rect class="ytag" x="${W - padR + 3}" width="${padR - 5}" height="20" rx="4" fill="#3f3f46"/><text class="ytxt" x="${W - padR + 8}" font-family="Geist Mono,monospace" font-size="11" fill="#fff"></text></g></svg>`;
+      const svg = el.querySelector('svg'), hv = el.querySelector('.hover');
+      svg.addEventListener('pointermove', e => {
+        const r = svg.getBoundingClientRect(), x = (e.clientX - r.left) * W / r.width, y = (e.clientY - r.top) * H / r.height;
+        const i = Math.max(0, Math.min(n - 1, Math.floor((x - padL) / step)));
+        hv.style.display = ''; const [vx, hy] = hv.querySelectorAll('line');
+        vx.setAttribute('x1', sx(i)); vx.setAttribute('x2', sx(i)); const yy = Math.max(padT, Math.min(padT + pH, y)); hy.setAttribute('y1', yy); hy.setAttribute('y2', yy);
+        hv.querySelector('.ytag').setAttribute('y', yy - 10); const t = hv.querySelector('.ytxt'); t.setAttribute('y', yy + 4); t.textContent = fmt(mn + (1 - (yy - padT) / pH) * (mx - mn));
+        onHover && onHover(bars[i], i);
+      });
+      svg.addEventListener('pointerleave', () => { hv.style.display = 'none'; onHover && onHover(null); });
+    };
+    draw();
+    let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(draw, 60); }).observe(el);
+  }
+  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, heatmap, heatLegend, heatColor, divBar, proChart };
 })();
