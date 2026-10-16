@@ -47,13 +47,13 @@
   const icon = (n, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n] || ''}</svg>`;
 
   // ---------- design studio (studio.html): saved look, applied on this device only ----------
-  const STUDIO_DEF = { accent: '#FF7A1A', corners: 'default', size: 'default', font: 'geist', icons: 'box', motion: 'full', cards: 'bordered', numbers: 'mono', dropdown: 'sheet' };
+  const STUDIO_DEF = { accent: '#FF7A1A', corners: 'soft', size: 'default', font: 'inter', icons: 'box', motion: 'full', cards: 'bordered', numbers: 'mono', dropdown: 'sheet' };
   function applyStudio(c) {
     const h = document.documentElement, cfg = Object.assign({}, STUDIO_DEF, c || {});
     [...h.classList].filter(k => k.startsWith('st-')).forEach(k => h.classList.remove(k));
     h.style.setProperty('--accent', cfg.accent); h.style.setProperty('--accent-hi', `color-mix(in srgb, ${cfg.accent} 82%, #fff)`);
     ['corners', 'size', 'font', 'icons', 'motion', 'cards', 'numbers', 'dropdown'].forEach(k => cfg[k] !== STUDIO_DEF[k] && h.classList.add(`st-${k}-${cfg[k]}`));
-    if (cfg.font === 'inter' && !document.getElementById('st-inter')) document.head.insertAdjacentHTML('beforeend', '<link id="st-inter" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">');
+    if (cfg.font === 'geist' && !document.getElementById('st-geist')) document.head.insertAdjacentHTML('beforeend', '<link id="st-geist" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">');
   }
   let studio = null; try { studio = JSON.parse(localStorage.getItem('inv-studio') || 'null'); } catch {}
   if (studio && studio.apply) applyStudio(studio);

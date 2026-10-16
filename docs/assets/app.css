@@ -4,7 +4,7 @@
   --fg:#FFFFFF;--fg-2:#A1A1AA;--fg-3:#71717A;
   --accent:#FF7A1A;--accent-hi:#FF9147;--accent-soft:color-mix(in srgb,var(--accent) 12%,transparent);
   --up:#22C55E;--down:#F04444;--up-soft:rgba(34,197,94,.12);--down-soft:rgba(240,68,68,.12);
-  --sans:"Geist","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --sans:"Inter","Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
   --r:10px;--r-sm:6px;--head:64px;
   color-scheme:dark;
@@ -854,13 +854,14 @@ html.csel-lock{overflow:hidden}
 /* ---------- design studio looks (classes set by UI.applyStudio) ---------- */
 .st-corners-sharp :is(.card,.btn,.input,.select,.csel-btn,.tabs,.chip,.dd,.csel-menu,.palette-box,.idx,.panel){border-radius:4px!important}
 .st-corners-sharp :is(.tab,.seg-thumb,.h-ic,.range button,.csel-opt,.logo:not(.logo-img):not(.logo-fx):not(.logo-tile)){border-radius:3px!important}
-.st-corners-soft :is(.card,.dd,.csel-menu,.palette-box,.idx,.panel){border-radius:18px!important}
-.st-corners-soft :is(.btn,.input,.select,.csel-btn,.tabs){border-radius:12px!important}
-.st-corners-soft :is(.tab,.seg-thumb,.h-ic,.range button,.csel-opt){border-radius:9px!important}
-.st-corners-soft .chip{border-radius:999px!important}
+:is(.card,.dd,.csel-menu,.palette-box,.idx,.panel){border-radius:18px}
+:is(.btn,.input,.select,.csel-btn,.tabs){border-radius:12px}
+:is(.tab,.seg-thumb,.h-ic,.range button,.csel-opt){border-radius:9px}
+.chip{border-radius:999px}
+.st-corners-medium :is(.card,.idx,.panel){border-radius:var(--r)!important}.st-corners-medium :is(.dd,.csel-menu,.palette-box){border-radius:14px!important}.st-corners-medium :is(.btn,.input,.select,.csel-btn,.tabs){border-radius:8px!important}.st-corners-medium :is(.tab,.seg-thumb,.h-ic,.range button,.csel-opt){border-radius:6px!important}
 .st-size-compact body{zoom:.93}
 .st-size-large body{zoom:1.07}
-.st-font-inter{--sans:"Inter",system-ui,-apple-system,sans-serif}
+.st-font-geist{--sans:"Geist",system-ui,-apple-system,sans-serif}
 .st-font-system{--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .st-icons-plain .h-ic{background:none;border:0;width:auto;height:auto}
 .st-icons-plain .h-ic svg{width:20px;height:20px}
