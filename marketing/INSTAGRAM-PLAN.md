@@ -57,3 +57,17 @@ Post one per day, or all at once for launch day.
 **Disclaimer to keep in captions where prices or tools appear:** Information and education only. Not investment advice.
 
 Note: post 3, the markets story and the news story show real prices and headlines from 16 October. Re-render before posting on a later day: `node render.mjs` (images) and `node video.mjs v_markets` (video) inside `marketing/`, after refreshing `data.js`.
+
+## POV reels (marketing/pov/)
+Real data: $100 invested at the start of every month, values at real daily closing prices (dividends included via adjusted prices), up to 16 October 2026.
+
+| File | Title | Put in | Worth today |
+|---|---|---|---|
+| pov_amd.mp4 | POV: You invested $100 in AMD monthly since 2016 | $13,000 | $319,482 |
+| pov_nvidia.mp4 | …NVIDIA monthly since 2016 | $13,000 | $492,326 |
+| pov_bitcoin.mp4 | …Bitcoin monthly since 2016 | $13,000 | $289,502 |
+| pov_eli_lilly.mp4 | …Eli Lilly monthly since 2016 | $13,000 | $109,324 |
+| pov_tsmc.mp4 | …TSMC monthly since 2016 | $13,000 | $101,486 |
+| pov_apple.mp4 | …Apple monthly since 2014 | $15,400 | $101,662 |
+
+Caption idea: "$100 a month into [asset] since [year]. Try any stock with the free POV calculator at investedia.com 📈 Not financial advice. Past performance doesn't guarantee future results."
