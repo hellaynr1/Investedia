@@ -45,15 +45,29 @@
   <div class="sec-head" style="margin:0"><div><h1>Markets</h1><p class="lede">Prices, performance and trends across every asset class.</p></div><span class="demo" data-asof>Delayed data</span></div>
 </div>
 <nav class="subnav" id="subnav"></nav>
+<div id="rg-bar" style="margin-bottom:18px"></div>
 <section class="sec"><div class="grid g-4" id="snap"></div></section>
 <section class="sec"><div class="grid g-2" id="cats"></div></section>
 <section class="sec" data-newsletter></section>
 <script>
 const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, row } = UI, M = MOCK;
 UI.subnav('');
-document.getElementById('snap').innerHTML = ['SPX', 'BTC', 'XAU', 'US10Y'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span>${a.n}</span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`).join('');
-const pick = { stocks: ['NVDA', 'AAPL', 'MSFT', 'TSLA'], indices: ['SPX', 'NDX', 'DAX', 'NKY'], crypto: ['BTC', 'ETH', 'SOL', 'XRP'], currencies: ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD'], commodities: ['XAU', 'WTI', 'XAG', 'NG'], bonds: ['US10Y', 'US02Y', 'DE10Y', 'UK10Y'], funds: ['VOO', 'QQQ', 'SCHD', 'IBIT'] };
-document.getElementById('cats').innerHTML = M.categories.map(c => `<div class="card"><div class="card-head"><span class="ident"><span class="dd-ic">${icon(c.k)}</span><span><b style="font-size:15px">${c.t}</b><small>${c.d}</small></span></span><a class="link" href="${c.page}">Open ${icon('arrow')}</a></div>${pick[c.k].map(s => row(M.bySym[s])).join('')}</div>`).join('');
+const BENCH = { Americas: 'SPX', Europe: 'SX5E', Asia: 'NKY', Oceania: 'XJO', Africa: 'J203', 'Middle East': 'TASI' };
+const REGIONAL = ['stocks', 'indices', 'bonds', 'funds', 'currencies'];
+const regional = M.assets.filter(a => REGIONAL.includes(a.c) && a.region && a.region !== 'Global');
+function render(R) {
+const bond = R === 'All' ? 'US10Y' : (UI.inRegion(M.assets.filter(a => a.c === 'bonds'), R)[0] || M.bySym.US10Y).s;
+document.getElementById('snap').innerHTML = [R === 'All' ? 'SPX' : BENCH[R] || 'SPX', 'BTC', 'XAU', bond].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span>${a.n}</span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`).join('');
+const base = { stocks: ['NVDA', 'AAPL', 'MSFT', 'TSLA'], indices: ['SPX', 'NDX', 'DAX', 'NKY'], crypto: ['BTC', 'ETH', 'SOL', 'XRP'], currencies: ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD'], commodities: ['XAU', 'WTI', 'XAG', 'NG'], bonds: ['US10Y', 'US02Y', 'DE10Y', 'UK10Y'], funds: ['VOO', 'QQQ', 'SCHD', 'IBIT'] };
+const pick = k => {
+  if (R === 'All' || !REGIONAL.includes(k)) return base[k].map(s => M.bySym[s]);
+  const l = UI.inRegion(M.assets.filter(a => a.c === k), R);
+  return (k === 'stocks' ? [...l].sort((a, b) => b.m - a.m) : l).slice(0, 4);
+};
+document.getElementById('cats').innerHTML = M.categories.map(c => { const l = pick(c.k), reg = R !== 'All' && REGIONAL.includes(c.k); return `<div class="card"><div class="card-head"><span class="ident"><span class="dd-ic">${icon(c.k)}</span><span><b style="font-size:15px">${c.t}${reg ? ' · ' + R : ''}</b><small>${R !== 'All' && !reg ? 'Global market' : c.d}</small></span></span><a class="link" href="${c.page}${reg && c.k === 'stocks' ? '#' + R.toLowerCase().replace(/\s+/g, '-') : ''}">Open ${icon('arrow')}</a></div>${l.length ? l.map(a => row(a)).join('') : `<p class="muted" style="padding:16px 18px;margin:0">No ${c.t.toLowerCase()} tracked in ${R} yet.</p>`}</div>`; }).join('');
+}
+UI.regionTabs(document.getElementById('rg-bar'), regional, render);
+render('All');
 </script>
 </main>
 </body>
