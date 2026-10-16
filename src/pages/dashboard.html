@@ -67,6 +67,8 @@
 <script>
 const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, row, impact, tabs, proChart } = UI, M = MOCK;
 const LISTS = { main: ['NVDA', 'AAPL', 'MSFT', 'TSLA', 'AMZN', 'META', 'SPX', 'BTC', 'XAU', 'EURUSD'], crypto: ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'AVAX', 'LINK', 'IBIT'], macro: ['SPX', 'NDX', 'DAX', 'US10Y', 'US02Y', 'DXY', 'EURUSD', 'USDJPY', 'XAU', 'WTI'] };
+try { const saved = JSON.parse(localStorage.getItem('inv-lists') || 'null'); if (saved) Object.assign(LISTS, saved); } catch {}
+const saveLists = () => { try { localStorage.setItem('inv-lists', JSON.stringify(LISTS)); } catch {} };
 let list = 'main', sel = new URLSearchParams(location.search).get('s') || 'NVDA', tf = '6M', ctype = 'candles', ind = new Set(['20', 'vol']);
 if (!M.bySym[sel]) sel = 'NVDA';
 
@@ -92,7 +94,7 @@ function renderList() {
   document.querySelectorAll('.wl-row').forEach(b => b.onclick = () => select(b.dataset.s));
 }
 document.getElementById('wl-q').oninput = renderList;
-document.getElementById('wl-q').onkeydown = e => { if (e.key === 'Enter') { const hit = M.assets.find(a => a.s.toLowerCase() === e.target.value.trim().toLowerCase() || a.n.toLowerCase().startsWith(e.target.value.trim().toLowerCase())); if (hit) { if (!LISTS[list].includes(hit.s)) LISTS[list].unshift(hit.s); e.target.value = ''; select(hit.s); } } };
+document.getElementById('wl-q').onkeydown = e => { if (e.key === 'Enter') { const hit = M.assets.find(a => a.s.toLowerCase() === e.target.value.trim().toLowerCase() || a.n.toLowerCase().startsWith(e.target.value.trim().toLowerCase())); if (hit) { if (!LISTS[list].includes(hit.s)) { LISTS[list].unshift(hit.s); saveLists(); } e.target.value = ''; select(hit.s); } } };
 document.addEventListener('keydown', e => {
   if (!['ArrowDown', 'ArrowUp'].includes(e.key) || e.target.matches('input,select,textarea')) return;
   const l = LISTS[list], i = l.indexOf(sel); if (i < 0) return; e.preventDefault();
@@ -141,7 +143,7 @@ seg('mk', mk); mk('indices');
 const st = M.assets.filter(a => a.c === 'stocks').sort((a, b) => b.d - a.d);
 const mv = k => document.getElementById('mv-rows').innerHTML = (k === 'up' ? st.slice(0, 5) : st.slice(-5).reverse()).map(compact).join('');
 seg('mv', mv); mv('up');
-document.querySelectorAll('#mk-rows, #mv-rows').forEach(el => el.addEventListener('click', e => { const l = e.target.closest('a'); if (l) { e.preventDefault(); const s = new URL(l.href).searchParams.get('s'); if (!LISTS[list].includes(s)) LISTS[list].push(s); select(s); } }));
+document.querySelectorAll('#mk-rows, #mv-rows').forEach(el => el.addEventListener('click', e => { const l = e.target.closest('a'); if (l) { e.preventDefault(); const s = new URL(l.href).searchParams.get('s'); if (!LISTS[list].includes(s)) { LISTS[list].push(s); saveLists(); } select(s); } }));
 document.getElementById('ev').innerHTML = M.calendar.slice(0, 4).map(e => `<a class="arow arow-sm" href="calendar.html" style="grid-template-columns:52px 1fr auto"><span class="num muted">${e.time}</span><span style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.c} · ${e.e}</span>${impact(e.imp)}</a>`).join('');
 document.getElementById('alerts').innerHTML = [['NVDA', 'Below $200.00', 1], ['BTC', 'Above $90,000', 1], ['XAU', 'Moves ±2% in a day', 1], ['AAPL', 'Earnings released', 0]].map(([s, t, on]) => { const a = M.bySym[s]; return `<div class="arow arow-sm" style="grid-template-columns:minmax(0,1fr) auto"><span class="ident">${logo(a)}<span><b>${a.s}</b><small>${t}</small></span></span><button class="switch ${on ? 'on' : ''}" type="button" aria-pressed="${!!on}" aria-label="Toggle alert" onclick="this.classList.toggle('on');this.setAttribute('aria-pressed',this.classList.contains('on'))"><i></i></button></div>`; }).join('');
 
