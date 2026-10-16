@@ -54,11 +54,11 @@
   const fmtC = (v, bps) => bps ? `${v > 0 ? '+' : ''}${(v * 1).toFixed(1)} bp` : `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`;
   const cls = v => v > 0 ? 'up' : v < 0 ? 'down' : 'muted';
   const cap = b => b == null ? '—' : b >= 1000 ? `$${(b / 1000).toFixed(2)}T` : `$${b}B`;
-  // Asset logos, all self-hosted in assets/logos: coin logos (CC0 set), company icons, brand glyphs (simple-icons, CC0)
+  // Asset logos, all round and self-hosted in assets/logos: coin logos (CC0 set), brand marks (simple-icons CC0, svgl MIT), company icons
   // and round flags (circle-flags, MIT) for indices, bonds and currencies. Anything else gets a coloured ticker tile.
   const COIN = new Set(['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX', 'LINK', 'UNI', 'AAVE', 'USDT', 'USDC']);
-  const GLYPH = new Set(['NVDA', 'V', 'INTC', 'AMD', 'BA', 'SAP', 'TM', 'BABA']);
-  const ICON = new Set(['AAPL','ADBE','AMZN','ARKK','ASML','AVGO','BAC','BNP','COST','CRWV','CVX','DELL','ENPH','FXAIX','GLD','GOOGL','GS','HSBA','JNJ','JPM','KO','LLY','MC','MELI','META','MSFT','NFLX','NU','NVO','PEP','PFE','QQQ','SCHD','SHEL','SHOP','TSLA','VTI','WFC','WMT','WULF','XOM']), ICON_ALIAS = { VOO: 'VTI', VFIAX: 'VTI', VWCE: 'VTI' };
+  const GLYPH = new Set(['NVDA', 'AAPL', 'GOOGL', 'META', 'TSLA', 'AVGO', 'V', 'DELL', 'INTC', 'NFLX', 'AMD', 'BA', 'SAP', 'KO', 'BAC', 'HSBA', 'SHEL', 'TM', 'BABA', 'SHOP', 'NU', 'MSFT', 'ADBE', 'CRM', 'MELI']);
+  const ICON = new Set(['GS', 'WFC', 'AMZN', 'JPM', 'LLY', 'XOM', 'WULF', 'CRWV', 'ASML', 'PEP', 'WMT', 'COST', 'BNP', 'JNJ', 'NVO', 'PFE', 'CVX', 'ENPH', 'QQQ', 'VTI', 'GLD', 'SCHD', 'ARKK', 'FXAIX']), ICON_ALIAS = { VOO: 'VTI', VFIAX: 'VTI', VWCE: 'VTI' };
   const FLAG = { SPX: 'us', NDX: 'us', DJI: 'us', RUT: 'us', ES1: 'us', YM1: 'us', NQ1: 'us', DAX: 'de', CAC: 'fr', UKX: 'gb', NKY: 'jp', SX5E: 'eu', HSI: 'hk', TSX: 'ca', IBOV: 'br', MXX: 'mx', XJO: 'au', NZ50: 'nz', J203: 'za', EGX30: 'eg', NGSE: 'ng', SENSEX: 'in', KOSPI: 'kr', SSEC: 'cn',
     US02Y: 'us', US10Y: 'us', US30Y: 'us', USIG: 'us', USHY: 'us', DE10Y: 'de', FR10Y: 'fr', JP10Y: 'jp', UK10Y: 'gb', IT10Y: 'it', DXY: 'us' };
   const CCY = { EUR: 'eu', USD: 'us', GBP: 'gb', JPY: 'jp', CHF: 'ch', AUD: 'au', TRY: 'tr', MXN: 'mx', ZAR: 'za', CAD: 'ca', CNY: 'cn' };

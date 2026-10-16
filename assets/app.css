@@ -735,3 +735,6 @@ main>.sec:nth-of-type(n+3){content-visibility:auto;contain-intrinsic-size:auto 6
 .logo-fx img{position:absolute;width:70%;height:70%;border-radius:50%;box-shadow:0 0 0 1.5px var(--card)}
 .logo-fx img:first-child{left:0;top:0}.logo-fx img:last-child{right:0;bottom:0}
 .logo-cmd{width:62%;height:62%}
+/* every asset logo is a circle, like on charting platforms */
+.logo,.logo.lg{border-radius:50%;overflow:hidden}
+.logo{font-size:9.5px}.logo.lg{font-size:14px}
