@@ -577,7 +577,7 @@
     }
   });
   // ---------- accounts (Supabase: email + Google). Fill both values to switch accounts on. ----------
-  const SB_URL = '', SB_KEY = '';           // Supabase → Project Settings → API (URL + anon public key)
+  const SB_URL = 'https://lfjyoeusblhfpmgwbrhj.supabase.co', SB_KEY = 'sb_publishable_kqozWiWcKHNqendoiWxsMA_ro7DfTQF';           // Supabase → Project Settings → API (URL + anon public key)
   const authOn = !!(SB_URL && SB_KEY);
   let sb = null;
   const sbLoad = () => sb ? Promise.resolve(sb) : new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'; s.onload = () => ok(sb = window.supabase.createClient(SB_URL, SB_KEY)); s.onerror = no; document.head.append(s); });
@@ -614,7 +614,9 @@
   au.querySelectorAll('.auth-switch button').forEach(b => b.onclick = () => auSet(b.dataset.m));
   au.querySelector('.auth-eye').onclick = e => { const i = au.querySelector('[name=pw]'), show = i.type === 'password'; i.type = show ? 'text' : 'password'; e.target.textContent = show ? 'Hide' : 'Show'; };
   const notYet = () => auMsg('Accounts open very soon. Continue as a guest for now.');
-  au.querySelector('.auth-google').onclick = () => { if (!authOn) return notYet(); store('inv-news-optin', au.querySelector('[name=news]').checked ? '1' : '0');
+  let sbCfg; const sbSettings = () => sbCfg || (sbCfg = fetch(SB_URL + '/auth/v1/settings', { headers: { apikey: SB_KEY } }).then(r => r.json()).catch(() => ({})));
+  au.querySelector('.auth-google').onclick = async () => { if (!authOn) return notYet();
+    const st = await sbSettings(); if (!(st.external && st.external.google)) return auMsg('Google sign-in opens very soon. Use your email for now.'); store('inv-news-optin', au.querySelector('[name=news]').checked ? '1' : '0');
     sbLoad().then(c => c.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.href.split('#')[0] } })).catch(() => auMsg('Could not reach Google. Try again.')); };
   au.querySelector('.auth-forgot').onclick = e => { e.preventDefault(); const em = au.querySelector('[name=email]').value.trim(); if (!em) return auMsg('Enter your email first.'); if (!authOn) return notYet();
     sbLoad().then(c => c.auth.resetPasswordForEmail(em, { redirectTo: location.origin + '/profile.html' })).then(() => auMsg('Check your inbox for a reset link.', true)); };
