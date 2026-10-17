@@ -2,13 +2,16 @@
 
 | Capability | Status | Notes |
 |---|---|---|
-| Web search | Works | WebSearch tool, US-only, returns links/snippets |
-| Fetch pages | Partial | finviz.com worked; investopedia.com refused; direct `curl` returns 402/403 via proxy |
-| Instagram / TikTok / X / YouTube | Not verified | Logged-out pages usually blocked. Needs official APIs (YouTube Data API key is free) or a connected scraper service. Not attempted yet |
-| Reddit | Blocked via curl (403) | Try official API with OAuth app credentials |
-| Commit to GitHub | Works | Session has push access to this repo |
-| Background / nightly runs | **Not active yet** | Needs `.github/workflows/competitor-research.yml` + `ANTHROPIC_API_KEY` repo secret (see below) |
-| Claude Code in-session scheduling | Session-only | Dies when session ends; not reliable for nights |
+| Network egress | Open | Proxy allows all hosts tested (no relay failures). Not a network-policy issue |
+| Web search | Works | WebSearch tool, US-only |
+| Direct fetch (curl with browser User-Agent) | Works | finviz, tradingview, koyfin, youtube, tiktok, x return 200. Default curl UA gets 403 on some sites |
+| investopedia.com | Blocked by site | Cloudflare returns 402 (bot protection, operator People Inc). Use search snippets, Wayback, or a scraping service |
+| Reddit HTML | Works with browser UA | `.json` endpoint returns 403; use official OAuth API |
+| Instagram | Login wall | Profile URL redirects to login. Needs official API (own account only) or a scraping service |
+| TikTok / X | 200 but unverified content | Pages are JS-rendered; likely need a headless browser (Playwright/Chromium is installed) or an API |
+| WebFetch tool | Partial | Refused investopedia.com |
+| Commit to GitHub | Works | Push access to this repo |
+| Nightly runs | **Not active yet** | Needs workflow + `ANTHROPIC_API_KEY` secret (below) |
 
 ## To enable nightly research
 1. Repo → Settings → Secrets and variables → Actions → add `ANTHROPIC_API_KEY`.
