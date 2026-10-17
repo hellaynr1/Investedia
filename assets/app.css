@@ -1139,3 +1139,5 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .acct-item svg{width:17px;height:17px;color:var(--fg-3)}.acct-item:hover{background:var(--card)}
 .acct-out{margin-top:4px;border-top:1px solid var(--line-soft);border-radius:0 0 8px 8px;padding-top:11px}.acct-out:hover svg{color:var(--down)}
 .is-owner .acct-dd .owner-only{display:flex!important}
+/* iPhone zooms the page into any field smaller than 16px: keep fields at 16px on phones */
+@media (max-width:760px){input,select,textarea{font-size:16px!important}}

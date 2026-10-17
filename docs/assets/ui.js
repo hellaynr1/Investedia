@@ -666,7 +666,7 @@
     const av = hdr.querySelector('#hdr-avatar'), lb = document.createElement('button');
     lb.type = 'button'; lb.id = 'hdr-login'; lb.className = 'btn btn-ghost btn-sm hdr-login'; lb.textContent = 'Log in'; lb.onclick = () => openAuth('in');
     const sb2 = document.createElement('button'); sb2.type = 'button'; sb2.className = 'btn btn-primary btn-sm hdr-signup guest-only hide-sm'; sb2.textContent = 'Sign up'; sb2.onclick = () => openAuth('up');
-    av.after(lb); lb.after(sb2); lb.classList.add('guest-only'); av.hidden = true;
+    av.closest('.acct-wrap').after(lb); lb.after(sb2); lb.classList.add('guest-only'); av.hidden = true;
   }
   window.openAuth = openAuth;
   // ---------- watchlist: assets and whole countries, saved to the member's account (Supabase table "watchlists") ----------
