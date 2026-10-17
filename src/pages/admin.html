@@ -21,10 +21,11 @@
       <div class="an-ch"><h3>Right now</h3><span class="muted" id="feed-n"></span></div>
       <div class="an-feed" id="feed"></div>
     </div>
+    <div class="card an-card an-full"><div class="an-ch"><div><h3>Visitors by country</h3><p class="muted" id="geo-s"></p></div><div class="an-scale"><span>Fewer</span><i></i><span>More</span></div></div>
+      <div class="an-geo"><div class="an-map" id="map"><p class="an-none">Loading map…</p></div><div id="countries"></div></div></div>
     <div class="card an-card"><div class="an-ch"><h3>Top pages</h3></div><div id="pages"></div></div>
     <div class="card an-card"><div class="an-ch"><h3>Traffic sources</h3></div><div id="refs"></div></div>
     <div class="card an-card"><div class="an-ch"><h3>Devices</h3></div><div id="devices"></div></div>
-    <div class="card an-card"><div class="an-ch"><h3>Regions</h3></div><div id="regions"></div></div>
     <div class="card an-card"><div class="an-ch"><h3>Most watched</h3></div><div id="watched"></div></div>
     <div class="card an-card an-brain"><div class="an-ch"><h3>For your Second Brain</h3><button class="btn btn-ghost btn-sm" type="button" id="copy">Copy</button></div><p id="summary"></p></div>
   </section>
@@ -103,7 +104,7 @@ function draw() {
   document.getElementById('feed').innerHTML = EV.slice(0, 7).map(e => `<div class="an-fi"><i class="${e.type}"></i><span>${e.tz ? esc(e.tz.split('/').pop().replace(/_/g, ' ')) : 'Someone'} ${esc(what(e))}<small>${e.device || ''}${e.ref ? ' · from ' + esc(e.ref) : ''}</small></span><time>${ago(e.ts)}</time></div>`).join('') || '<p class="an-none">No visits yet.</p>';
   ranked('pages', count(views, e => PAGE(e.path)), views.length, 'No visits in this period.');
   ranked('refs', count(visits, e => e.ref || 'Direct'), visits.length, 'No visits in this period.');
-  ranked('regions', count(visits, e => e.tz && e.tz.replace(/_/g, ' ').replace('/', ' · ')), visits.length, 'No visits in this period.');
+  geo(visits);
   ranked('watched', count(xs.filter(e => e.type === 'watch'), e => e.detail && e.detail.replace(/^country:/, '')), T('watch'), 'Nobody added to a watchlist yet.');
   const dv = count(views, e => e.device), tot = views.length || 1, DC = { phone: 'var(--accent)', desktop: 'var(--fg-2)', tablet: 'var(--fg-3)' };
   document.getElementById('devices').innerHTML = dv.length ? `<div class="an-split">${dv.map(([k, n]) => `<i style="flex:${n};background:${DC[k]}" title="${k} ${fmt(n)}"></i>`).join('')}</div><div class="an-dl">${dv.map(([k, n]) => `<div><i style="background:${DC[k]}"></i><span>${k[0].toUpperCase() + k.slice(1)}</span><b>${(n / tot * 100).toFixed(0)}%</b><small>${fmt(n)}</small></div>`).join('')}</div>` : '<p class="an-none">No visits in this period.</p>';
@@ -123,6 +124,22 @@ async function load() {
     EV = data || []; document.getElementById('an').hidden = false; document.getElementById('an-msg').innerHTML = ''; draw();
     setInterval(async () => { const r = await get(); if (!r.error) { EV = r.data || []; draw(); } }, 60000);
   } catch { msg('Couldn\'t load analytics', 'Check your connection and reload.'); }
+}
+// Country of each visit, from the browser's time zone (no IP, nothing personal); drawn on a world map
+let MAP = null;
+fetch('assets/world-map.json').then(r => r.json()).then(m => { MAP = m; if (EV.length) draw(); }).catch(() => { document.getElementById('map').innerHTML = '<p class="an-none">The map couldn\'t load.</p>'; });
+function geo(visits) {
+  if (!MAP) return;
+  const by = count(visits, e => (e.tz && MAP.tz[e.tz]) || '??'), tot = visits.length, known = by.filter(([k]) => k !== '??'), max = known.length ? known[0][1] : 1, n = Object.fromEntries(known);
+  const name = k => k === '??' ? 'Unknown' : MAP.names[k] || k;
+  document.getElementById('geo-s').textContent = known.length ? `${known.length} ${known.length === 1 ? 'country' : 'countries'} · ${fmt(tot)} visits` : 'No visits in this period.';
+  const el = document.getElementById('map');
+  el.innerHTML = `<svg viewBox="0 0 ${MAP.w} ${MAP.h}" role="img" aria-label="Visits by country: ${known.slice(0, 10).map(([k, v]) => name(k) + ' ' + v).join(', ')}"><path class="sea" d="${MAP.sphere}"/>${MAP.c.map(c => { const v = n[c.id] || 0; return `<path data-c="${c.id}" d="${c.d}"${v ? ` style="fill:rgba(255,122,26,${(.28 + .72 * Math.sqrt(v / max)).toFixed(2)})"` : ''}/>`; }).join('')}</svg><div class="an-tip" hidden></div>`;
+  const svg = el.querySelector('svg'), tip = el.querySelector('.an-tip');
+  svg.addEventListener('pointermove', e => { const p = e.target.closest('[data-c]'); svg.querySelectorAll('.on').forEach(x => x.classList.remove('on')); if (!p) { tip.hidden = true; return; } p.classList.add('on'); const k = p.dataset.c, v = n[k] || 0, r = el.getBoundingClientRect();
+    tip.innerHTML = `<small>${esc(name(k))}</small><b>${fmt(v)}</b> ${v === 1 ? 'visit' : 'visits'}${tot && v ? `<small>${(v / tot * 100).toFixed(0)}% of all visits</small>` : ''}`; tip.style.left = Math.max(70, Math.min(r.width - 70, e.clientX - r.left)) + 'px'; tip.style.top = (e.clientY - r.top) + 'px'; tip.hidden = false; });
+  svg.addEventListener('pointerleave', () => { tip.hidden = true; svg.querySelectorAll('.on').forEach(x => x.classList.remove('on')); });
+  document.getElementById('countries').innerHTML = by.length ? '<ol class="an-rank">' + by.slice(0, 8).map(([k, v]) => { const p = tot ? v / tot * 100 : 0; return `<li><span class="an-rl">${k !== '??' ? `<img class="an-flag" src="assets/logos/flags/${k.toLowerCase()}.svg" alt="" onerror="this.remove()">` : ''}${esc(name(k))}</span><span class="an-rv">${fmt(v)}<small>${p.toFixed(0)}%</small></span><i style="--w:${Math.max(1.5, p)}"></i></li>`; }).join('') + '</ol>' : '<p class="an-none">No visits in this period.</p>';
 }
 load();
 </script>
