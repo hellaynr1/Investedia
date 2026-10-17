@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=cc2a408f12">
+<link rel="stylesheet" href="assets/app.css?v=eac29587f8">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,8 +37,8 @@
 <body data-page="home">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=cc2a408f12"></script>
-<script src="assets/ui.js?v=cc2a408f12"></script>
+<script src="assets/mock.js?v=eac29587f8"></script>
+<script src="assets/ui.js?v=eac29587f8"></script>
 <main class="wrap">
 <section class="hero hero-horizon">
   <div>
@@ -186,7 +186,7 @@ const perName = { d: 'today', w: 'this week', m1: 'this month' };
 document.getElementById('tm-sub').textContent = `Updated daily · ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · real prices, delayed`;
 (() => { const ny = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })), m = ny.getHours() * 60 + ny.getMinutes(), wd = ny.getDay() > 0 && ny.getDay() < 6, open = wd && m >= 570 && m < 960; document.getElementById('ny-status').innerHTML = open ? '<i></i>Open · closes 16:00 ET' : `<i class="off"></i>Closed · opens ${wd && m < 570 ? '' : (ny.getDay() === 5 || ny.getDay() === 6) ? 'Mon ' : ny.getDay() === 0 ? 'Mon ' : 'tomorrow '}09:30 ET`; })();
 // The globe rises from the bottom of the hero: bigger and lower on phones
-document.getElementById('hero-globe').src = 'assets/globe/index.html?mode=hero&hint=0&halo=0' + (matchMedia('(max-width:600px)').matches ? '&rs=.6&cyf=.95' : '&rs=.36&cyf=1.12');
+document.getElementById('hero-globe').src = 'assets/globe/index.html?mode=hero&hint=0&halo=0' + (matchMedia('(max-width:600px)').matches ? '&rs=.6&cyf=1.02&rim=1.6' : '&rs=.36&cyf=1.2&rim=1.6');
 document.getElementById('hero-date').textContent = 'Markets · ' + new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
 document.getElementById('tm-class').innerHTML = CLASSES.map(([k, t], i) => `<button class="chip ${i ? '' : 'on'}" type="button" data-k="${k}">${t}</button>`).join('');
 function trendingMarkets() {
