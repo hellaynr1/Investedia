@@ -633,7 +633,7 @@
     } catch (err) { auMsg(/invalid/i.test(err.message) ? 'Wrong email or password.' : err.message); } finally { go.disabled = false; } };
   // header: "Log in" for guests, initials for members
   // members-only pages: the profile is hidden until someone is logged in
-  const gated = ['profile'].includes(page);
+  const gated = ['profile', 'watchlist'].includes(page);
   if (gated) document.documentElement.classList.add('auth-gate');
   const paintUser = u => { if (gated && u) document.documentElement.classList.remove('auth-gate');
     const av = hdr.querySelector('#hdr-avatar'), lb = hdr.querySelector('#hdr-login'); if (!lb) return;
@@ -673,7 +673,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(au);
     if (gated) { const g = document.createElement('section'); g.className = 'gate';
-      g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your profile</h1><p class="muted">Your profile, watchlist and alerts are saved to your account, so they follow you on every device.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
+      g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your ${page === 'watchlist' ? 'watchlist' : 'profile'}</h1><p class="muted">Your profile, watchlist and alerts are saved to your account, so they follow you on every device.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
       document.querySelector('main').prepend(g); }
     document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); document.querySelector('.drawer.open') && document.querySelector('.menu-toggle').click(); openAuth(b.dataset.auth || 'up'); });
     document.querySelectorAll('[data-logout]').forEach(b => b.onclick = () => sbLoad().then(c => c.auth.signOut()).finally(() => location.href = 'index.html'));
