@@ -22,7 +22,7 @@
     screener: '<path d="M3 5h18M6 12h12M10 19h4"/>',
     calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
     calc: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>',
-    heat: '<rect x="3" y="3" width="10" height="10" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/><rect x="15" y="11" width="6" height="10" rx="1"/><rect x="3" y="15" width="10" height="6" rx="1"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>', logout: '<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l-5-5 5-5"/><path d="M5 12h11"/>', heat: '<rect x="3" y="3" width="10" height="10" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/><rect x="15" y="11" width="6" height="10" rx="1"/><rect x="3" y="15" width="10" height="6" rx="1"/>',
     compound: '<path d="M3 20c6 0 9-4 12-10 1.5-3 3-5 6-6"/><path d="M16 4h5v5"/>',
     earnings: '<path d="M4 4h16v16H4z"/><path d="M8 15v-3M12 15V9M16 15v-5"/>',
     sparkle: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
@@ -196,15 +196,23 @@
       <div class="notif-wrap hide-sm"><button class="icon-btn" type="button" id="notif-btn" aria-label="Notifications" aria-expanded="false" aria-haspopup="true" title="Notifications">${icon('bell')}<span class="dot" id="notif-dot"></span></button>
         <div class="dd notif-dd" id="notif-dd" role="dialog" aria-label="Notifications"></div></div>
       <a class="icon-btn hide-sm owner-only" href="admin.html" aria-label="Analytics dashboard" title="Analytics dashboard">${icon('heat')}</a>
-      <a class="avatar hide-sm" id="hdr-avatar" href="profile.html" aria-label="Your profile" title="Your profile">AK</a>
+      <div class="notif-wrap acct-wrap hide-sm"><button class="avatar" type="button" id="hdr-avatar" aria-label="Your account" aria-haspopup="true" aria-expanded="false" title="Your account">AK</button><div class="dd acct-dd" id="acct-dd" role="menu" aria-label="Your account"></div></div>
       <button class="icon-btn" type="button" id="theme-btn" aria-label="Switch light or dark mode" title="Light / dark mode"></button>
       <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span></button>
     </div></div>`;
   document.body.prepend(hdr);
   // profile (stored on this device until accounts exist)
   const getProfile = () => { try { return JSON.parse(localStorage.getItem('inv-profile') || '{}'); } catch { return {}; } };
-  const paintAvatar = () => { const pr = getProfile(), av = hdr.querySelector('#hdr-avatar'), ini = (pr.name ? pr.name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase() : 'AK'); av.innerHTML = pr.photo ? `<img src="${pr.photo}" alt="">` : ini; };
-  paintAvatar(); window.addEventListener('profile-change', paintAvatar);
+  const paintAvatar = () => { const u = window.invUser; if (!u) return; const md = u.user_metadata || {}, av = hdr.querySelector('#hdr-avatar'), nm = md.name || md.full_name || u.email || '', pic = md.avatar || md.avatar_url || md.picture, ini = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    av.innerHTML = pic ? `<img src="${String(pic).replace(/"/g, '&quot;')}" alt="" referrerpolicy="no-referrer">` : ini;
+    const esc2 = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+    hdr.querySelector('#acct-dd').innerHTML = `<div class="acct-head"><b>${esc2(md.name || md.full_name || 'Your account')}</b><small>${esc2(u.email || '')}</small></div><a class="acct-item" role="menuitem" href="profile.html">${icon('user')}Profile &amp; settings</a><a class="acct-item" role="menuitem" href="watchlist.html">${icon('star')}My watchlist</a><a class="acct-item owner-only" role="menuitem" href="admin.html">${icon('heat')}Analytics</a><button class="acct-item acct-out" role="menuitem" type="button" data-logout>${icon('logout')}Log out</button>`; };
+  window.addEventListener('profile-change', paintAvatar);
+  { const ab = hdr.querySelector('#hdr-avatar'), ad = hdr.querySelector('#acct-dd');
+    const close = () => { ad.classList.remove('open'); ab.setAttribute('aria-expanded', 'false'); };
+    ab.addEventListener('click', e => { e.stopPropagation(); if (!window.invUser) { location.href = 'profile.html'; return; } const o = !ad.classList.contains('open'); ad.classList.toggle('open', o); ab.setAttribute('aria-expanded', String(o)); });
+    document.addEventListener('click', e => { if (!e.target.closest('#acct-dd')) close(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); }); }
   // notifications panel (sample items; settings live on the profile page)
   const NOTIFS = [['news', 'Breaking', 'Fed officials signal no rush to cut rates after hot inflation data', '4 min ago', 'article.html'], ['watch', 'Watchlist', 'NVDA fell 1.84% today. Profit-taking after a 9% two-week run', '1 h ago', 'asset.html?s=NVDA'], ['earn', 'Earnings', 'Tesla reports on Wed 22 Oct after the close', '3 h ago', 'calendar.html#earnings'], ['event', 'Economic event', 'US Retail Sales at 08:30 ET tomorrow. Forecast 0.4%', '5 h ago', 'calendar.html'], ['price', 'Price alert', 'Gold moved more than 2% in a day', 'Yesterday', 'asset.html?s=XAU']];
   const nIcon = { news: 'news', watch: 'star', earn: 'earnings', event: 'calendar', price: 'bell' };
@@ -651,8 +659,8 @@
   if (gated) document.documentElement.classList.add('auth-gate');
   const paintUser = u => { if (gated && u) document.documentElement.classList.remove('auth-gate');
     const av = hdr.querySelector('#hdr-avatar'), lb = hdr.querySelector('#hdr-login'); if (!lb) return;
-    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); const owner = !!u && OWNERS.includes(String(u.email || '').toLowerCase()); document.documentElement.classList.toggle('is-owner', owner); if (owner) store('inv-owner', '1'); INVWATCH.login(u); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
-    av.textContent = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); const owner = !!u && OWNERS.includes(String(u.email || '').toLowerCase()); document.documentElement.classList.toggle('is-owner', owner); if (owner) store('inv-owner', '1'); INVWATCH.login(u); window.invUser = u || null; window.dispatchEvent(new CustomEvent('inv-user', { detail: u || null })); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
+    av.textContent = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase(); paintAvatar();
     if (u.app_metadata && u.app_metadata.provider === 'google' && store('inv-news-optin') === '1' && !u.user_metadata.newsletter) { sb.auth.updateUser({ data: { newsletter: true } }); store('inv-news-optin', '0'); } };
   {
     const av = hdr.querySelector('#hdr-avatar'), lb = document.createElement('button');
@@ -690,7 +698,7 @@
       g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your ${page === 'watchlist' ? 'watchlist' : 'profile'}</h1><p class="muted">Your profile, watchlist and alerts are saved to your account, so they follow you on every device.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
       document.querySelector('main').prepend(g); }
     document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); document.querySelector('.drawer.open') && document.querySelector('.menu-toggle').click(); openAuth(b.dataset.auth || 'up'); });
-    document.querySelectorAll('[data-logout]').forEach(b => b.onclick = () => sbLoad().then(c => c.auth.signOut()).finally(() => location.href = 'index.html'));
+    document.addEventListener('click', e => { const b = e.target.closest('[data-logout]'); if (!b) return; e.preventDefault(); b.disabled = true; try { localStorage.removeItem('inv-owner'); } catch {} sbLoad().then(c => c.auth.signOut()).catch(() => {}).finally(() => location.href = 'index.html'); });
     const returning = /access_token|code=/.test(location.href) || (() => { try { return Object.keys(localStorage).some(k => /^sb-.*-auth-token$/.test(k)); } catch { return false; } })();
     if (authOn && returning) sbLoad().then(c => { c.auth.onAuthStateChange((_, s) => paintUser(s && s.user)); return c.auth.getSession(); }).then(r => paintUser(r.data.session && r.data.session.user)).catch(() => {});
     const ss = (k, v) => { try { return v === undefined ? sessionStorage.getItem(k) : sessionStorage.setItem(k, v); } catch { return '1'; } };
