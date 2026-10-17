@@ -2,6 +2,7 @@
 -- 1) Replace PASTE_YOUR_RESEND_API_KEY below with your Resend API key (only here, in Supabase; never in the website code).
 -- 2) Run this whole file once in Supabase -> SQL Editor.
 create extension if not exists pg_net;
+delete from vault.secrets where name = 'resend_api_key';
 select vault.create_secret('PASTE_YOUR_RESEND_API_KEY', 'resend_api_key', 'Resend key for the welcome email');
 
 create or replace function public.send_welcome_email() returns trigger
