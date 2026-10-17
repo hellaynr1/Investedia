@@ -149,7 +149,7 @@
   };
   const megaMarkets = `<div class="dd dd-mega" id="dd-markets" role="menu">
     <div class="mega-rail" role="tablist">${M.categories.map((c, i) => `<a class="mega-cat" href="${c.page}" data-cat="${c.k}" ${i === 0 ? 'aria-current="true"' : ''}><span class="dd-ic">${icon(c.k)}</span><span><b>${c.t}</b><small>${c.d}</small></span><svg class="mega-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg></a>`).join('')}
-      <a class="mega-all" href="markets.html">All markets overview →</a></div>
+      <a class="mega-all" href="markets.html">All markets overview →</a><a class="mega-all" href="globe.html">World map →</a></div>
     <div class="mega-body">${M.categories.map(c => megaPanel(c.k)).join('')}</div>
   </div>`;
   const TOOL_GROUPS = [
@@ -274,7 +274,7 @@
   drawer.className = 'drawer';
   drawer.innerHTML = `<button class="search-btn" type="button" data-search>${icon('search')}<span>Search markets, news…</span></button>
     <a href="index.html">Home</a><a href="dashboard.html">Dashboard</a>
-    <details><summary>Markets ${icon('chev')}</summary><a href="markets.html">All markets</a>${M.categories.map(c => `<a href="${c.page}">${c.t}</a>`).join('')}</details>
+    <details><summary>Markets ${icon('chev')}</summary><a href="markets.html">All markets</a><a href="globe.html">World map</a>${M.categories.map(c => `<a href="${c.page}">${c.t}</a>`).join('')}</details>
     <a href="news.html">News &amp; analysis</a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details>
     <a href="education.html">Education</a><a href="watchlist.html">Watchlist</a>

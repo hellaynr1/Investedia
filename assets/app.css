@@ -1037,3 +1037,10 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .drawer .drawer-acct.guest-only .btn{height:44px;font-size:15px}
 .drawer .drawer-acct.guest-only .btn-ghost{order:-1}
 .is-member .drawer:has(.drawer-acct.guest-only){padding-bottom:40px}
+
+/* world globe */
+.hero-globe{padding:0;overflow:hidden;min-height:440px;background:#0A0A0B}
+.hero-globe iframe{display:block;width:100%;height:clamp(420px,46vw,520px);border:0}
+.globe-page{margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)))}
+.globe-page iframe{display:block;width:100%;height:calc(100dvh - var(--head) - 40px);min-height:900px;border:0}
+@media (max-width:860px){.globe-page iframe{min-height:1500px}}

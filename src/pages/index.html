@@ -15,17 +15,7 @@
       <div><span>Next event</span><b class="status">US Retail Sales · 08:30 ET</b></div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-head">
-      <div class="ident"><span id="hero-logo"></span><span><b>S&amp;P 500</b><small>SPX · Index · <span data-asof>Delayed</span></small></span></div>
-      <div style="text-align:right"><div class="num" style="font-size:20px" id="hero-p"></div><div class="num" style="font-size:12.5px" id="hero-c"></div></div>
-    </div>
-    <div style="padding:8px 8px 4px 16px"><div id="hero-chart"></div></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 16px 14px;gap:8px;flex-wrap:wrap">
-      <div class="range" id="hero-range"><button aria-pressed="false">1D</button><button aria-pressed="false">1W</button><button aria-pressed="false">1M</button><button aria-pressed="true">1Y</button><button aria-pressed="false">5Y</button></div>
-      <a class="link" href="asset.html?s=SPX">Full chart <span data-icon="arrow"></span></a>
-    </div>
-  </div>
+  <div class="card hero-globe"><iframe src="assets/globe/index.html?mode=hero" title="World markets globe: tap a country to see its markets" loading="eager"></iframe></div>
 </section>
 
 <section class="sec resources" aria-label="Recommended resources">
@@ -137,25 +127,10 @@
 <section class="sec" data-newsletter></section>
 <script>
 const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row } = UI, M = MOCK;
-document.getElementById('hero-logo').innerHTML = logo(M.bySym.SPX);
 const RES = [['Investor.gov', 'https://www.investor.gov', 'sans'], ['TradingView', 'https://www.tradingview.com', 'sans'], ['Morningstar', 'https://www.morningstar.com', 'serif'], ['Yahoo Finance', 'https://finance.yahoo.com', 'sans'], ['Khan Academy', 'https://www.khanacademy.org/economics-finance-domain', 'sans'], ['FRED', 'https://fred.stlouisfed.org', 'mono'], ['CoinMarketCap', 'https://coinmarketcap.com', 'sans'], ['Bogleheads', 'https://www.bogleheads.org', 'serif'], ['Reuters Markets', 'https://www.reuters.com/markets/', 'sans']];
 const resItems = RES.map(([n, u, f]) => `<a class="res-item res-${f}" href="${u}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('<span class="res-sep" aria-hidden="true"></span>');
 document.getElementById('res-track').innerHTML = resItems + '<span class="res-sep" aria-hidden="true"></span>' + resItems.replace(/<a /g, '<a tabindex="-1" aria-hidden="true" ');
 
-const spx = M.bySym.SPX, ranges = { '1D': 78, '1W': 70, '1M': 64, '1Y': 120, '5Y': 130 };
-const lab = { '1D': ['09:30', '11:00', '12:30', '14:00', '16:00'], '1W': ['Fri', 'Mon', 'Tue', 'Wed', 'Thu'], '1M': ['16 Sep', '23 Sep', '30 Sep', '7 Oct', '16 Oct'], '1Y': ['Nov', 'Jan', 'Mar', 'May', 'Jul', 'Sep'], '5Y': ['2022', '2023', '2024', '2025', '2026'] };
-const chg = { '1D': -0.08, '1W': 0.9, '1M': 2.4, '1Y': 14.6, '5Y': 76.2 };
-document.getElementById('hero-p').textContent = spx.p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-{ const ab = spx.p - spx.p / (1 + spx.d / 100), hc = document.getElementById('hero-c'); hc.className = 'num ' + cls(spx.d); hc.textContent = `${ab >= 0 ? '+' : '−'}${Math.abs(ab).toFixed(2)} (${fmtC(spx.d)})`; }
-let heroSeq = 0;
-const hero = async r => {
-  const my = ++heroSeq, real = await M.history('SPX', r); if (my !== heroSeq) return;
-  const fmt = v => v.toLocaleString('en-US', { maximumFractionDigits: 0 });
-  if (real) return areaChart(document.getElementById('hero-chart'), real.vals, { height: 300, labels: real.labels, color: real.chg >= 0 ? UI.acc() : '#F04444', fmt });
-  areaChart(document.getElementById('hero-chart'), M.series('SPX' + r, ranges[r], spx.p, chg[r], r === '5Y' ? .02 : .006), { height: 300, labels: lab[r], fmt });
-};
-document.querySelectorAll('#hero-range button').forEach(b => b.onclick = () => { document.querySelectorAll('#hero-range button').forEach(x => x.setAttribute('aria-pressed', x === b)); hero(b.textContent); });
-hero('1Y');
 
 const card = a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' || a.c === 'bonds' ? a.n : a.s}</b><small>${a.c === 'indices' ? 'Index' : a.n}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`;
 const GL = { overview: ['SPX', 'NDX', 'DAX', 'NKY', 'BTC', 'XAU', 'EURUSD', 'US10Y'], indices: ['SPX', 'DJI', 'DAX', 'UKX', 'NKY', 'HSI', 'XJO', 'IBOV'], crypto: ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX'], currencies: ['EURUSD', 'GBPUSD', 'USDJPY', 'EURGBP', 'AUDUSD', 'USDCHF', 'DXY', 'USDMXN'], commodities: ['XAU', 'XAG', 'WTI', 'BRENT', 'NG', 'HG', 'PL', 'KC'], bonds: ['US10Y', 'US02Y', 'US30Y', 'DE10Y', 'UK10Y', 'FR10Y', 'IT10Y', 'JP10Y'] };
