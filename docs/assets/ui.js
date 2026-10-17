@@ -586,7 +586,7 @@
   au.className = 'palette auth'; au.hidden = true;
   au.innerHTML = `<div class="palette-box auth-box" role="dialog" aria-modal="true" aria-labelledby="au-t">
     <button class="icon-btn pop-x" type="button" aria-label="Close">${icon('x')}</button>
-    <div class="auth-head"><span class="wm" aria-label="Investedia">Invested<span class="i">ı</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Watchlists, price alerts and the daily brief. Free.</p></div>
+    <div class="auth-head"><span class="wm" aria-label="Investedia">Invested<span class="i">i</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Watchlists, price alerts and the daily brief. Free.</p></div>
     <button class="btn auth-google" type="button">${gIcon}<span>Continue with Google</span></button>
     <div class="auth-or"><span>or with email</span></div>
     <form class="auth-f" novalidate>
@@ -645,7 +645,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(au);
     if (gated) { const g = document.createElement('section'); g.className = 'gate';
-      g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">ı</span>a</span><h1>Log in to see your profile</h1><p class="muted">Your profile, watchlist and alerts are saved to your account, so they follow you on every device.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
+      g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your profile</h1><p class="muted">Your profile, watchlist and alerts are saved to your account, so they follow you on every device.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
       document.querySelector('main').prepend(g); }
     document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); openAuth(b.dataset.auth || 'up'); });
     const returning = /access_token|code=/.test(location.href) || (() => { try { return Object.keys(localStorage).some(k => /^sb-.*-auth-token$/.test(k)); } catch { return false; } })();
