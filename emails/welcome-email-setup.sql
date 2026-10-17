@@ -9,7 +9,7 @@ language plpgsql security definer set search_path = public, extensions as $fn$
 declare
   k text;
   nm text := split_part(coalesce(new.raw_user_meta_data->>'name', new.raw_user_meta_data->>'full_name', ''), ' ', 1);
-  body text := $html$<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  msg text := $html$<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><title>Welcome to Investedia</title>
 <style>:root{color-scheme:light dark;supported-color-schemes:light dark}
 .wm-d{display:none;max-height:0;overflow:hidden}
@@ -42,13 +42,13 @@ begin
     nm := replace(replace(replace(nm, '&', '&amp;'), '<', '&lt;'), '>', '&gt;');
     select decrypted_secret into k from vault.decrypted_secrets where name = 'resend_api_key' limit 1;
     if k is null then return new; end if;
-    body := replace(body, 'Welcome, {{FIRST_NAME}}.', case when nm <> '' then 'Welcome, ' || nm || '.' else 'Welcome!' end);
-    body := replace(body, '{{UNSUBSCRIBE_URL}}', 'https://investedia.com/profile.html#notifications');
+    msg := replace(msg, 'Welcome, {{FIRST_NAME}}.', case when nm <> '' then 'Welcome, ' || nm || '.' else 'Welcome!' end);
+    msg := replace(msg, '{{UNSUBSCRIBE_URL}}', 'https://investedia.com/profile.html#notifications');
     perform net.http_post(
       url := 'https://api.resend.com/emails',
       headers := jsonb_build_object('Authorization', 'Bearer ' || k, 'Content-Type', 'application/json'),
       body := jsonb_build_object('from', 'Investedia <info@investedia.com>', 'to', jsonb_build_array(new.email),
-                                 'subject', 'Welcome to Investedia', 'html', body));
+                                 'subject', 'Welcome to Investedia', 'html', msg));
   end if;
   return new;
 exception when others then
