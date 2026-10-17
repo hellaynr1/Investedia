@@ -40,6 +40,8 @@ def main():
     if ok < len(mk) * .5: raise SystemExit('Too many failures; keeping the previous data')
     data = json.dumps(mk, separators=(',', ':'), ensure_ascii=False)
     asof = "'" + datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ') + "'"
+    for d in ('assets/globe/', 'docs/assets/globe/'):
+        open(d + 'markets.json', 'w', encoding='utf-8').write('{"asof":' + json.dumps(asof.strip("'")) + ',"assets":' + data + '}')
     for p in PAGES:
         h = open(p, encoding='utf-8').read()
         h = re.sub(r'/\*MK\*/.*?/\*MK\*/', lambda _: '/*MK*/' + data + '/*MK*/', h, count=1, flags=re.S)

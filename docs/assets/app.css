@@ -1039,7 +1039,7 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .is-member .drawer:has(.drawer-acct.guest-only){padding-bottom:40px}
 
 /* world globe */
-.hero-horizon{grid-template-columns:minmax(0,1fr);text-align:center;justify-items:center;padding-bottom:0}
+.hero-horizon{background:radial-gradient(70% 60% at 50% 105%,rgba(255,122,26,.09),rgba(255,122,26,.03) 45%,transparent 72%);grid-template-columns:minmax(0,1fr);text-align:center;justify-items:center;padding-bottom:0}
 .hero-horizon>div:first-child{width:100%}
 .hero-horizon .lede,.hero-horizon .hero-search{margin-inline:auto}
 .hero-horizon .hero-ctas,.hero-horizon .hero-stats{justify-content:center}

@@ -476,11 +476,11 @@
       if (c === 'sector') return `<td class="muted">${a.sector || '—'}</td>`;
       if (c === 'spark') return `<td>${spark(a.spark.slice(-28), colorFor(a.w))}</td>`;
       return '<td></td>';
-    }).join('')}<td><button class="star" type="button" aria-label="Add ${a.s} to watchlist">${icon('star')}</button></td></tr>`).join('')}</tbody></table></div>`;
+    }).join('')}<td><button class="star" type="button" data-s="${a.s}" aria-label="Add ${a.s} to watchlist">${icon('star')}</button></td></tr>`).join('')}</tbody></table></div>`;
   }
   document.addEventListener('click', e => {
     const st = e.target.closest('.star');
-    if (st) { e.stopPropagation(); e.preventDefault(); st.classList.toggle('on'); st.querySelector('svg').setAttribute('fill', st.classList.contains('on') ? 'currentColor' : 'none'); return; }
+    if (st) { e.stopPropagation(); e.preventDefault(); if (st.dataset.s && window.INVWATCH) INVWATCH.toggle({ kind: 'asset', src: 'site', s: st.dataset.s }); return; }
     const tr = e.target.closest('tr[data-href]');
     if (tr && !e.target.closest('a,button')) location.href = tr.dataset.href;
   });
@@ -637,7 +637,7 @@
   if (gated) document.documentElement.classList.add('auth-gate');
   const paintUser = u => { if (gated && u) document.documentElement.classList.remove('auth-gate');
     const av = hdr.querySelector('#hdr-avatar'), lb = hdr.querySelector('#hdr-login'); if (!lb) return;
-    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
+    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); INVWATCH.login(u); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
     av.textContent = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
     if (u.app_metadata && u.app_metadata.provider === 'google' && store('inv-news-optin') === '1' && !u.user_metadata.newsletter) { sb.auth.updateUser({ data: { newsletter: true } }); store('inv-news-optin', '0'); } };
   {
@@ -647,6 +647,29 @@
     av.after(lb); lb.after(sb2); lb.classList.add('guest-only'); av.hidden = true;
   }
   window.openAuth = openAuth;
+  // ---------- watchlist: assets and whole countries, saved to the member's account (Supabase table "watchlists") ----------
+  // A copy stays on the device so stars paint at once; guests who tap a star get the sign-up popup.
+  var INVWATCH = window.INVWATCH = (() => {
+    const KEY = 'inv-watch', subs = new Set(); let L = { a: [], c: [] }, user = null;
+    try { L = Object.assign(L, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch {}
+    const id = it => it.kind === 'country' ? 'c:' + it.k : (it.src || 'site') + ':' + it.s;
+    const all = () => [...L.c.map(x => ({ kind: 'country', ...x })), ...L.a.map(x => ({ kind: 'asset', ...x }))];
+    const has = it => !!user && all().some(x => id(x) === id(it));
+    const ping = () => subs.forEach(f => { try { f(); } catch {} });
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify(L)); } catch {} ping();
+      if (user && sb) sb.from('watchlists').upsert({ user_id: user.id, items: L, updated_at: new Date().toISOString() }).then(() => {}, () => {}); };
+    const toggle = it => { if (!user) { openAuth('up'); return null; }
+      const k = it.kind === 'country' ? 'c' : 'a', on = has(it); const { kind, ...rest } = it;
+      L[k] = on ? L[k].filter(x => id({ kind, ...x }) !== id(it)) : [rest, ...L[k]]; save(); return !on; };
+    const login = async u => { if ((u && u.id) === (user && user.id)) return; user = u || null;
+      if (!user) { L = { a: [], c: [] }; try { localStorage.removeItem(KEY); } catch {} ping(); return; }
+      try { const { data } = await sb.from('watchlists').select('items').eq('user_id', user.id).maybeSingle(); const r = (data && data.items) || {};
+        const merge = (a = [], b = [], f) => [...a, ...b.filter(x => !a.some(y => f(y) === f(x)))];
+        L = { a: merge(r.a, L.a, x => (x.src || 'site') + ':' + x.s), c: merge(r.c, L.c, x => x.k) }; save(); } catch { ping(); } };
+    return { has, toggle, all, login, on: f => subs.add(f), get user() { return user; } };
+  })();
+  const paintStars = () => document.querySelectorAll('.star[data-s]').forEach(b => { const on = INVWATCH.has({ kind: 'asset', src: 'site', s: b.dataset.s }); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); const g = b.querySelector('svg'); g && g.setAttribute('fill', on ? 'currentColor' : 'none'); });
+  INVWATCH.on(paintStars); document.addEventListener('DOMContentLoaded', paintStars);
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(au);
     if (gated) { const g = document.createElement('section'); g.className = 'gate';
