@@ -214,7 +214,7 @@
     hdr.querySelector('#notif-dot').hidden = !unread;
     nd.innerHTML = `<div class="notif-head"><b>Notifications</b>${unread ? `<span class="tag acc">${unread} new</span>` : ''}<button type="button" class="link" id="notif-read" style="background:none;border:0;margin-left:auto">Mark all read</button></div>
       <div class="notif-list">${NOTIFS.map(([k, t, m, time, h], i) => `<a class="notif-item ${i < unread ? 'unread' : ''}" href="${h}"><span class="dd-ic">${icon(nIcon[k])}</span><span><small class="accent">${t}</small><span class="notif-msg">${m}</span><small class="dim">${time}</small></span></a>`).join('')}</div>
-      <a class="notif-foot" href="profile.html#notifications">${icon('heat')}Notification settings</a>`;
+      <a class="notif-foot member-only" href="profile.html#notifications">${icon('heat')}Notification settings</a>`;
     nd.querySelector('#notif-read').onclick = e => { e.stopPropagation(); readN = NOTIFS.length; try { localStorage.setItem('inv-notif-read', readN); } catch {} paintNotif(); };
   };
   paintNotif();
@@ -277,7 +277,9 @@
     <details><summary>Markets ${icon('chev')}</summary><a href="markets.html">All markets</a>${M.categories.map(c => `<a href="${c.page}">${c.t}</a>`).join('')}</details>
     <a href="news.html">News &amp; analysis</a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details>
-    <a href="education.html">Education</a><a href="watchlist.html">Watchlist</a><a href="profile.html">Profile &amp; notifications</a>`;
+    <a href="education.html">Education</a><a href="watchlist.html">Watchlist</a>
+    <div class="drawer-acct guest-only"><p>Save your watchlist and alerts on every device.</p><button class="btn btn-primary" type="button" data-auth="up">Create free account</button><button class="btn btn-ghost" type="button" data-auth="in">Log in</button></div>
+    <div class="drawer-acct member-only"><a href="profile.html">Profile &amp; notifications</a><button class="btn btn-ghost" type="button" data-logout>Log out</button></div>`;
   hdr.after(drawer);
   const mt = hdr.querySelector('.menu-toggle');
   function closeDrawer() { drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.classList.remove('is-open'); document.body.style.overflow = ''; }
@@ -635,13 +637,14 @@
   if (gated) document.documentElement.classList.add('auth-gate');
   const paintUser = u => { if (gated && u) document.documentElement.classList.remove('auth-gate');
     const av = hdr.querySelector('#hdr-avatar'), lb = hdr.querySelector('#hdr-login'); if (!lb) return;
-    lb.hidden = !!u; av.hidden = !u; if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
+    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
     av.textContent = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
     if (u.app_metadata && u.app_metadata.provider === 'google' && store('inv-news-optin') === '1' && !u.user_metadata.newsletter) { sb.auth.updateUser({ data: { newsletter: true } }); store('inv-news-optin', '0'); } };
   {
     const av = hdr.querySelector('#hdr-avatar'), lb = document.createElement('button');
     lb.type = 'button'; lb.id = 'hdr-login'; lb.className = 'btn btn-ghost btn-sm hdr-login'; lb.textContent = 'Log in'; lb.onclick = () => openAuth('in');
-    av.after(lb); av.hidden = true;
+    const sb2 = document.createElement('button'); sb2.type = 'button'; sb2.className = 'btn btn-primary btn-sm hdr-signup guest-only hide-sm'; sb2.textContent = 'Sign up'; sb2.onclick = () => openAuth('up');
+    av.after(lb); lb.after(sb2); lb.classList.add('guest-only'); av.hidden = true;
   }
   window.openAuth = openAuth;
   document.addEventListener('DOMContentLoaded', () => {
@@ -649,7 +652,8 @@
     if (gated) { const g = document.createElement('section'); g.className = 'gate';
       g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your profile</h1><p class="muted">Your profile, watchlist and alerts are saved to your account, so they follow you on every device.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
       document.querySelector('main').prepend(g); }
-    document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); openAuth(b.dataset.auth || 'up'); });
+    document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); document.querySelector('.drawer.open') && document.querySelector('.menu-toggle').click(); openAuth(b.dataset.auth || 'up'); });
+    document.querySelectorAll('[data-logout]').forEach(b => b.onclick = () => sbLoad().then(c => c.auth.signOut()).finally(() => location.href = 'index.html'));
     const returning = /access_token|code=/.test(location.href) || (() => { try { return Object.keys(localStorage).some(k => /^sb-.*-auth-token$/.test(k)); } catch { return false; } })();
     if (authOn && returning) sbLoad().then(c => { c.auth.onAuthStateChange((_, s) => paintUser(s && s.user)); return c.auth.getSession(); }).then(r => paintUser(r.data.session && r.data.session.user)).catch(() => {});
     const ss = (k, v) => { try { return v === undefined ? sessionStorage.getItem(k) : sessionStorage.setItem(k, v); } catch { return '1'; } };
