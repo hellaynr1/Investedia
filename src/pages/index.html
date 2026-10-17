@@ -1,5 +1,5 @@
 {"title":"Investedia — Invest with clarity","desc":"Markets, financial news, AI insights, screeners and calculators in one clear view.","key":"home"}
-<section class="hero">
+<section class="hero hero-horizon">
   <div>
     <span class="eyebrow" id="hero-date">Markets</span>
     <h1 style="margin-top:14px;font-size:clamp(34px,4.4vw,56px)">Invest with clarity.</h1>
@@ -15,7 +15,7 @@
       <div><span>Next event</span><b class="status">US Retail Sales · 08:30 ET</b></div>
     </div>
   </div>
-  <div class="card hero-globe"><iframe src="assets/globe/index.html?mode=hero" title="World markets globe: tap a country to see its markets" loading="eager"></iframe></div>
+  <div class="hero-globe"><iframe id="hero-globe" title="World markets globe: tap a country to see its markets" loading="eager"></iframe></div>
 </section>
 
 <section class="sec resources" aria-label="Recommended resources">
@@ -144,6 +144,8 @@ const tm = { mode: 'up', per: 'd', cls: 'all' };
 const perName = { d: 'today', w: 'this week', m1: 'this month' };
 document.getElementById('tm-sub').textContent = `Updated daily · ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · real prices, delayed`;
 (() => { const ny = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })), m = ny.getHours() * 60 + ny.getMinutes(), wd = ny.getDay() > 0 && ny.getDay() < 6, open = wd && m >= 570 && m < 960; document.getElementById('ny-status').innerHTML = open ? '<i></i>Open · closes 16:00 ET' : `<i class="off"></i>Closed · opens ${wd && m < 570 ? '' : (ny.getDay() === 5 || ny.getDay() === 6) ? 'Mon ' : ny.getDay() === 0 ? 'Mon ' : 'tomorrow '}09:30 ET`; })();
+// The globe rises from the bottom of the hero: bigger and lower on phones
+document.getElementById('hero-globe').src = 'assets/globe/index.html?mode=hero&hint=0' + (matchMedia('(max-width:600px)').matches ? '&rs=.6&cyf=.95' : '&rs=.36&cyf=1.12');
 document.getElementById('hero-date').textContent = 'Markets · ' + new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
 document.getElementById('tm-class').innerHTML = CLASSES.map(([k, t], i) => `<button class="chip ${i ? '' : 'on'}" type="button" data-k="${k}">${t}</button>`).join('');
 function trendingMarkets() {
