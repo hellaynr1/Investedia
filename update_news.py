@@ -94,7 +94,7 @@ def parse(xml, default_src):
         else:
             desc = clean(it.findtext("description"))
         if title and link and time.time() - ts < MAX_AGE:
-            items.append({"t": clean(title, 220), "u": link, "src": src, "ts": ts, "d": desc})
+            items.append({"t": clean(title, 220), "u": link, "src": src, "ts": ts, "d": clean(desc, 100)})  # keep extracts very short (EU press publishers' right)
     return items
 
 
@@ -106,14 +106,8 @@ def google(q):
 def for_asset(sym, name, kind):
     try:
         if kind in ("stocks", "funds", "reits"):
-            ysym = YAHOO.get(sym, sym)
             short = re.sub(r"\b(Inc|Corp|Co|plc|SE|Ltd|Holdings?|Group|Trust|ETF|Platforms|Technologies|Motor|Wholesale)\b\.?", "", name).strip()
-            # Yahoo's ticker feed mixes in general market stories: keep the ones that mention this company
-            words = [sym, short.split()[0]] + ALIAS.get(sym, [])
-            hit = re.compile(r"\b(" + "|".join(re.escape(w) for w in words if len(w) >= 2) + r")\b", re.I)
-            items = [i for i in parse(fetch(f"https://feeds.finance.yahoo.com/rss/2.0/headline?s={urllib.parse.quote(ysym)}&region=US&lang=en-US"), "Yahoo Finance") if hit.search(i["t"] + " " + i["d"])]
-            if len(items) < 5:
-                items += google(f'"{short}" stock' if kind == "stocks" else f'"{short}" OR {sym}')
+            items = google(f'"{short}" stock' if kind == "stocks" else f'"{short}" OR {sym}')
         elif kind == "crypto":
             items = google(f'"{name}" crypto' if name not in ("XRP", "BNB") else f"{name} crypto")
         else:
