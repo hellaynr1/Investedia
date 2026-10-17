@@ -973,9 +973,10 @@ body{overflow-x:clip}
 @keyframes auth-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .auth-box .pop-x{top:14px;right:14px}
 .auth-head{margin-bottom:22px}
-.wm{display:inline-block;font-weight:650;font-size:22px;letter-spacing:-.02em;color:var(--fg);margin-bottom:22px}
+.wm{display:inline-block;font-weight:650;font-size:17px;letter-spacing:-.02em;color:var(--fg);margin-bottom:22px}
 .wm .i{position:relative}
-.wm .i::after{content:"";position:absolute;left:50%;top:.24em;width:.27em;height:.27em;margin-left:-.135em;border-radius:50%;background:var(--accent)}
+.wm .i::after{content:"";position:absolute;left:50%;top:.2em;width:.22em;height:.22em;margin-left:-.11em;border-radius:50%;background:var(--accent)}
+@media (min-width:641px){.wm{font-size:22px}.wm .i::after{top:.24em;width:.27em;height:.27em;margin-left:-.135em}}
 .auth-head h2{margin:0 0 6px;font-size:22px;font-weight:600;letter-spacing:-.025em}
 .auth-head p{margin:0;font-size:14px}
 .auth-google{width:100%;height:44px;background:transparent;color:var(--fg);border:1px solid var(--line);font-weight:500;box-shadow:none}
