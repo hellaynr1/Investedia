@@ -397,7 +397,7 @@
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
     <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li></ul></div>
   </div>
-  <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Market data from Yahoo Finance, FRED and Coinbase. Prices may be delayed up to 30 minutes; crypto is live.</span></div></div>`;
+  <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Market data from Yahoo Finance, FRED and Coinbase. Prices may be delayed up to 30 minutes; crypto is live. This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis. <a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener">FRED terms</a>.</span></div></div>`;
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
 
   // ---------- charts ----------
