@@ -1,0 +1,26 @@
+name: Competitor research
+# Nightly research cycle. Requires the ANTHROPIC_API_KEY repo secret and the Claude GitHub app.
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+  id-token: write
+concurrency:
+  group: competitor-research
+  cancel-in-progress: false
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Follow research/STRATEGIST.md. Run one research cycle on the top item in research/BACKLOG.md.
+            Update the files under research/, then commit and push to main with message "Research: <topic>".
+            Do not touch site files outside research/.
+          claude_args: "--allowedTools WebSearch,WebFetch,Read,Write,Edit,Bash(git add:*),Bash(git commit:*),Bash(git push:*)"
