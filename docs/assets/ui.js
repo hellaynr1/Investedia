@@ -195,6 +195,7 @@
       <a class="icon-btn hide-sm" href="watchlist.html" aria-label="Watchlist" title="Watchlist">${icon('star')}</a>
       <div class="notif-wrap hide-sm"><button class="icon-btn" type="button" id="notif-btn" aria-label="Notifications" aria-expanded="false" aria-haspopup="true" title="Notifications">${icon('bell')}<span class="dot" id="notif-dot"></span></button>
         <div class="dd notif-dd" id="notif-dd" role="dialog" aria-label="Notifications"></div></div>
+      <a class="icon-btn hide-sm owner-only" href="admin.html" aria-label="Analytics dashboard" title="Analytics dashboard">${icon('heat')}</a>
       <a class="avatar hide-sm" id="hdr-avatar" href="profile.html" aria-label="Your profile" title="Your profile">AK</a>
       <button class="icon-btn" type="button" id="theme-btn" aria-label="Switch light or dark mode" title="Light / dark mode"></button>
       <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span></button>
@@ -279,7 +280,7 @@
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details>
     <a href="education.html">Education</a><a href="watchlist.html">Watchlist</a>
     <div class="drawer-acct guest-only"><p>Save your watchlist and alerts on every device.</p><button class="btn btn-primary" type="button" data-auth="up">Create free account</button><button class="btn btn-ghost" type="button" data-auth="in">Log in</button></div>
-    <div class="drawer-acct member-only"><a href="profile.html">Profile &amp; notifications</a><button class="btn btn-ghost" type="button" data-logout>Log out</button></div>`;
+    <div class="drawer-acct member-only"><a class="owner-only" href="admin.html">Analytics dashboard</a><a href="profile.html">Profile &amp; notifications</a><button class="btn btn-ghost" type="button" data-logout>Log out</button></div>`;
   hdr.after(drawer);
   const mt = hdr.querySelector('.menu-toggle');
   function closeDrawer() { drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.classList.remove('is-open'); document.body.style.overflow = ''; }
@@ -583,6 +584,19 @@
   const authOn = !!(SB_URL && SB_KEY);
   let sb = null;
   const sbLoad = () => sb ? Promise.resolve(sb) : new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'; s.onload = () => ok(sb = window.supabase.createClient(SB_URL, SB_KEY)); s.onerror = no; document.head.append(s); });
+  window.invSB = sbLoad;
+  // ---------- analytics: no cookies, no IDs, nothing personal; only the owner's account can read them (Supabase row-level security) ----------
+  const OWNERS = ['adonaykabeya10@gmail.com', 'info@investedia.com'];
+  const track = (type, detail) => { try {
+    if (navigator.webdriver || /bot|crawl|spider|headless|lighthouse/i.test(navigator.userAgent) || !/investedia\.com$/.test(location.hostname) || store('inv-owner') === '1') return;
+    const rh = document.referrer ? new URL(document.referrer).hostname : '', own = rh === location.hostname;
+    const body = { type, path: (location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/').slice(0, 200), ref: rh && !own ? rh.replace(/^www\./, '').slice(0, 200) : null, entry: !own,
+      device: innerWidth < 700 ? 'phone' : innerWidth < 1100 ? 'tablet' : 'desktop', tz: (Intl.DateTimeFormat().resolvedOptions().timeZone || '').slice(0, 64) || null, lang: (navigator.language || '').slice(0, 10) || null,
+      member: document.documentElement.classList.contains('is-member') || !!store('inv-had-account'), detail: detail ? String(detail).slice(0, 120) : null };
+    fetch(SB_URL + '/rest/v1/events', { method: 'POST', keepalive: true, headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(body) }).catch(() => {});
+  } catch {} };
+  window.invTrack = track;
+  document.addEventListener('DOMContentLoaded', () => setTimeout(() => track('pageview'), 400));
   const gIcon = '<svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
   const au = document.createElement('div');
   au.className = 'palette auth'; au.hidden = true;
@@ -628,8 +642,8 @@
     const go = au.querySelector('.auth-go'); go.disabled = true;
     try { const c = await sbLoad();
       if (auMode === 'up') { const { data, error } = await c.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: location.href.split('#')[0], data: { name: f.name.value.trim(), newsletter: f.news.checked } } }); if (error) throw error;
-        if (data.session) { closeAuth(); paintUser(data.user); } else auMsg('Almost done. Check your inbox to confirm your email.', true); }
-      else { const { data, error } = await c.auth.signInWithPassword({ email: em, password: pw }); if (error) throw error; closeAuth(); paintUser(data.user); }
+        track('signup'); if (data.session) { closeAuth(); paintUser(data.user); } else auMsg('Almost done. Check your inbox to confirm your email.', true); }
+      else { const { data, error } = await c.auth.signInWithPassword({ email: em, password: pw }); if (error) throw error; track('login'); closeAuth(); paintUser(data.user); }
     } catch (err) { auMsg(/invalid/i.test(err.message) ? 'Wrong email or password.' : err.message); } finally { go.disabled = false; } };
   // header: "Log in" for guests, initials for members
   // members-only pages: the profile is hidden until someone is logged in
@@ -637,7 +651,7 @@
   if (gated) document.documentElement.classList.add('auth-gate');
   const paintUser = u => { if (gated && u) document.documentElement.classList.remove('auth-gate');
     const av = hdr.querySelector('#hdr-avatar'), lb = hdr.querySelector('#hdr-login'); if (!lb) return;
-    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); INVWATCH.login(u); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
+    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); const owner = !!u && OWNERS.includes(String(u.email || '').toLowerCase()); document.documentElement.classList.toggle('is-owner', owner); if (owner) store('inv-owner', '1'); INVWATCH.login(u); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
     av.textContent = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
     if (u.app_metadata && u.app_metadata.provider === 'google' && store('inv-news-optin') === '1' && !u.user_metadata.newsletter) { sb.auth.updateUser({ data: { newsletter: true } }); store('inv-news-optin', '0'); } };
   {
@@ -660,7 +674,7 @@
       if (user && sb) sb.from('watchlists').upsert({ user_id: user.id, items: L, updated_at: new Date().toISOString() }).then(() => {}, () => {}); };
     const toggle = it => { if (!user) { openAuth('up'); return null; }
       const k = it.kind === 'country' ? 'c' : 'a', on = has(it); const { kind, ...rest } = it;
-      L[k] = on ? L[k].filter(x => id({ kind, ...x }) !== id(it)) : [rest, ...L[k]]; save(); return !on; };
+      L[k] = on ? L[k].filter(x => id({ kind, ...x }) !== id(it)) : [rest, ...L[k]]; save(); if (!on && window.invTrack) invTrack('watch', it.kind === 'country' ? 'country:' + it.k : it.s); return !on; };
     const login = async u => { if ((u && u.id) === (user && user.id)) return; user = u || null;
       if (!user) { L = { a: [], c: [] }; try { localStorage.removeItem(KEY); } catch {} ping(); return; }
       try { const { data } = await sb.from('watchlists').select('items').eq('user_id', user.id).maybeSingle(); const r = (data && data.items) || {};
