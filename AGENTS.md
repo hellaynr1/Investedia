@@ -40,6 +40,9 @@ investedia.com: a free investing-information website (markets, news, tools, a li
 - Before making money from the site: move prices to a licensed data source (Yahoo's free feed is not for commercial use).
 - Slogan decision: keep "Invest with clarity." or go back to "Understand every market move."
 
+## Weekly workflow
+The owner's weekly routine (research, content, small site tasks, review) and the prompts are in **WORKFLOW.md**.
+
 ## Working style
 - Small, focused changes; one commit per change with a clear message.
 - Show screenshots (Playwright works: `npx playwright screenshot`), not descriptions.
