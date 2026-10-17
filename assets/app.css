@@ -1065,3 +1065,9 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .wl-x{border:0;background:none;color:var(--accent);cursor:pointer;padding:6px;border-radius:8px;display:grid;place-items:center}.wl-x:hover{background:var(--bg-2)}
 .wl-empty{padding:36px 16px;text-align:center}.wl-empty p{margin:6px 0 16px}
 @media (max-width:600px){.wl-row{grid-template-columns:auto minmax(0,1fr) auto auto;gap:10px}.wl-v{display:none}}
+
+/* Homepage scroll motion: globe sinks away, sections rise in */
+.hero-globe{--p:0;transform:translateY(calc(var(--p) * 90px)) scale(calc(1 - var(--p) * .1));opacity:calc(1 - var(--p) * .85);transform-origin:50% 0;will-change:transform,opacity}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.hero-globe{transform:none;opacity:1}}
