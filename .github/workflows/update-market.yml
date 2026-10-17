@@ -33,6 +33,8 @@ jobs:
           else
             python3 update_market.py
           fi
+      - name: Fetch world globe prices
+        run: python3 update_globe.py || echo "Globe update failed; keeping the previous prices"
       - name: Fetch news
         run: |
           M=$(date -u +%M)
@@ -43,7 +45,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add assets/quotes.js assets/intraday.json assets/hist assets/news.js assets/news docs/assets
+          git add assets/quotes.js assets/intraday.json assets/hist assets/news.js assets/news assets/globe docs/assets
           git diff --cached --quiet && exit 0
           git commit -q -m "Update market data and news"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q && exit 0; sleep 5; done
