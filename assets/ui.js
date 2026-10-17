@@ -570,12 +570,86 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(pop);
     document.querySelectorAll('[data-subscribe]').forEach(b => b.onclick = openPop);
-    if (!store('inv-pop') && !store('inv-sub')) {
+    if (!store('inv-pop') && !store('inv-sub') && store('inv-auth-seen')) {
       const t = setTimeout(openPop, 12000);
       const onScroll = () => { if (scrollY > (document.body.scrollHeight - innerHeight) * .6) { clearTimeout(t); removeEventListener('scroll', onScroll); if (!store('inv-pop')) openPop(); } };
       addEventListener('scroll', onScroll, { passive: true });
     }
   });
+  // ---------- accounts (Supabase: email + Google). Fill both values to switch accounts on. ----------
+  const SB_URL = '', SB_KEY = '';           // Supabase → Project Settings → API (URL + anon public key)
+  const authOn = !!(SB_URL && SB_KEY);
+  let sb = null;
+  const sbLoad = () => sb ? Promise.resolve(sb) : new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'; s.onload = () => ok(sb = window.supabase.createClient(SB_URL, SB_KEY)); s.onerror = no; document.head.append(s); });
+  const gIcon = '<svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+  const au = document.createElement('div');
+  au.className = 'palette auth'; au.hidden = true;
+  au.innerHTML = `<div class="palette-box auth-box" role="dialog" aria-modal="true" aria-labelledby="au-t">
+    <button class="icon-btn pop-x" type="button" aria-label="Close">${icon('x')}</button>
+    <div class="auth-head"><span class="wm" aria-label="Investedia">Invested<span class="i">ı</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Watchlists, price alerts and the daily brief. Free.</p></div>
+    <button class="btn auth-google" type="button">${gIcon}<span>Continue with Google</span></button>
+    <div class="auth-or"><span>or with email</span></div>
+    <form class="auth-f" novalidate>
+      <label class="auth-l" data-only="up"><span>Name</span><input class="input" name="name" autocomplete="name" placeholder="Your name"></label>
+      <label class="auth-l"><span>Email</span><input class="input" name="email" type="email" autocomplete="email" placeholder="you@email.com" required></label>
+      <label class="auth-l"><span>Password <a href="#" class="auth-forgot" data-only="in">Forgot?</a></span><span class="auth-pw"><input class="input" name="pw" type="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required><button type="button" class="auth-eye" aria-label="Show password">Show</button></span></label>
+      <label class="auth-check" data-only="up"><input type="checkbox" name="news"><span>Send me the daily brief and market news. Unsubscribe anytime.</span></label>
+      <p class="auth-msg" role="status" hidden></p>
+      <button class="btn btn-primary auth-go" type="submit">Create free account</button>
+    </form>
+    <p class="auth-legal dim" data-only="up">By continuing you agree to our <a href="about.html#terms">Terms</a> and <a href="about.html#privacy">Privacy Policy</a>.</p>
+    <p class="auth-switch"><span data-only="up">Have an account? <button type="button" data-m="in">Log in</button></span><span data-only="in">New here? <button type="button" data-m="up">Create an account</button></span></p>
+    <button class="auth-guest" type="button">Continue as guest</button>
+  </div>`;
+  let auMode = 'up';
+  const auSet = m => { auMode = m; au.querySelectorAll('[data-only]').forEach(e => e.hidden = e.dataset.only !== m);
+    au.querySelector('#au-t').textContent = m === 'up' ? 'Create your account' : 'Welcome back'; au.querySelector('#au-sub').textContent = m === 'up' ? 'Watchlists, price alerts and the daily brief. Free.' : 'Log in to see your watchlist and alerts.'; au.querySelector('.auth-go').textContent = m === 'up' ? 'Create free account' : 'Log in';
+    au.querySelector('[name=pw]').autocomplete = m === 'up' ? 'new-password' : 'current-password'; auMsg(''); };
+  const auMsg = (t, ok) => { const e = au.querySelector('.auth-msg'); e.hidden = !t; e.textContent = t; e.classList.toggle('up', !!ok); e.classList.toggle('down', !ok); };
+  const openAuth = (m = 'up') => { closePop(); auSet(m); if (au.hidden) modalOpen(au); au.hidden = false; store('inv-auth-seen', '1'); store('inv-pop', '1'); };
+  const closeAuth = () => { if (au.hidden) return; au.hidden = true; modalClose(au); };
+  au.querySelector('.pop-x').onclick = au.querySelector('.auth-guest').onclick = () => { store('inv-guest', '1'); closeAuth(); };
+  au.onclick = e => { if (e.target === au) closeAuth(); };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
+  au.querySelectorAll('.auth-switch button').forEach(b => b.onclick = () => auSet(b.dataset.m));
+  au.querySelector('.auth-eye').onclick = e => { const i = au.querySelector('[name=pw]'), show = i.type === 'password'; i.type = show ? 'text' : 'password'; e.target.textContent = show ? 'Hide' : 'Show'; };
+  const notYet = () => auMsg('Accounts open very soon. Continue as a guest for now.');
+  au.querySelector('.auth-google').onclick = () => { if (!authOn) return notYet(); store('inv-news-optin', au.querySelector('[name=news]').checked ? '1' : '0');
+    sbLoad().then(c => c.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.href.split('#')[0] } })).catch(() => auMsg('Could not reach Google. Try again.')); };
+  au.querySelector('.auth-forgot').onclick = e => { e.preventDefault(); const em = au.querySelector('[name=email]').value.trim(); if (!em) return auMsg('Enter your email first.'); if (!authOn) return notYet();
+    sbLoad().then(c => c.auth.resetPasswordForEmail(em, { redirectTo: location.origin + '/profile.html' })).then(() => auMsg('Check your inbox for a reset link.', true)); };
+  au.querySelector('.auth-f').onsubmit = async e => { e.preventDefault(); const f = e.target, em = f.email.value.trim(), pw = f.pw.value;
+    if (!/^\S+@\S+\.\S+$/.test(em)) return auMsg('Enter a valid email.'); if (pw.length < 8) return auMsg('Password needs at least 8 characters.');
+    if (!authOn) return notYet();
+    const go = au.querySelector('.auth-go'); go.disabled = true;
+    try { const c = await sbLoad();
+      if (auMode === 'up') { const { data, error } = await c.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: location.href.split('#')[0], data: { name: f.name.value.trim(), newsletter: f.news.checked } } }); if (error) throw error;
+        if (data.session) { closeAuth(); paintUser(data.user); } else auMsg('Almost done. Check your inbox to confirm your email.', true); }
+      else { const { data, error } = await c.auth.signInWithPassword({ email: em, password: pw }); if (error) throw error; closeAuth(); paintUser(data.user); }
+    } catch (err) { auMsg(/invalid/i.test(err.message) ? 'Wrong email or password.' : err.message); } finally { go.disabled = false; } };
+  // header: "Log in" for guests, initials for members
+  const paintUser = u => { const av = hdr.querySelector('#hdr-avatar'), lb = hdr.querySelector('#hdr-login'); if (!lb) return;
+    lb.hidden = !!u; av.hidden = !u; if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
+    av.textContent = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    if (u.app_metadata && u.app_metadata.provider === 'google' && store('inv-news-optin') === '1' && !u.user_metadata.newsletter) { sb.auth.updateUser({ data: { newsletter: true } }); store('inv-news-optin', '0'); } };
+  {
+    const av = hdr.querySelector('#hdr-avatar'), lb = document.createElement('button');
+    lb.type = 'button'; lb.id = 'hdr-login'; lb.className = 'btn btn-ghost btn-sm hdr-login'; lb.textContent = 'Log in'; lb.onclick = () => openAuth('in');
+    av.after(lb); av.hidden = true;
+  }
+  window.openAuth = openAuth;
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.append(au);
+    document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); openAuth(b.dataset.auth || 'up'); });
+    const returning = /access_token|code=/.test(location.href) || (() => { try { return Object.keys(localStorage).some(k => /^sb-.*-auth-token$/.test(k)); } catch { return false; } })();
+    if (authOn && returning) sbLoad().then(c => { c.auth.onAuthStateChange((_, s) => paintUser(s && s.user)); return c.auth.getSession(); }).then(r => paintUser(r.data.session && r.data.session.user)).catch(() => {});
+    const ss = (k, v) => { try { return v === undefined ? sessionStorage.getItem(k) : sessionStorage.setItem(k, v); } catch { return '1'; } };
+    if (standaloneAuthSkip()) return;
+    if (!store('inv-auth-seen') && !returning) setTimeout(() => { if (pop.hidden) openAuth('up'); }, 4000);
+    // members who come back logged out: a quiet "Welcome back" once per visit
+    else if (store('inv-had-account') && !ss('inv-wb')) setTimeout(() => { ss('inv-wb', '1'); if (pop.hidden && au.hidden && hdr.querySelector('#hdr-login') && !hdr.querySelector('#hdr-login').hidden) openAuth('in'); }, 2500);
+  });
+  function standaloneAuthSkip() { return /[?&]noauth/.test(location.search); }
   // ---------- home-screen app ----------
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   if (standalone) document.documentElement.classList.add('is-app');
