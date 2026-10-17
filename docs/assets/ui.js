@@ -628,7 +628,11 @@
       else { const { data, error } = await c.auth.signInWithPassword({ email: em, password: pw }); if (error) throw error; closeAuth(); paintUser(data.user); }
     } catch (err) { auMsg(/invalid/i.test(err.message) ? 'Wrong email or password.' : err.message); } finally { go.disabled = false; } };
   // header: "Log in" for guests, initials for members
-  const paintUser = u => { const av = hdr.querySelector('#hdr-avatar'), lb = hdr.querySelector('#hdr-login'); if (!lb) return;
+  // members-only pages: the profile is hidden until someone is logged in
+  const gated = ['profile'].includes(page);
+  if (gated) document.documentElement.classList.add('auth-gate');
+  const paintUser = u => { if (gated && u) document.documentElement.classList.remove('auth-gate');
+    const av = hdr.querySelector('#hdr-avatar'), lb = hdr.querySelector('#hdr-login'); if (!lb) return;
     lb.hidden = !!u; av.hidden = !u; if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
     av.textContent = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
     if (u.app_metadata && u.app_metadata.provider === 'google' && store('inv-news-optin') === '1' && !u.user_metadata.newsletter) { sb.auth.updateUser({ data: { newsletter: true } }); store('inv-news-optin', '0'); } };
@@ -640,6 +644,9 @@
   window.openAuth = openAuth;
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(au);
+    if (gated) { const g = document.createElement('section'); g.className = 'gate';
+      g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">ı</span>a</span><h1>Log in to see your profile</h1><p class="muted">Your profile, watchlist and alerts are saved to your account, so they follow you on every device.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
+      document.querySelector('main').prepend(g); }
     document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); openAuth(b.dataset.auth || 'up'); });
     const returning = /access_token|code=/.test(location.href) || (() => { try { return Object.keys(localStorage).some(k => /^sb-.*-auth-token$/.test(k)); } catch { return false; } })();
     if (authOn && returning) sbLoad().then(c => { c.auth.onAuthStateChange((_, s) => paintUser(s && s.user)); return c.auth.getSession(); }).then(r => paintUser(r.data.session && r.data.session.user)).catch(() => {});

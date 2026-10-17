@@ -1007,3 +1007,12 @@ body{overflow-x:clip}
 .hdr-login{height:34px;box-shadow:none}
 @media (max-width:640px){.auth{align-items:flex-end;padding:0}.auth-box{width:100%;border-radius:16px 16px 0 0;border-bottom:0;padding:26px 20px calc(16px + env(safe-area-inset-bottom));max-height:92dvh;animation-name:auth-up}
 @keyframes auth-up{from{transform:translateY(24px);opacity:.5}to{transform:none;opacity:1}}}
+
+/* members-only pages */
+.gate{display:none}
+.auth-gate main>*:not(.gate){display:none!important}
+.auth-gate .gate{display:block;max-width:440px;margin:12vh auto 18vh;padding:0 4px}
+.gate .wm{margin-bottom:28px}
+.gate h1{margin:0 0 10px;font-size:28px;font-weight:600;letter-spacing:-.03em}
+.gate p{margin:0 0 24px;font-size:15px;line-height:1.6}
+.gate-btns{display:flex;gap:10px;flex-wrap:wrap}.gate-btns .btn{height:44px;flex:1 1 160px;box-shadow:none}
