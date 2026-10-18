@@ -15,7 +15,7 @@
 
 <section class="sec" id="curve">
   <div class="grid g-main" style="align-items:start">
-    <div class="card"><div class="card-head"><h3>US Treasury yield curve</h3><span class="meta">Today vs. one year ago</span></div><div style="padding:12px 12px 8px 18px"><div id="curve-chart"></div></div>
+    <div class="card"><div class="card-head"><h3>US Treasury yield curve</h3><span class="meta">Latest published yields</span></div><div style="padding:12px 12px 8px 18px"><div id="curve-chart"></div></div>
       <div style="display:flex;gap:18px;padding:0 18px 14px;font-size:12.5px" class="muted"><span><span class="lg-line"></span>Today</span><span><span class="lg-dash"></span>One year ago</span></div></div>
     <div class="card"><div class="card-head"><h3>2s10s spread</h3><span class="meta">10Y minus 2Y</span></div><div class="card-pad"><div class="num up" id="spread-now" style="font-size:30px">+55 bp</div><p class="muted" style="margin:6px 0 14px;font-size:13.5px">The curve turned positive in early 2025 after two years of inversion.</p><div id="spread"></div></div></div>
   </div>
@@ -32,7 +32,7 @@
 </section>
 <section class="sec" data-newsletter></section>
 <script>
-const { icon, fmtP, fmtC, cls, logo, href, spark, colorFor, areaChart, tabs, routeHash } = UI, M = MOCK;
+const { assetTable, icon, fmtP, fmtC, cls, logo, href, spark, colorFor, areaChart, tabs, routeHash } = UI, M = MOCK;
 UI.subnav('bonds');
 // Region filter: tabs with deep links (#europe, #middle-east) plus a rising/falling pair for the selected region
 const slug = r => r.toLowerCase().replace(/\s+/g, '-'), PER = { d: ['1D', 'today'], w: ['1W', 'this week'], m1: ['1M', 'this month'] };
@@ -54,19 +54,18 @@ document.getElementById('keys').innerHTML = ['US10Y', 'US02Y', 'DE10Y', 'UK10Y']
 // Anchor the illustrative curve to live yields (2Y, 10Y, 30Y) so cards, curve and tables agree.
 const live = s => M.bySym[s] && isFinite(M.bySym[s].p) ? M.bySym[s] : null;
 const shiftCurve = (vals, anchors) => { const pts = anchors.filter(([i, s]) => live(s)).map(([i, s]) => [i, live(s).p - vals[i]]); if (!pts.length) return vals; return vals.map((v, i) => { const lo = [...pts].reverse().find(p => p[0] <= i) || pts[0], hi = pts.find(p => p[0] >= i) || pts[pts.length - 1]; const dl = lo[0] === hi[0] ? lo[1] : lo[1] + (hi[1] - lo[1]) * (i - lo[0]) / (hi[0] - lo[0]); return +(v + dl).toFixed(3); }); };
-const today = shiftCurve([3.92, 3.71, 3.48, 3.42, 3.51, 3.70, 4.03, 4.38, 4.61], [[2, 'US02Y'], [6, 'US10Y'], [8, 'US30Y']]), ago = [4.85, 4.62, 4.21, 4.05, 4.02, 4.08, 4.21, 4.49, 4.42], lab = ['1M', '6M', '2Y', '3Y', '5Y', '7Y', '10Y', '20Y', '30Y'];
-areaChart(document.getElementById('curve-chart'), today, { compare: ago, height: 300, labels: lab, fmt: v => v.toFixed(2) + '%', tipLabel: i => lab[i] + ' maturity' });
-const spreadBp = Math.round((today[6] - today[2]) * 100), spreadRaw = M.series('2s10s', 100, 0.55, 300, .05), spreadSeries = spreadRaw.map(v => v - spreadRaw[spreadRaw.length - 1] + spreadBp / 100);
-document.getElementById('spread-now').textContent = `${spreadBp > 0 ? '+' : ''}${spreadBp} bp`; document.getElementById('spread-now').className = 'num ' + cls(spreadBp);
-areaChart(document.getElementById('spread'), spreadSeries, { height: 160, labels: ['2024', '2025', '2026'], color: '#22C55E', fmt: v => (v * 100).toFixed(0) + ' bp' });
-const curves = {
-  treasuries: [['US 1-Month', today[0], -0.2], ['US 6-Month', today[1], -0.3], ['US 2-Year', today[2], -0.6, 'US02Y'], ['US 5-Year', today[4], -0.5], ['US 10-Year', today[6], -0.4, 'US10Y'], ['US 30-Year', today[8], -0.2, 'US30Y']],
-  europe: [['Germany 10Y', 2.61, 0.3, 'DE10Y'], ['France 10Y', 3.38, 0.5, 'FR10Y'], ['Italy 10Y', 3.40, 0.4, 'IT10Y'], ['Spain 10Y', 3.12, 0.3, 'ES10Y'], ['Switzerland 10Y', 0.59, 0, 'CH10Y'], ['Netherlands 10Y', 2.84, 0.2], ['Belgium 10Y', 3.21, 0.4]],
-  gilts: [['UK 2-Year', 3.86, -0.4], ['UK 5-Year', 3.98, -0.3], ['UK 10-Year', 4.51, -0.3, 'UK10Y'], ['UK 30-Year', 5.18, -0.1]],
-};
-curves.gilts = ((g, sh) => g.map(([n, y, d, s]) => [n, +(y + sh).toFixed(3), d, s]))(curves.gilts, live('UK10Y') ? live('UK10Y').p - 4.51 : 0);
-Object.values(curves).forEach(rows => rows.forEach(r => { const a = r[3] && live(r[3]); if (a) { r[1] = a.p; if (a.freq === 'monthly') r[2] = null; else if (isFinite(a.d)) r[2] = a.d; } }));
-const gv = k => document.getElementById('gv-table').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Bond</th><th>Yield</th><th>Change</th><th>1W</th><th>Price</th><th>Coupon</th><th>7 days</th></tr></thead><tbody>${curves[k].map(([n, y, d, s], i) => `<tr ${s ? `data-href="asset.html?s=${s}"` : ''}><td><b style="font-weight:550">${n}</b></td><td class="num">${y.toFixed(3)}%</td><td>${d == null ? '<span class="tag">Monthly</span>' : `<span class="pill ${cls(d)}">${fmtC(d, true)}</span>`}</td><td class="num ${cls(d * 2.4)}">${d == null ? '—' : fmtC(+(d * 2.4).toFixed(1), true)}</td><td class="num muted">${(100 - (y - 3.5) * 6.2).toFixed(2)}</td><td class="num muted">${(y - 0.25).toFixed(3)}%</td><td>${spark(M.series(n, 28, y, (d || 0) * 3), (d || 0) >= 0 ? '#22C55E' : '#F04444')}</td></tr>`).join('')}</tbody></table></div>`;
+const today = ['US02Y','US10Y','US30Y'].map(s => live(s)?.p), lab = ['2Y','10Y','30Y'];
+areaChart(document.getElementById('curve-chart'), today, { height:300, labels:lab, fmt:v => v.toFixed(2)+'%' });
+const spreadBp = (today[1]-today[0])*100;
+document.getElementById('spread-now').textContent = Number.isFinite(spreadBp) ? Math.round(spreadBp)+' bp' : '—';
+Promise.all(['US02Y','US10Y'].map(s => M.details(s))).then(([a,b]) => {
+  if (!a || !b) return areaChart(document.getElementById('spread'), []);
+  const short = new Map(a.daily.map(r => [new Date(r[0]*1000).toISOString().slice(0,10),r[4]]));
+  const rows = b.daily.filter(r => short.has(new Date(r[0]*1000).toISOString().slice(0,10)));
+  areaChart(document.getElementById('spread'), rows.map(r => (r[4]-short.get(new Date(r[0]*1000).toISOString().slice(0,10)))*100), {height:160, labels:[],fmt:v=>v.toFixed(0)+' bp'});
+});
+const curves = {treasuries:['US02Y','US10Y','US30Y'],europe:['DE10Y','FR10Y','IT10Y','ES10Y','CH10Y'],gilts:['UK10Y']};
+const gv = k => document.getElementById('gv-table').innerHTML = assetTable(curves[k].map(s => M.bySym[s]).filter(a => a?.real), ['price','chg','week','spark']);
 tabs(document.getElementById('gv-tabs'), gv); gv('treasuries');
 // 10-year government benchmarks by region; monthly series show their monthly move instead of a 0 bp daily change
 const bd = M.assets.filter(a => a.c === 'bonds'), tenY = bd.filter(a => /10Y$/.test(a.s)), ord = a => M.REGIONS.indexOf(a.region);
@@ -76,6 +75,6 @@ const draw = () => { const list = UI.inRegion(tenY, rg).sort((x, y) => ord(x) - 
   document.getElementById('rg-table').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Country</th><th>10Y yield</th><th>Change</th><th>1W</th><th>1M</th><th style="width:18%">Level</th><th>Trend</th></tr></thead><tbody>${list.map(a => { const mo = a.freq === 'monthly'; return `<tr data-href="${href(a)}"><td><a class="ident" href="${href(a)}">${logo(a)}<span><b>${ctry(a)}</b><small>${a.s} · ${a.region}</small></span></a></td><td class="num" data-lp="${a.s}">${fmtP(a)}</td><td>${mo ? '<span class="tag" title="Published monthly">Monthly</span>' : `<span class="pill ${cls(a.d)}">${fmtC(a.d, true)}</span>`}</td>${mo ? '<td class="num dim">—</td>' : bpc(a.w)}${bpc(a.m1)}<td><div class="meter"><i style="width:${(a.p / mx * 100).toFixed(1)}%;background:var(--accent)"></i></div></td><td>${spark(a.spark, colorFor(mo ? a.m1 : a.w))}</td></tr>`; }).join('')}</tbody></table></div>`;
   movers(document.getElementById('rg-movers'), UI.inRegion(bd, rg), rg, per, p => { per = p; draw(); }, a => [a.n, a.s]); };
 regionNav(document.getElementById('rg-tabs'), tenY, r => { rg = r; draw(); }); draw();
-document.getElementById('corp').innerHTML = [['US Investment Grade', 'USIG', 4.98, -0.5, 82, 6.9, 'A–BBB'], ['US High Yield', 'USHY', 6.87, 0.8, 284, 3.4, 'BB–CCC'], ['Euro Investment Grade', null, 3.21, -0.2, 96, 4.6, 'A–BBB'], ['Euro High Yield', null, 5.64, 0.5, 312, 3.1, 'BB–CCC'], ['Emerging Markets USD', null, 6.42, 0.3, 238, 6.2, 'BBB–B']].map(([n, s, y, d, sp, du, r]) => { const a = s && live(s), t10 = live('US10Y'); if (a) { y = a.p; if (isFinite(a.d)) d = a.d; if (t10) sp = Math.round((y - t10.p) * 100); } return `<tr ${s ? `data-href="asset.html?s=${s}"` : ''}><td><b style="font-weight:550">${n}</b></td><td class="num">${y.toFixed(2)}%</td><td><span class="pill ${cls(d)}">${fmtC(d, true)}</span></td><td class="num">${sp} bp</td><td class="num muted">${du} yrs</td><td class="muted">${r}</td></tr>`; }).join('');
+document.getElementById('corp').innerHTML = ['USIG','USHY'].map(s => live(s)).filter(Boolean).map(a => `<tr><td>${a.n}</td><td>${fmtP(a)}</td><td>${fmtC(a.d,true)}</td><td>—</td><td>—</td><td>—</td></tr>`).join('');
 routeHash({ treasuries: ['gv-tabs', 'treasuries'], europe: ['gv-tabs', 'europe'], gilts: ['gv-tabs', 'gilts'] });
 </script>

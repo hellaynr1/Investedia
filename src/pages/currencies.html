@@ -114,5 +114,5 @@ document.getElementById('banks').innerHTML = [['Federal Reserve', 'USD', '3.75�
   M.history('EURUSD', '3M').then(r => r && areaChart(document.getElementById('eur'), r.vals, { height: 200, labels: r.labels, fmt: v => v.toFixed(4) }));
 }
 routeHash({ major: ['pr-tabs', 'major'], minor: ['pr-tabs', 'minor'], exotic: ['pr-tabs', 'exotic'] });
-{ const e = MOCK.bySym.EURUSD; if (e && isFinite(e.p)) { document.getElementById('eur-bid').textContent = (e.p - 0.00003).toFixed(5); document.getElementById('eur-ask').textContent = (e.p + 0.00003).toFixed(5); } }
+document.getElementById('eur-bid').textContent = '—'; document.getElementById('eur-ask').textContent = '—';
 </script>

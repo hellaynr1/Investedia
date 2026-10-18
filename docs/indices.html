@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=41c0c3d162">
+<link rel="stylesheet" href="assets/app.css?v=7e6ede6471">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,8 +37,10 @@
 <body data-page="markets">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=41c0c3d162"></script>
-<script src="assets/ui.js?v=41c0c3d162"></script>
+<script src="assets/home-data.js"></script>
+<script src="assets/mock.js?v=7e6ede6471"></script>
+<script src="assets/real-data.js?v=7e6ede6471"></script>
+<script src="assets/ui.js?v=7e6ede6471"></script>
 <main class="wrap">
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="markets.html">Markets</a><span>/</span><span>Indices</span></div>
@@ -91,7 +93,7 @@ function movers(el, pool, region, per, setPer, name = a => [a.s, a.n]) {
   el.querySelectorAll('[data-per] button').forEach(b => b.onclick = () => setPer(b.dataset.k));
 }
 document.getElementById('majors').innerHTML = ['SPX', 'NDX', 'DJI', 'RUT'].map(s => M.bySym[s]).map(a => `<a class="card" href="${href(a)}"><div class="card-head"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · Index</small></span></span><span style="text-align:right"><div class="num" style="font-size:18px" data-lp="${a.s}">${fmtP(a)}</div><div class="num ${cls(a.d)}" data-lc="${a.s}" style="font-size:12.5px">${fmtC(a.d)} today</div></span></div><div style="padding:6px 8px 6px 14px" data-chart="${a.s}"></div></a>`).join('');
-document.querySelectorAll('[data-chart]').forEach(el => { const a = M.bySym[el.dataset.chart]; areaChart(el, M.series(a.s + 'intra', 78, a.p, a.d, .0018), { height: 150, labels: ['09:30', '12:00', '14:00', '16:00'], color: a.d >= 0 ? '#22C55E' : '#F04444', fmt: v => v.toLocaleString('en-US', { maximumFractionDigits: 0 }) }); });
+document.querySelectorAll('[data-chart]').forEach(el => M.history(el.dataset.chart, '1D').then(h => areaChart(el, h?.vals || [], {height:150, labels:h?.labels || []})));
 const sess = (tz, o, c, days = [1, 2, 3, 4, 5]) => { const t = new Date(new Date().toLocaleString('en-US', { timeZone: tz })), m = t.getHours() * 60 + t.getMinutes(); return days.includes(t.getDay()) && m >= o && m < c; };
 const usOpen = sess('America/New_York', 570, 960), euOpen = sess('Europe/Berlin', 540, 1050), apOpen = sess('Asia/Tokyo', 540, 930);
 document.getElementById('us-sess').innerHTML = usOpen ? '<i></i>US cash session open' : '<i class="off"></i>US cash session closed';
@@ -99,12 +101,13 @@ const idx = M.assets.filter(a => a.c === 'indices' && !a.fut);
 const hours = { Americas: [usOpen, 'Opens 09:30 ET'], Europe: [euOpen, 'Opens 09:00 CET'], Asia: [apOpen, 'Opens 09:00 JST'], Oceania: [sess('Australia/Sydney', 600, 960), 'Opens 10:00 AEST'], Africa: [sess('Africa/Johannesburg', 540, 1020), 'Opens 09:00 SAST'], 'Middle East': [sess('Asia/Riyadh', 600, 900, [0, 1, 2, 3, 4]), 'Opens 10:00 AST'] };
 const world = r => `<div class="card"><div class="card-head"><h3>${r}</h3>${hours[r] ? `<span class="status"><i class="${hours[r][0] ? '' : 'off'}"></i>${hours[r][0] ? 'Open now' : hours[r][1]}</span>` : ''}</div>${UI.inRegion(idx, r).map(row).join('')}</div>`;
 document.getElementById('regions').innerHTML = M.REGIONS.filter(r => idx.some(a => a.region === r)).map(world).join('');
-document.getElementById('fut').innerHTML = ['ES1', 'NQ1', 'YM1'].map(s => M.bySym[s]).map((a, i) => { const fv = [24.1, 98.6, 168][i], cash = M.bySym[['SPX', 'NDX', 'DJI'][i]]; const io = a.p - fv - cash.p; return `<tr data-href="${href(a)}"><td><a class="ident" href="${href(a)}">${logo(a)}<span><b>${a.n}</b><small>${a.s} · ${a.x}</small></span></a></td><td class="num" data-lp="${a.s}">${fmtP(a)}</td><td><span class="pill ${cls(a.d)}">${fmtC(a.d)}</span></td><td class="num muted">${fv.toFixed(1)}</td><td class="num ${cls(io)}">${io >= 0 ? '+' : '−'}${Math.abs(io).toFixed(1)} pts</td><td class="muted">Dec 2026</td><td class="num muted">${['2.14M', '284K', '91K'][i]}</td></tr>`; }).join('');
+document.getElementById('fut').innerHTML = ['ES1', 'NQ1', 'YM1'].map(s => M.bySym[s]).map(a => `<tr data-href="${href(a)}"><td>${a.n}</td><td class="num">${fmtP(a)}</td><td>${fmtC(a.d)}</td><td>—</td><td>—</td><td>Front month · continuous</td><td>${a.vol}</td></tr>`).join('');
 let rg = 'All', per = 'd';
 const draw = () => { const list = UI.inRegion(idx, rg); movers(document.getElementById('rg-movers'), list, rg, per, p => { per = p; draw(); }, a => [a.n, a.s + ' · ' + a.place]); document.getElementById('all').innerHTML = assetTable(list, ['price', 'chg', 'week', 'spark']); document.getElementById('all-h').textContent = rg === 'All' ? 'Global indices' : 'Indices in ' + rg; };
 regionNav(document.getElementById('rg-tabs'), idx, r => { rg = r; draw(); }); draw();
 routeHash({});
 </script>
 </main>
+<script src="assets/page-data.js"></script>
 </body>
 </html>

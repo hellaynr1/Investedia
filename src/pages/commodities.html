@@ -35,7 +35,7 @@ document.getElementById('g-metals').innerHTML = co.filter(a => a.group === 'Meta
 document.getElementById('g-agri').innerHTML = co.filter(a => a.group === 'Agriculture').map(card).join('');
 document.getElementById('all').innerHTML = assetTable(co, ['price', 'chg', 'week', 'spark']);
 const feats = { Gold: ['XAU', 38.2], 'Crude Oil': ['WTI', -14.6], Copper: ['HG', 17.9] };
-function feat(n) { const [s, ch] = feats[n], a = M.bySym[s]; document.getElementById('feat-id').innerHTML = `${logo(a)}<span><b>${a.n}</b><small>${fmtP(a)}${a.unit} · <span class="${cls(ch)}">${fmtC(ch)} 1Y</span></small></span>`; areaChart(document.getElementById('feat'), M.series(s + 'feat', 120, a.p, ch, .012), { height: 300, labels: ['Nov', 'Feb', 'May', 'Aug', 'Oct'], color: ch >= 0 ? UI.acc() : '#F04444', fmt: v => '$' + (v >= 100 ? v.toFixed(0) : v.toFixed(2)) }); }
+function feat(n) { const [s] = feats[n], a = M.bySym[s]; document.getElementById('feat-id').innerHTML = `${logo(a)}<span><b>${a.n}</b><small>${fmtP(a)}${a.unit || ''} · front-month futures</small></span>`; M.history(s,'1Y').then(h => areaChart(document.getElementById('feat'), h?.vals || [], { height:300, labels:h?.labels || [] })); }
 document.querySelectorAll('#feat-pick button').forEach(b => b.onclick = () => { document.querySelectorAll('#feat-pick button').forEach(x => x.setAttribute('aria-pressed', x === b)); feat(b.textContent); });
 feat('Gold');
 routeHash({});

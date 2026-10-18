@@ -41,7 +41,7 @@
 <script>
 const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, row, sTag } = UI, M = MOCK;
 const a = M.bySym[new URLSearchParams(location.search).get('s')] || M.bySym.NVDA;
-const cat = M.categories.find(c => c.k === a.c), pf = window.PROFILES[a.s] || {}, K = a.c;
+const cat = M.categories.find(c => c.k === a.c), pf = { about: window.PROFILES[a.s]?.about }, K = a.c;
 const label = K === 'indices' || K === 'bonds' ? a.n : `${a.n} (${a.s})`;
 document.title = `${label} — Investedia`;
 const ce = document.getElementById('crumb-cat'); ce.textContent = cat.t; ce.href = cat.page;
@@ -52,10 +52,10 @@ const kind = { stocks: 'Stock', indices: a.fut ? 'Index future' : 'Index', crypt
 document.getElementById('a-tags').innerHTML = `<span class="tag">${a.s}</span><span class="tag">${a.x}</span><span class="tag">${kind}</span>${a.sector ? `<span class="tag">${a.sector}</span>` : ''}${a.group ? `<span class="tag">${a.group}</span>` : ''}`;
 document.getElementById('a-price').innerHTML = `<span data-lp="${a.s}">${fmtP(a)}</span>` + (a.unit ? `<span class="dim" style="font-size:16px">${a.unit}</span>` : '');
 const abs = a.p - a.p / (1 + a.d / 100);
-document.getElementById('a-chg').innerHTML = `<span class="${cls(a.d)}">${a.y ? fmtC(a.d, true) + (a.freq === 'monthly' ? ' vs. prior month' : ' today') : (abs >= 0 ? '+' : '−') + Math.abs(abs).toLocaleString('en-US', { maximumFractionDigits: a.p < 10 ? 4 : 2 }) + ' (' + fmtC(a.d) + ')'}</span>`;
+document.getElementById('a-chg').innerHTML = `<span class="${cls(a.d)}">${!a.real ? '—' : a.y ? fmtC(a.freq === 'monthly' ? a.m1 : a.d, true) + (a.freq === 'monthly' ? ' vs. prior month' : ' today') : (abs >= 0 ? '+' : '−') + Math.abs(abs).toLocaleString('en-US', { maximumFractionDigits: a.p < 10 ? 4 : 2 }) + ' (' + fmtC(a.d) + ')'}</span>`;
 const when = t => new Date(t * 1000).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-document.getElementById('a-time').textContent = !a.real ? '' : K === 'crypto' && !['BNB', 'USDC'].includes(a.s) ? 'Live · 24/7' : a.freq === 'monthly' ? 'Monthly average · ' + new Date(a.asof).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }) : a.asof ? 'As of ' + new Date(a.asof).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : a.at ? 'Delayed · ' + when(a.at) : 'Delayed';
-document.getElementById('a-src').textContent = !a.real ? 'Sample data' : a.freq ? 'Source: FRED' : 'Real data';
+document.getElementById('a-time').textContent = !a.real ? '' : a.freq === 'monthly' ? 'Monthly average · ' + new Date(a.asof).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }) : a.asof ? 'As of ' + new Date(a.asof).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : a.at ? 'Delayed · ' + when(a.at) : 'Delayed';
+document.getElementById('a-src').textContent = !a.real ? 'Verified price unavailable' : 'Source: ' + a.source;
 if (K === 'crypto') document.addEventListener('inv:tick', () => { const ab = a.p - a.p / (1 + a.d / 100); document.getElementById('a-chg').innerHTML = `<span class="${cls(a.d)}">${(ab >= 0 ? '+' : '−') + Math.abs(ab).toLocaleString('en-US', { maximumFractionDigits: a.p < 10 ? 4 : 2 })} (${fmtC(a.d)})</span>`; });
 const wb = document.getElementById('b-watch'); wb.innerHTML = icon('star') + 'Watchlist';
 wb.onclick = () => { const on = wb.classList.toggle('on'); wb.innerHTML = icon('star') + (on ? 'Watching' : 'Watchlist'); if (on) wb.querySelector('svg').setAttribute('fill', 'var(--accent)'); };
@@ -84,7 +84,7 @@ async function chart() {
     const cmp = other ? rebase(other.vals, real.vals.length, real.vals[0]) : null;
     return areaChart(document.getElementById('chart'), real.vals, { height: 360, labels: real.labels, compare: cmp, color: real.chg >= 0 ? UI.acc() : '#F04444', fmt: f });
   }
-  const vals = M.series(a.s + range, n, a.p, ch, vol), cmp = compare ? M.series('cmp' + a.s + range, n, a.p, ch * .4, vol * .6) : null;
+  const vals = [], cmp = null;
   areaChart(document.getElementById('chart'), vals, { height: 360, labels, compare: cmp, color: ch >= 0 ? UI.acc() : '#F04444', fmt: f });
 }
 document.querySelectorAll('#rng button').forEach(b => b.onclick = () => { document.querySelectorAll('#rng button').forEach(x => x.setAttribute('aria-pressed', x === b)); range = b.textContent; chart(); });
@@ -92,19 +92,11 @@ document.getElementById('cmp').onclick = e => { compare = !compare; e.currentTar
 chart();
 
 // stats by asset class
-const P = a.p, prev = a.y ? P - a.d / 100 : P / (1 + a.d / 100), fp = v => fmtP(a, v), HI = a.hi || P * 1.006, LO = a.lo || P * .981;
-const stats = {
-  stocks: [['Open', fp(prev * 1.002)], ['High', fp(HI)], ['Low', fp(LO)], ['Prev. close', fp(prev)], ['Volume', a.vol], ['Market cap', cap(a.m)], ['P/E', a.pe ? a.pe.toFixed(1) : '—'], ['52W range', `${(P * .62).toFixed(0)}–${(P * 1.12).toFixed(0)}`]],
-  indices: [['Open', fp(prev * 1.001)], ['High', fp(a.hi || P * 1.004)], ['Low', fp(a.lo || P * .993)], ['Prev. close', fp(prev)], ['52W high', fp(P * 1.03)], ['52W low', fp(P * .79)], ['YTD', '+14.2%']],
-  crypto: [['Market cap', cap(a.m)], ['24h volume', a.vol], ['Day high', fp(a.hi || P * 1.021)], ['Day low', fp(a.lo || P * .978)], ['All-time high', fp(P * (a.stable ? 1.01 : 1.52))], ['Rank', '#' + (M.assets.filter(x => x.c === 'crypto').sort((p, q) => q.m - p.m).indexOf(a) + 1)]],
-  currencies: [['Bid', P.toFixed(5)], ['Ask', (P * 1.00005).toFixed(5)], ['Spread', '0.6 pips'], ['Day range', `${(a.lo || P * .9962).toFixed(4)}–${(a.hi || P * 1.0021).toFixed(4)}`], ['52W range', `${(P * .93).toFixed(4)}–${(P * 1.04).toFixed(4)}`], ['Prev. close', prev.toFixed(4)]],
-  commodities: [['Open', fp(prev * 1.001)], ['High', fp(a.hi || P * 1.009)], ['Low', fp(a.lo || P * .988)], ['Prev. settle', fp(prev)], ['Contract', 'Dec 2026'], ['Unit', (a.unit || '').slice(1)], ['Open interest', '512K']],
-  bonds: [['Yield', P.toFixed(3) + '%'], ['Prev. yield', (P - a.d / 100).toFixed(3) + '%'], ['Price', (100 - (P - 4) * 7.8).toFixed(2)], ['Coupon', (P - .2).toFixed(3) + '%'], ['Maturity', a.s.includes('02') ? 'Sep 2028' : a.s.includes('30') ? 'Aug 2056' : 'Aug 2036'], ['52W range', `${(P * .86).toFixed(2)}–${(P * 1.14).toFixed(2)}%`]],
-  funds: [['NAV', fp(P * .9998)], ['Assets (AUM)', a.aum], ['Expense ratio', a.fee], ['Holdings', a.s === 'IBIT' || a.s === 'GLD' ? '1' : a.s === 'QQQ' ? '101' : '503'], ['Dividend yield', a.s === 'SCHD' ? '3.8%' : '1.1%'], ['Prev. close', fp(prev)]],
-}[K];
+const P = a.p, fp = v => Number.isFinite(v) ? fmtP(a, v) : '—';
+const q = window.QUOTES?.q[a.s] || {};
+const stats = [['Open', fp(q.open)], ['High', fp(q.hi)], ['Low', fp(q.lo)], ['Prev. close', fp(q.prev)], ['Volume', a.vol || '—'], ['Market cap', cap(a.m)], ['P/E', Number.isFinite(a.pe) ? a.pe.toFixed(1) : '—'], ['52W range', '—']];
 document.getElementById('stats').innerHTML = stats.map(([k, v]) => `<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
-const perfV = [['1W', a.w], ['1M', +(a.w * 1.6 + 2).toFixed(1)], ['3M', +(5 + a.w).toFixed(1)], ['YTD', +(14 + a.w * 3).toFixed(1)], ['1Y', +(18 + a.w * 3).toFixed(1)], ['5Y', K === 'currencies' || K === 'bonds' ? 12 : 120]];
-if (a.stable) perfV.forEach(p => p[1] = 0);
+const perfV = [['1W', a.w], ['1M', a.m1], ['3M', null], ['YTD', null], ['1Y', null], ['5Y', null]];
 const drawPerf = pv => document.getElementById('perf').innerHTML = pv.map(([k, v]) => `<div class="stat"><span>${k}</span><b class="${v == null ? 'muted' : cls(v)}">${v == null ? '—' : fmtC(v, isY)}</b></div>`).join('');
 drawPerf(perfV);
 // Real 52-week range and performance from the history file
@@ -127,38 +119,9 @@ const kv = rows => rows.map(([k, v]) => `<div class="kv"><span>${k}</span><b sty
 const aboutCard = (title, meta) => `<div class="card"><div class="card-head"><h3>${title}</h3><span class="meta">${meta || ''}</span></div><div class="card-pad"><p class="muted" style="margin:0 0 14px">${pf.about || `${a.n}${['INDEX', 'BOND'].includes(a.x) ? '' : ' trades on ' + a.x + '.'} A full profile will appear here.`}</p>${kv(pf.facts || [...(['INDEX', 'BOND'].includes(a.x) ? [] : [['Exchange', a.x]]), ['Asset class', cat.t]])}</div></div>`;
 const holdingsCard = (title, list) => `<div class="card"><div class="card-head"><h3>${title}</h3><span class="meta">Weight</span></div><div class="card-pad" style="display:grid;gap:10px">${list.map(([s, w]) => { const h = M.bySym[s]; return `<a href="${href(h)}" style="display:grid;grid-template-columns:minmax(0,1fr) 1fr 52px;gap:12px;align-items:center;font-size:13px"><span class="ident">${logo(h)}<span><b>${h.s}</b><small>${h.n}</small></span></span><div class="meter"><i style="width:${w / list[0][1] * 100}%;background:var(--accent)"></i></div><span class="num" style="text-align:right">${w.toFixed(1)}%</span></a>`; }).join('')}</div></div>`;
 const sectorCard = () => `<div class="card"><div class="card-head"><h3>Sector weights</h3></div><div class="card-pad" style="display:grid;gap:10px">${[['Technology', 34.1], ['Financials', 13.2], ['Healthcare', 9.8], ['Consumer', 10.4], ['Communication', 9.6], ['Industrials', 8.1], ['Other', 14.8]].map(([n, w]) => `<div style="display:grid;grid-template-columns:110px 1fr 48px;gap:10px;align-items:center;font-size:13px"><span class="muted">${n}</span><div class="meter"><i style="width:${w / 34.1 * 100}%;background:${n === 'Technology' ? 'var(--accent)' : '#52525b'}"></i></div><span class="num" style="text-align:right">${w}%</span></div>`).join('')}</div></div>`;
-let blocks = '';
-if (K === 'stocks') {
-  const rev = pf.rev || [8, 8.4, 8.1, 8.9, 9.3, 9.8], mx = Math.max(...rev) * 1.1, q = [`Q3 '24`, `Q4 '24`, `Q1 '25`, `Q2 '25`, `Q3 '25`, `Q4 '25`];
-  blocks += `<div class="grid g-2"><div class="card"><div class="card-head"><h3>Quarterly revenue</h3><span class="meta">USD billions</span></div><div class="card-pad"><div class="bars">${rev.map((v, i) => `<div><span class="num">${v.toFixed(1)}</span><i style="height:${v / mx * 120}px;background:${i === rev.length - 1 ? 'var(--accent)' : '#3a3a40'}"></i><small>${q[i]}</small></div>`).join('')}</div></div></div>${aboutCard('About', a.sector)}</div>`;
-  const yr = ['2022', '2023', '2024', '2025'], base = rev.reduce((s, v) => s + v, 0) / 1.5;
-  blocks += `<div class="card"><div class="card-head"><h3>Financials</h3><span class="meta">Fiscal years · USD</span></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Metric</th>${yr.map(y => `<th>${y}</th>`).join('')}</tr></thead><tbody>${[['Revenue', 1, 'B'], ['Gross profit', .62, 'B'], ['Operating income', .38, 'B'], ['Net income', .31, 'B'], ['EPS', 0, '']].map(([m, k, u]) => `<tr><td><b style="font-weight:550">${m}</b></td>${yr.map((y, i) => `<td class="num">${m === 'EPS' ? '$' + (1.2 + i * .9 + (a.p / 200)).toFixed(2) : '$' + (base * k * (.62 + i * .14)).toFixed(1) + u}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>`;
-} else if (K === 'indices' || K === 'funds') {
-  const hold = pf.holdings || window.PROFILES[{ ES1: 'SPX', VOO: 'SPX', IVV: 'SPX', FXAIX: 'SPX', VFIAX: 'SPX', NQ1: 'NDX', QQQ: 'NDX' }[a.s]]?.holdings;
-  if (hold) blocks += `<div class="grid g-2" id="blocks">${holdingsCard(K === 'funds' ? 'Top holdings' : 'Top components', hold)}${K === 'funds' && ['IBIT', 'GLD', 'TLT'].includes(a.s) ? aboutCard('Fund facts') : sectorCard()}</div>`;
-  blocks += aboutCard(K === 'funds' ? 'About this fund' : 'About this index');
-} else if (K === 'crypto') {
-  const sup = pf.supply || [a.m / a.p * 1e9 / 1e6, null];
-  blocks += `<div class="grid g-2" id="blocks"><div class="card"><div class="card-head"><h3>Supply</h3><span class="meta">Millions of coins</span></div><div class="card-pad">${kv([['Circulating', sup[0].toFixed(2) + 'M'], ['Max supply', sup[1] ? sup[1] + 'M' : 'No fixed cap'], ['Issued so far', sup[1] ? (sup[0] / sup[1] * 100).toFixed(1) + '%' : '—']])}${sup[1] ? `<div class="meter" style="margin-top:14px"><i style="width:${sup[0] / sup[1] * 100}%;background:var(--accent)"></i></div>` : ''}</div></div>
-  <div class="card"><div class="card-head"><h3>Network activity</h3><span class="meta">7-day average</span></div><div class="card-pad">${kv(a.s === 'BTC' ? [['Active addresses', '812K'], ['Transactions / day', '541K'], ['Hash rate', '1.04 ZH/s'], ['Average fee', '$1.12']] : [['Active addresses', '486K'], ['Transactions / day', '1.38M'], ['Staking yield', '2.9%'], ['Average fee', '$0.21']])}</div></div></div>`;
-  blocks += aboutCard('About ' + a.n);
-} else if (K === 'currencies') {
-  const piv = [['R2', P * 1.0061], ['R1', P * 1.0028], ['Pivot', P * 1.0004], ['S1', P * .9975], ['S2', P * .9941]];
-  blocks += `<div class="grid g-2" id="blocks"><div class="card"><div class="card-head"><h3>Technical levels</h3><span class="meta">Daily pivot points</span></div><div class="card-pad">${kv(piv.map(([k, v]) => [k, `<span class="num">${v.toFixed(4)}</span>`]))}</div></div>
-  <div class="card"><div class="card-head"><h3>Interest rates</h3><span class="meta">Policy rate</span></div><div class="card-pad">${(() => { const CB = { USD: ['Federal Reserve', 3.875, '3.75–4.00%'], EUR: ['European Central Bank', 2], GBP: ['Bank of England', 4], JPY: ['Bank of Japan', 0.5], CHF: ['Swiss National Bank', 0], CAD: ['Bank of Canada', 2.5], AUD: ['Reserve Bank of Australia', 3.6], NZD: ['Reserve Bank of NZ', 2.5], CNY: ['People’s Bank of China', 3], TRY: ['Central Bank of Türkiye', 40.5], MXN: ['Banco de México', 7.5], ZAR: ['SA Reserve Bank', 7] }, b = CB[a.s.slice(0, 3)], q = CB[a.s.slice(3, 6)], pr = r => r ? [r[0], r[2] || r[1].toFixed(2) + '%'] : null; const g = b && q ? b[1] - q[1] : null; return kv([pr(b), pr(q), g == null ? null : ['Rate gap', (g < 0 ? '−' : '+') + Math.abs(g).toFixed(2) + ' pts']].filter(Boolean)); })()}</div></div></div>`;
-  blocks += aboutCard('About ' + a.s.slice(0, 3) + '/' + a.s.slice(3, 6));
-} else if (K === 'commodities') {
-  const mo = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'], r = M.seeded(a.s + 'season');
-  blocks += `<div class="grid g-2" id="blocks"><div class="card"><div class="card-head"><h3>Contract specifications</h3></div><div class="card-pad">${kv([['Exchange', a.x], ['Unit', (a.unit || '').slice(1)], ['Front month', 'December 2026'], ['Tick size', a.p > 100 ? '$0.10' : '$0.01'], ['Trading hours', 'Sun–Fri, 18:00–17:00 ET']])}</div></div>
-  <div class="card"><div class="card-head"><h3>Seasonality</h3><span class="meta">Average monthly return, 10 years</span></div><div class="card-pad"><div class="bars season">${mo.map((m, i) => { const v = +((r() - .45) * 6).toFixed(1); return `<div><i style="height:${Math.abs(v) * 14}px;background:${v >= 0 ? 'var(--up)' : 'var(--down)'};${v < 0 ? 'opacity:.85' : ''}"></i><small>${m}</small></div>`; }).join('')}</div></div></div></div>`;
-  blocks += aboutCard('About ' + a.n.toLowerCase());
-} else if (K === 'bonds') {
-  blocks += `<div class="card" id="blocks"><div class="card-head"><h3>US Treasury curve</h3><span class="meta">${a.s.startsWith('US') && !a.corp ? '' : 'Reference · '}Today vs. one year ago</span></div><div style="padding:12px 12px 8px 18px"><div id="ycurve"></div></div></div>`;
-  blocks += aboutCard('About this bond');
-}
-document.getElementById('class-blocks').innerHTML = blocks;
-if (K === 'bonds') { const lab = ['1M', '6M', '2Y', '3Y', '5Y', '7Y', '10Y', '20Y', '30Y']; areaChart(document.getElementById('ycurve'), [3.92, 3.71, 3.48, 3.42, 3.51, 3.70, 4.03, 4.38, 4.61], { compare: [4.85, 4.62, 4.21, 4.05, 4.02, 4.08, 4.21, 4.49, 4.42], height: 240, labels: lab, fmt: v => v.toFixed(2) + '%' }); }
-
+const unavailableCard = title => `<div class="card"><div class="card-head"><h3>${title}</h3></div><div class="card-pad muted">Verified data is not available from the connected feeds.</div></div>`;
+const titles = {stocks:['Quarterly revenue','Financial statements'],indices:['Index weights','Sector weights'],crypto:['Supply and market data'],funds:['Fund holdings','Sector weights'],currencies:['Interest rates','Seasonality'],commodities:['Contract details','Seasonality'],bonds:['Yield curve']}[K];
+document.getElementById('class-blocks').innerHTML = `<div class="grid g-2">${titles.map(unavailableCard).join('')}${aboutCard('About this asset')}</div>`;
 // side: AI panel, ratings (stocks), key facts
 const ai = pf.ai;
 let side = ai ? `<div class="card ai-glow card-pad"><div style="display:flex;justify-content:space-between;align-items:center"><span class="ai-badge">${icon('sparkle')}AI analysis</span><span class="demo">Sample</span></div>
@@ -172,8 +135,7 @@ let side = ai ? `<div class="card ai-glow card-pad"><div style="display:flex;jus
 if (K === 'stocks' && pf.rating) { const [b, h, s] = pf.rating, [lo, avg, hi] = pf.target, pos = v => ((v - lo) / (hi - lo) * 100).toFixed(1);
   side += `<div class="card"><div class="card-head"><h3>Analyst ratings</h3><span class="meta">${b + h + s} analysts</span></div><div class="card-pad"><div style="display:flex;height:8px;border-radius:4px;overflow:hidden;gap:2px"><i style="flex:${b};background:var(--up)"></i><i style="flex:${h};background:#71717A"></i><i style="flex:${s};background:var(--down)"></i></div><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-top:8px"><span class="up">Buy ${b}</span><span class="muted">Hold ${h}</span><span class="down">Sell ${s}</span></div>
   <h4 style="margin:18px 0 10px;font-size:13px;font-weight:600">12-month price targets</h4><div style="position:relative;height:28px"><div style="position:absolute;left:0;right:0;top:12px;height:4px;border-radius:2px;background:var(--line)"></div><div title="Current price" style="position:absolute;left:${pos(a.p)}%;top:6px;width:2px;height:16px;background:var(--fg)"></div><div title="Average target" style="position:absolute;left:${pos(avg)}%;top:7px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--card)"></div></div><div style="display:flex;justify-content:space-between;font-size:12px" class="num"><span class="muted">Low $${lo}</span><span>Avg <span class="accent">$${avg}</span></span><span class="muted">High $${hi}</span></div></div></div>`; }
-const facts = { stocks: [['Dividend yield', (a.div || 0).toFixed(2) + '%'], ['Revenue growth', (a.g || 10).toFixed(1) + '%'], ['Beta (5Y)', '1.24'], ['Next earnings', (M.earnings.find(e => e.s === a.s) || { date: '—' }).date]], indices: [['Constituents', { NDX: '101', NQ1: '101', DJI: '30', YM1: '30', SPX: '500', ES1: '500', RUT: '2,000', DAX: '40', CAC: '40', SX5E: '50', UKX: '100', NKY: '225', HSI: '85', XJO: '200', NZ50: '50', EGX30: '30', SENSEX: '30', IBOV: '86', MXX: '35' }[a.s] || '—'], ['Forward P/E', '22.8'], ['Dividend yield', '1.2%'], ['Currency', a.s === 'DAX' || a.s === 'CAC' || a.s === 'SX5E' ? 'EUR' : a.s === 'UKX' ? 'GBP' : a.s === 'NKY' ? 'JPY' : { HSI: 'HKD', TSX: 'CAD', IBOV: 'BRL', MXX: 'MXN', XJO: 'AUD', NZ50: 'NZD', J203: 'ZAR', EGX30: 'EGP', NGSE: 'NGN', SENSEX: 'INR', KOSPI: 'KRW', SSEC: 'CNY' }[a.s] || 'USD']], crypto: [['Volatility (30D)', a.stable ? '0.1%' : '48%'], ['Correlation to Nasdaq', a.stable ? '0.00' : '0.42'], ['Exchanges listed', '180+'], ['Launched', (pf.facts || [[0, '—']])[0][1]]], currencies: [['Volatility (30D)', '6.4%'], ['Average daily range', '64 pips'], ['Trading sessions', '24h, Mon–Fri'], ['Correlation to DXY', '−0.96']], commodities: [['Volatility (30D)', '18%'], ['1Y high', fmtP(a, a.p * 1.08)], ['1Y low', fmtP(a, a.p * .72)], ['Main driver', a.group === 'Energy' ? 'Supply & OPEC+' : a.group === 'Metals' ? 'Rates & dollar' : 'Weather & harvests']], bonds: [['Duration', a.s.includes('02') ? '1.9 yrs' : a.s.includes('30') ? '17.1 yrs' : '8.3 yrs'], ['Credit rating', a.corp ? 'Mixed' : a.s.startsWith('IT') ? 'BBB' : 'AA+'], ['Real yield', (a.p - 2.3).toFixed(2) + '%'], ['Issuer', a.n.split(' ')[0]]], funds: [['Issuer', (pf.facts || [[0, a.n.split(' ')[0]]])[0][1]], ['Asset class', a.kind || 'Equity'], ['Tracking', 'Physical replication'], ['Distribution', 'Quarterly']] }[K];
-side += `<div class="card"><div class="card-head"><h3>Key facts</h3></div><div class="card-pad" style="padding-block:6px">${kv(facts)}</div></div>`;
+const facts = [['Source', a.source], ['Currency', a.cur || '—'], ['Next earnings', (M.earnings.find(e => e.s === a.s) || { date: '—' }).date], ['Data status', a.fetchFailed ? 'Last known quote · refresh failed' : a.real ? a.freq === 'monthly' ? 'Monthly average' : 'Delayed snapshot' : 'Unavailable']];side += `<div class="card"><div class="card-head"><h3>Key facts</h3></div><div class="card-pad" style="padding-block:6px">${kv(facts)}</div></div>`;
 document.getElementById('side').innerHTML = side;
 
 const rel = M.assets.filter(x => x.c === K && x !== a && (!a.sector || x.sector === a.sector || M.assets.filter(y => y.c === K && y.sector === a.sector).length < 5)).slice(0, 4);

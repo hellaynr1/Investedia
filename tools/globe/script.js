@@ -1,7 +1,7 @@
 <script>
 const DOTS = __DOTS__;
 const MK = /*MK*/__MARKETS__/*MK*/, ASOF = /*ASOF*/'2026-10-16T21:00:00Z'/*ASOF*/;
-const SEC = [['all', 'All assets'], ['stocks', 'Stocks'], ['fx', 'Currencies'], ['cmd', 'Commodities'], ['crypto', 'Stablecoins']];
+const SEC = [['all', 'All assets'], ['stocks', 'Stocks'], ['fx', 'Currencies'], ['cmd', 'Commodities'], ['crypto', 'Crypto']];
 const SECN = Object.fromEntries(SEC);
 const CONT_ALL = ['North America', 'Central America & Caribbean', 'South America', 'Europe', 'Middle East', 'Africa', 'Asia', 'Oceania'];
 // only regions that have assets in the current section
@@ -13,8 +13,8 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
 const fmtP = v => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const pct = d => (d >= 0 ? '+' : '−') + Math.abs(d).toFixed(2) + '%';
 const dir = m => m.t === 'bonds' ? (m.d < 0 ? 'u' : 'd') : m.d >= 0 ? 'u' : 'd';
-const chg = m => { if (m.t === 'bonds') { const bp = (m.p - m.p / (1 + m.d / 100)) * 100; return (bp >= 0 ? '+' : '−') + Math.abs(bp).toFixed(0) + ' bp'; } return pct(m.d); };
-const val = m => m.t === 'bonds' ? m.p.toFixed(2) + '%' : m.t === 'fx' ? m.p.toLocaleString('en-US', { minimumFractionDigits: m.p < 20 ? 4 : 2, maximumFractionDigits: m.p < 20 ? 4 : 2 }) : m.t === 'crypto' ? '$' + m.p.toLocaleString('en-US', { maximumFractionDigits: m.p < 1 ? 6 : 2, minimumFractionDigits: 2 }) : fmtP(m.p) + (m.u ? ' ' + m.u : '');
+const chg = m => { if (!m.at) return '—'; if (m.t === 'bonds') { const bp = (m.p - m.p / (1 + m.d / 100)) * 100; return (bp >= 0 ? '+' : '−') + Math.abs(bp).toFixed(0) + ' bp'; } return pct(m.d); };
+const val = m => !m.at ? 'Unverified' : m.t === 'bonds' ? m.p.toFixed(2) + '%' : m.t === 'fx' ? m.p.toLocaleString('en-US', { minimumFractionDigits: m.p < 20 ? 4 : 2, maximumFractionDigits: m.p < 20 ? 4 : 2 }) : m.t === 'crypto' ? '$' + m.p.toLocaleString('en-US', { maximumFractionDigits: m.p < 1 ? 6 : 2, minimumFractionDigits: 2 }) : fmtP(m.p) + (m.u ? ' ' + m.u : '');
 const RGB = { u: '34,197,94', d: '240,68,68' };
 const CHEV = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>';
 
@@ -262,7 +262,7 @@ function drawList() {
   const rows = MK.filter(inSec).filter(m => sec === 'crypto' ? true : cont === 'all' ? (country === 'all' ? m.m : m.k === country) : m.r === cont && (country === 'all' || m.k === country)).sort((a, b) => b.d - a.d);
   $('lTitle').textContent = sec === 'crypto' ? 'Crypto' : cont === 'all' && country === 'all' ? (sec === 'all' ? 'Main markets' : 'Main ' + SECN[sec].toLowerCase()) : country !== 'all' ? country : cont;
   $('lCount').textContent = rows.length + (rows.length === 1 ? ' asset' : ' assets');
-  $('list').innerHTML = rows.map(m => `<button class="row" type="button" data-s="${esc(m.s)}">${ico(m)}<span class="n"><b>${esc(m.n)}</b><small>${m.k === 'Global' ? SECN[m.t] : SECN[m.t] + ' · ' + esc(m.k)}</small></span><span class="p">${val(m)}</span><span class="pill ${dir(m)}">${chg(m)}</span></button>`).join('');
+  $('list').innerHTML = rows.map(m => `<button class="row" type="button" data-s="${esc(m.s)}">${ico(m)}<span class="n"><b>${esc(m.n)}</b><small>${m.k === 'Global' ? SECN[m.t] : SECN[m.t] + ' · ' + esc(m.k)}</small></span><span class="p" title="${esc((m.source || 'Source unconfirmed') + ' · ' + (m.currency || '') + ' · ' + (m.at ? new Date(m.at*1000).toISOString() : 'Timestamp unavailable'))}">${val(m)}</span><span class="pill ${dir(m)}">${chg(m)}</span></button>`).join('');
 }
 $('list').addEventListener('click', e => { const b = e.target.closest('.row'); if (!b) return; const m = MK.find(x => x.s === b.dataset.s), r = b.getBoundingClientRect(); openWin({ asset: m }, Math.max(20, r.left - 330), r.top); });
 $('list').addEventListener('mouseover', e => { const b = e.target.closest('.row'); const m = b && MK.find(x => x.s === b.dataset.s); hover = m ? groups.find(g => g.items.includes(m)) || null : null; });
@@ -296,4 +296,12 @@ regroup(); buildPickers(); drawList(); requestAnimationFrame(frame);
 // Links such as globe.html?country=Japan open straight on that country
 { const qc = QP.get('country'), g = qc && groups.find(g => g.k === qc); if (g) { setCountry(qc); openWin({ group: g }); } }
 { const n = document.querySelector('.note'), d = new Date(ASOF); if (n) n.innerHTML = n.innerHTML.replace(/^Real data from [^:]+:/, 'Prices updated ' + d.toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) + ':'); }
+// Refresh the same attributed snapshot as the main site, without claiming live ticks.
+setInterval(async () => {
+  if (document.hidden) return;
+  try { const j = await (await fetch('markets.json?t='+Date.now(), {cache:'no-store'})).json();
+    j.assets.forEach(a => { const m = MK.find(x=>x.s===a.s); if(m) Object.assign(m,a); });
+    regroup(); drawList(); wins.forEach(renderWin);
+  } catch {}
+}, 120000);
 </script>

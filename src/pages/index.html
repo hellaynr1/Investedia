@@ -12,7 +12,7 @@
     <div class="hero-stats">
       <div><span>New York</span><b class="status" id="ny-status"><i class="off"></i>Closed · opens 09:30 ET</b></div>
       <div><span>Crypto</span><b class="status"><i></i>Open 24/7</b></div>
-      <div><span>Next event</span><b class="status">US Retail Sales · 08:30 ET</b></div>
+      <div><span>Next event</span><b class="status"><span id="next-real-event">Loading calendar…</span></b></div>
     </div>
   </div>
   <div class="hero-globe"><iframe id="hero-globe" title="World markets globe: tap a country to see its markets" loading="eager"></iframe></div>
@@ -45,11 +45,11 @@
 </section>
 
 <section class="sec">
-  <div class="sec-head"><div><h2>Trending stocks</h2><p>The most-viewed stocks on Investedia today.</p></div><a class="link" href="stocks.html#trending">All stocks <span data-icon="arrow"></span></a></div>
+  <div class="sec-head"><div><h2>Trending stocks</h2><p>Ranked by reported share volume · tracked stocks.</p></div><a class="link" href="stocks.html#trending">All stocks <span data-icon="arrow"></span></a></div>
   <div class="card">
     <div class="toolbar">
       <div class="tabs" id="ts-region"><button class="tab" data-tab="all" aria-selected="true">All regions</button><button class="tab" data-tab="us">US</button><button class="tab" data-tab="eu">Europe</button><button class="tab" data-tab="asia">Asia</button><button class="tab" data-tab="am">Americas</button></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><select class="select sel-sm" id="ts-sector" aria-label="Sector"><option value="">All sectors</option></select><select class="select sel-sm" id="ts-sort" aria-label="Sort by"><option value="views">Most viewed</option><option value="up">Top gainers</option><option value="down">Top losers</option><option value="vol">Most active</option><option value="cap">Largest</option></select></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><select class="select sel-sm" id="ts-sector" aria-label="Sector"><option value="">All sectors</option></select><select class="select sel-sm" id="ts-sort" aria-label="Sort by"><option value="views">Most active</option><option value="up">Top gainers</option><option value="down">Top losers</option><option value="vol">Most active</option><option value="cap">Largest</option></select></div>
     </div>
     <div id="trending"></div>
   </div>
@@ -61,7 +61,7 @@
       <div class="card-head" style="flex-wrap:wrap"><h3>Popular indices</h3><div class="tabs" id="idx-tabs"><button class="tab" data-tab="all" aria-selected="true">All</button><button class="tab" data-tab="am">Americas</button><button class="tab" data-tab="eu">Europe</button><button class="tab" data-tab="asia">Asia</button><button class="tab" data-tab="oc">Oceania</button><button class="tab" data-tab="af">Africa</button></div></div>
       <div id="indices"></div>
     </div>
-    <div class="card"><div class="card-head"><h3>S&amp;P 500 sectors</h3><span class="meta">Today</span></div><div class="card-pad" style="display:grid;gap:10px" id="sectors"></div></div>
+    <div class="card"><div class="card-head"><h3>S&amp;P 500 sectors</h3><span class="meta" id="sector-asof">ETF proxies</span></div><div class="card-pad" style="display:grid;gap:10px" id="sectors"></div></div>
   </div>
 </section>
 
@@ -103,7 +103,7 @@
 </section>
 
 <section class="sec">
-  <div class="sec-head"><div><h2>Featured analysis</h2><p>Research from the Investedia desk.</p></div><a class="link" href="analysis.html">All analysis <span data-icon="arrow"></span></a></div>
+  <div class="sec-head"><div><h2>Featured analysis</h2><p>Latest reporting from external publishers.</p></div><a class="link" href="analysis.html">All analysis <span data-icon="arrow"></span></a></div>
   <div class="grid g-3" id="an-cards"></div>
 </section>
 
@@ -134,7 +134,7 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
 
 const card = a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' || a.c === 'bonds' ? a.n : a.s}</b><small>${a.c === 'indices' ? 'Index' : a.n}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`;
 const GL = { overview: ['SPX', 'NDX', 'DAX', 'NKY', 'BTC', 'XAU', 'EURUSD', 'US10Y'], indices: ['SPX', 'DJI', 'DAX', 'UKX', 'NKY', 'HSI', 'XJO', 'IBOV'], crypto: ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX'], currencies: ['EURUSD', 'GBPUSD', 'USDJPY', 'EURGBP', 'AUDUSD', 'USDCHF', 'DXY', 'USDMXN'], commodities: ['XAU', 'XAG', 'WTI', 'BRENT', 'NG', 'HG', 'PL', 'KC'], bonds: ['US10Y', 'US02Y', 'US30Y', 'DE10Y', 'UK10Y', 'FR10Y', 'IT10Y', 'JP10Y'] };
-const gl = k => document.getElementById('global').innerHTML = GL[k].map(s => card(M.bySym[s])).join('');
+const gl = k => document.getElementById('global').innerHTML = GL[k].map(s => M.bySym[s]).filter(a => a?.real).map(card).join('');
 tabs(document.getElementById('gl-tabs'), gl); gl('overview');
 
 // Trending markets: ranked by the chosen period; refreshes with the daily data
@@ -157,7 +157,7 @@ document.getElementById('hero-date').textContent = 'Markets · ' + new Date().to
 document.getElementById('tm-class').innerHTML = CLASSES.map(([k, t], i) => `<button class="chip ${i ? '' : 'on'}" type="button" data-k="${k}">${t}</button>`).join('');
 function trendingMarkets() {
   const v = a => a[tm.per];
-  let list = M.assets.filter(a => inClass(a, tm.cls));
+  let list = M.assets.filter(a => a.real && Number.isFinite(a[tm.per]) && inClass(a, tm.cls));
   list.sort((x, y) => tm.mode === 'up' ? v(y) - v(x) : tm.mode === 'down' ? v(x) - v(y) : Math.abs(v(y)) - Math.abs(v(x)));
   document.getElementById('tm-grid').innerHTML = list.slice(0, 8).map((a, i) => `<a class="card idx tm" href="${href(a)}"><div class="idx-top"><span class="ident"><span class="tm-rank num">${i + 1}</span>${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? a.s : a.n}</small></span></span><span class="pill ${cls(v(a))}">${fmtC(v(a), a.y)}</span></div><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="idx-val" style="font-size:17px" data-lp="${a.s}">${fmtP(a)}</span><span class="dim" style="font-size:11.5px">${perName[tm.per]}</span></div>${spark(a.spark, colorFor(v(a)), 240, 30)}</a>`).join('');
 }
@@ -170,7 +170,7 @@ trendingMarkets();
 const MV = CLASSES.filter(([k]) => k !== 'all'), mvPage = { stocks: 'stocks.html', crypto: 'crypto.html', indices: 'indices.html', futures: 'indices.html#futures', currencies: 'currencies.html', commodities: 'commodities.html', funds: 'funds.html' };
 document.getElementById('mv-class').innerHTML = MV.map(([k, t], i) => `<button class="tab" data-tab="${k}" ${i ? '' : 'aria-selected="true"'}>${t}</button>`).join('');
 function movers(k) {
-  const list = M.assets.filter(a => inClass(a, k)).sort((a, b) => b.d - a.d), n = Math.min(5, Math.floor(list.length / 2));
+  const list = M.assets.filter(a => a.real && Number.isFinite(a.d) && inClass(a, k)).sort((a, b) => b.d - a.d), n = Math.min(5, Math.floor(list.length / 2));
   document.getElementById('gainers').innerHTML = list.slice(0, n).map(a => row(a)).join('');
   document.getElementById('losers').innerHTML = list.slice(-n).reverse().map(a => row(a)).join('');
   document.getElementById('mv-all-up').href = mvPage[k] + (k === 'stocks' || k === 'crypto' ? '#gainers' : '');
@@ -182,12 +182,13 @@ tabs(document.getElementById('mv-class'), movers); movers('stocks');
 const VIEWS = ['NVDA', 'TSLA', 'AAPL', 'DELL', 'LLY', 'AMD', 'META', 'MSFT', 'AMZN', 'GME', 'NFLX'];
 const REG = { us: ['US'], eu: ['UK', 'FR', 'DE', 'NL', 'DK'], asia: ['JP', 'CN', 'TW'], am: ['US', 'CA', 'BR', 'AR'] };
 const ts = { reg: 'all', sector: '', sort: 'views' };
-const allStocks = M.assets.filter(a => a.c === 'stocks');
+const allStocks = M.assets.filter(a => a.c === 'stocks' && a.real);
 [...new Set(allStocks.map(a => a.sector))].sort().forEach(x => document.getElementById('ts-sector').add(new Option(x, x)));
 function trendingStocks() {
   let l = allStocks.filter(a => (ts.reg === 'all' || REG[ts.reg].includes(a.country)) && (!ts.sector || a.sector === ts.sector));
-  const rank = a => { const i = VIEWS.indexOf(a.s); return i < 0 ? 99 : i; };
-  l.sort({ views: (a, b) => rank(a) - rank(b) || b.m - a.m, up: (a, b) => b.d - a.d, down: (a, b) => a.d - b.d, vol: (a, b) => parseFloat(b.vol) - parseFloat(a.vol), cap: (a, b) => b.m - a.m }[ts.sort]);
+  const rank = a => window.QUOTES?.q[a.s]?.v || 0;
+  if (ts.sort === 'cap') l = l.filter(a => Number.isFinite(a.m));
+  l.sort({ views: (a, b) => rank(b) - rank(a), up: (a, b) => b.d - a.d, down: (a, b) => a.d - b.d, vol: (a, b) => rank(b) - rank(a), cap: (a, b) => b.m - a.m }[ts.sort]);
   document.getElementById('trending').innerHTML = l.length ? assetTable(l.slice(0, 8), ['price', 'chg', 'week', 'cap', 'vol', 'spark']) : '<p class="card-pad muted" style="margin:0">No stocks match these filters.</p>';
 }
 tabs(document.getElementById('ts-region'), k => { ts.reg = k; trendingStocks(); });
@@ -196,31 +197,18 @@ document.getElementById('ts-sort').onchange = e => { ts.sort = e.target.value; t
 trendingStocks();
 
 const reg = { am: ['SPX', 'NDX', 'DJI', 'RUT', 'TSX', 'IBOV', 'MXX'], eu: ['DAX', 'CAC', 'UKX', 'SX5E'], asia: ['NKY', 'HSI', 'SSEC', 'SENSEX', 'KOSPI'], oc: ['XJO', 'NZ50'], af: ['J203', 'EGX30', 'NGSE'] };
-const idx = k => document.getElementById('indices').innerHTML = assetTable((k === 'all' ? ['SPX', 'NDX', 'DAX', 'UKX', 'NKY', 'SENSEX', 'XJO', 'IBOV', 'J203'] : reg[k]).map(s => M.bySym[s]), ['price', 'chg', 'week', 'spark']);
+const idx = k => document.getElementById('indices').innerHTML = assetTable((k === 'all' ? ['SPX', 'NDX', 'DAX', 'UKX', 'NKY', 'SENSEX', 'XJO', 'IBOV', 'J203'] : reg[k]).map(s => M.bySym[s]).filter(a => a?.real), ['price', 'chg', 'week', 'spark']);
 tabs(document.getElementById('idx-tabs'), idx); idx('all');
-document.getElementById('sectors').innerHTML = [['Healthcare', 1.38], ['Utilities', 0.66], ['Financials', 0.51], ['Industrials', 0.35], ['Communication', 0.22], ['Materials', -0.12], ['Consumer', -0.21], ['Technology', -0.42], ['Energy', -1.24]].map(([n, v]) => `<div style="display:grid;grid-template-columns:110px 1fr 64px;gap:10px;align-items:center;font-size:13px"><span class="muted">${n}</span><div style="position:relative;height:16px"><div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line)"></div><div style="position:absolute;top:2px;bottom:2px;border-radius:2px;${v >= 0 ? `left:50%;width:${v / 1.5 * 50}%;background:var(--up)` : `right:50%;width:${-v / 1.5 * 50}%;background:var(--down)`}"></div></div><span class="num ${cls(v)}" style="text-align:right">${fmtC(v)}</span></div>`).join('');
-
-document.getElementById('crypto-stats').innerHTML = [['Total market cap', '$2.84T', '+0.9%'], ['24h volume', '$96.4B', '−12.1%'], ['Bitcoin dominance', '57.4%', '+0.3%'], ['Ethereum dominance', '10.3%', '−0.1%'], ['Fear & Greed', '34 · Fear', '']].map(([k, v, c]) => `<div class="stat"><span>${k}</span><b>${v} ${c ? `<i class="${c.startsWith('+') ? 'up' : 'down'}" style="font-size:12px;font-style:normal">${c}</i>` : ''}</b></div>`).join('');
+// Attributed sector and crypto snapshots are rendered by page-data.js.
 document.getElementById('coins').innerHTML = ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · ${cap(a.m)}</small></span></span><span style="text-align:right"><div class="num" data-lp="${a.s}">${fmtP(a)}</div><div class="num ${cls(a.d)}" data-lc="${a.s}" style="font-size:12.5px">${fmtC(a.d)}</div></span><div style="grid-column:1/-1">${spark(a.spark, colorFor(a.w), 300, 34)}</div></a>`).join('');
 
 document.getElementById('ai-points').innerHTML = [['Morning brief', 'the five things that moved markets overnight.'], ['Sentiment scores', 'for every stock, coin and sector.'], ['Bull and bear scenarios', 'so you see both sides before you decide.']].map(([b, t]) => `<li>${icon('check')}<span><b>${b}:</b> ${t}</span></li>`).join('');
 
-const n0 = M.news[0], leadEl = document.getElementById('lead');
+const n0 = M.news[0] || {t:"No verified news available",d:"",cat:"News",time:"",a:""}, leadEl = document.getElementById('lead');
 if (n0.url) { leadEl.href = n0.url; leadEl.target = '_blank'; leadEl.rel = 'noopener'; }
 document.getElementById('lead').innerHTML = `<div class="cover">${cover('lead1')}</div><div class="card-pad" style="display:grid;gap:10px;align-content:center"><div class="news-meta"><span class="tag acc">${n0.cat}</span><span>${n0.time}</span></div><h2 style="font-size:24px">${n0.t}</h2><p class="muted" style="margin:0">${n0.d}</p><div class="news-meta"><span>${n0.a}</span>${n0.read ? `<i></i><span>${n0.read} min read</span>` : ''}</div></div>`;
 document.getElementById('news-list').innerHTML = M.news.slice(1, 7).map(n => `<a class="news-item" ${UI.nhref(n)}><div class="news-meta"><span class="accent" style="font-weight:600">${n.cat}</span><i></i><span>${n.time}</span><i></i><span class="mono">${n.tag}</span></div><h3>${n.t}</h3></a>`).join('');
 
-document.getElementById('an-cards').innerHTML = M.analysis.slice(0, 3).map((x, i) => UI.analysisCard(x, i)).join('');
-
-document.getElementById('events').innerHTML = M.calendar.slice(0, 6).map(e => `<a class="news-item" href="calendar.html" style="grid-template-columns:86px 1fr auto;align-items:center;gap:12px"><span><b class="num" style="font-weight:500">${e.time}</b><small class="dim" style="display:block;font-size:11.5px">${e.day.slice(0, 10)}</small></span><span><b style="font-weight:550">${e.e}</b><small class="dim" style="display:block;font-size:12px">${e.c} · Forecast ${e.fc} · Prev. ${e.prev}</small></span>${UI.impact(e.imp)}</a>`).join('');
-document.getElementById('earn').innerHTML = M.earnings.slice(0, 6).map(e => { const a = M.bySym[e.s]; return `<a class="news-item" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${e.n}</b><small>${e.date} · ${e.when}</small></span></span><span class="num muted" style="font-size:12.5px;text-align:right">EPS est.<br><b style="color:var(--fg);font-weight:500">$${e.eps}</b></span></a>`; }).join('');
-
-// Testimonials: add only real quotes, shared with permission. Faceless by design.
-const QUOTES = [
-  // ['Quote text', 'Who (e.g. Early user, Belgium)'],
-];
-document.getElementById('quotes').innerHTML = QUOTES.length
-  ? QUOTES.map(([q, w]) => `<figure class="card card-pad quote"><blockquote>“${q}”</blockquote><figcaption>${w}</figcaption></figure>`).join('')
-  : `<div class="card card-pad quote-empty"><div><h3>Be one of the first voices here.</h3><p class="muted" style="margin:6px 0 0">Using Investedia? Tell us what helped, what didn’t and what you’d like to see next. With your permission, we’ll share it here, without names or faces.</p></div><a class="btn btn-primary" href="https://www.instagram.com/investedia/" target="_blank" rel="noopener">Share your experience</a></div>`;
+// News, calendars, earnings and research cards use the shared verified-data renderer.
 document.getElementById('learn').innerHTML = [['book', 'Investing basics', 'Stocks, bonds and funds explained from scratch.', 'Beginner', 8, 45], ['funds', 'ETFs and index funds', 'Why most people should start with low-cost funds.', 'Beginner', 6, 30], ['stocks', 'Reading a stock chart', 'Trends, support, resistance and volume.', 'Intermediate', 7, 40], ['crypto', 'Crypto without the hype', 'How blockchains, wallets and risk really work.', 'Beginner', 5, 25]].map(([i, t, d, lv, n, min], k) => `<a class="card tool" href="education.html"><div style="display:flex;justify-content:space-between;align-items:center"><span class="dd-ic">${icon(i)}</span><span class="tag ${k === 2 ? 'acc' : ''}">${lv}</span></div><h3>${t}</h3><p>${d}</p><div class="news-meta"><span>${n} lessons</span><i></i><span>${min} min</span></div><div class="meter" style="margin-top:4px"><i style="width:${[0, 0, 35, 0][k]}%;background:var(--accent)"></i></div></a>`).join('');
 </script>

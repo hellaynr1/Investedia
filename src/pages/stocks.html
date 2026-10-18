@@ -17,7 +17,7 @@
 </section>
 
 <section class="sec" id="movers">
-  <div class="sec-head"><div><h2>Market movers</h2><p id="mv-sub">US stocks over $2B market value.</p></div><div class="tabs" id="mv-tabs"><button class="tab" data-tab="trending" aria-selected="true">Trending</button><button class="tab" data-tab="active">Most active</button><button class="tab" data-tab="gainers">Top gainers</button><button class="tab" data-tab="losers">Top losers</button></div></div>
+  <div class="sec-head"><div><h2>Market movers</h2><p id="mv-sub">US stocks with verified quotes.</p></div><div class="tabs" id="mv-tabs"><button class="tab" data-tab="trending" aria-selected="true">Trending</button><button class="tab" data-tab="active">Most active</button><button class="tab" data-tab="gainers">Top gainers</button><button class="tab" data-tab="losers">Top losers</button></div></div>
   <div class="card" id="mv-table"></div>
 </section>
 
@@ -50,7 +50,7 @@
 <script>
 const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, assetTable, tabs, row, routeHash } = UI, M = MOCK;
 UI.subnav('stocks');
-const st = M.assets.filter(a => a.c === 'stocks');
+const st = M.assets.filter(a => a.c === 'stocks' && a.real);
 const $ = id => document.getElementById(id);
 const slug = r => r.toLowerCase().replace(/\s+/g, '-');
 const BENCH = { All: 'SPX', Americas: 'SPX', Europe: 'SX5E', Asia: 'NKY', Oceania: 'XJO', Africa: 'J203', 'Middle East': 'TASI', Global: 'SPX' };
@@ -61,8 +61,7 @@ const byCap = l => [...l].sort((a, b) => b.m - a.m);
 
 function breadth() {
   let cells;
-  if (R === 'All') cells = [['Advancing', '2,184', 'up'], ['Declining', '2,611', 'down'], ['New 52W highs', '142', 'up'], ['New 52W lows', '67', 'down'], ['Volume', '11.8B', ''], ['VIX', '17.42', '']];
-  else {
+   {
     const l = pool(), up = l.filter(a => a.d > 0).length, dn = l.filter(a => a.d < 0).length, avg = l.reduce((s, a) => s + a.d, 0) / (l.length || 1);
     const best = [...l].sort((a, b) => b.d - a.d)[0], worst = [...l].sort((a, b) => a.d - b.d)[0], b = M.bySym[BENCH[R]];
     cells = [['Advancing', up, 'up'], ['Declining', dn, 'down'], ['Average move', fmtC(+avg.toFixed(2)), cls(avg)], ['Best today', `${best.s} ${fmtC(best.d)}`, cls(best.d)], ['Worst today', `${worst.s} ${fmtC(worst.d)}`, cls(worst.d)], [b.n, fmtC(b.d), cls(b.d)]];
@@ -73,14 +72,14 @@ function breadth() {
 function movers(k = mvTab) {
   mvTab = k;
   const l = pool(), trending = R === 'All' ? ['NVDA', 'TSLA', 'AAPL', 'DELL', 'LLY', 'AMD', 'GME', 'META'].map(s => M.bySym[s]) : [...l].sort((a, b) => Math.abs(b.d) * b.m - Math.abs(a.d) * a.m).slice(0, 8);
-  const mv = { trending, active: [...l].sort((a, b) => parseFloat(b.vol) - parseFloat(a.vol)).slice(0, 8), gainers: [...l].sort((a, b) => b.d - a.d).slice(0, 8), losers: [...l].sort((a, b) => a.d - b.d).slice(0, 8) };
+  const mv = { trending, active: [...l].sort((a, b) => (window.QUOTES.q[b.s]?.v || 0) - (window.QUOTES.q[a.s]?.v || 0)).slice(0, 8), gainers: [...l].sort((a, b) => b.d - a.d).slice(0, 8), losers: [...l].sort((a, b) => a.d - b.d).slice(0, 8) };
   $('mv-table').innerHTML = assetTable(mv[k], ['price', 'chg', 'week', 'cap', 'vol', 'spark']);
-  $('mv-sub').textContent = R === 'All' ? 'Stocks over $2B market value worldwide.' : `Stocks in ${R} over $2B market value.`;
+  $('mv-sub').textContent = R === 'All' ? 'Tracked stocks · latest reported session.' : `Stocks in ${R} with verified quotes.`;
 }
 
 let benchTok = 0;
 function largest() {
-  const rows = byCap(pool()).slice(0, 10), sym = BENCH[R], ia = M.bySym[sym], tok = ++benchTok;
+  const rows = byCap(pool().filter(a => Number.isFinite(a.m))).slice(0, 10), sym = BENCH[R], ia = M.bySym[sym], tok = ++benchTok;
   $('rg-h').textContent = R === 'All' ? 'Largest companies' : `Largest in ${R}`;
   $('rg-sub').textContent = R === 'All' ? 'The most valuable listed companies worldwide, with a benchmark index.' : `The most valuable companies in ${R}, alongside ${ia.n}.`;
   $('rg-table').innerHTML = assetTable(rows, ['price', 'chg', 'cap', 'pe', 'spark']);
@@ -90,15 +89,11 @@ function largest() {
     areaChart($('rg-chart'), vals, { height: 220, labels, fmt: v => v.toLocaleString('en-US', { maximumFractionDigits: 0 }) });
     $('rg-stats').innerHTML = [['Last', fmtP(ia)], ['Today', `<i style="font-style:normal" class="${cls(ia.d)}">${fmtC(ia.d)}</i>`], ['1 year', `<i style="font-style:normal" class="${cls(chg)}">${fmtC(chg)}</i>`]].map(([a, b]) => `<div class="stat"><span>${a}</span><b>${b}</b></div>`).join('');
   };
-  const fallback = () => { const c = +(ia.m1 * 3 || 8).toFixed(1); draw(M.series(sym + 'rg', 120, ia.p, c, .007), ['Nov', 'Feb', 'May', 'Aug', 'Oct'], c); };
+  const fallback = () => draw([], [], NaN);
   Promise.resolve(M.history ? M.history(sym, '1Y') : null).then(h => h && h.vals && h.vals.length > 1 && isFinite(h.chg) ? draw(h.vals, h.labels, h.chg) : fallback()).catch(fallback);
 }
 
-function ext(k) {
-  const rows = ['NVDA', 'TSLA', 'AAPL', 'AMD', 'DELL', 'WULF', 'GME', 'NFLX'].map(s => M.bySym[s]);
-  const f = k === 'premarket' ? .6 : -.45;
-  $('ex-table').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th><th>Last close</th><th>${k === 'premarket' ? 'Pre-market' : 'After hours'}</th><th>Change</th><th>Volume</th><th>Updated</th></tr></thead><tbody>${rows.map((a, i) => { const c = +((a.d * f) + (i % 3 - 1) * .4).toFixed(2); return `<tr data-href="${href(a)}"><td><a class="ident" href="${href(a)}">${logo(a)}<span><b>${a.s}</b><small>${a.n}</small></span></a></td><td class="num muted" data-lp="${a.s}">${fmtP(a)}</td><td class="num">${fmtP(a, a.p * (1 + c / 100))}</td><td><span class="pill ${cls(c)}">${fmtC(c)}</span></td><td class="num muted">${(Math.abs(c) * 0.8 + .2).toFixed(1)}M</td><td class="num dim">${k === 'premarket' ? '08:5' + i : '19:4' + i} ET</td></tr>`; }).join('')}</tbody></table></div>`;
-}
+function ext(k) { $('ex-table').innerHTML = '<p class="card-pad muted">Verified extended-hours quotes require a connected provider.</p>'; }
 tabs($('mv-tabs'), movers);
 tabs($('ex-tabs'), ext); ext('premarket');
 

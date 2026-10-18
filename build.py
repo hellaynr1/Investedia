@@ -42,11 +42,13 @@ HEAD = """<!doctype html>
 <body data-page="{key}">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
+<script src="assets/home-data.js"></script>
 <script src="assets/mock.js?v={ver}"></script>
+<script src="assets/real-data.js?v={ver}"></script>
 <script src="assets/ui.js?v={ver}"></script>
 {extra}<main class="wrap">
 """
-TAIL = "</main>\n</body>\n</html>\n"
+TAIL = '</main>\n<script src="assets/page-data.js"></script>\n</body>\n</html>\n'
 
 def build():
     pages = sorted((ROOT / "src" / "pages").glob("*.html"))

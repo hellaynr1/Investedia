@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=41c0c3d162">
+<link rel="stylesheet" href="assets/app.css?v=7e6ede6471">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,8 +37,10 @@
 <body data-page="home">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=41c0c3d162"></script>
-<script src="assets/ui.js?v=41c0c3d162"></script>
+<script src="assets/home-data.js"></script>
+<script src="assets/mock.js?v=7e6ede6471"></script>
+<script src="assets/real-data.js?v=7e6ede6471"></script>
+<script src="assets/ui.js?v=7e6ede6471"></script>
 <main class="wrap">
 <section class="galaxy" aria-label="Welcome to Investedia">
   <canvas id="sky" aria-hidden="true"></canvas>
@@ -127,7 +129,7 @@ const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, assetTable, tab
     galaxy: {
       setup() {
         st.stars = Array.from({ length: Math.round(W * H / 2600) }, () => ({ x: rnd() * W, y: rnd() * H, r: rnd() * 1.3 + .2, a: rnd() * .7 + .15, s: rnd() * .25 + .03, tw: rnd() * 6.28 }));
-        st.lines = [0, 1, 2, 3].map(i => { const v = M.series('gx' + i, 60, 100, (rnd() - .3) * 60, .05); const mn = Math.min(...v), mx = Math.max(...v); return { pts: v.map((p, k) => [k / 59, (p - mn) / (mx - mn)]), y: .25 + i * .17, h: .14 + rnd() * .08, a: i === 1 ? .55 : .22 + rnd() * .12, speed: .006 + rnd() * .006, off: rnd() }; });
+        st.lines = [0, 1, 2, 3].map(i => { const v = M.decorativeSeries('gx' + i, 60, 100, (rnd() - .3) * 60, .05); const mn = Math.min(...v), mx = Math.max(...v); return { pts: v.map((p, k) => [k / 59, (p - mn) / (mx - mn)]), y: .25 + i * .17, h: .14 + rnd() * .08, a: i === 1 ? .55 : .22 + rnd() * .12, speed: .006 + rnd() * .006, off: rnd() }; });
         st.candles = Array.from({ length: 34 }, () => ({ o: rnd(), c: rnd(), hi: rnd() * .3, lo: rnd() * .3 }));
       },
       draw() {
@@ -168,7 +170,7 @@ const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, assetTable, tab
       },
     },
     grid: {
-      setup() { const v = M.series('gridline', 80, 100, 120, .03), mn = Math.min(...v), mx = Math.max(...v); st.v = v.map(x => (x - mn) / (mx - mn)); },
+      setup() { const v = M.decorativeSeries('gridline', 80, 100, 120, .03), mn = Math.min(...v), mx = Math.max(...v); st.v = v.map(x => (x - mn) / (mx - mn)); },
       draw() {
         const hz = H * .58, vx = W / 2;
         ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.lineWidth = 1;
@@ -211,7 +213,7 @@ const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, assetTable, tab
     },
   };
   // Quiet, premium options
-  R.line = { setup() { const v = M.series('quietline', 120, 100, 38, .012), mn = Math.min(...v), mx = Math.max(...v); st.v = v.map(x => (x - mn) / (mx - mn)); },
+  R.line = { setup() { const v = M.decorativeSeries('quietline', 120, 100, 38, .012), mn = Math.min(...v), mx = Math.max(...v); st.v = v.map(x => (x - mn) / (mx - mn)); },
     draw() { const n = st.v.length, prog = reduce ? 1 : Math.min(1, t / 240), m = Math.max(2, Math.floor(prog * n)), y0 = H * .9, h = H * .26;
       ctx.strokeStyle = 'rgba(255,255,255,.05)'; ctx.lineWidth = 1; for (let k = 0; k < 4; k++) { const y = y0 - k * h / 3; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
       ctx.strokeStyle = 'rgba(255,255,255,.22)'; ctx.lineWidth = 1.25; ctx.beginPath(); for (let i = 0; i < m; i++) { const x = i / (n - 1) * W, y = y0 - st.v[i] * h; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke();
@@ -227,7 +229,7 @@ const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, assetTable, tab
     const a = M.bySym.NVDA, el = document.createElement('div'); el.className = 'hero-product card';
     el.innerHTML = `<div class="card-head"><span class="ident">${UI.logo(a)}<span><b>${a.n}</b><small>${a.s} · NASDAQ</small></span></span><span style="text-align:right"><span class="num" style="font-size:18px;display:block">${UI.fmtP(a)}</span><span class="num down" style="font-size:12px">${UI.fmtC(a.d)}</span></span></div><div style="padding:6px 6px 0 14px"><div id="hp-chart"></div></div><div class="stats-row" style="border-top:1px solid var(--line)"><div class="stat"><span>Market cap</span><b>$5.24T</b></div><div class="stat"><span>P/E</span><b>27.5</b></div><div class="stat"><span>Volume</span><b>127.0M</b></div><div class="stat"><span>52W high</span><b>$243.30</b></div></div>`;
     document.querySelector('.galaxy-in').append(el);
-    UI.proChart(el.querySelector('#hp-chart'), M.ohlc('NVDAhero', 90, a.p, 18, .014), { type: 'candles', height: 230, labels: ['May', 'Jul', 'Sep', 'Oct'], sma: [20], volume: true, fmt: v => v.toFixed(0) });
+    M.history(a.s,'1Y').then(h => h ? UI.proChart(el.querySelector('#hp-chart'), h.bars, {type:'candles',height:230,labels:h.labels}) : el.querySelector('#hp-chart').textContent = 'Verified history unavailable');
   }
   const r = R[BG] || R.galaxy;
   function setup() { dpr = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); st = {}; r.setup(); }
@@ -251,5 +253,6 @@ document.getElementById('crypto-stats').innerHTML = [['Total market cap', '$2.84
 document.getElementById('coins').innerHTML = ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · ${cap(a.m)}</small></span></span><span style="text-align:right"><div class="num" data-lp="${a.s}">${fmtP(a)}</div><div class="num ${cls(a.d)}" data-lc="${a.s}" style="font-size:12.5px">${fmtC(a.d)}</div></span><div style="grid-column:1/-1">${spark(a.spark, colorFor(a.w), 300, 34)}</div></a>`).join('');
 </script>
 </main>
+<script src="assets/page-data.js"></script>
 </body>
 </html>

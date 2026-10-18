@@ -60,13 +60,14 @@
   const ACC = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#FF7A1A';
   // ---------- formatters ----------
   const fmtP = (a, v = a.p) => {
+    if (!Number.isFinite(v)) return '—';
     if (a.y) return v.toFixed(3) + '%';
     const d = v >= 1000 ? 2 : v >= 10 ? 2 : v >= 1 ? 4 : 4;
     return (a.c === 'currencies' || a.c === 'indices' || a.c === 'bonds' ? '' : ({ EUR: '€', GBP: '£', JPY: '¥', USD: '$', CHF: 'CHF ', CAD: 'C$', AUD: 'A$', NZD: 'NZ$', HKD: 'HK$', SGD: 'S$', KRW: '₩', INR: '₹', CNY: '¥', ZAR: 'R ', EGP: 'E£', SAR: 'SAR ', AED: 'AED ', QAR: 'QAR ', BRL: 'R$', MXN: 'MX$', ILS: '₪' }[a.cur] || (a.x === 'XETRA' || a.x === 'EURONEXT' ? '€' : a.x === 'LSE' ? '£' : '$'))) + v.toLocaleString('en-US', { minimumFractionDigits: a.c === 'currencies' ? 4 : d, maximumFractionDigits: a.c === 'currencies' ? 4 : d });
   };
-  const fmtC = (v, bps) => bps ? `${v > 0 ? '+' : ''}${(v * 1).toFixed(1)} bp` : `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`;
+  const fmtC = (v, bps) => !Number.isFinite(v) ? '—' : bps ? `${v > 0 ? '+' : ''}${(v * 1).toFixed(1)} bp` : `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`;
   const cls = v => v > 0 ? 'up' : v < 0 ? 'down' : 'muted';
-  const cap = b => b == null ? '—' : b >= 1000 ? `$${(b / 1000).toFixed(2)}T` : `$${b}B`;
+  const cap = b => b == null ? '—' : b >= 1000 ? `$${(b / 1000).toFixed(2)}T` : `$${b.toFixed(2)}B`;
   // Asset logos, all round and self-hosted in assets/logos: coin logos (CC0 set), brand marks (simple-icons CC0, svgl MIT), company icons
   // and round flags (circle-flags, MIT) for indices, bonds and currencies. Anything else gets a coloured ticker tile.
   const COIN = new Set(['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX', 'LINK', 'UNI', 'AAVE', 'USDT', 'USDC']);
@@ -350,18 +351,12 @@
   }
   const whenVisible = (fn, ms) => { let t = 0; const run = () => { clearTimeout(t); if (!document.hidden) fn(); t = setTimeout(run, ms); }; document.addEventListener('visibilitychange', () => { if (!document.hidden) run(); }); setTimeout(run, 4000); };
 
-  // Live currencies: Coinbase's free exchange-rate feed, every 30 seconds while the page is open
-  whenVisible(() => fetch('https://api.coinbase.com/v2/exchange-rates?currency=USD', { cache: 'no-store' }).then(r => r.json()).then(j => {
-    const R = j.data.rates; R.USD = '1';
-    M.assets.filter(a => a.c === 'currencies' && a.s.length === 6).forEach(a => { const b = +R[a.s.slice(0, 3)], q = +R[a.s.slice(3)]; if (b && q) { a.live = true; setPrice(a.s, +(q / b).toFixed(a.p > 20 ? 3 : 5)); } });
-    document.dispatchEvent(new CustomEvent('inv:tick'));
-  }).catch(() => {}), 30000);
-
+  // FX uses the instrument's Yahoo snapshot; crypto conversion rates are not FX quotes.
   // Everything else: pick up the robot's newest prices every 2 minutes without reloading the page
   whenVisible(() => fetch('assets/quotes.js?t=' + Date.now(), { cache: 'no-store' }).then(r => r.text()).then(t => {
     const j = JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1)); if (!j.q || (M.updated && new Date(j.updated) <= M.updated)) return;
-    for (const s in j.q) { const a = M.bySym[s]; if (!a || a.live) continue; a.base = null; setPrice(s, j.q[s].p, j.q[s].d); Object.assign(a, { w: j.q[s].w, m1: j.q[s].m1 }); }
-    M.updated = new Date(j.updated);
+    for (const s in j.q) { const a = M.bySym[s]; if (!a || a.live) continue; a.base = null; setPrice(s, j.q[s].p, j.q[s].d); Object.assign(a, { w: j.q[s].w, m1: j.q[s].m1, at:j.q[s].t, asof:j.q[s].asof, freq:j.q[s].freq, fetchFailed:!!j.q[s].fetch_failed }); }
+    window.QUOTES = j; M.updated = new Date(j.updated);
     document.querySelectorAll('[data-asof]').forEach(el => el.textContent = 'Delayed · updated ' + M.updated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     document.dispatchEvent(new CustomEvent('inv:tick'));
   }).catch(() => {}), 120000);
@@ -374,7 +369,7 @@
     const flush = () => {
       timer = 0;
       for (const s in pending) {
-        const a = M.bySym[s]; a.live = true; setPrice(s, pending[s].p);
+        const a = M.bySym[s]; a.live = true; a.liveAt = Date.now(); setPrice(s, pending[s].p, pending[s].d);
       }
       pending = {};
       document.dispatchEvent(new CustomEvent('inv:tick'));
@@ -383,8 +378,8 @@
       if (ws || document.hidden) return;
       ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
       ws.onopen = () => { retry = 2000; ws.send(JSON.stringify({ type: 'subscribe', product_ids: syms.map(s => s + '-USD'), channels: ['ticker'] })); };
-      ws.onmessage = e => { const m = JSON.parse(e.data); if (m.type !== 'ticker') return; pending[m.product_id.split('-')[0]] = { p: +m.price }; if (!timer) timer = setTimeout(() => requestAnimationFrame(flush), 1000); };
-      ws.onclose = () => { ws = null; if (!document.hidden) setTimeout(connect, retry = Math.min(retry * 2, 60000)); };
+      ws.onmessage = e => { const m = JSON.parse(e.data); if (m.type !== 'ticker') return; pending[m.product_id.split('-')[0]] = { p: +m.price, d: +m.open_24h > 0 ? (+m.price / +m.open_24h - 1) * 100 : null }; if (!timer) timer = setTimeout(() => requestAnimationFrame(flush), 1000); };
+      ws.onclose = () => { syms.forEach(s => { M.bySym[s].live = false; }); ws = null; if (!document.hidden) setTimeout(connect, retry = Math.min(retry * 2, 60000)); };
     };
     document.addEventListener('visibilitychange', () => { if (document.hidden) { if (ws) { ws.onclose = null; ws.close(); ws = null; } } else connect(); });
     connect();
@@ -394,7 +389,7 @@
   document.addEventListener('DOMContentLoaded', () => document.querySelectorAll('[data-asof]').forEach(el => {
     const u = M.updated;
     el.textContent = u ? 'Delayed · updated ' + u.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Sample data';
-    el.title = u ? 'Prices refresh about every 30 minutes (crypto live). Data: Yahoo Finance, FRED, Coinbase. Last update ' + u.toLocaleString() : '';
+    el.title = u ? 'Delayed snapshots; published monthly for some bonds. Supported crypto streams from Coinbase. Feed fetched ' + u.toLocaleString() : '';
   }));
 
   // ---------- footer ----------
@@ -414,6 +409,7 @@
   // ---------- charts ----------
   // Sparkline as an inline SVG string
   function spark(vals, color, w = 96, h = 28, fill = true) {
+    if (!vals || vals.length < 2 || vals.some(v => !Number.isFinite(v))) return `<svg class="spark" viewBox="0 0 ${w} ${h}" aria-label="History unavailable"></svg>`;
     const mn = Math.min(...vals), mx = Math.max(...vals), r = mx - mn || 1;
     const pts = vals.map((v, i) => [i / (vals.length - 1) * w, h - 2 - (v - mn) / r * (h - 4)]);
     const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('');
@@ -424,6 +420,7 @@
 
   // Full area chart with axes, crosshair and tooltip
   function areaChart(el, vals, opts = {}) {
+    if (!vals || vals.length < 2 || vals.some(v => !Number.isFinite(v))) { el.innerHTML = '<div class="muted" style="min-height:150px;display:grid;place-items:center">Verified history unavailable</div>'; return; }
     const { color = ACC(), labels, fmt = v => v.toFixed(2), height = 320, compare } = opts;
     el.classList.add('chart'); el.style.height = height + 'px';
     const draw = () => {
@@ -472,7 +469,7 @@
 
   // Asset table
   function assetTable(rows, cols = ['price', 'chg', 'week', 'spark']) {
-    const H = { price: 'Price', chg: '24h / 1D', week: '1W', cap: 'Market cap', vol: 'Volume', pe: 'P/E', spark: '7 days', aum: 'Assets', fee: 'Fee', sector: 'Sector' };
+    const H = { price: 'Price', chg: '24h / 1D', week: '1W', cap: 'Market cap', vol: 'Volume', pe: 'P/E', spark: 'Price history', aum: 'Assets', fee: 'Fee', sector: 'Sector' };
     return `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th>${cols.map(c => `<th>${H[c]}</th>`).join('')}<th style="width:40px"></th></tr></thead><tbody>${rows.map(a => `<tr data-href="${href(a)}"><td><a class="ident" href="${href(a)}">${logo(a)}<span><b>${a.s}</b><small>${a.n}</small></span></a></td>${cols.map(c => {
       if (c === 'price') return `<td class="num">${fmtP(a)}${a.unit ? `<span class="dim">${a.unit}</span>` : ''}</td>`;
       if (c === 'chg') return `<td><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></td>`;
