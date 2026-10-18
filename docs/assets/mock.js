@@ -294,11 +294,11 @@ window.MOCK = (function () {
   const vfmt = (v, usd) => (usd ? '$' : '') + (v >= 1e9 ? (v / 1e9).toFixed(1) + 'B' : v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : (v / 1e3).toFixed(0) + 'K');
   assets.forEach(a => {
     const q = Q[a.s];
-    if (!q) { a.m1 = +(a.d * 3 + a.w).toFixed(2); a.spark = series(a.s, 48, a.p, a.m1); return; }
+    if (!q) { a.p = NaN; a.d = NaN; a.w = NaN; a.m1 = NaN; a.spark = []; return; }
     const k = q.p / a.p;
     if (a.m != null) a.m = +(a.m * k).toFixed(a.m * k < 10 ? 1 : 0);
     if (a.pe != null) a.pe = +(a.pe * k).toFixed(1);
-    Object.assign(a, { p: q.p, d: q.d, w: q.w, m1: q.m1, spark: q.sp.length > 2 ? q.sp : series(a.s, 48, q.p, q.m1), real: true, at: q.t, cur: q.cur, hi: q.hi, lo: q.lo, freq: q.freq, asof: q.asof });
+    Object.assign(a, { p: q.p, d: q.d, w: q.w, m1: q.m1, spark: q.sp.length > 2 ? q.sp : [], real: true, at: q.t, cur: q.cur, hi: q.hi, lo: q.lo, freq: q.freq, asof: q.asof });
     if (q.v) a.vol = vfmt(q.v, a.c === 'crypto');
   });
   const reitQ = r => { const q = Q[r.s]; if (q) Object.assign(r, { p: q.p, d: q.d, real: true }); };
@@ -335,7 +335,7 @@ window.MOCK = (function () {
       else { const n = { '1D': 2, '5D': 5, '1W': 5, '1M': 22, '3M': 64, '6M': 126, '1Y': 252 }[range] || 252; bars = daily.slice(-n - 1); kind = n <= 5 ? 'wd' : n <= 22 ? 'day' : 'mon'; }
     }
     if (!bars || bars.length < 2) return null;
-    const last = bars[bars.length - 1]; last.c = a.p; last.h = Math.max(last.h, a.p); last.l = Math.min(last.l, a.p);
+    const last = bars[bars.length - 1]; // Keep actual historical OHLC bars; never rewrite them with a later quote.
     const first = bars[0].c, chg = a.y ? +((last.c - first) * 100).toFixed(1) : +((last.c / first - 1) * 100).toFixed(2);
     return { bars, vals: bars.map(b => b.c), labels: labelsFor(bars.map(b => b.t), kind), chg };
   }

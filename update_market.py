@@ -9,9 +9,10 @@ and FRED, the US Federal Reserve's free data service (US 2-year, foreign 10-year
 Live crypto ticks come straight from Coinbase in the visitor's browser (see assets/live.js).
 """
 import json, os, shutil, sys, time, datetime as dt, urllib.request, urllib.parse
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+QUICK = "--quotes-only" in sys.argv
 FULL = "--full" in sys.argv or not os.path.isdir(os.path.join(ROOT, "assets", "hist"))
 
 # Site symbol -> Yahoo symbol
@@ -71,12 +72,12 @@ def site_symbols():
 
 
 def get(url, tries=3):
-    for i in range(tries):
+    for i in range(1 if QUICK else tries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Investedia data bot)"})
-            return urllib.request.urlopen(req, timeout=20).read()
+            return urllib.request.urlopen(req, timeout=12 if QUICK else 20).read()
         except Exception:
-            if i == tries - 1:
+            if QUICK or i == tries - 1:
                 raise
             time.sleep(1.5 * (i + 1))
 
@@ -136,7 +137,8 @@ def from_yahoo(s):
         return round((price - closes[-1 - n]) * 100, 1) if y else pct(price, closes[-1 - n])
 
     q = {"p": rnd(price, price), "d": round((price - prev) * 100, 1) if y else pct(price, prev), "w": chg(5), "m1": chg(21),
-         "sp": [rnd(c, price) for c in closes[-48:]], "t": meta.get("regularMarketTime"), "cur": cur}
+         "sp": [rnd(c, price) for c in closes[-48:]], "t": meta.get("regularMarketTime"), "cur": cur, "source": "Yahoo Finance",
+         "open": (meta.get("regularMarketOpen") or (daily[-1][1] if daily else None)) * k if (meta.get("regularMarketOpen") or daily) else None, "prev": prev, "exchange": meta.get("exchangeName"), "symbol": ysym}
     if daily:
         last = daily[-1]
         q.update(hi=rnd(meta.get("regularMarketDayHigh", last[2]) * k, price), lo=rnd(meta.get("regularMarketDayLow", last[3]) * k, price))
@@ -145,6 +147,8 @@ def from_yahoo(s):
     # Intraday: today's session at 15 minutes, last five sessions at 1 hour
     intra = {}
     try:
+        if QUICK:
+            return q, {}, ysym, k
         _, m15 = yahoo(ysym, "5d", "15m")
         if m15:
             day = dt.datetime.fromtimestamp(m15[-1][0] + meta.get("gmtoffset", 0), dt.timezone.utc).date()
@@ -209,7 +213,7 @@ def from_fred(s):
         q = {"p": round(p, 3), "d": back(1), "w": back(5), "m1": back(21), "sp": [round(v, 3) for v in vals[-48:]]}
     else:  # monthly averages: "today" shows the latest monthly move
         q = {"p": round(p, 3), "d": 0.0, "w": 0.0, "m1": back(1), "sp": [round(v, 3) for v in vals[-48:]]}  # no daily data: only the monthly move is real
-    q.update(asof=pts[-1][0], freq=freq)
+    q.update(asof=pts[-1][0], freq=freq, source="FRED", series=sid)
     ts = lambda d: int(dt.datetime.strptime(d, "%Y-%m-%d").replace(tzinfo=dt.timezone.utc).timestamp())
     tail = pts[-1300:] if freq == "daily" else pts[-60:]
     rows = [[ts(d), v, v, v, v, 0] for d, v in tail]
@@ -234,13 +238,25 @@ def one(s):
 
 def main():
     syms = site_symbols()
-    with ThreadPoolExecutor(6) as ex:
-        results = list(ex.map(one, syms))
+    with ThreadPoolExecutor(12 if QUICK else 6) as ex:
+        tasks = [ex.submit(one, s) for s in syms]
+        results = []
+        for task in as_completed(tasks):
+            results.append(task.result())
+            if len(results) % 30 == 0:
+                print(f"Fetched {len(results)}/{len(syms)} instruments", flush=True)
+    previous_path = os.path.join(ROOT, "assets", "quotes.js")
+    try:
+        previous = json.loads(open(previous_path).read().removeprefix("window.QUOTES=").strip().removesuffix(";"))["q"]
+    except (OSError, ValueError, KeyError):
+        previous = {}
     quotes, intraday, missing = {}, {}, []
     os.makedirs(os.path.join(ROOT, "assets", "hist"), exist_ok=True)
     for s, q, intra, hist, err in results:
         if err or not q or not q.get("p"):
             missing.append(s)
+            if s in previous:
+                quotes[s] = dict(previous[s], fetch_failed=True)
             print(f"  skip {s}: {err or 'no price'}")
             continue
         quotes[s] = q
@@ -249,13 +265,14 @@ def main():
         if hist:
             with open(os.path.join(ROOT, "assets", "hist", f"{s}.json"), "w") as f:
                 json.dump(hist, f, separators=(",", ":"))
-    if len(quotes) < len(syms) * 0.6:
+    if len(syms) - len(missing) < len(syms) * 0.6:
         sys.exit(f"Only {len(quotes)} of {len(syms)} prices came back; keeping the previous data.")
     now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     with open(os.path.join(ROOT, "assets", "quotes.js"), "w") as f:
         f.write("window.QUOTES=" + json.dumps({"updated": now, "q": quotes}, separators=(",", ":")) + ";\n")
-    with open(os.path.join(ROOT, "assets", "intraday.json"), "w") as f:
-        json.dump({"updated": now, "s": intraday}, f, separators=(",", ":"))
+    if not QUICK:
+        with open(os.path.join(ROOT, "assets", "intraday.json"), "w") as f:
+            json.dump({"updated": now, "s": intraday}, f, separators=(",", ":"))
     # GitHub Pages publishes the docs/ copy of the site
     docs = os.path.join(ROOT, "docs", "assets")
     if os.path.isdir(docs):
