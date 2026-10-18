@@ -105,7 +105,8 @@ aside{border-left:1px solid var(--line);display:flex;flex-direction:column;heigh
 }
 @media (prefers-reduced-motion:reduce){.lb{transition:none}}
 
-.hint{position:absolute;left:0;right:0;bottom:10px;margin:0;text-align:center;font-size:12.5px;color:var(--fg-3);pointer-events:none}
+.zoom{position:absolute;right:12px;bottom:12px;z-index:2;display:grid;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:rgba(17,17,19,.9)}.zoom button{width:36px;height:36px;border:0;background:none;color:var(--fg);font:500 18px/1 Inter,system-ui,sans-serif;cursor:pointer}.zoom button+button{border-top:1px solid var(--line)}.zoom button:hover{background:rgba(255,255,255,.06)}
+.hint{position:absolute;left:56px;right:56px;bottom:10px;margin:0;text-align:center;font-size:12.5px;color:var(--fg-3);pointer-events:none}
 /* floating windows */
 #wins{position:fixed;inset:0;pointer-events:none;z-index:20}
 .win{position:absolute;pointer-events:auto;display:flex;flex-direction:column;min-width:240px;min-height:180px;max-width:calc(100vw - 16px);background:rgba(17,17,19,.96);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px -20px rgba(0,0,0,.8);backdrop-filter:blur(10px);overflow:hidden}
