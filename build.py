@@ -42,6 +42,7 @@ HEAD = """<!doctype html>
 <body data-page="{key}">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
+<script src="assets/news-images.js"></script>
 <script src="assets/mock.js?v={ver}"></script>
 <script src="assets/ui.js?v={ver}"></script>
 {extra}<main class="wrap">

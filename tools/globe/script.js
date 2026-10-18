@@ -72,7 +72,7 @@ $('asof').textContent = `World markets · ${MK.length} assets · ${new Set(MK.fi
 // ---------- globe ----------
 const cv = $('cv'), ctx = cv.getContext('2d'), stage = $('stage');
 let W = 0, H = 0, R = 0, R0 = 0, cx = 0, cy = 0, fly = null, ping = null, Z = 1;
-// Zoom (globe page only; the homepage hero keeps scrolling the page): wheel, pinch, double-tap, +/- buttons
+// Both embeds support pinch, double-tap and buttons. The homepage keeps ordinary wheel scrolling.
 const HERO = QP.get('mode') === 'hero', ZMAX = 3, setZ = z => { Z = Math.max(1, Math.min(ZMAX, z)); if (!fly) R = R0 * Z; };
 // Homepage embeds can size and place the globe: ?rs= radius as a share of width, ?cyf= / ?cxf= centre as a share of height / width
 const qn = k => QP.has(k) ? +QP.get(k) : null;
@@ -84,8 +84,8 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function proj(phi, lam, h = 1) { const c0 = Math.cos(lat0 * rad), s0 = Math.sin(lat0 * rad), d = lam - lon0 * rad, cp = Math.cos(phi); return [cx + R * h * cp * Math.sin(d), cy - R * h * (c0 * Math.sin(phi) - s0 * cp * Math.cos(d)), s0 * Math.sin(phi) + c0 * cp * Math.cos(d)]; }
 const touches = new Map(); let pinch = null;
 const pdist = () => { const [a, b] = [...touches.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
-if (!HERO) {
-  cv.addEventListener('wheel', e => { e.preventDefault(); target = null; setZ(Z * Math.exp(-e.deltaY * .0015)); }, { passive: false });
+{
+  cv.addEventListener('wheel', e => { if (HERO && !e.ctrlKey) return; e.preventDefault(); target = null; setZ(Z * Math.exp(-e.deltaY * .0015)); }, { passive: false });
   cv.addEventListener('dblclick', () => { target = null; setZ(Z < ZMAX ? Z * 1.8 : 1); });
   cv.addEventListener('pointerdown', e => { touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (touches.size === 2) { pinch = { d: pdist(), z: Z }; dragging = null; } });
   cv.addEventListener('pointermove', e => { if (!touches.has(e.pointerId)) return; touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (pinch && touches.size === 2) setZ(pinch.z * pdist() / pinch.d); });
