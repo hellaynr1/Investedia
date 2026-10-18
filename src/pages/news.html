@@ -39,8 +39,8 @@ function render(c) {
   const [l, ...rest] = list, le = document.getElementById('lead');
   if (l.url) { le.href = l.url; le.target = '_blank'; le.rel = 'noopener'; } else { le.href = 'article.html'; le.removeAttribute('target'); }
   shown = 12; latest = rest.slice(3);
-  document.getElementById('lead').innerHTML = `<div class="cover">${cover('nl' + l.id)}</div><div class="body" style="padding:20px 22px 22px">${meta(l)}<h2 style="font-size:26px">${l.t}</h2><p style="font-size:15px">${l.d}</p></div>`;
-  document.getElementById('second').innerHTML = rest.slice(0, 3).map(n => `<a class="card news-item" ${UI.nhref(n)} style="grid-template-columns:110px 1fr;gap:14px;align-items:center;border:1px solid var(--line)"><div class="cover" style="min-height:76px;border-radius:6px">${cover('ns' + n.id)}</div><div style="display:grid;gap:6px">${meta(n)}<h3>${n.t}</h3></div></a>`).join('');
+  document.getElementById('lead').innerHTML = `<div class="cover">${UI.newsCover(l, 'nl' + l.id)}</div><div class="body" style="padding:20px 22px 22px">${meta(l)}<h2 style="font-size:26px">${l.t}</h2><p style="font-size:15px">${l.d}</p></div>`;
+  document.getElementById('second').innerHTML = rest.slice(0, 3).map(n => `<a class="card news-item" ${UI.nhref(n)} style="grid-template-columns:110px 1fr;gap:14px;align-items:center;border:1px solid var(--line)"><div class="cover" style="min-height:76px;border-radius:6px">${UI.newsCover(n, 'ns' + n.id)}</div><div style="display:grid;gap:6px">${meta(n)}<h3>${n.t}</h3></div></a>`).join('');
   drawLatest();
 }
 let shown = 12, latest = [];

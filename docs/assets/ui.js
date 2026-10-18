@@ -360,7 +360,7 @@
   // Everything else: pick up the robot's newest prices every 2 minutes without reloading the page
   whenVisible(() => fetch('assets/quotes.js?t=' + Date.now(), { cache: 'no-store' }).then(r => r.text()).then(t => {
     const j = JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1)); if (!j.q || (M.updated && new Date(j.updated) <= M.updated)) return;
-    for (const s in j.q) { const a = M.bySym[s]; if (!a || a.live) continue; a.base = null; setPrice(s, j.q[s].p, j.q[s].d); Object.assign(a, { w: j.q[s].w, m1: j.q[s].m1 }); }
+    for (const s in j.q) { const a = M.bySym[s]; if (!a || a.live) continue; a.base = null; setPrice(s, j.q[s].p, j.q[s].d); Object.assign(a, { w: j.q[s].w, m1: j.q[s].m1, at:j.q[s].t, asof:j.q[s].asof }); }
     M.updated = new Date(j.updated);
     document.querySelectorAll('[data-asof]').forEach(el => el.textContent = 'Delayed · updated ' + M.updated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     document.dispatchEvent(new CustomEvent('inv:tick'));
@@ -374,7 +374,7 @@
     const flush = () => {
       timer = 0;
       for (const s in pending) {
-        const a = M.bySym[s]; a.live = true; setPrice(s, pending[s].p);
+        const a = M.bySym[s]; a.live = true; a.liveAt = Date.now(); setPrice(s, pending[s].p, pending[s].d);
       }
       pending = {};
       document.dispatchEvent(new CustomEvent('inv:tick'));
@@ -383,12 +383,27 @@
       if (ws || document.hidden) return;
       ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
       ws.onopen = () => { retry = 2000; ws.send(JSON.stringify({ type: 'subscribe', product_ids: syms.map(s => s + '-USD'), channels: ['ticker'] })); };
-      ws.onmessage = e => { const m = JSON.parse(e.data); if (m.type !== 'ticker') return; pending[m.product_id.split('-')[0]] = { p: +m.price }; if (!timer) timer = setTimeout(() => requestAnimationFrame(flush), 1000); };
-      ws.onclose = () => { ws = null; if (!document.hidden) setTimeout(connect, retry = Math.min(retry * 2, 60000)); };
+      ws.onmessage = e => { const m = JSON.parse(e.data); if (m.type !== 'ticker') return; pending[m.product_id.split('-')[0]] = { p: +m.price, d: +m.open_24h > 0 ? (+m.price / +m.open_24h - 1) * 100 : null }; if (!timer) timer = setTimeout(() => requestAnimationFrame(flush), 1000); };
+      ws.onclose = () => { syms.forEach(s => { M.bySym[s].live = false; }); document.dispatchEvent(new CustomEvent('inv:tick')); ws = null; if (!document.hidden) setTimeout(connect, retry = Math.min(retry * 2, 60000)); };
     };
-    document.addEventListener('visibilitychange', () => { if (document.hidden) { if (ws) { ws.onclose = null; ws.close(); ws = null; } } else connect(); });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) { syms.forEach(s => { M.bySym[s].live = false; }); if (ws) { ws.onclose = null; ws.close(); ws = null; } } else connect(); });
     connect();
   })();
+
+  // Only call an asset live after a recent exchange message reached this browser.
+  function assetFreshness() {
+    const el = document.getElementById('a-time'); if (!el) return;
+    const a = M.bySym[new URLSearchParams(location.search).get('s') || 'NVDA']; if (!a) return;
+    if (a.c === 'crypto' && a.live && Date.now() - (a.liveAt || 0) < 60000) {
+      el.textContent = 'Live · Coinbase · ' + new Date(a.liveAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    } else {
+      const at = a.asof ? new Date(a.asof) : a.at ? new Date(a.at*1000) : null;
+      el.textContent = (a.freq === 'monthly' ? 'Monthly average' : 'Delayed snapshot') + (at ? ' · ' + at.toLocaleString('en-GB', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : ' · timestamp unavailable');
+    }
+  }
+  document.addEventListener('DOMContentLoaded', assetFreshness);
+  document.addEventListener('inv:tick', assetFreshness);
+  setInterval(assetFreshness, 15000);
 
   // ---------- data freshness badges ----------
   document.addEventListener('DOMContentLoaded', () => document.querySelectorAll('[data-asof]').forEach(el => {
@@ -406,9 +421,9 @@
     <div><h6>Markets</h6><ul>${M.categories.map(c => `<li><a href="${c.page}">${c.t}</a></li>`).join('')}</ul></div>
     <div><h6>Content</h6><ul><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li><li><a href="ai-insights.html">AI Insights</a></li><li><a href="education.html">Education</a></li><li><a href="real-estate.html">Real Estate</a></li></ul></div>
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li><li><a href="privacy.html">Privacy policy</a></li></ul></div>
+    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li><li><a href="privacy.html">Privacy policy</a></li><li><a href="image-credits.html">Image credits</a></li></ul></div>
   </div>
-  <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Market data from Yahoo Finance, FRED and Coinbase. Prices may be delayed up to 30 minutes; crypto is live. This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis. <a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener">FRED terms</a>.</span></div></div>`;
+  <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Market data from Yahoo Finance, FRED and Coinbase. Quotes can be delayed; some bond series are monthly. Supported crypto streams live when connected. This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis. <a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener">FRED terms</a>.</span></div></div>`;
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
 
   // ---------- charts ----------
@@ -470,12 +485,22 @@
     return `<svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${accent}" stop-opacity=".28"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></linearGradient></defs><rect width="400" height="200" fill="#121214"/>${[40, 80, 120, 160].map(y => `<line x1="0" x2="400" y1="${y}" y2="${y}" stroke="#ffffff" stroke-opacity=".04"/>`).join('')}${bars}<path d="${d}L400 200L0 200Z" fill="url(#${id})"/><path d="${d}" fill="none" stroke="${accent}" stroke-width="2.5"/></svg>`;
   }
 
+  // Curated, licence-checked illustrative photos only; never copy publisher images automatically.
+  function newsCover(n, key = 'news') {
+    const text = ((n?.t || '') + ' ' + (n?.tag || '')).toLowerCase();
+    const topic = /gold|xau|bullion/.test(text) ? 'gold' : /oil|crude|petroleum|opec|wti|brent/.test(text) ? 'energy' : ['Stocks','Markets','Earnings','Economy'].includes(n?.cat) ? 'stocks' : null;
+    const p = window.NEWS_IMAGES?.[topic];
+    if (!p?.reviewed || p.license !== 'CC BY 4.0' || !p.artist || !/^assets\/news-images\/[a-z-]+\.jpg$/.test(p.path)) return cover(key);
+    const esc = v => String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+    return cover(key) + `<img class="news-photo" src="${p.path}" alt="Illustrative photograph: ${esc(p.title.replace(/^File:/,''))}" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1" onerror="this.nextElementSibling.remove();this.remove()"><span style="position:absolute;bottom:0;left:0;right:0;z-index:2;padding:5px 8px;background:rgba(0,0,0,.75);color:#eee;font-size:10px;line-height:1.4">Illustrative · ${esc(p.artist)} · ${esc(p.license)}</span>`;
+  }
+
   // Asset table
   function assetTable(rows, cols = ['price', 'chg', 'week', 'spark']) {
     const H = { price: 'Price', chg: '24h / 1D', week: '1W', cap: 'Market cap', vol: 'Volume', pe: 'P/E', spark: '7 days', aum: 'Assets', fee: 'Fee', sector: 'Sector' };
     return `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th>${cols.map(c => `<th>${H[c]}</th>`).join('')}<th style="width:40px"></th></tr></thead><tbody>${rows.map(a => `<tr data-href="${href(a)}"><td><a class="ident" href="${href(a)}">${logo(a)}<span><b>${a.s}</b><small>${a.n}</small></span></a></td>${cols.map(c => {
-      if (c === 'price') return `<td class="num">${fmtP(a)}${a.unit ? `<span class="dim">${a.unit}</span>` : ''}</td>`;
-      if (c === 'chg') return `<td><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></td>`;
+      if (c === 'price') return `<td class="num"><span data-lp="${a.s}">${fmtP(a)}</span>${a.unit ? `<span class="dim">${a.unit}</span>` : ''}</td>`;
+      if (c === 'chg') return `<td><span data-lc="${a.s}" class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></td>`;
       if (c === 'week') return `<td class="num ${cls(a.w)}">${fmtC(a.w, a.y)}</td>`;
       if (c === 'cap') return `<td class="num">${cap(a.m)}</td>`;
       if (c === 'vol') return `<td class="num muted">${a.vol || '—'}</td>`;
@@ -918,5 +943,5 @@
     el.querySelectorAll('[data-per] button').forEach(b => b.onclick = () => regionMovers(el, list, region, b.dataset.k));
   }
 
-  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, heatmap2, heatLegend2, heatVar, heatTip, acc: ACC, applyStudio, STUDIO_DEF, regionTabs, inRegion, regionMovers, regionLabel };
+  window.UI = { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, newsCover, assetTable, tabs, row, impact, sTag, analysisCard, routeHash, subnav, newsNav, heatmap, heatLegend, heatColor, divBar, proChart, nhref, heatmap2, heatLegend2, heatVar, heatTip, acc: ACC, applyStudio, STUDIO_DEF, regionTabs, inRegion, regionMovers, regionLabel };
 })();

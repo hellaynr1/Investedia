@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=41c0c3d162">
+<link rel="stylesheet" href="assets/app.css?v=6424951e23">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,8 +37,9 @@
 <body data-page="home">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=41c0c3d162"></script>
-<script src="assets/ui.js?v=41c0c3d162"></script>
+<script src="assets/news-images.js"></script>
+<script src="assets/mock.js?v=6424951e23"></script>
+<script src="assets/ui.js?v=6424951e23"></script>
 <main class="wrap">
 <section class="hero hero-horizon">
   <div>
@@ -248,7 +249,7 @@ document.getElementById('ai-points').innerHTML = [['Morning brief', 'the five th
 
 const n0 = M.news[0], leadEl = document.getElementById('lead');
 if (n0.url) { leadEl.href = n0.url; leadEl.target = '_blank'; leadEl.rel = 'noopener'; }
-document.getElementById('lead').innerHTML = `<div class="cover">${cover('lead1')}</div><div class="card-pad" style="display:grid;gap:10px;align-content:center"><div class="news-meta"><span class="tag acc">${n0.cat}</span><span>${n0.time}</span></div><h2 style="font-size:24px">${n0.t}</h2><p class="muted" style="margin:0">${n0.d}</p><div class="news-meta"><span>${n0.a}</span>${n0.read ? `<i></i><span>${n0.read} min read</span>` : ''}</div></div>`;
+document.getElementById('lead').innerHTML = `<div class="cover">${UI.newsCover(n0, 'lead1')}</div><div class="card-pad" style="display:grid;gap:10px;align-content:center"><div class="news-meta"><span class="tag acc">${n0.cat}</span><span>${n0.time}</span></div><h2 style="font-size:24px">${n0.t}</h2><p class="muted" style="margin:0">${n0.d}</p><div class="news-meta"><span>${n0.a}</span>${n0.read ? `<i></i><span>${n0.read} min read</span>` : ''}</div></div>`;
 document.getElementById('news-list').innerHTML = M.news.slice(1, 7).map(n => `<a class="news-item" ${UI.nhref(n)}><div class="news-meta"><span class="accent" style="font-weight:600">${n.cat}</span><i></i><span>${n.time}</span><i></i><span class="mono">${n.tag}</span></div><h3>${n.t}</h3></a>`).join('');
 
 document.getElementById('an-cards').innerHTML = M.analysis.slice(0, 3).map((x, i) => UI.analysisCard(x, i)).join('');
