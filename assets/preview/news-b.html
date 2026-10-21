@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>News concept B · Time river</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Geist+Mono:wght@500&display=swap"><link rel="stylesheet" href="np.css">
+<style>
+.river{position:relative;margin-top:22px;border:1px solid var(--line);border-radius:20px;background:radial-gradient(70% 90% at 100% 50%,rgba(255,122,26,.09),transparent 65%),#0b0b0d;padding:18px 0 14px;overflow:hidden}
+.lane{position:relative;height:50px;margin-left:122px;margin-right:22px;border-top:1px solid rgba(255,255,255,.05)}
+.lane:first-of-type{border-top:0}.lane>em{position:absolute;left:-112px;top:0;height:100%;display:flex;align-items:center;font:500 10.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--fg3);font-style:normal}
+.dot{position:absolute;top:50%;border-radius:50%;transform:translate(-50%,-50%);background:#d4d4d8;opacity:.8;transition:transform .15s}
+.dot.i2{background:var(--ac);opacity:.9}.dot.i3{background:var(--ac);box-shadow:0 0 0 4px rgba(255,122,26,.18),0 0 18px rgba(255,122,26,.7);opacity:1}
+.dot:hover,.dot.sel{transform:translate(-50%,-50%) scale(1.5);opacity:1;z-index:3}.dot.sel{outline:2px solid #fff;outline-offset:2px}
+.ticks{position:relative;height:26px;margin:8px 22px 0 122px}.ticks span{position:absolute;top:0;transform:translateX(-50%);font:500 10.5px var(--mono);color:var(--fg3)}
+.vl{position:absolute;top:18px;bottom:36px;width:1px;background:rgba(255,255,255,.05)}
+.sel-card{display:grid;grid-template-columns:200px 1fr auto;gap:22px;align-items:center;margin-top:16px;padding:18px;border-radius:18px;border:1px solid var(--line);background:var(--card)}
+.sel-card .im{height:112px;border-radius:12px;background:radial-gradient(90% 100% at 80% 0%,rgba(255,122,26,.3),transparent 60%),#18181b center/cover;position:relative}
+.sel-card .im .lg{position:absolute;left:10px;bottom:10px;width:34px;height:34px}
+.sel-card h3{margin:6px 0 8px;font-size:22px;line-height:1.25;letter-spacing:-.02em}.sel-card p{margin:0;color:var(--fg2);font-size:14px;line-height:1.55}
+.sel-card .go{align-self:center;height:40px;padding:0 16px;border-radius:10px;background:#fff;color:#0A0A0B;font-weight:600;font-size:14px;display:inline-flex;align-items:center}
+.imp{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.imp span{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 10px 0 6px;border-radius:8px;border:1px solid var(--line);font-size:12.5px}
+.rail{display:none}
+@media(max-width:860px){.river,.sel-card{display:none}.rail{display:block;margin-top:14px}
+ .day{margin:22px 0 6px;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
+ .it{position:relative;display:grid;grid-template-columns:26px 1fr;gap:10px;padding:0 0 18px}
+ .it::before{content:'';position:absolute;left:12px;top:14px;bottom:0;width:1px;background:var(--line)}
+ .it .d{position:relative;z-index:1;margin:6px 0 0 6px;width:14px;height:14px;border-radius:50%;background:#d4d4d8;border:3px solid var(--bg)}.it .d.i2,.it .d.i3{background:var(--ac)}.it .d.i3{box-shadow:0 0 14px rgba(255,122,26,.8)}
+ .it h4{margin:2px 0 4px;font-size:15.5px;line-height:1.35;font-weight:600}.it .imp{margin-top:8px}}
+</style></head><body><div id="h"></div>
+<main class="w" style="padding-top:44px"><span class="eb">News</span><h1>The week, <span>as it happened.</span></h1>
+<p class="lead">Every story is a dot. Position is time, size is importance. Recent hours get the most room.</p>
+<div class="chips" id="ch"></div><div class="river" id="rv"></div><div id="sc"></div><div class="rail" id="rl"></div></main><div id="f"></div><span class="pv">Concept B · Time river</span>
+<script src="np.js"></script><script>
+h.innerHTML = HEADER; f.innerHTML = FOOTER; let all = [], cat = 'all', sel = null;
+const LANES = CATS.slice(1), HRS = 168, pos = a => 1 - Math.pow(Math.min(a, HRS) / HRS, .42);   // recent-weighted time axis
+const age = s => (Date.now() - Date.parse(s.published_at)) / 36e5;
+function card(s) { const lg = (s.entities || []).find(e => e.ticker && !/[\^=]/.test(e.ticker)); return `<div class="sel-card"><div class="im" style="${s.image?.file ? `background-image:url('../globe/${esc(s.image.file)}')` : ''}">${lg ? logo(lg.ticker) : sflag(s)}</div>
+ <div><span class="eb">${esc(CL[s.category])} · ${esc(s.location.place.split(',')[0])} · ${ago(s.published_at)}</span><h3>${esc(s.headline)}</h3><p>${esc(s.summary)}</p>
+ <div class="imp">${(s.impacts || []).slice(0, 3).map(i => `<span>${icon(i)}${esc(i.name)} ${arrow(i.direction)}</span>`).join('')}</div></div><a class="go" href="${url(s)}">Open on globe →</a></div>`; }
+function draw() {
+  const list = all.filter(s => cat === 'all' || s.category === cat), lanes = cat === 'all' ? LANES : LANES.filter(l => l[0] === cat);
+  const mk = [[0, 'now'], [6, '6h'], [24, '24h'], [72, '3d'], [168, '7d']];
+  rv.innerHTML = lanes.map(([k, l]) => `<div class="lane"><em>${l}</em>${list.filter(s => s.category === k && age(s) <= HRS).map((s, i) => { const sz = [8, 11, 19][s.importance - 1], j = ((s.id.charCodeAt(3) * 7 + i * 13) % 26) - 13;
+    return `<button class="dot i${s.importance}${sel === s ? ' sel' : ''}" data-id="${s.id}" title="${esc(s.headline)}" style="left:${(pos(age(s)) * 100).toFixed(2)}%;width:${sz}px;height:${sz}px;margin-top:${j}px"></button>`; }).join('')}</div>`).join('')
+    + `<div class="ticks">${mk.map(([h, l]) => `<span style="left:${(pos(h) * 100).toFixed(2)}%">${l}</span>`).join('')}</div>`;
+  sc.innerHTML = sel ? card(sel) : '';
+  ch.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.k === cat));
+  const days = {}; list.filter(s => age(s) <= HRS).sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at)).slice(0, 14).forEach(s => (days[new Date(s.published_at).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' })] ||= []).push(s));
+  rl.innerHTML = Object.entries(days).map(([d, a]) => `<div class="day">${d}</div>` + a.map(s => `<a class="it" href="${url(s)}"><span class="d i${s.importance}"></span><span><span class="m">${sflag(s)} <b>${esc(s.location.place.split(',')[0])}</b> · ${esc(CL[s.category])}</span><h4>${esc(s.headline)}</h4><span class="imp">${(s.impacts || []).slice(0, 2).map(i => `<span>${icon(i)}${esc(i.name)} ${arrow(i.direction)}</span>`).join('')}</span></span></a>`).join('')).join('');
+}
+ch.innerHTML = CATS.map(([k, l]) => `<button data-k="${k}">${l}</button>`).join(''); ch.onclick = e => { const b = e.target.closest('button'); if (b) { cat = b.dataset.k; sel = null; draw(); } };
+rv.onclick = e => { const d = e.target.closest('.dot'); if (d) { sel = all.find(s => s.id === d.dataset.id); draw(); } };
+load().then(s => { all = s; sel = [...s].filter(x => age(x) < 30).sort(rank)[0]; draw(); });
+</script></body></html>

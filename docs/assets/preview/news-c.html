@@ -1,0 +1,44 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>News concept C · Exposure board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Geist+Mono:wght@500&display=swap"><link rel="stylesheet" href="np.css">
+<style>
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+.box{border:1px solid var(--line);border-radius:20px;background:#0c0c0e;padding:8px 18px 12px}
+.bh{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0 10px}.bh h2{margin:0;font-size:17px;font-weight:600}.bh span{font-size:12px;color:var(--fg3)}
+.legend{display:flex;gap:12px;font-size:11.5px;color:var(--fg3)}.legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.r{border-top:1px solid var(--line)}
+.rh{display:grid;grid-template-columns:auto 1fr 150px 20px;align-items:center;gap:12px;width:100%;text-align:left;padding:13px 0}
+.rh b{font-size:14.5px;font-weight:600;display:block}.rh small{font-size:11.5px;color:var(--fg3)}
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:rgba(255,255,255,.06);gap:2px}
+.bar i{display:block;height:100%}.bar .u{background:var(--up)}.bar .d{background:var(--dn)}.bar .o{background:#52525B}
+.cnt{font:500 11.5px var(--mono);color:var(--fg2);margin-top:5px;display:flex;gap:10px}.cnt .u{color:var(--up)}.cnt .d{color:var(--dn)}
+.chev{color:var(--fg3);transition:transform .2s}.r.open .chev{transform:rotate(90deg)}
+.det{display:none;padding:0 0 14px 34px;gap:10px}.r.open .det{display:grid}
+.st{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line)}
+.st a{font-size:13.5px;font-weight:550;line-height:1.35}.st p{margin:3px 0 0;font-size:12.5px;line-height:1.5;color:var(--fg2)}
+@media(max-width:860px){.cols{grid-template-columns:1fr}.rh{grid-template-columns:auto 1fr 20px}.rh .bw{grid-column:2/3;grid-row:2}.rh .nm{grid-column:2}.det{padding-left:0}}
+</style></head><body><div id="h"></div>
+<main class="w" style="padding-top:44px"><span class="eb">News</span><h1>What's exposed <span>this week.</span></h1>
+<p class="lead">The countries, companies and assets the news touches most, and which way. Tap any row to see the stories and the reasons.</p>
+<div class="chips" id="ch"></div>
+<div class="cols"><section class="box"><div class="bh"><h2>Countries</h2><span class="legend"><span><i style="background:var(--up)"></i>up</span><span><i style="background:var(--dn)"></i>down</span><span><i style="background:#52525B"></i>mixed</span></span></div><div id="co"></div></section>
+<section class="box"><div class="bh"><h2>Companies &amp; assets</h2><span>by stories affecting them</span></div><div id="as"></div></section></div></main><div id="f"></div><span class="pv">Concept C · Exposure board</span>
+<script src="np.js"></script><script>
+h.innerHTML = HEADER; f.innerHTML = FOOTER; let all = [], cat = 'all';
+function agg(list, keyOf, labelOf, iconOf) {
+  const m = new Map();
+  for (const s of list) for (const i of s.impacts || []) { const k = keyOf(i); if (!k) continue; const e = m.get(k) || { k, label: labelOf(i), ic: iconOf(i), up: 0, down: 0, o: 0, items: [] }; e[i.direction === 'up' ? 'up' : i.direction === 'down' ? 'down' : 'o']++; e.items.push({ s, i }); m.set(k, e); }
+  return [...m.values()].sort((a, b) => (b.up + b.down + b.o) - (a.up + a.down + a.o)).slice(0, 7);
+}
+function rows(a) { return a.map((e, n) => { const t = e.up + e.down + e.o; return `<div class="r${n === 0 ? ' open' : ''}"><button class="rh"><span>${e.ic}</span><span class="nm"><b>${esc(e.label)}</b><small>${t} ${t === 1 ? 'story' : 'stories'}</small></span>
+  <span class="bw"><span class="bar">${e.up ? `<i class="u" style="flex:${e.up}"></i>` : ''}${e.down ? `<i class="d" style="flex:${e.down}"></i>` : ''}${e.o ? `<i class="o" style="flex:${e.o}"></i>` : ''}</span><span class="cnt">${e.up ? `<span class="u">↑ ${e.up}</span>` : ''}${e.down ? `<span class="d">↓ ${e.down}</span>` : ''}${e.o ? `<span>↔ ${e.o}</span>` : ''}</span></span><span class="chev">›</span></button>
+  <div class="det">${e.items.sort((x, y) => rank(x.s, y.s)).slice(0, 3).map(({ s, i }) => `<div class="st">${arrow(i.direction)}<div><a href="${url(s)}">${esc(s.headline)}</a><p>${esc(i.why)}</p></div></div>`).join('')}</div></div>`; }).join(''); }
+function draw() {
+  const list = all.filter(s => s.impacts?.length && (cat === 'all' || s.category === cat));
+  co.innerHTML = rows(agg(list, i => i.country, i => nm(({ US: 'United States', GB: 'United Kingdom', DE: 'Germany', CN: 'China', JP: 'Japan', IN: 'India', FR: 'France', AU: 'Australia', CA: 'Canada', BR: 'Brazil', SA: 'Saudi Arabia', AE: 'United Arab Emirates', RU: 'Russia', KR: 'South Korea', MX: 'Mexico', IT: 'Italy', NL: 'Netherlands', CH: 'Switzerland', TR: 'Turkey', NG: 'Nigeria', ZA: 'South Africa' })[i.country] || i.country), i => flag(i.country)));
+  as.innerHTML = rows(agg(list, i => i.kind !== 'country' ? i.name.toLowerCase() : null, i => i.name, i => icon(i)));
+  ch.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.k === cat));
+}
+ch.innerHTML = CATS.map(([k, l]) => `<button data-k="${k}">${l}</button>`).join(''); ch.onclick = e => { const b = e.target.closest('button'); if (b) { cat = b.dataset.k; draw(); } };
+document.addEventListener('click', e => { const r = e.target.closest('.rh'); if (r) r.parentElement.classList.toggle('open'); });
+load().then(s => { all = s; draw(); });
+</script></body></html>
