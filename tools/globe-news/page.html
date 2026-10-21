@@ -53,6 +53,27 @@ h1 span{color:var(--fg-3)}
 .follow{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);font-size:12.5px;font-weight:550;color:var(--fg)}
 .follow svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .follow.on{background:var(--accent-soft);border-color:rgba(255,122,26,.5);color:#FFB37A}
+.flag{width:20px;height:15px;flex:none;border-radius:3px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.flag.big{width:44px;height:33px;border-radius:6px}
+.cn{display:flex;align-items:center;gap:12px;min-width:0}
+.alerts{margin-top:14px;padding:14px;border-radius:14px;border:1px solid rgba(255,122,26,.3);background:rgba(255,122,26,.05)}
+.al{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer}
+.al input{margin-top:2px;width:16px;height:16px;accent-color:#FF7A1A;flex:none}
+.al b{display:block;font-size:13px;font-weight:550}
+.al small{display:block;font-size:12px;color:var(--fg-3);margin-top:1px}
+.eco{margin-top:18px;padding:16px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.eco-s{margin:6px 0 14px;font-size:13.5px;line-height:1.55;color:#D4D4D8}
+.eco-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 10px}
+.eco-g div{display:grid;gap:2px;min-width:0}
+.eco-g span{font-size:11px;color:var(--fg-3)}
+.eco-g b{font:500 14.5px var(--mono);color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eco-g small{font:500 10.5px var(--mono);color:var(--fg-3)}
+.eco-c{display:block;width:100%;height:76px;margin-top:16px}
+.eco-yr{display:flex;justify-content:space-between;font:500 10.5px var(--mono);color:var(--fg-3);margin-top:4px}
+.eco-yr span:nth-child(2){font-family:var(--sans)}
+.eco-src{margin:10px 0 0;font-size:11px;color:var(--fg-3)}
+.eco-src a{color:inherit}
+@media (max-width:760px){.eco-g{grid-template-columns:repeat(2,minmax(0,1fr))}.flag.big{width:38px;height:28px}}
 .fnote{margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--fg-3)}
 .ch{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
 .chip{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:rgba(16,16,18,.6);color:var(--fg-2);font-size:12.5px;font-weight:500;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
@@ -250,7 +271,7 @@ h1 span{color:var(--fg-3)}
 // News is loaded from NEWS_URL. Today that is demo content; a live pipeline (sources → dedupe → location → entities → category → importance → validation → summary)
 // only has to write the same JSON shape (see tools/globe-news/news-demo.json "fields"). Nothing below is tied to the demo stories.
 const NEWS_URL = 'news-demo.json';
-const DOTS = __DOTS__, CTRY = __COUNTRIES__, LOGOS = __LOGOS__, QD = window.QUOTES || { q: {} };
+const ISO = __ISO__, DOTS = __DOTS__, CTRY = __COUNTRIES__, LOGOS = __LOGOS__, QD = window.QUOTES || { q: {} };
 const $ = id => document.getElementById(id), rad = Math.PI / 180, T0 = Date.now();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const phone = () => innerWidth <= 760;
@@ -328,6 +349,40 @@ function art(s, label = true) {
     <div class="cpx"><span>${fmtP(q.p, e.sym)}${y ? '%' : ''}</span><em class="${q.d >= 0 ? 'up' : 'dn'}">${day}</em></div>
     ${spark(sp, up)}<span class="csrc">${y ? '' : (chg >= 0 ? '+' : '') + chg.toFixed(1) + '% · '}last ${sp.length} trading days · Yahoo Finance${when ? ', ' + when : ''}</span></div>`;
 }
+// Flags (vector, flag-icons MIT) and the World Bank economy snapshot (economy.json, refreshed weekly by update_economy.py)
+const flag = (name, cls = 'flag') => ISO[name] ? `<img class="${cls}" src="flags/${ISO[name].toLowerCase()}.svg" alt="" loading="lazy" onerror="this.remove()">` : '';
+let ECON = null; fetch('economy.json').then(r => r.json()).then(d => { ECON = d; if (view.k === 'country') render(); }).catch(() => {});
+const usd = v => v >= 1e12 ? '$' + (v / 1e12).toFixed(v >= 1e13 ? 1 : 2) + ' trillion' : v >= 1e9 ? '$' + (v / 1e9).toFixed(v >= 1e11 ? 0 : 1) + ' billion' : '$' + (v / 1e6).toFixed(0) + ' million';
+const people = v => v >= 1e9 ? (v / 1e9).toFixed(2) + ' billion' : v >= 1e6 ? (v / 1e6).toFixed(1) + ' million' : Math.round(v / 1e3) + ' thousand';
+const usdS = v => v >= 1e12 ? '$' + (v / 1e12).toFixed(1) + 'T' : v >= 1e9 ? '$' + (v / 1e9).toFixed(v >= 1e11 ? 0 : 1) + 'B' : '$' + (v / 1e6).toFixed(0) + 'M';
+const peopleS = v => v >= 1e9 ? (v / 1e9).toFixed(2) + 'B' : v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : Math.round(v / 1e3) + 'K';
+const THE = new Set(['United States of America', 'United Kingdom', 'Netherlands', 'Philippines', 'United Arab Emirates', 'Dem. Rep. Congo', 'Central African Rep.', 'Dominican Rep.', 'Czech Rep.', 'Bahamas', 'Gambia']);
+const pct = (v, sign) => (sign && v > 0 ? '+' : '') + v.toFixed(1) + '%';
+function economy(name) {
+  const c = ECON && ISO[name] && ECON.countries[ISO[name]]; if (!c) return ECON ? '' : '<div class="eco"><div class="sec-h">Economy</div><p class="meta">Loading…</p></div>';
+  const g = c.growth || [], last = g[g.length - 1], avg = g.length > 3 ? g.slice(0, -1).reduce((a, x) => a + x[1], 0) / (g.length - 1) : null, nmc = esc(nm(name));
+  // plain-language summary, built only from the numbers below
+  const parts = [];
+  const who = (THE.has(name) ? 'The ' : '') + nmc, poss = who + (/s$/.test(nm(name)) ? "'" : "'s");
+  if (last) parts.push(`${poss} economy ${last[1] >= 0 ? 'grew' : 'shrank'} ${Math.abs(last[1]).toFixed(1)}% in ${last[0]}` + (avg != null ? `, ${Math.abs(last[1] - avg) < .3 ? 'close to' : last[1] > avg ? 'faster than' : 'slower than'} its ${g.length - 1}-year average of ${avg.toFixed(1)}%` : '') + '.');
+  if (c.infl) parts.push(`Prices rose ${c.infl[1].toFixed(1)}% in ${c.infl[0]}${c.infl[1] > 5 ? ', which is high' : c.infl[1] < 0 ? ' (falling prices)' : ''}.`);
+  if (c.unemp) parts.push(`${c.unemp[1].toFixed(1)}% of people who want a job don't have one (${c.unemp[0]}).`);
+  const stat = (l, v, y) => v == null ? '' : `<div><span>${l}</span><b>${v}</b><small>${y}</small></div>`;
+  let chart = '';
+  if (g.length > 2) {
+    const mx = Math.max(2, ...g.map(x => Math.abs(x[1]))), bw = 300 / g.length, z = 46;
+    chart = `<svg class="eco-c" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="GDP growth per year">${g.map((x, i) => { const h = Math.abs(x[1]) / mx * 40, up = x[1] >= 0; return `<rect x="${(i * bw + bw * .18).toFixed(1)}" y="${(up ? z - h : z).toFixed(1)}" width="${(bw * .64).toFixed(1)}" height="${Math.max(1, h).toFixed(1)}" rx="1.5" fill="${up ? '#22C55E' : '#F04444'}" opacity="${i === g.length - 1 ? 1 : .55}"><title>${x[0]}: ${pct(x[1], 1)}</title></rect>`; }).join('')}<line x1="0" x2="300" y1="${z}" y2="${z}" stroke="rgba(255,255,255,.18)" stroke-width="1" vector-effect="non-scaling-stroke"/></svg>
+      <div class="eco-yr"><span>${g[0][0]}</span><span>GDP growth per year</span><span>${last[0]}</span></div>`;
+  }
+  return `<div class="eco"><div class="sec-h" style="margin-top:0">Economy</div><p class="eco-s">${parts.join(' ')}</p>
+    <div class="eco-g">${stat('GDP', c.gdp && usdS(c.gdp[1]), c.gdp && c.gdp[0])}${stat('Growth', last && pct(last[1], 1), last && last[0])}${stat('Inflation', c.infl && pct(c.infl[1]), c.infl && c.infl[0])}${stat('Unemployment', c.unemp && pct(c.unemp[1]), c.unemp && c.unemp[0])}${stat('GDP per person', c.gdppc && '$' + Math.round(c.gdppc[1]).toLocaleString('en-US'), c.gdppc && c.gdppc[0])}${stat('Population', c.pop && peopleS(c.pop[1]), c.pop && c.pop[0])}</div>
+    ${chart}<p class="eco-src">Source: <a href="${esc(ECON.source_url)}" target="_blank" rel="noopener">${esc(ECON.source)}</a> · ${esc(ECON.license)} · yearly data</p></div>`;
+}
+// Alert topics for a followed country (saved on this device until accounts + email alerts launch)
+const TOPICS = [['eco', 'Economy data', 'GDP, inflation and jobs figures when they come out'], ['rates', 'Central bank & interest rates', 'Rate decisions and what they mean'], ['news', 'Market-moving news', 'Big business and market stories'], ['week', 'Weekly summary', 'One short email every week']];
+const TKEY = 'inv-follow-topics';
+const topicsOf = n => { try { return (JSON.parse(localStorage.getItem(TKEY)) || {})[n] || TOPICS.map(t => t[0]); } catch { return TOPICS.map(t => t[0]); } };
+function setTopic(n, t, on) { let all = {}; try { all = JSON.parse(localStorage.getItem(TKEY)) || {}; } catch {} const cur = new Set(all[n] || TOPICS.map(x => x[0])); on ? cur.add(t) : cur.delete(t); all[n] = [...cur]; try { localStorage.setItem(TKEY, JSON.stringify(all)); } catch {} }
 function ago(t) { const m = Math.max(1, Math.round((Date.now() - t) / 60000)); return m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; }
 
 function decode(rows, Q) {
@@ -445,7 +500,7 @@ function hoverAt(x, y) {
   if (d) { hoverCountry = null; if (hoverC !== d.key) { hoverC = d.key; showHover(d); } placeHover(d.x, d.y); cv.style.cursor = 'pointer'; return; }
   hoverC = null; const g = inv(x, y), c = g && countryAt(g[0], g[1]);
   hoverCountry = c; cv.style.cursor = c ? 'pointer' : '';
-  if (c) { const n = stories.filter(s => s.location.country === c.name && match(s)).length; const hv = $('hover'); hv.className = 'hover glass solo on'; hv.innerHTML = `<div><div class="eyebrow">Country</div><h3 style="margin-bottom:2px">${esc(nm(c.name))}</h3><div class="meta">${n ? `<b>${n}</b> ${n === 1 ? 'story' : 'stories'} in ${WLABEL[F.win]}` : 'No stories in this window'} · click to explore</div></div>`; placeHover(x, y + 6); }
+  if (c) { const n = stories.filter(s => s.location.country === c.name && match(s)).length; const hv = $('hover'); hv.className = 'hover glass solo on'; hv.innerHTML = `<div><div class="eyebrow">Country</div><h3 style="margin-bottom:2px;display:flex;align-items:center;gap:8px">${flag(c.name)}${esc(nm(c.name))}</h3><div class="meta">${n ? `<b>${n}</b> ${n === 1 ? 'story' : 'stories'} in ${WLABEL[F.win]}` : 'No stories in this window'} · click to explore</div></div>`; placeHover(x, y + 6); }
   else hideHover();
 }
 function showHover(d) {
@@ -485,8 +540,9 @@ function openCountry(c) {
   flyTo(c.c[0], c.c[1], Math.max(1.4, Math.min(4.6, 46 / Math.max(span, 1))));
 }
 function openPlace(list) { sel = null; selCountry = byName[list[0].location.country] || null; go({ k: 'place', ids: list.map(s => s.id), id: list.map(s => s.id).join() }); flyTo(list[0].location.lon, list[0].location.lat, Math.max(Z, 3)); }
+pbody.addEventListener('change', e => { const t = e.target.closest('[data-topic]'); if (t) setTopic(t.dataset.c, t.dataset.topic, t.checked); });
 pbody.addEventListener('click', e => {
-  const b = e.target.closest('[data-story],[data-back],[data-country],[data-follow]'); if (!b) return; e.preventDefault();
+  const b = e.target.closest('[data-story],[data-back],[data-country],[data-follow]'); if (!b) return; if (b.tagName !== 'LABEL') e.preventDefault();
   if (b.dataset.follow) return toggleFollow(b.dataset.follow);
   if (b.dataset.back != null) return back();
   if (b.dataset.story) return openStory(byId[b.dataset.story]);
@@ -518,8 +574,9 @@ function render() {
     const c = byName[view.id], all = stories.filter(s => s.location.country === c.name), list = all.filter(match).sort(sortTop);
     const rest = list.length > 3 ? list.slice(3) : [], groups = CATS.slice(1).map(([k, l]) => [l, rest.filter(s => s.category === k)]).filter(g => g[1].length);
     const cos = [...new Map(list.flatMap(s => s.entities).filter(x => x.ticker).map(x => [x.name, x])).values()];
-    pbody.innerHTML = `<button class="back" data-back>← Back</button><div class="ch"><div><div class="eyebrow">Country</div><h2>${esc(nm(c.name))}</h2></div>${(() => { const on = follows().includes(c.name); return `<button class="follow${on ? ' on' : ''}" data-follow="${esc(c.name)}" aria-pressed="${on}"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>${on ? 'Following' : 'Follow'}</button>`; })()}</div>
-      ${follows().includes(c.name) ? `<p class="fnote">You're following ${esc(nm(c.name))}. Alerts by email or phone start when live news launches.</p>` : ''}
+    pbody.innerHTML = `<button class="back" data-back>← Back</button><div class="ch"><div class="cn">${flag(c.name, 'flag big')}<div><div class="eyebrow">Country</div><h2>${esc(nm(c.name))}</h2></div></div>${(() => { const on = follows().includes(c.name); return `<button class="follow${on ? ' on' : ''}" data-follow="${esc(c.name)}" aria-pressed="${on}"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>${on ? 'Following' : 'Follow'}</button>`; })()}</div>
+      ${follows().includes(c.name) ? `<div class="alerts"><div class="sec-h" style="margin-top:0">Alert me about</div>${TOPICS.map(([k, l, d]) => `<label class="al"><input type="checkbox" data-topic="${k}" data-c="${esc(c.name)}" ${topicsOf(c.name).includes(k) ? 'checked' : ''}><span><b>${l}</b><small>${d}</small></span></label>`).join('')}<p class="fnote">Saved on this device. Email alerts launch soon: we'll ask for your email then. Nothing is sent yet.</p></div>` : ''}
+      ${economy(c.name)}
       <div class="stats"><div><b>${list.length}</b>${list.length === 1 ? 'story' : 'stories'} · ${F.win.toUpperCase()}</div><div><b>${all.length}</b>this week</div><div><b>${list.filter(s => s.importance === 3).length}</b>major</div></div>
       ${list.length ? `<div class="sec-h" style="margin-top:0">Top stories</div><div class="list">${list.slice(0, 3).map(item).join('')}</div>${groups.length ? '<div class="sec-h" style="margin-top:26px;color:var(--fg-2)">More by topic</div>' : ''}
         ${groups.map(([l, g]) => `<div class="sec-h">${l}</div><div class="list">${g.map(item).join('')}</div>`).join('')}
@@ -541,7 +598,7 @@ function search() {
   const ss = stories.filter(s => norm([s.headline, s.location.place, nm(s.location.country), CAT[s.category], ...s.entities.map(e => e.name + ' ' + (e.ticker || ''))].join(' ')).includes(q)).sort(sortTop).slice(0, 6).map(s => ({ k: 'story', s }));
   hits = [...cs, ...ss]; hi = 0;
   const cnt = c => stories.filter(s => s.location.country === c.name).length;
-  res.innerHTML = hits.length ? (cs.length ? '<div class="sec-h">Countries</div>' : '') + cs.map((h, i) => `<button class="ri" role="option" data-i="${i}"><span>${esc(nm(h.c.name))}</span><small>${cnt(h.c) ? cnt(h.c) + (cnt(h.c) === 1 ? ' story' : ' stories') : 'no stories yet'}</small></button>`).join('')
+  res.innerHTML = hits.length ? (cs.length ? '<div class="sec-h">Countries</div>' : '') + cs.map((h, i) => `<button class="ri" role="option" data-i="${i}">${flag(h.c.name)}<span>${esc(nm(h.c.name))}</span><small>${cnt(h.c) ? cnt(h.c) + (cnt(h.c) === 1 ? ' story' : ' stories') : 'no stories yet'}</small></button>`).join('')
     + (ss.length ? '<div class="sec-h">Stories</div>' : '') + ss.map((h, i) => `<button class="ri" role="option" data-i="${cs.length + i}"><span class="dot i${h.s.importance}"></span><span>${esc(h.s.headline)}</span><small>${esc(h.s.location.place.split(',')[0])}</small></button>`).join('')
     : '<div class="none">No country or story matches “' + esc(qi.value.trim()) + '”.</div>';
   res.hidden = false; mark();

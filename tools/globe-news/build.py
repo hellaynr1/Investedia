@@ -70,6 +70,28 @@ LG = os.path.join(SITE, 'assets/logos')
 logos = {f.rsplit('.', 1)[0]: '../logos/' + f for f in sorted(os.listdir(LG)) if '.' in f}
 logos.update({f.rsplit('.', 1)[0]: '../logos/co/' + f for f in sorted(os.listdir(os.path.join(LG, 'co')))})
 page = page.replace('__LOGOS__', json.dumps(logos, separators=(',', ':')))
+# country name (as in the map data) -> ISO 3166 two-letter code, for flags and the World Bank economy data
+import re, unicodedata
+key = lambda t: re.sub(r'[^a-z]', '', unicodedata.normalize('NFD', t).encode('ascii', 'ignore').decode().lower())
+codes = {}
+for c in json.load(open(os.path.join(SITE, 'assets/world-map.json')))['c']: codes[key(c['n'])] = c['id']
+for c in json.load(open(os.path.join(G, 'wb-countries.json')))[1]:
+    if c['region']['value'] != 'Aggregates': codes.setdefault(key(c['name']), c['iso2Code'])
+FIX = {'Vatican': 'VA', 'Marshall Is.': 'MH', 'N. Mariana Is.': 'MP', 'U.S. Virgin Is.': 'VI', 'United States of America': 'US', 'S. Geo. and the Is.': 'GS', 'Br. Indian Ocean Ter.': 'IO',
+       'Saint Helena': 'SH', 'Pitcairn Is.': 'PN', 'Falkland Is.': 'FK', 'Cayman Is.': 'KY', 'British Virgin Is.': 'VG', 'Turks and Caicos Is.': 'TC', 'Turkey': 'TR', 'S. Sudan': 'SS',
+       'Solomon Is.': 'SB', 'St. Vin. and Gren.': 'VC', 'Cook Is.': 'CK', 'W. Sahara': 'EH', 'Macedonia': 'MK', 'St. Pierre and Miquelon': 'PM', 'Wallis and Futuna Is.': 'WF', 'St-Martin': 'MF',
+       'St-Barthélemy': 'BL', 'Fr. Polynesia': 'PF', 'Fr. S. Antarctic Lands': 'TF', 'Åland': 'AX', 'Eq. Guinea': 'GQ', 'Dominican Rep.': 'DO', 'Faeroe Is.': 'FO', 'Dem. Rep. Congo': 'CD',
+       'Central African Rep.': 'CF', 'Bosnia and Herz.': 'BA', 'Heard I. and McDonald Is.': 'HM', 'Antigua and Barb.': 'AG', 'Sint Maarten': 'SX'}  # no ISO code: Somaliland, N. Cyprus, Siachen Glacier, Ashmore and Cartier Is., Indian Ocean Ter.
+ISO = {}
+for row in C50:
+    n = row[0]; c = FIX.get(n) or codes.get(key(n))
+    if c: ISO[n] = c
+page = page.replace('__ISO__', json.dumps(ISO, separators=(',', ':')))
+# rectangular vector flags (flag-icons, MIT) for the countries on the map
+FL = os.path.join(G, 'flags'); os.makedirs(os.path.join(SITE, 'assets/globe/flags'), exist_ok=True)
+for c in set(ISO.values()):
+    f = os.path.join(FL, c.lower() + '.svg')
+    if os.path.exists(f): shutil.copy(f, os.path.join(SITE, 'assets/globe/flags', c.lower() + '.svg'))
 out = os.path.join(SITE, 'assets/globe/news.html')
 open(out, 'w', encoding='utf-8').write(page)
 shutil.copy(os.path.join(G, 'news-demo.json'), os.path.join(SITE, 'assets/globe/news-demo.json'))

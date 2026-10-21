@@ -1,0 +1,30 @@
+name: Update country economy data
+# World Bank yearly figures (GDP, growth, inflation, jobs) for the Globe News country panels. They change rarely: once a week is enough.
+on:
+  schedule:
+    - cron: "17 5 * * 1"    # Mondays 05:17 UTC
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: market-data
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Fetch World Bank data
+        run: python3 update_economy.py
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add assets/globe/economy.json docs/assets/globe/economy.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Update country economy data"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q && exit 0; sleep 5; done
+          exit 1
