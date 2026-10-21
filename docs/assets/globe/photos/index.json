@@ -238,5 +238,145 @@
    "source_url": "https://pixabay.com/photos/cpu-processor-macro-pen-pin-564771/",
    "alt": "semiconductor chip"
   }
+ ],
+ "gold bars": [
+  {
+   "file": "photos/gold-bars-513062.jpg",
+   "credit": "Stevebidmead",
+   "source_url": "https://pixabay.com/photos/gold-ingots-treasure-bullion-513062/",
+   "alt": "gold bars"
+  },
+  {
+   "file": "photos/gold-bars-163519.jpg",
+   "credit": "PublicDomainPictures",
+   "source_url": "https://pixabay.com/photos/gold-bars-wealth-finance-gold-bars-163519/",
+   "alt": "gold bars"
+  },
+  {
+   "file": "photos/gold-bars-1652455.jpg",
+   "credit": "Alexas_Fotos",
+   "source_url": "https://pixabay.com/photos/wines-bottles-caps-bottle-caps-1652455/",
+   "alt": "gold bars"
+  }
+ ],
+ "gas pipeline": [
+  {
+   "file": "photos/gas-pipeline-6226244.jpg",
+   "credit": "tasukaran",
+   "source_url": "https://pixabay.com/photos/sunset-factory-buildings-6226244/",
+   "alt": "gas pipeline"
+  },
+  {
+   "file": "photos/gas-pipeline-4691574.jpg",
+   "credit": "jdblack",
+   "source_url": "https://pixabay.com/photos/pipeline-alaska-engineering-oil-4691574/",
+   "alt": "gas pipeline"
+  },
+  {
+   "file": "photos/gas-pipeline-2784902.jpg",
+   "credit": "jarmoluk",
+   "source_url": "https://pixabay.com/photos/fittings-water-polo-construction-2784902/",
+   "alt": "gas pipeline"
+  }
+ ],
+ "copper mine": [
+  {
+   "file": "photos/copper-mine-6592253.jpg",
+   "credit": "dp1616",
+   "source_url": "https://pixabay.com/photos/parys-mountain-wales-hill-anglesey-6592253/",
+   "alt": "copper mine"
+  },
+  {
+   "file": "photos/copper-mine-3816220.jpg",
+   "credit": "rhianjane",
+   "source_url": "https://pixabay.com/photos/anglesey-parys-mountain-wales-3816220/",
+   "alt": "copper mine"
+  },
+  {
+   "file": "photos/copper-mine-3816221.jpg",
+   "credit": "rhianjane",
+   "source_url": "https://pixabay.com/photos/anglesey-parys-mountain-wales-3816221/",
+   "alt": "copper mine"
+  }
+ ],
+ "supermarket groceries": [
+  {
+   "file": "photos/supermarket-groceries-949913.jpg",
+   "credit": "ElasticComputeFarm",
+   "source_url": "https://pixabay.com/photos/supermarket-stalls-coolers-market-949913/",
+   "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-1232944.jpg",
+   "credit": "stevepb",
+   "source_url": "https://pixabay.com/photos/grocery-shopping-supermarket-1232944/",
+   "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-698608.jpg",
+   "credit": "StockSnap",
+   "source_url": "https://pixabay.com/photos/bananas-fruits-food-grocery-store-698608/",
+   "alt": "supermarket groceries"
+  }
+ ],
+ "data center servers": [
+  {
+   "file": "photos/data-center-servers-2160321.jpg",
+   "credit": "Sch\u00e4ferle",
+   "source_url": "https://pixabay.com/photos/server-space-the-server-room-dark-2160321/",
+   "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-2402637.jpg",
+   "credit": "bsdrouin",
+   "source_url": "https://pixabay.com/photos/network-server-system-2402637/",
+   "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-2852024.jpg",
+   "credit": "rebcenter-moscow",
+   "source_url": "https://pixabay.com/photos/farm-mining-the-ethereum-market-2852024/",
+   "alt": "data center servers"
+  }
+ ],
+ "oil refinery": [
+  {
+   "file": "photos/oil-refinery-6226244.jpg",
+   "credit": "tasukaran",
+   "source_url": "https://pixabay.com/photos/sunset-factory-buildings-6226244/",
+   "alt": "oil refinery"
+  },
+  {
+   "file": "photos/oil-refinery-3613526.jpg",
+   "credit": "SatyaPrem",
+   "source_url": "https://pixabay.com/photos/refinery-oil-industry-gas-3613526/",
+   "alt": "oil refinery"
+  },
+  {
+   "file": "photos/oil-refinery-2251247.jpg",
+   "credit": "michaelmep",
+   "source_url": "https://pixabay.com/photos/refinery-oil-refinery-oil-industry-2251247/",
+   "alt": "oil refinery"
+  }
+ ],
+ "oil tanker ship": [
+  {
+   "file": "photos/oil-tanker-ship-10038606.jpg",
+   "credit": "Bergadder",
+   "source_url": "https://pixabay.com/photos/ship-sea-water-sight-transport-10038606/",
+   "alt": "oil tanker ship"
+  },
+  {
+   "file": "photos/oil-tanker-ship-5562741.jpg",
+   "credit": "Freiheitsjunkie",
+   "source_url": "https://pixabay.com/photos/ship-freighter-tanker-oil-5562741/",
+   "alt": "oil tanker ship"
+  },
+  {
+   "file": "photos/oil-tanker-ship-164818.jpg",
+   "credit": "12019",
+   "source_url": "https://pixabay.com/photos/amsterdam-ship-bay-harbor-port-164818/",
+   "alt": "oil tanker ship"
+  }
  ]
 }
