@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=a00f20da2c">
+<link rel="stylesheet" href="assets/app.css?v=236c2c40d2">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,9 +37,9 @@
 <body data-page="home">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=a00f20da2c"></script>
-<script src="assets/ui.js?v=a00f20da2c"></script>
-<script src="assets/home-news.js?v=a00f20da2c"></script>
+<script src="assets/mock.js?v=236c2c40d2"></script>
+<script src="assets/ui.js?v=236c2c40d2"></script>
+<script src="assets/home-news.js?v=236c2c40d2"></script>
 <main class="wrap">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -100,6 +100,11 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
   <div class="hn-tick"><div class="hn" id="hnTick"></div></div>
 </section>
 <div class="hn">
+  <section class="sec resources" aria-label="Recommended resources" style="margin-top:40px">
+    <p class="res-label">Learn alongside the best free resources</p>
+    <div class="res-strip"><div class="res-track" id="res-track"></div></div>
+    <p class="res-note">Independent recommendations. Investedia is not affiliated with or endorsed by these organizations.</p>
+  </section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Top stories</span><h2>What matters right now</h2></div><a href="assets/globe/news.html">All news →</a></div><div class="grid3" id="hnTop"></div></section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Why it moved</span><h2>The stories moving markets, explained</h2></div></div><div class="whys" id="hnWhy"></div></section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Countries</span><h2>Explore by country</h2></div><a href="assets/globe/news.html">Open the globe →</a></div><div class="hn-ctys" id="hnCty"></div></section>
@@ -109,11 +114,6 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
     <div class="hn-box"><div class="hn-bh"><h3>Upcoming economic events</h3><a href="calendar.html">Full calendar →</a></div><div id="hnEv"></div></div>
     <div class="hn-box"><div class="hn-bh"><h3>Upcoming earnings</h3><a href="calendar.html#earnings">All earnings →</a></div><div id="hnEa"></div></div>
   </div><p class="hn-disc" id="hnCalSrc"></p></section>
-  <section class="sec resources" aria-label="Recommended resources" style="margin-top:56px">
-    <p class="res-label">Learn alongside the best free resources</p>
-    <div class="res-strip"><div class="res-track" id="res-track"></div></div>
-    <p class="res-note">Independent recommendations. Investedia is not affiliated with or endorsed by these organizations.</p>
-  </section>
   <div class="hn-band"><div><h2>Follow the countries and companies you care about.</h2><p>Their economy figures, rate decisions and market-moving news, explained simply.</p></div><button class="hn-btn hn-pri" type="button" data-auth="up">Create a free account</button></div>
   <p class="hn-disc">Headlines and summaries are AI-assisted from each source's own headline and description; every story links to its original source. For information only, not investment advice.</p>
 </div>

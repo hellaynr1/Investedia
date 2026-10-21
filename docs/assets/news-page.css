@@ -74,4 +74,8 @@ body[data-page=news] main.wrap{max-width:1240px;padding-inline:max(20px,env(safe
 
 .np-flag{width:96px;height:auto;padding:0;border-radius:5px;background:transparent}
 
-@media(max-width:540px){.np-categories{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:4px}.np-categories button{font-size:12px;padding:10px 4px}.np-lead .np-media{aspect-ratio:16/9}.np-lead h2{font-size:24px}.np-lead-copy{padding:20px}}
+@media(max-width:540px){.np-lead .np-media{aspect-ratio:16/9}.np-lead h2{font-size:24px}.np-lead-copy{padding:20px}}
+
+/* flag/logo cards: hide the text fallback when an image shows; phone: one swipeable row of categories */
+.np-media:has(img:not([hidden])) .np-media-fallback{visibility:hidden}
+@media(max-width:760px){.np-categories{display:flex!important;grid-template-columns:none!important;flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent)}.np-categories::-webkit-scrollbar{display:none}.np-categories button{flex:none;min-height:40px;padding:8px 14px;border:1px solid var(--line)}.np-categories button[aria-pressed=true]{border-color:transparent}}
