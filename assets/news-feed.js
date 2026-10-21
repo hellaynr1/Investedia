@@ -20,7 +20,7 @@
   const find = t => t && (S.by[t] || S.by[t.replace(/-USD$/, '')] || S.by[t.replace(/=X$/, '')]) || null;
   const reactions = s => { const seen = new Set(), out = []; for (const i of s.impacts || []) { const k = i.ticker || i.name.toLowerCase(); if (seen.has(k)) continue; seen.add(k); out.push({ i, a: find(i.ticker) }); } return out.sort((x, y) => !!y.a - !!x.a).slice(0, 4); };
   const biggest = s => Math.max(0, ...reactions(s).filter(r => r.a).map(r => Math.abs(move(r.a, S.win))));
-  const rxRow = ({ i, a }) => a ? (() => { const m = move(a, S.win); return `<div class="nf-rx"><span>${aIcon(a)}</span><b>${esc(a.n)}</b>${arrow(i.direction)}${line(series(a, S.win), 60, 20, col(m))}<span class="mono ${cls(m)}">${fmt(m)}</span></div>`; })() : `<div class="nf-rx" style="grid-template-columns:auto 1fr auto"><span>${iIcon(i)}</span><b>${esc(i.name)}</b>${arrow(i.direction)}</div>`;
+  const rxRow = ({ i, a }) => a ? (() => { const m = move(a, S.win); return `<div class="nf-rx" data-s="${esc(a.s)}" role="button" tabindex="0"><span>${aIcon(a)}</span><b>${esc(a.n)}</b>${arrow(i.direction)}${line(series(a, S.win), 60, 20, col(m))}<span class="mono ${cls(m)}">${fmt(m)}</span></div>`; })() : `<div class="nf-rx" style="grid-template-columns:auto 1fr auto"><span>${iIcon(i)}</span><b>${esc(i.name)}</b>${arrow(i.direction)}</div>`;
   const thumbOf = s => s.image ? `assets/globe/${esc(s.image.file)}` : '';
   const hit = (s, q) => !q || [s.headline, s.summary, ...(s.entities || []).map(e => e.name), ...(s.impacts || []).map(i => i.name), s.location?.country, s.location?.place].some(t => String(t || '').toLowerCase().includes(q));
   function hero() {
@@ -34,7 +34,7 @@
   function strip() {
     const known = a => !/[.\d]/.test(a.s.replace(/[=^-]/g, '')) && a.t !== 'fx' && (a.m || a.t === 'crypto' || a.t === 'cmd' || S.intra[a.s]);
     const L = S.mk.filter(known).filter(a => isFinite(a.d) && Math.abs(a.d) < 40 && series(a, 'd').length >= (a.t === 'stocks' ? 6 : 2)).sort((x, y) => Math.abs(y.d) - Math.abs(x.d)).slice(0, 10);
-    $('nf-strip').innerHTML = L.map(a => `<button type="button" class="nf-t" data-n="${esc(a.n)}"><small>${aIcon(a)}<span>${esc(a.n)}</span></small><span class="mono ${cls(a.d)}">${fmt(a.d)}</span>${line(series(a, 'd'), 100, 28, col(a.d))}</button>`).join('');
+    $('nf-strip').innerHTML = L.map(a => `<button type="button" class="nf-t" data-s="${esc(a.s)}"><small>${aIcon(a)}<span>${esc(a.n)}</span></small><span class="mono ${cls(a.d)}">${fmt(a.d)}</span>${line(series(a, 'd'), 100, 28, col(a.d))}</button>`).join('');
   }
   function draw() {
     const cut = Date.now() - WIN.find(w => w[0] === S.win)[2] * 864e5, q = S.q.trim().toLowerCase();
@@ -46,6 +46,44 @@
     document.querySelectorAll('#nf-sort button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === S.sort));
     $('nf-chip').hidden = !q; $('nf-chip').className = 'nf-x'; $('nf-chip').innerHTML = q ? `<button type="button">${esc(S.q)} <span aria-hidden="true">×</span></button>` : '';
   }
+
+  // ---- Mover detail: chart with numbered pins + story rail (what happened, how much it gained or lost) ----
+  const DAY = 864e5;
+  const tradingDates = (a, n) => { const out = []; let d = new Date(); d.setUTCHours(12, 0, 0, 0); const wk = x => x.getUTCDay() % 6 === 0; if (a.t !== 'crypto') while (wk(d)) d = new Date(d - DAY); while (out.length < n) { out.unshift(d.toISOString().slice(0, 10)); d = new Date(d - DAY); if (a.t !== 'crypto') while (wk(d)) d = new Date(d - DAY); } return out; };
+  function steps(a, k) {
+    const days = WIN.find(w => w[0] === k)[2], list = S.stories.filter(st => Date.now() - Date.parse(st.published_at) <= days * DAY && (st.impacts || []).some(i => find(i.ticker) === a)).sort((x, y) => Date.parse(x.published_at) - Date.parse(y.published_at));
+    const v = series(a, k), intra = k === 'd' && S.intra[a.s]?.d1;
+    const dates = intra ? null : tradingDates(a, (a.sp || []).length).slice(-v.length);
+    return list.map((st, n) => {
+      const t = Date.parse(st.published_at); let x, m, unit;
+      if (intra) { const [t0, t1] = intra.t.map(z => z * 1000); x = Math.min(1, Math.max(0, (t - t0) / (t1 - t0))); const j = Math.round(x * (v.length - 1)); m = pc(v[v.length - 1], v[j]); unit = 'since'; }
+      else { const ds = new Date(t).toISOString().slice(0, 10); let j = dates.findIndex(z => z >= ds); if (j < 0) j = v.length - 1; if (j < 1) j = 1; x = j / (v.length - 1); m = pc(v[j], v[j - 1]); unit = 'that day'; }
+      return { st, x, m, unit, n: n + 1, j: Math.round(x * (v.length - 1)), i: st.impacts.find(i => find(i.ticker) === a) };
+    });
+  }
+  function sheet(a, k) {
+    const m = move(a, k), v = series(a, k), st = steps(a, k), up = m >= 0;
+    const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1;
+    const pins = st.map(z => { const j = Math.round(z.x * (v.length - 1)); const y = 1 - (v[j] - lo) / r; return `<button type="button" class="nf-pin ${cls(z.m)}" data-n="${z.n}" style="left:${(z.x * 100).toFixed(1)}%;top:${(y * 88 + 6).toFixed(1)}%">${z.n}</button>`; }).join('');
+    const best = st.length ? st.reduce((b, z) => Math.abs(z.m) > Math.abs(b.m) ? z : b) : null;
+    const gapOf = (z, nx) => { const to = nx ? v[nx.j] : v[v.length - 1], g = pc(to, v[z.j]); return `<li class="nf-gap ${cls(g)}"><span>${g > 0.005 ? '↑' : g < -0.005 ? '↓' : '↔'} then ${fmt(g)} ${nx ? 'until step ' + nx.n : 'until now'}</span></li>`; };
+    const rail = st.length ? st.map((z, q) => `<li class="nf-step ${cls(z.m)}" data-n="${z.n}"><span class="nf-dot">${z.n}</span><div><span class="nf-eb">${new Date(z.st.published_at).toLocaleString('en-GB', { weekday: 'short', hour: '2-digit', minute: '2-digit' })} · ${ago(z.st.published_at)}</span><a href="story.html?id=${encodeURIComponent(z.st.id)}"><b>${esc(z.st.headline)}</b></a><p>${esc(z.i?.why || z.st.why || '')}</p></div><span class="nf-bd mono ${cls(z.m)}">${fmt(z.m)}<small>${z.unit}</small></span></li>${gapOf(z, st[q + 1])}`).join('') : '<li class="nf-quiet">No story in our feed names this asset in this window, so there is no news to point to for this move.</li>';
+    return `<div class="nf-sh0"><span class="nf-lg">${aIcon(a)}</span><div><b class="nf-nm">${esc(a.n)}</b><span class="nf-sy">${esc(a.s.replace(/[=^]/g, ''))}</span></div><button class="nf-close" type="button" aria-label="Close">×</button></div>
+      <div class="nf-tot"><span class="mono ${cls(m)}">${fmt(m)}</span><div class="nb-seg nf-wtabs">${WIN.map(([kk, l]) => `<button type="button" data-k="${kk}" aria-pressed="${kk === k}">${l}</button>`).join('')}</div></div>
+      <div class="nf-chart">${line(v, 300, 120, col(m))}${pins}</div>
+      <div class="nf-sum">${st.length ? `<b>${st.length}</b> ${st.length === 1 ? 'story' : 'stories'} named it${best ? ` · biggest move <b class="${cls(best.m)}">${fmt(best.m)}</b> at step ${best.n}` : ''}` : 'Quiet window'}</div>
+      <ol class="nf-rail">${rail}</ol>
+      <p class="mv-note">Moves shown are the asset's price change on the day of each story (or since it, for 24h). They show the news around a move, not proof it caused it. Not investment advice.</p>`;
+  }
+  let cur = null;
+  function openSheet(sym, k) {
+    const a = S.by[sym]; if (!a) return; cur = { a, k: k || S.win };
+    let el = $('nf-sheet'); if (!el) { el = document.createElement('div'); el.id = 'nf-sheet'; el.className = 'nf-sheet'; el.innerHTML = '<div class="nf-bg"></div><aside class="nf-pane" role="dialog" aria-modal="true"></aside>'; document.body.append(el); el.addEventListener('click', e => { if (e.target.closest('.nf-bg,.nf-close')) closeSheet(); const w = e.target.closest('.nf-wtabs button'); if (w) { cur.k = w.dataset.k; paint(); } const p = e.target.closest('.nf-pin'); if (p) { el.querySelectorAll('.nf-step').forEach(x => x.classList.toggle('on', x.dataset.n === p.dataset.n)); el.querySelectorAll('.nf-pin').forEach(x => x.classList.toggle('on', x === p)); const t = el.querySelector(`.nf-step[data-n="${p.dataset.n}"]`); t && t.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } }); }
+    paint(); el.hidden = false; document.documentElement.classList.add('nf-lock'); el.querySelector('.nf-pane').scrollTop = 0;
+  }
+  const paint = () => { $('nf-sheet').querySelector('.nf-pane').innerHTML = sheet(cur.a, cur.k); };
+  function closeSheet() { const el = $('nf-sheet'); if (el) el.hidden = true; document.documentElement.classList.remove('nf-lock'); }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
   $('nf-win').innerHTML = WIN.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="false">${l}</button>`).join('');
   $('nf-sort').innerHTML = SORT.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="false">${l}</button>`).join('');
   $('nf-win').onclick = e => { const b = e.target.closest('button'); if (b) { S.win = b.dataset.k; S.shown = 10; draw(); } };
@@ -53,7 +91,8 @@
   $('nf-q').addEventListener('input', e => { S.q = e.target.value; S.shown = 10; draw(); });
   $('nf-more').onclick = () => { S.shown += 10; draw(); };
   $('nf-chip').onclick = () => { S.q = ''; $('nf-q').value = ''; draw(); };
-  $('nf-strip').onclick = e => { const t = e.target.closest('.nf-t'); if (t) { S.q = t.dataset.n; $('nf-q').value = S.q; S.win = 'm'; S.shown = 10; draw(); $('nf-list').scrollIntoView({ behavior: 'smooth', block: 'start' }); } };
+  $('nf-strip').onclick = e => { const t = e.target.closest('.nf-t'); if (t) openSheet(t.dataset.s, 'w'); };
+  $('nf-list').addEventListener('click', e => { const r = e.target.closest('.nf-rx[data-s]'); if (r) openSheet(r.dataset.s); });
   document.addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); $('nf-q').focus(); } });
   Promise.all([AssetIcons.ready, loadNews(), fetch('assets/globe/markets.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ assets: [] })), fetch('assets/globe/news-prices.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ assets: {} })), fetch('assets/intraday.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ s: {} }))])
     .then(([, n, m, np, i]) => { S.stories = n.stories || []; S.mk = m.assets || []; S.by = Object.fromEntries(S.mk.map(a => [a.s, a])); for (const [k, a] of Object.entries(np.assets || {})) S.by[k] = a; S.intra = i.s || {}; $('nf-up').textContent = 'Updated ' + new Date(n.updated).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); hero(); strip(); draw(); })
