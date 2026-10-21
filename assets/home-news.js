@@ -37,7 +37,12 @@ function thumb(s) {
   return s.image ? `<img src="assets/globe/${esc(s.image.file)}" alt="">` : e ? `<img class="hn-lgo" src="${logoSrc(e)}" alt="" ${hideBad}>` : f ? `<img class="hn-flg" src="${f}" alt="">` : '';
 }
 const row = s => `<a class="hn-row" href="${url(s)}"><span class="hn-th">${thumb(s)}</span><span><span>${tags(s)}</span><h4>${esc(s.headline)}</h4><span class="hn-meta">${ago(s.published_at)} · ${esc(nm(s.location.country))}</span></span></a>`;
-const why = (s, i) => `<a class="hn-why" href="${url(s)}"><span class="hn-n">0${i + 1}</span><div>${tags(s)}</div><h3>${esc(s.headline)}</h3><div class="hn-wl">What happened</div><p>${esc(s.summary)}</p><div class="hn-wl">Why it matters</div><p>${esc(s.why)}</p>
+function impactChips(s) {
+  const rows = (Array.isArray(s.impacts) ? s.impacts : []).filter(i => i && typeof i.name === 'string' && ['up', 'down', 'mixed', 'unclear'].includes(i.direction) && Object.values(ISO).includes(i.country)).slice(0, 2);
+  const arrow = { up: '↑', down: '↓', mixed: '↔', unclear: '→' };
+  return rows.length ? `<div class="hn-ents hn-impacts" aria-label="AI-assisted analysis">${rows.map(i => `<span class="hn-ent"><img src="assets/globe/flags/${i.country.toLowerCase()}.svg" alt="" ${hideBad}><span class="hn-impact-${i.direction}">${arrow[i.direction]}</span>${esc(i.name)}</span>`).join('')}</div>` : '';
+}
+const why = (s, i) => `<a class="hn-why" href="${url(s)}"><span class="hn-n">0${i + 1}</span><div>${tags(s)}</div><h3>${esc(s.headline)}</h3><div class="hn-wl">What happened</div><p>${esc(s.summary)}</p><div class="hn-wl">Why it matters</div><p>${esc(s.why)}</p>${impactChips(s)}
   ${(s.entities || []).length ? `<div class="hn-ents">${s.entities.map(e => `<span class="hn-ent">${entityImage(e, s.location.country)}<span>${esc(e.name)}</span>${e.ticker ? `<code>${esc(e.ticker)}</code>` : ''}</span>`).join('')}</div>` : ''}</a>`;
 function countries(list) {
   const c = {}; for (const s of list) c[s.location.country] = (c[s.location.country] || 0) + 1;

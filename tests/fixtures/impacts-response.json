@@ -1,0 +1,12 @@
+[
+  {
+    "id": "$STORY_ID",
+    "impacts": [
+      {"kind":"company","name":"Tesla","country":"US","ticker":"TSLA","direction":"mixed","why":"Merger discussions can change expectations for Tesla's future structure."},
+      {"kind":"country","name":"Germany","country":"DE","ticker":null,"direction":"unclear","why":"Changes in vehicle demand can affect production and employment at local factories."},
+      {"kind":"sector","name":"Automotive supply chain","country":"JP","ticker":null,"direction":"down","why":"Lower vehicle orders can reduce demand for components."},
+      {"kind":"asset","name":"US equities","country":"US","ticker":"^GSPC","direction":"up","why":"Higher expected corporate earnings can support equity valuations."}
+    ],
+    "why_moved":"Changes in expected earnings can shift investor valuations. This is a test response, not verified analysis of this story."
+  }
+]
