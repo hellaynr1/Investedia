@@ -95,8 +95,8 @@ def gdelt():
     out = []
     for i, q in enumerate(GDELT_QUERIES):
         url = 'https://api.gdeltproject.org/api/v2/doc/doc?' + urllib.parse.urlencode({'query': q, 'mode': 'ArtList', 'format': 'json', 'maxrecords': 75, 'timespan': '3h', 'sort': 'HybridRel'})
-        for t in range(3):
-            time.sleep(6)  # GDELT asks for one request every 5 seconds
+        for t in range(4):
+            time.sleep(8 + 12 * t)  # GDELT asks for one request every 5 seconds; back off when it is busy
             try:
                 txt = get(url, timeout=60)
                 if txt.lstrip().startswith('{'):
@@ -107,7 +107,7 @@ def gdelt():
                     break
                 log('GDELT busy:', txt[:80])
             except Exception as e:
-                if t == 2: err(f'GDELT query {i}: {e}')
+                if t == 3: err(f'GDELT query {i}: {e}')
     return out
 
 
@@ -196,7 +196,7 @@ def gemini_models():
         ver = lambda m: [float(x) for x in re.findall(r'(\d+(?:\.\d+)?)', m)[:1]] or [0]
         ms.sort(key=lambda m: (ver(m), 'preview' not in m, 'lite' not in m, '-0' not in m), reverse=True)
         status['gemini_models_seen'] = ms[:8]
-        if ms: return ms[:4]
+        if ms: return ms[:6]
     except Exception as e: err(f'Gemini model list: {e}')
     return ['gemini-flash-latest', 'gemini-flash-lite-latest']
 
@@ -214,10 +214,10 @@ def gemini(prompt):
                 status['gemini_model'] = model
                 return json.loads(re.sub(r'^```(json)?|```$', '', txt.strip()))
             except urllib.error.HTTPError as e:
-                tried.append(f'{model}: HTTP {e.code} {e.read()[:160]!r}')
-                if e.code in (400, 401, 403): raise RuntimeError(tried[-1])
-                if e.code == 404: break
-                time.sleep(15)
+                tried.append(f'{model}: HTTP {e.code}')
+                if e.code in (400, 401, 403): raise RuntimeError(f'{tried[-1]} {e.read()[:200]!r}')
+                if e.code in (404, 503): break  # retired or overloaded: try the next model
+                time.sleep(20)
             except Exception as e:
                 tried.append(f'{model}: {e}'); time.sleep(5)
     raise RuntimeError(' | '.join(tried)[:600])
