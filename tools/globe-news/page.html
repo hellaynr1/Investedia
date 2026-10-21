@@ -116,9 +116,34 @@ h1 span{color:var(--fg-3)}
 .sec-h{margin:22px 0 6px;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3)}
 .art{position:relative;overflow:hidden;border-radius:14px;background:radial-gradient(120% 90% at var(--x,70%) var(--y,20%),rgba(255,122,26,.32),transparent 55%),linear-gradient(140deg,#1c1c20,#0c0c0e);display:grid;place-items:center}
 .art::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:22px 22px;mask-image:radial-gradient(circle at 60% 40%,#000,transparent 75%)}
-.art svg{position:relative;width:34%;max-width:64px;height:auto;stroke:rgba(255,255,255,.85);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
-.art span{position:absolute;left:10px;bottom:8px;font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em}
+.art>svg:not(.cout):not(.cspark){position:relative;width:34%;max-width:64px;height:auto;stroke:rgba(255,255,255,.85);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.art>span.ph{position:absolute;left:10px;bottom:8px;font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em}
 .story .art{aspect-ratio:16/9;margin:2px 0 16px}
+.art.photo{background-size:cover;background-position:center}
+.art.card{display:block;border:1px solid var(--line);background:radial-gradient(90% 80% at 85% 20%,rgba(255,122,26,.13),transparent 60%),linear-gradient(150deg,#18181b,#0b0b0d)}
+.art.card::before{mask-image:radial-gradient(circle at 80% 30%,#000,transparent 70%)}
+.cout{position:absolute;right:5%;top:7%;width:40%;height:56%;opacity:.95}
+.cout.big{left:0;right:0;top:8%;width:100%;height:76%}
+.chead{position:absolute;left:16px;top:16px;display:flex;align-items:center;gap:10px;max-width:60%}
+.chead img,.cico{width:34px;height:34px;flex:none;border-radius:9px;background:#fff;object-fit:contain;padding:5px;box-sizing:border-box}
+.cico{background:rgba(255,255,255,.06);display:grid;place-items:center;padding:7px}
+.chead b{display:block;font-size:13.5px;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chead span{font:500 11px var(--mono);color:var(--fg-3)}
+.cpx{position:absolute;left:16px;top:62px;display:grid;gap:3px}
+.cpx span{font:500 22px var(--mono);letter-spacing:-.02em;color:var(--fg)}
+.cpx em{font:500 11.5px var(--mono);font-style:normal}
+.up{color:#22C55E}.dn{color:#F04444}
+.cspark{position:absolute;left:0;right:0;bottom:26px;width:100%;height:36%}
+.csrc{position:absolute;left:16px;right:16px;bottom:8px;font-size:10px;color:rgba(255,255,255,.42);letter-spacing:.02em}
+.cmeta{position:absolute;left:16px;bottom:14px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--fg-2)}
+.cmeta b{color:var(--fg);font-weight:600}
+.art .cicon{position:static;width:28px;height:28px;max-width:none;stroke:rgba(255,255,255,.8)}
+.art.thumb{display:grid;place-items:center;border:1px solid var(--line);background:linear-gradient(150deg,#1b1b1e,#0d0d0f)}
+.art.thumb img{width:72%;height:72%;object-fit:contain;background:#fff;border-radius:8px;padding:12%;box-sizing:border-box}
+.art.thumb .cout{position:static;width:80%;height:80%}
+.art.thumb::before{display:none}
+.item{grid-template-columns:14px 1fr 44px!important}
+.item .art.thumb{width:44px;height:44px;border-radius:10px;margin-top:4px}
 .story h2{font-size:21px}
 .story .meta{margin:8px 0 16px}
 .story p{margin:0;font-size:14px;line-height:1.6;color:#D4D4D8}
@@ -196,12 +221,13 @@ h1 span{color:var(--fg-3)}
   <div class="pbody" id="pbody"></div>
 </aside>
 
+<script src="../quotes.js"></script>
 <script>
 // ===== Data =====
 // News is loaded from NEWS_URL. Today that is demo content; a live pipeline (sources → dedupe → location → entities → category → importance → validation → summary)
 // only has to write the same JSON shape (see tools/globe-news/news-demo.json "fields"). Nothing below is tied to the demo stories.
 const NEWS_URL = 'news-demo.json';
-const DOTS = __DOTS__, CTRY = __COUNTRIES__;
+const DOTS = __DOTS__, CTRY = __COUNTRIES__, LOGOS = __LOGOS__, QD = window.QUOTES || { q: {} };
 const $ = id => document.getElementById(id), rad = Math.PI / 180, T0 = Date.now();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const phone = () => innerWidth <= 760;
@@ -219,10 +245,44 @@ const ICON = {
   technology: 'M7 7h10v10H7zM10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4', crypto: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M9.5 7.5v9M9.5 8h4a2 2 0 0 1 0 4h-4m0 0h4.5a2 2 0 0 1 0 4H9.5',
   commodities: 'M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z', geopolitics: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3c3.5 3.5 3.5 14.5 0 18M12 3c-3.5 3.5-3.5 14.5 0 18'
 };
-// Placeholder artwork (no third-party images until licensed sources are connected)
+// Image cards (no third-party photos): real price chart of the story's first asset with data, its logo, and the country outline.
+// A licensed image (story.image) always wins when the live pipeline provides one.
+const YLD = /\d+Y$/;
+const quoteOf = s => { for (const e of s.entities) { const q = e.sym && QD.q[e.sym]; if (q && q.sp && q.sp.length > 5) return { e, q }; } return null; };
+const logoOf = s => { for (const e of s.entities) { const l = LOGOS[e.sym] || LOGOS[e.ticker]; if (l) return { e, l }; } return null; };
+const fmtP = (v, sym) => v.toLocaleString('en-US', { maximumFractionDigits: YLD.test(sym) ? 2 : v >= 1000 ? 0 : v >= 10 ? 2 : 4, minimumFractionDigits: YLD.test(sym) ? 2 : 0 });
+const outlineCache = {};
+function outline(name, lat, lon) {
+  const c = byName[name]; if (!c) return '';
+  const key = name + (c.rings.length) + lat + lon; if (outlineCache[key]) return outlineCache[key];
+  const bbx = g => { const b = [180, 90, -180, -90]; for (const [x, y] of g) { b[0] = Math.min(b[0], x); b[1] = Math.min(b[1], y); b[2] = Math.max(b[2], x); b[3] = Math.max(b[3], y); } return b; };
+  let rings = c.rings.filter(g => { const b = bbx(g); return Math.abs((b[0] + b[2]) / 2 - c.c[0]) < 28 && Math.abs((b[1] + b[3]) / 2 - c.c[1]) < 22; }); if (!rings.length) rings = c.rings;
+  const B = bbx(rings.flat()), k = Math.cos((B[1] + B[3]) / 2 * rad), w = (B[2] - B[0]) * k || 1, h = B[3] - B[1] || 1, sc = 88 / Math.max(w, h), ox = (100 - w * sc) / 2, oy = (100 - h * sc) / 2;
+  const P = (lo, la) => [(ox + (lo - B[0]) * k * sc).toFixed(1), (oy + (B[3] - la) * sc).toFixed(1)];
+  const d = rings.map(g => 'M' + g.map(([x, y]) => P(x, y).join(' ')).join('L') + 'Z').join('');
+  const [px, py] = P(lon, lat), dot = lon >= B[0] - 1 && lon <= B[2] + 1 && lat >= B[1] - 1 && lat <= B[3] + 1 ? `<circle cx="${px}" cy="${py}" r="5" fill="rgba(255,122,26,.25)"/><circle cx="${px}" cy="${py}" r="2" fill="#FF8C32"/>` : '';
+  return outlineCache[key] = `<path d="${d}" fill="rgba(255,122,26,.07)" stroke="rgba(255,140,60,.55)" stroke-width=".7" vector-effect="non-scaling-stroke" fill-rule="evenodd"/>${dot}`;
+}
+function spark(sp, up) {
+  const lo = Math.min(...sp), hi = Math.max(...sp), r = hi - lo || 1, pts = sp.map((v, i) => [(i / (sp.length - 1) * 300).toFixed(1), (6 + (1 - (v - lo) / r) * 62).toFixed(1)]);
+  const col = up ? '34,197,94' : '240,68,68', id = 'g' + Math.random().toString(36).slice(2, 7);
+  return `<svg class="cspark" viewBox="0 0 300 74" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(${col},.28)"/><stop offset="1" stop-color="rgba(${col},0)"/></linearGradient></defs><path d="M0 74L${pts.map(p => p.join(' ')).join('L')}L300 74Z" fill="url(#${id})"/><path d="M${pts.map(p => p.join(' ')).join('L')}" fill="none" stroke="rgb(${col})" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
+}
 function art(s, label = true) {
-  let h = 0; for (const c of s.id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  return `<div class="art" style="--x:${30 + h % 55}%;--y:${10 + (h >> 4) % 50}%"><svg viewBox="0 0 24 24"><path d="${ICON[s.category] || ICON.markets}"/></svg>${label ? '<span>Image placeholder</span>' : ''}</div>`;
+  if (s.image) return `<div class="art photo" style="background-image:url('${esc(s.image)}')"></div>`;
+  const qq = quoteOf(s), lg = logoOf(s), ol = outline(s.location.country, s.location.lat, s.location.lon);
+  const icon = `<svg class="cicon" viewBox="0 0 24 24"><path d="${ICON[s.category] || ICON.markets}"/></svg>`;
+  if (!label) // thumbnail: logo, else the country outline
+    return `<div class="art thumb">${lg ? `<img src="${lg.l}" alt="" loading="lazy">` : ol ? `<svg class="cout" viewBox="0 0 100 100">${ol}</svg>` : icon}</div>`;
+  if (!qq) return `<div class="art card"><svg class="cout big" viewBox="0 0 100 100">${ol}</svg><div class="cmeta">${icon}<span>${esc(s.location.place)}<br><b>${esc(nm(s.location.country))}</b></span></div></div>`;
+  const { e, q } = qq, sp = q.sp, chg = (sp[sp.length - 1] / sp[0] - 1) * 100, y = YLD.test(e.sym), up = sp[sp.length - 1] >= sp[0];
+  const day = y ? `${q.d >= 0 ? '+' : ''}${q.d.toFixed(1)} bp today` : `${q.d >= 0 ? '+' : ''}${q.d.toFixed(2)}% today`;
+  const l2 = lg && lg.e === e ? lg.l : LOGOS[e.sym] || LOGOS[e.ticker];
+  const when = QD.updated ? new Date(QD.updated).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '';
+  return `<div class="art card"><svg class="cout" viewBox="0 0 100 100">${ol}</svg>
+    <div class="chead">${l2 ? `<img src="${l2}" alt="" loading="lazy">` : `<span class="cico">${icon}</span>`}<div><b>${esc(e.name)}</b><span>${esc(e.sym)}${q.cur ? ' · ' + esc(q.cur) : ''}</span></div></div>
+    <div class="cpx"><span>${fmtP(q.p, e.sym)}${y ? '%' : ''}</span><em class="${q.d >= 0 ? 'up' : 'dn'}">${day}</em></div>
+    ${spark(sp, up)}<span class="csrc">${y ? '' : (chg >= 0 ? '+' : '') + chg.toFixed(1) + '% · '}last ${sp.length} trading days · Yahoo Finance${when ? ', ' + when : ''}</span></div>`;
 }
 function ago(t) { const m = Math.max(1, Math.round((Date.now() - t) / 60000)); return m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; }
 
@@ -390,7 +450,7 @@ pbody.addEventListener('click', e => {
 });
 addEventListener('keydown', e => { if (e.key === 'Escape' && view.k !== 'top') back(); });
 
-const item = s => `<button class="item" data-story="${s.id}"><span class="dot i${s.importance}"></span><span><span class="eyebrow">${s.flag ? `<span class="tag">${FLAG[s.flag]}</span>` : ''}${esc(CAT[s.category])} · ${esc(s.location.place)}</span><h4>${esc(s.headline)}</h4><span class="meta">${ago(s.t)} · ${esc(nm(s.location.country))}${s.demo ? '<span class="dtag">DEMO</span>' : ''}</span></span></button>`;
+const item = s => `<button class="item" data-story="${s.id}"><span class="dot i${s.importance}"></span><span><span class="eyebrow">${s.flag ? `<span class="tag">${FLAG[s.flag]}</span>` : ''}${esc(CAT[s.category])} · ${esc(s.location.place)}</span><h4>${esc(s.headline)}</h4><span class="meta">${ago(s.t)} · ${esc(nm(s.location.country))}${s.demo ? '<span class="dtag">DEMO</span>' : ''}</span></span>${art(s, false)}</button>`;
 const NOTE = '<p class="note">Concept preview. Every story on this globe is demo content written to show the design: not real news, not live, not investment advice. When live sources are connected, each story will show its source, original link and publication time.</p>';
 function render() {
   if (view.k === 'top') {

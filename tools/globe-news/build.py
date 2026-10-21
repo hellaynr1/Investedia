@@ -65,6 +65,11 @@ open(os.path.join(SITE, 'assets/globe/countries-50m.json'), 'w').write(json.dump
 
 page = open(os.path.join(G, 'page.html'), encoding='utf-8').read()
 page = page.replace('__DOTS__', open(os.path.join('/'.join([SITE, 'tools/globe']), 'dots.json')).read()).replace('__COUNTRIES__', json.dumps(C, separators=(',', ':')))
+# logo index for the image cards: symbol -> path (site logos by Investedia symbol, company logos by exchange ticker)
+LG = os.path.join(SITE, 'assets/logos')
+logos = {f.rsplit('.', 1)[0]: '../logos/' + f for f in sorted(os.listdir(LG)) if '.' in f}
+logos.update({f.rsplit('.', 1)[0]: '../logos/co/' + f for f in sorted(os.listdir(os.path.join(LG, 'co')))})
+page = page.replace('__LOGOS__', json.dumps(logos, separators=(',', ':')))
 out = os.path.join(SITE, 'assets/globe/news.html')
 open(out, 'w', encoding='utf-8').write(page)
 shutil.copy(os.path.join(G, 'news-demo.json'), os.path.join(SITE, 'assets/globe/news-demo.json'))
