@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia Globe News (concept)</title>
 <meta name="robots" content="noindex">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Geist+Mono:wght@400;500&display=swap">
 <style>
@@ -116,10 +117,32 @@ h1 span{color:var(--fg-3)}
 .sec-h{margin:22px 0 6px;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3)}
 .art{position:relative;overflow:hidden;border-radius:14px;background:radial-gradient(120% 90% at var(--x,70%) var(--y,20%),rgba(255,122,26,.32),transparent 55%),linear-gradient(140deg,#1c1c20,#0c0c0e);display:grid;place-items:center}
 .art::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:22px 22px;mask-image:radial-gradient(circle at 60% 40%,#000,transparent 75%)}
-.art>svg:not(.cout):not(.cspark){position:relative;width:34%;max-width:64px;height:auto;stroke:rgba(255,255,255,.85);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.art>svg:not(.cout):not(.cspark):not(.pout){position:relative;width:34%;max-width:64px;height:auto;stroke:rgba(255,255,255,.85);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
 .art>span.ph{position:absolute;left:10px;bottom:8px;font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em}
 .story .art{aspect-ratio:16/9;margin:2px 0 16px}
-.art.photo{background-size:cover;background-position:center}
+.art.photo{display:block;margin:2px 0 16px;border:1px solid var(--line);background:#0b0b0d}
+.art.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.art.photo::before{display:none}
+.art.photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 30%,transparent 45%,rgba(0,0,0,.82))}
+.pkind{position:absolute;z-index:1;left:12px;top:12px;padding:4px 8px;border-radius:6px;background:rgba(10,10,11,.7);backdrop-filter:blur(6px);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff}
+.art.photo .cspark{z-index:1;bottom:30px;height:34%;opacity:.95}
+.pq{position:absolute;z-index:2;left:12px;bottom:34px;display:flex;align-items:center;gap:9px;padding:6px 10px 6px 6px;border-radius:10px;background:rgba(10,10,11,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.art.photo .pq img{position:static;inset:auto;width:28px;height:28px;border-radius:7px;background:#fff;object-fit:contain;padding:3px;box-sizing:border-box}
+.pq{max-width:62%}
+.pq b{display:block;font-size:12.5px;font-weight:600;color:#fff;line-height:1.25}
+.pq span{font:500 11px var(--mono);color:rgba(255,255,255,.75)}
+.pq em{font-style:normal}
+.pout{position:absolute;z-index:1;right:12px;top:12px;width:64px;height:64px;padding:6px;border-radius:10px;background:rgba(10,10,11,.6);backdrop-filter:blur(6px);box-sizing:border-box}
+.plogo{position:absolute;z-index:2;right:12px;top:12px;width:min(196px,40%);height:46px;border-radius:8px;overflow:hidden;background:#fff}
+.art.photo .plogo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pchip{position:absolute;z-index:1;right:12px;top:12px;display:flex;align-items:center;gap:7px;padding:4px 9px 4px 5px;border-radius:8px;background:rgba(10,10,11,.75);backdrop-filter:blur(6px);font-size:12px;font-weight:550;color:#fff}
+.pchip img{position:static;width:20px;height:20px;border-radius:5px;background:#fff;object-fit:contain;padding:2px;box-sizing:border-box}
+.pchip em{font:500 11.5px var(--mono);font-style:normal}
+.art.photo figcaption{position:absolute;z-index:1;left:12px;right:12px;bottom:9px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4;color:rgba(255,255,255,.7)}
+.art.photo figcaption a{color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35)}
+.art.thumb.photo{margin:0;padding:0}
+.art.thumb.photo img{position:static;width:100%;height:100%;object-fit:cover;padding:0;background:none;border-radius:0}
+.art.thumb.photo::after{display:none}
 .art.card{display:block;border:1px solid var(--line);background:radial-gradient(90% 80% at 85% 20%,rgba(255,122,26,.13),transparent 60%),linear-gradient(150deg,#18181b,#0b0b0d)}
 .art.card::before{mask-image:radial-gradient(circle at 80% 30%,#000,transparent 70%)}
 .cout{position:absolute;right:5%;top:7%;width:40%;height:56%;opacity:.95}
@@ -249,7 +272,19 @@ const ICON = {
 // A licensed image (story.image) always wins when the live pipeline provides one.
 const YLD = /\d+Y$/;
 const quoteOf = s => { for (const e of s.entities) { const q = e.sym && QD.q[e.sym]; if (q && q.sp && q.sp.length > 5) return { e, q }; } return null; };
-const logoOf = s => { for (const e of s.entities) { const l = LOGOS[e.sym] || LOGOS[e.ticker]; if (l) return { e, l }; } return null; };
+// Company logos: Brandfetch (free, sharp at any size, must be hotlinked) when BRANDFETCH_ID is set; our own vector (SVG) logos win,
+// and our logo files are the fallback if Brandfetch has no logo for that ticker.
+const BRANDFETCH_ID = ''; // public client ID from brandfetch.com/developers (not a secret: it is part of every logo URL)
+function bfURL(e, px) {
+  if (!BRANDFETCH_ID || !e.ticker) return null; const t = e.ticker;
+  if (/-USD$/.test(t)) return `https://cdn.brandfetch.io/crypto/${encodeURIComponent(t.split('-')[0])}/w/${px}/h/${px}/fallback/404?c=${BRANDFETCH_ID}`;
+  if (/[\^=]/.test(t)) return null; // indices, currencies, futures have no company logo
+  return `https://cdn.brandfetch.io/ticker/${encodeURIComponent(t)}/w/${px}/h/${px}/fallback/404?c=${BRANDFETCH_ID}`;
+}
+function logoFor(e) { const local = LOGOS[e.sym] || LOGOS[e.ticker], remote = !(local && local.endsWith('.svg')) && bfURL(e, 512); return local || remote ? { e, l: remote || local, fb: remote && local ? local : '' } : null; }
+const logoOf = s => { for (const e of s.entities) { const l = logoFor(e); if (l) return l; } return null; };
+const limg = (lg, alt = '') => `<img src="${esc(lg.l)}" alt="${esc(alt)}" data-logo${lg.fb ? ` data-fb="${esc(lg.fb)}"` : ''} loading="lazy" referrerpolicy="strict-origin-when-cross-origin">`;
+addEventListener('error', ev => { const t = ev.target; if (t.tagName !== 'IMG' || !t.hasAttribute('data-logo')) return; if (t.dataset.fb) { t.src = t.dataset.fb; t.removeAttribute('data-fb'); } else (t.closest('.plogo') || t).remove(); }, true);
 const fmtP = (v, sym) => v.toLocaleString('en-US', { maximumFractionDigits: YLD.test(sym) ? 2 : v >= 1000 ? 0 : v >= 10 ? 2 : 4, minimumFractionDigits: YLD.test(sym) ? 2 : 0 });
 const outlineCache = {};
 function outline(name, lat, lon) {
@@ -269,18 +304,27 @@ function spark(sp, up) {
   return `<svg class="cspark" viewBox="0 0 300 74" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(${col},.28)"/><stop offset="1" stop-color="rgba(${col},0)"/></linearGradient></defs><path d="M0 74L${pts.map(p => p.join(' ')).join('L')}L300 74Z" fill="url(#${id})"/><path d="M${pts.map(p => p.join(' ')).join('L')}" fill="none" stroke="rgb(${col})" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
 }
 function art(s, label = true) {
-  if (s.image) return `<div class="art photo" style="background-image:url('${esc(s.image)}')"></div>`;
   const qq = quoteOf(s), lg = logoOf(s), ol = outline(s.location.country, s.location.lat, s.location.lon);
+  // B / C: openly licensed photo, always with its credit and licence
+  if (s.image && typeof s.image === 'object') {
+    const im = s.image, src = esc(im.url || im.file);
+    if (!label) return `<div class="art thumb photo"><img src="${src}" alt="" loading="lazy"></div>`;
+    // photo layout: clean photo, company logo top right (no chart on photos), credit at the bottom
+    const lgp = lg ? `<span class="plogo">${limg(lg, lg.e.name)}</span>` : '';
+    const lic = im.license_url ? `<a href="${esc(im.license_url)}" target="_blank" rel="noopener license">${esc(im.license)}</a>` : esc(im.license);
+    return `<figure class="art photo"><img src="${src}" alt="${esc(im.alt || '')}" loading="lazy"><span class="pkind">${im.kind === 'place' ? 'Photo of the place' : 'Topic photo'}</span>${lgp}
+      <figcaption>${im.kind === 'topic' ? 'Illustration · ' : ''}Photo: ${esc(im.credit)} · ${lic} · <a href="${esc(im.source_url)}" target="_blank" rel="noopener">${esc(im.source || 'source')}</a></figcaption></figure>`;
+  }
   const icon = `<svg class="cicon" viewBox="0 0 24 24"><path d="${ICON[s.category] || ICON.markets}"/></svg>`;
   if (!label) // thumbnail: logo, else the country outline
-    return `<div class="art thumb">${lg ? `<img src="${lg.l}" alt="" loading="lazy">` : ol ? `<svg class="cout" viewBox="0 0 100 100">${ol}</svg>` : icon}</div>`;
+    return `<div class="art thumb">${lg ? limg(lg) : ol ? `<svg class="cout" viewBox="0 0 100 100">${ol}</svg>` : icon}</div>`;
   if (!qq) return `<div class="art card"><svg class="cout big" viewBox="0 0 100 100">${ol}</svg><div class="cmeta">${icon}<span>${esc(s.location.place)}<br><b>${esc(nm(s.location.country))}</b></span></div></div>`;
   const { e, q } = qq, sp = q.sp, chg = (sp[sp.length - 1] / sp[0] - 1) * 100, y = YLD.test(e.sym), up = sp[sp.length - 1] >= sp[0];
   const day = y ? `${q.d >= 0 ? '+' : ''}${q.d.toFixed(1)} bp today` : `${q.d >= 0 ? '+' : ''}${q.d.toFixed(2)}% today`;
-  const l2 = lg && lg.e === e ? lg.l : LOGOS[e.sym] || LOGOS[e.ticker];
+  const l2 = lg && lg.e === e ? lg : logoFor(e);
   const when = QD.updated ? new Date(QD.updated).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '';
   return `<div class="art card"><svg class="cout" viewBox="0 0 100 100">${ol}</svg>
-    <div class="chead">${l2 ? `<img src="${l2}" alt="" loading="lazy">` : `<span class="cico">${icon}</span>`}<div><b>${esc(e.name)}</b><span>${esc(e.sym)}${q.cur ? ' · ' + esc(q.cur) : ''}</span></div></div>
+    <div class="chead">${l2 ? limg(l2) : `<span class="cico">${icon}</span>`}<div><b>${esc(e.name)}</b><span>${esc(e.sym)}${q.cur ? ' · ' + esc(q.cur) : ''}</span></div></div>
     <div class="cpx"><span>${fmtP(q.p, e.sym)}${y ? '%' : ''}</span><em class="${q.d >= 0 ? 'up' : 'dn'}">${day}</em></div>
     ${spark(sp, up)}<span class="csrc">${y ? '' : (chg >= 0 ? '+' : '') + chg.toFixed(1) + '% · '}last ${sp.length} trading days · Yahoo Finance${when ? ', ' + when : ''}</span></div>`;
 }

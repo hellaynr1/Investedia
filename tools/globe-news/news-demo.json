@@ -17,7 +17,7 @@
     "published_at": "ISO time from the source (required for real stories)",
     "retrieved_at": "ISO time we fetched it (required for real stories)",
     "age_minutes": "DEMO ONLY: age relative to page load, used when published_at is null",
-    "image": "licensed image url or null. null shows an Investedia card: real price chart of the first asset with data, its logo and the country outline"
+    "image": "null = Investedia card (real price chart of the first asset with data, logo, country outline). Or an object for a licensed photo: kind 'place' (the real place in the story) or 'topic' (illustration of the subject), file or url, alt, credit, license, license_url, source, source_url. The card is drawn on top of the photo; credit and licence are always shown. No Wikimedia images."
   },
   "stories": [
     {
