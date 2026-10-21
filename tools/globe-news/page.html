@@ -116,18 +116,26 @@ h1 span{color:var(--fg-3)}
 .sec-h{margin:22px 0 6px;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3)}
 .art{position:relative;overflow:hidden;border-radius:14px;background:radial-gradient(120% 90% at var(--x,70%) var(--y,20%),rgba(255,122,26,.32),transparent 55%),linear-gradient(140deg,#1c1c20,#0c0c0e);display:grid;place-items:center}
 .art::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:22px 22px;mask-image:radial-gradient(circle at 60% 40%,#000,transparent 75%)}
-.art>svg:not(.cout):not(.cspark){position:relative;width:34%;max-width:64px;height:auto;stroke:rgba(255,255,255,.85);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.art>svg:not(.cout):not(.cspark):not(.pout){position:relative;width:34%;max-width:64px;height:auto;stroke:rgba(255,255,255,.85);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
 .art>span.ph{position:absolute;left:10px;bottom:8px;font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em}
 .story .art{aspect-ratio:16/9;margin:2px 0 16px}
 .art.photo{display:block;margin:2px 0 16px;border:1px solid var(--line);background:#0b0b0d}
 .art.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .art.photo::before{display:none}
-.art.photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 30%,transparent 60%,rgba(0,0,0,.75))}
+.art.photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 30%,transparent 45%,rgba(0,0,0,.82))}
 .pkind{position:absolute;z-index:1;left:12px;top:12px;padding:4px 8px;border-radius:6px;background:rgba(10,10,11,.7);backdrop-filter:blur(6px);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff}
+.art.photo .cspark{z-index:1;bottom:30px;height:34%;opacity:.95}
+.pq{position:absolute;z-index:2;left:12px;bottom:34px;display:flex;align-items:center;gap:9px;padding:6px 10px 6px 6px;border-radius:10px;background:rgba(10,10,11,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.art.photo .pq img{position:static;inset:auto;width:28px;height:28px;border-radius:7px;background:#fff;object-fit:contain;padding:3px;box-sizing:border-box}
+.pq{max-width:62%}
+.pq b{display:block;font-size:12.5px;font-weight:600;color:#fff;line-height:1.25}
+.pq span{font:500 11px var(--mono);color:rgba(255,255,255,.75)}
+.pq em{font-style:normal}
+.pout{position:absolute;z-index:1;right:12px;top:12px;width:64px;height:64px;padding:6px;border-radius:10px;background:rgba(10,10,11,.6);backdrop-filter:blur(6px);box-sizing:border-box}
 .pchip{position:absolute;z-index:1;right:12px;top:12px;display:flex;align-items:center;gap:7px;padding:4px 9px 4px 5px;border-radius:8px;background:rgba(10,10,11,.75);backdrop-filter:blur(6px);font-size:12px;font-weight:550;color:#fff}
 .pchip img{position:static;width:20px;height:20px;border-radius:5px;background:#fff;object-fit:contain;padding:2px;box-sizing:border-box}
 .pchip em{font:500 11.5px var(--mono);font-style:normal}
-.art.photo figcaption{position:absolute;z-index:1;left:12px;right:12px;bottom:9px;font-size:10.5px;line-height:1.4;color:rgba(255,255,255,.7)}
+.art.photo figcaption{position:absolute;z-index:1;left:12px;right:12px;bottom:9px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4;color:rgba(255,255,255,.7)}
 .art.photo figcaption a{color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35)}
 .art.thumb.photo{margin:0;padding:0}
 .art.thumb.photo img{position:static;width:100%;height:100%;object-fit:cover;padding:0;background:none;border-radius:0}
@@ -286,9 +294,12 @@ function art(s, label = true) {
   if (s.image && typeof s.image === 'object') {
     const im = s.image, src = esc(im.url || im.file);
     if (!label) return `<div class="art thumb photo"><img src="${src}" alt="" loading="lazy"></div>`;
-    const chip = qq ? `<span class="pchip">${(LOGOS[qq.e.sym] || LOGOS[qq.e.ticker]) ? `<img src="${LOGOS[qq.e.sym] || LOGOS[qq.e.ticker]}" alt="">` : ''}${esc(qq.e.name)} <em class="${qq.q.d >= 0 ? 'up' : 'dn'}">${YLD.test(qq.e.sym) ? (qq.q.d >= 0 ? '+' : '') + qq.q.d.toFixed(1) + ' bp' : (qq.q.d >= 0 ? '+' : '') + qq.q.d.toFixed(2) + '%'}</em></span>` : '';
+    let over = '';
+    if (qq) { const { e, q } = qq, sp = q.sp, y = YLD.test(e.sym), lg2 = LOGOS[e.sym] || LOGOS[e.ticker], ch = (sp[sp.length - 1] / sp[0] - 1) * 100;
+      over = `${spark(sp, sp[sp.length - 1] >= sp[0])}<div class="pq">${lg2 ? `<img src="${lg2}" alt="">` : ''}<div><b>${esc(e.name)}</b><span>${fmtP(q.p, e.sym)}${y ? '%' : ''} <em class="${q.d >= 0 ? 'up' : 'dn'}">${y ? (q.d >= 0 ? '+' : '') + q.d.toFixed(1) + ' bp' : (q.d >= 0 ? '+' : '') + q.d.toFixed(2) + '%'} today</em></span></div></div>`; }
+    const where = im.kind === 'topic' && ol ? `<svg class="pout" viewBox="0 0 100 100">${ol}</svg>` : '';
     const lic = im.license_url ? `<a href="${esc(im.license_url)}" target="_blank" rel="noopener license">${esc(im.license)}</a>` : esc(im.license);
-    return `<figure class="art photo"><img src="${src}" alt="${esc(im.alt || '')}" loading="lazy"><span class="pkind">${im.kind === 'place' ? 'Photo of the place' : 'Topic photo'}</span>${chip}
+    return `<figure class="art photo"><img src="${src}" alt="${esc(im.alt || '')}" loading="lazy"><span class="pkind">${im.kind === 'place' ? 'Photo of the place' : 'Topic photo'}</span>${where}${over}
       <figcaption>${im.kind === 'topic' ? 'Illustration · ' : ''}Photo: ${esc(im.credit)} · ${lic} · <a href="${esc(im.source_url)}" target="_blank" rel="noopener">${esc(im.source || 'source')}</a></figcaption></figure>`;
   }
   const icon = `<svg class="cicon" viewBox="0 0 24 24"><path d="${ICON[s.category] || ICON.markets}"/></svg>`;
