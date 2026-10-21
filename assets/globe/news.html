@@ -119,7 +119,19 @@ h1 span{color:var(--fg-3)}
 .art>svg:not(.cout):not(.cspark){position:relative;width:34%;max-width:64px;height:auto;stroke:rgba(255,255,255,.85);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
 .art>span.ph{position:absolute;left:10px;bottom:8px;font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em}
 .story .art{aspect-ratio:16/9;margin:2px 0 16px}
-.art.photo{background-size:cover;background-position:center}
+.art.photo{display:block;margin:2px 0 16px;border:1px solid var(--line);background:#0b0b0d}
+.art.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.art.photo::before{display:none}
+.art.photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 30%,transparent 60%,rgba(0,0,0,.75))}
+.pkind{position:absolute;z-index:1;left:12px;top:12px;padding:4px 8px;border-radius:6px;background:rgba(10,10,11,.7);backdrop-filter:blur(6px);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff}
+.pchip{position:absolute;z-index:1;right:12px;top:12px;display:flex;align-items:center;gap:7px;padding:4px 9px 4px 5px;border-radius:8px;background:rgba(10,10,11,.75);backdrop-filter:blur(6px);font-size:12px;font-weight:550;color:#fff}
+.pchip img{position:static;width:20px;height:20px;border-radius:5px;background:#fff;object-fit:contain;padding:2px;box-sizing:border-box}
+.pchip em{font:500 11.5px var(--mono);font-style:normal}
+.art.photo figcaption{position:absolute;z-index:1;left:12px;right:12px;bottom:9px;font-size:10.5px;line-height:1.4;color:rgba(255,255,255,.7)}
+.art.photo figcaption a{color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35)}
+.art.thumb.photo{margin:0;padding:0}
+.art.thumb.photo img{position:static;width:100%;height:100%;object-fit:cover;padding:0;background:none;border-radius:0}
+.art.thumb.photo::after{display:none}
 .art.card{display:block;border:1px solid var(--line);background:radial-gradient(90% 80% at 85% 20%,rgba(255,122,26,.13),transparent 60%),linear-gradient(150deg,#18181b,#0b0b0d)}
 .art.card::before{mask-image:radial-gradient(circle at 80% 30%,#000,transparent 70%)}
 .cout{position:absolute;right:5%;top:7%;width:40%;height:56%;opacity:.95}
@@ -269,8 +281,16 @@ function spark(sp, up) {
   return `<svg class="cspark" viewBox="0 0 300 74" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(${col},.28)"/><stop offset="1" stop-color="rgba(${col},0)"/></linearGradient></defs><path d="M0 74L${pts.map(p => p.join(' ')).join('L')}L300 74Z" fill="url(#${id})"/><path d="M${pts.map(p => p.join(' ')).join('L')}" fill="none" stroke="rgb(${col})" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
 }
 function art(s, label = true) {
-  if (s.image) return `<div class="art photo" style="background-image:url('${esc(s.image)}')"></div>`;
   const qq = quoteOf(s), lg = logoOf(s), ol = outline(s.location.country, s.location.lat, s.location.lon);
+  // B / C: openly licensed photo, always with its credit and licence
+  if (s.image && typeof s.image === 'object') {
+    const im = s.image, src = esc(im.url || im.file);
+    if (!label) return `<div class="art thumb photo"><img src="${src}" alt="" loading="lazy"></div>`;
+    const chip = qq ? `<span class="pchip">${(LOGOS[qq.e.sym] || LOGOS[qq.e.ticker]) ? `<img src="${LOGOS[qq.e.sym] || LOGOS[qq.e.ticker]}" alt="">` : ''}${esc(qq.e.name)} <em class="${qq.q.d >= 0 ? 'up' : 'dn'}">${YLD.test(qq.e.sym) ? (qq.q.d >= 0 ? '+' : '') + qq.q.d.toFixed(1) + ' bp' : (qq.q.d >= 0 ? '+' : '') + qq.q.d.toFixed(2) + '%'}</em></span>` : '';
+    const lic = im.license_url ? `<a href="${esc(im.license_url)}" target="_blank" rel="noopener license">${esc(im.license)}</a>` : esc(im.license);
+    return `<figure class="art photo"><img src="${src}" alt="${esc(im.alt || '')}" loading="lazy"><span class="pkind">${im.kind === 'place' ? 'Photo of the place' : 'Topic photo'}</span>${chip}
+      <figcaption>${im.kind === 'topic' ? 'Illustration · ' : ''}Photo: ${esc(im.credit)} · ${lic} · <a href="${esc(im.source_url)}" target="_blank" rel="noopener">${esc(im.source || 'source')}</a></figcaption></figure>`;
+  }
   const icon = `<svg class="cicon" viewBox="0 0 24 24"><path d="${ICON[s.category] || ICON.markets}"/></svg>`;
   if (!label) // thumbnail: logo, else the country outline
     return `<div class="art thumb">${lg ? `<img src="${lg.l}" alt="" loading="lazy">` : ol ? `<svg class="cout" viewBox="0 0 100 100">${ol}</svg>` : icon}</div>`;
