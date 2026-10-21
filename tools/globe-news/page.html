@@ -219,7 +219,7 @@ h1 span{color:var(--fg-3)}
 .note{margin-top:24px;font-size:11.5px;line-height:1.55;color:var(--fg-3)}
 
 /* Direct impacts: optional analysis, with direction conveyed in words and arrows. */
-.impact-section{margin-top:22px}.impact-label{font-size:11.5px;color:var(--fg-3);margin:4px 0 12px}
+.impact-open{display:block;width:100%;text-align:left;background:none;color:inherit;border:0;border-bottom:1px solid var(--line);padding:12px 0;cursor:pointer;font:inherit}.impact-open:hover{background:#ffffff06}.impact-open:focus-visible{outline:1px solid var(--accent)}.relation-dialog{background:#111113;color:#fafafa;border:1px solid #343438;border-top:2px solid #FF7A1A;border-radius:16px;padding:28px;width:min(440px,calc(100vw - 32px));max-height:85vh;overflow:auto;box-sizing:border-box}.relation-dialog::backdrop{background:#0009}.relation-dialog h2{font-size:24px;line-height:1.25;margin:12px 0 18px}.relation-dialog p{font-size:14px;line-height:1.65;color:#a1a1aa}.relation-dialog button{border:1px solid #343438;color:#fafafa;background:#1b1b1e;border-radius:8px;padding:10px 15px;font:inherit;cursor:pointer}.relation-dialog a{color:#FF7A1A}.relation-path{font:12px/1.6 var(--mono);color:#FF7A1A}.relation-note{font-size:11px!important;border-top:1px solid #343438;padding-top:15px}.impact-section{margin-top:22px}.impact-label{font-size:11.5px;color:var(--fg-3);margin:4px 0 12px}
 .impact-list{display:grid;gap:14px}.impact-head{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500}
 .impact-head img{width:18px;height:18px;object-fit:contain;background:#fff;padding:2px;border-radius:4px;flex:none}
 .impact-dir{margin-left:auto;font-size:16px}.impact-up{color:#22C55E}.impact-down{color:#F04444}.impact-mixed,.impact-unclear{color:var(--fg-2)}
@@ -326,6 +326,7 @@ h1 span{color:var(--fg-3)}
 .embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom{display:none!important}
 .embed #cv{touch-action:pan-y}
 </style>
+<script src="../news-alerts.js" defer></script>
 </head>
 <body>
 <canvas id="cv" aria-label="3D globe of financial and business news. Use the story list in the panel to browse by keyboard."></canvas>
@@ -366,7 +367,7 @@ h1 span{color:var(--fg-3)}
 // only has to write the same JSON shape (see tools/globe-news/news-demo.json "fields"). Nothing below is tied to the demo stories.
 const NEWS_URL = 'news-live.json', DEMO_URL = 'news-demo.json'; // live news (update_globe_news.py); demo stories only if there is no live file yet
 const ISO = __ISO__, DOTS = __DOTS__, CTRY = __COUNTRIES__, LOGOS = __LOGOS__, QD = window.QUOTES || { q: {} };
-const $ = id => document.getElementById(id), rad = Math.PI / 180, T0 = Date.now();
+const $ = id => document.getElementById(id), rad = Math.PI / 180; let T0 = Date.now();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const phone = () => innerWidth <= 760, EMBED = document.documentElement.classList.contains('embed');
 const panelParam = new URLSearchParams(location.search).get('panel');
@@ -515,24 +516,41 @@ function countryAt(lo, la) {
 let stories = [], byId = {}, incoming = {};
 function normalize(raw) {
   return (raw.stories || []).map(s => ({ ...s, demo: !!(raw.demo || s.demo), t: s.published_at ? Date.parse(s.published_at) : T0 - (s.age_minutes || 0) * 60000,
-    phi: s.location.lat * rad, lam: s.location.lon * rad, links: s.links || [], entities: s.entities || [], vt: -1e9, on: false }));
+    phi: Number.isFinite(s.location.lat) ? s.location.lat * rad : NaN, lam: Number.isFinite(s.location.lon) ? s.location.lon * rad : NaN, links: s.links || [], entities: s.entities || [], vt: -1e9, on: false }));
 }
 // Analysis is optional. Malformed fields never affect the original reporting.
 const IMPACT_COLOR = { up: '34,197,94', down: '240,68,68', mixed: '161,161,170', unclear: '161,161,170' };
 const IMPACT_ARROW = { up: '↑', down: '↓', mixed: '↔', unclear: '→' };
 function impactsOf(s) {
-  return (Array.isArray(s?.impacts) ? s.impacts : []).filter(i => i && ['country', 'company', 'asset', 'sector'].includes(i.kind) && typeof i.name === 'string' && typeof i.why === 'string' && Object.values(ISO).includes(i.country) && IMPACT_COLOR[i.direction]).slice(0, 4);
+  return (Array.isArray(s?.impacts) ? s.impacts : []).filter(i => i && ['country', 'company', 'asset', 'sector'].includes(i.kind) && typeof i.name === 'string' && typeof i.why === 'string' && (i.country == null || Object.values(ISO).includes(i.country)) && IMPACT_COLOR[i.direction]).slice(0, 6);
 }
 function impactCountry(i) { const name = Object.keys(ISO).find(n => ISO[n] === i.country && byName[n]); return name && byName[name]; }
 function impactVisual(i) {
   const lg = ['company', 'asset'].includes(i.kind) && !/[\^=]/.test(i.ticker || '') ? logoFor({ name: i.name, ticker: i.ticker }) : null;
-  return lg ? limg(lg) : `<img src="flags/${i.country.toLowerCase()}.svg" alt="" data-logo loading="lazy">`;
+  return lg ? limg(lg) : (i.country ? `<img src="flags/${i.country.toLowerCase()}.svg" alt="" data-logo loading="lazy">` : '');
 }
 function impactHTML(s) {
   const rows = impactsOf(s), moved = s.market_moving && typeof s.why_moved === 'string' ? s.why_moved : '';
-  if (!rows.length && !moved) return '';
-  return `<section class="impact-section" aria-label="How it affects">${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">How it affects</div><div class="impact-label">AI-assisted analysis</div><div class="impact-list">${rows.map(i => `<div><div class="impact-head">${impactVisual(i)}<span>${esc(i.name)}</span><span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p></div>`).join('')}</div></section>`;
+  if (!rows.length && !moved) return '<section class="impact-section"><div class="sec-h">Potentially affected assets</div><p>Impact unclear. No reliable asset connection identified.</p></section>';
+  return `<section class="impact-section" aria-label="Potentially affected assets">${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">Potentially affected assets</div><div class="impact-label">${s.impact_method === 'rules' ? 'Rule-based exposure · direction unclear' : 'AI-assisted analysis · potential impact'}</div><div class="impact-list">${!rows.length ? '<p>Impact unclear. No reliable asset connection identified.</p>' : ''}${rows.map((i, index) => `<button type="button" class="impact-open" data-impact="${index}" data-origin="${esc(s.id)}"><div class="impact-head">${impactVisual(i)}<span>${esc(i.name)}</span><span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p><span class="meta">Explore connection ↗</span></button>`).join('')}</div></section>`;
 }
+let relationDialog;
+function explainRelation(story, impact, targetStory) {
+  if (!relationDialog) {
+    relationDialog = document.createElement('dialog'); relationDialog.className = 'relation-dialog';
+    relationDialog.setAttribute('aria-label', 'Understanding this connection'); document.body.append(relationDialog);
+    relationDialog.addEventListener('click', e => { if (e.target.closest('[data-close-relation]')) relationDialog.close(); });
+  }
+  const target = impact?.name || targetStory?.headline || 'Related story';
+  const mechanism = impact?.why || 'These stories were linked by the news editor. A specific causal mechanism has not been verified.';
+  relationDialog.innerHTML = `<div class="eyebrow">Understand the connection</div><h2>${esc(target)}</h2><div class="relation-path">${esc(nm(story.location.country))} → ${esc(impact?.country ? nm(Object.keys(ISO).find(k => ISO[k] === impact.country) || impact.country) : targetStory ? nm(targetStory.location.country) : 'Potential exposure')}</div><p><b style="color:#fafafa">What happened</b><br>${esc(story.headline)}</p><p><b style="color:#fafafa">How it could affect this</b><br>${esc(mechanism)}</p><p><b style="color:#fafafa">What’s uncertain</b><br>Timing, size and direction depend on other events and market expectations.</p>${story.source?.url ? `<p><a href="${esc(story.source.url)}" target="_blank" rel="noopener">Read the original source ↗</a></p>` : ''}<p class="relation-note">${story.impact_method === 'rules' ? 'Rule-based exposure' : 'AI-assisted context'} · Educational information. Not investment advice.</p><button type="button" data-close-relation>Back to the globe</button>`;
+  if (!relationDialog.open) relationDialog.showModal();
+}
+document.addEventListener('click', e => {
+  const button = e.target.closest('[data-impact]');
+  if (button) { const story = byId[button.dataset.origin]; if (story) explainRelation(story, impactsOf(story)[Number(button.dataset.impact)]); }
+});
+
 function impactTargets(s) { return impactsOf(s).map(i => ({ impact: i, country: impactCountry(i) })).filter(x => x.country); }
 
 // Story chains: a → b → c through "links"
@@ -639,7 +657,7 @@ function setZ(z, x, y, anchor) {
 }
 
 // ===== Interaction state =====
-let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
+let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [], connectionPaths = [];
 // pointer: drag to rotate, pinch / wheel / double-click / buttons to zoom, tap to select
 const touches = new Map(); let pinch = null, drag = null;
 cv.addEventListener('pointerdown', e => {
@@ -673,7 +691,20 @@ $('zin').onclick = () => setZ(Zt * 1.6); $('zout').onclick = () => setZ(Zt / 1.6
 let cTimer = null, lastX = 0, lastY = 0;
 addEventListener('wheel', () => { clearTimeout(cTimer); hideHover(); }, { passive: true });
 function pick(x, y, r) { let best = null, bd = r * r; for (const d of drawn) { const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < bd) { bd = q; best = d; } } return best; }
+function pickConnection(x, y) {
+  let best = null, distance = phone() ? 18 : 10;
+  for (const line of connectionPaths) for (let i = 1; i < line.points.length; i++) {
+    const a = line.points[i - 1], b = line.points[i]; if (!a[2] || !b[2]) continue;
+    const dx = b[0] - a[0], dy = b[1] - a[1], length = dx * dx + dy * dy;
+    const t = length ? Math.max(0, Math.min(1, ((x - a[0]) * dx + (y - a[1]) * dy) / length)) : 0;
+    const d = Math.hypot(x - a[0] - t * dx, y - a[1] - t * dy);
+    if (d < distance) { distance = d; best = line; }
+  }
+  return best;
+}
 function hoverAt(x, y) {
+  if (pickConnection(x, y)) { hideHover(); cv.style.cursor = 'pointer'; cv.title = 'Explore this connection'; return; }
+  cv.title = '';
   const d = pick(x, y, 16);
   if (d) { hoverCountry = null; if (hoverC !== d.key) { hoverC = d.key; showHover(d); } placeHover(d.x, d.y); cv.style.cursor = 'pointer'; return; }
   if (hoverC) { hoverC = null; $('hover').classList.remove('on'); }
@@ -698,6 +729,8 @@ function showHover(d) {
 function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.offsetHeight; let l = x + 16, t = y - h / 2; if (l + w > innerWidth - 12) l = x - w - 16; t = Math.max(12, Math.min(innerHeight - h - 12, t)); hv.style.left = l + 'px'; hv.style.top = t + 'px'; }
 function hideHover() { clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on'); cv.style.cursor = ''; }
 function tap(x, y, touch) {
+  const connection = pickConnection(x, y);
+  if (connection) return explainRelation(connection.story, connection.impact, connection.targetStory);
   const d = pick(x, y, touch ? 26 : 16);
   if (d) { hideHover(); if (d.list.length === 1) return openStory(d.list[0]); if (d.same || Z >= ZMAX - .2) return openPlace(d.list); return flyTo(d.lo, d.la, Math.min(ZMAX, Z * 2.2)); }
   const g = inv(x, y), c = g && countryAt(g[0], g[1]);
@@ -772,12 +805,14 @@ function back() { view = hist.pop() || { k: 'top' }; if (view.k === 'top') { sel
 function openStory(s) {
   if (EMBED) { top.location.href = '/assets/globe/news.html?story=' + encodeURIComponent(s.id); return; }
   sel = s; selCountry = byName[s.location.country] || null; go({ k: 'story', id: s.id });
+  if (!Number.isFinite(s.phi) || !Number.isFinite(s.lam)) return;
   if (phone()) { flyTo(s.location.lon, s.location.lat, 3.6); return; }
   const ch = chainOf(s);
   if (ch.length) { let x = 0, y = 0, z = 0; for (const c of ch) { x += Math.cos(c.phi) * Math.cos(c.lam); y += Math.cos(c.phi) * Math.sin(c.lam); z += Math.sin(c.phi); } flyTo(Math.atan2(y, x) / rad, Math.min(38, Math.atan2(z, Math.hypot(x, y)) / rad), 1.05); }
   else flyTo(s.location.lon, s.location.lat, Math.max(Z, phone() ? 1.5 : 2.2));
 }
 function openCountry(c) {
+  if (!c) return;
   if (EMBED) { top.location.href = '/assets/globe/news.html?country=' + encodeURIComponent(c.name); return; }
   sel = null; selCountry = c; go({ k: 'country', id: c.name });
   const span = Math.max((c.b[2] - c.b[0]) * Math.cos(c.c[1] * rad), c.b[3] - c.b[1]);
@@ -792,11 +827,11 @@ pbody.addEventListener('click', e => {
   if (b.dataset.story) return openStory(byId[b.dataset.story]);
   if (b.dataset.country) return openCountry(byName[b.dataset.country]);
 });
-addEventListener('keydown', e => { if (e.key === 'Escape' && view.k !== 'top') back(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && !relationDialog?.open && view.k !== 'top') back(); });
 
 const item = s => `<button class="item" data-story="${s.id}"><span class="dot i${s.importance}"></span><span><span class="eyebrow">${s.flag ? `<span class="tag">${FLAG[s.flag]}</span>` : ''}${esc(CAT[s.category])} · ${esc(s.location.place)}</span><h4>${esc(s.headline)}</h4><span class="meta">${ago(s.t)} · ${esc(nm(s.location.country))}${s.demo ? '<span class="dtag">DEMO</span>' : ''}</span></span>${art(s, false)}</button>`;
 const NOTE_DEMO = '<p class="note">Concept preview. Every story on this globe is demo content written to show the design: not real news, not live, not investment advice. When live sources are connected, each story will show its source, original link and publication time.</p>';
-const NOTE_LIVE = '<p class="note">Summaries are written with the help of AI from each source\'s own reporting. Every story links to its source. Not investment advice.</p>';
+const NOTE_LIVE = '<p class="note">Source headlines with optional AI-assisted summaries. Connections show potential exposure, not predictions. Every story links to its source. Not investment advice.</p>';
 const noteHTML = () => LIVE ? NOTE_LIVE : NOTE_DEMO;
 function compactItem(s) {
   return `<button class="compact-item" data-story="${esc(s.id)}">${art(s, false)}<span><span class="compact-headline">${esc(s.headline)}</span><time datetime="${esc(s.published_at || '')}">${ago(s.t)}</time></span></button>`;
@@ -844,7 +879,7 @@ function render() {
       <div class="story-heading"><div class="eyebrow">${s.flag ? `<span class="tag">${FLAG[s.flag]}</span>` : ''}${esc(CAT[s.category])}</div>
       <h2>${esc(s.headline)}</h2>
       <div class="meta"><b>${esc(s.location.place)}</b>, <a href="#" data-country="${esc(s.location.country)}" style="color:inherit">${esc(nm(s.location.country))}</a> · ${ago(s.t)}${s.demo ? '<span class="dtag">DEMO</span>' : ''}</div></div>
-      <div class="sec-h" style="margin-top:0">Investedia summary</div><p>${esc(s.summary)}</p>
+      ${s.summary ? `<div class="sec-h" style="margin-top:0">Investedia summary${s.ai_summary ? ' · AI-assisted' : ''}</div><p>${esc(s.summary)}</p>` : '<p class="meta">Headline only · read the original source for details.</p>'}
       ${s.why ? `<div class="why"><div class="eyebrow">Why this matters</div><p>${esc(s.why)}</p></div>` : ''}
       ${impactHTML(s)}
       ${s.entities.length ? `<div class="sec-h">Companies & assets involved</div><div class="ents">${s.entities.map(x => entityChip(x, s.location.country)).join('')}</div>` : ''}
@@ -979,10 +1014,11 @@ function frame(t) {
   ctx.restore();
 
   // connections (only for the story you're looking at)
-  const focus = impactFocus;
+  const focus = impactFocus; connectionPaths = [];
   const chain = chainOf(focus);
   for (let i = 0; i < chain.length - 1; i++) {
     const p = arcPts(chain[i], chain[i + 1]);
+    connectionPaths.push({ points: p, story: chain[i], targetStory: chain[i + 1] });
     ctx.lineWidth = 1.4; ctx.strokeStyle = 'rgba(255,122,26,.55)'; ctx.beginPath(); let pen = false;
     for (const [x, y, v] of p) { if (!v) { pen = false; continue; } if (pen) ctx.lineTo(x, y); else { ctx.moveTo(x, y); pen = true; } }
     ctx.stroke();
@@ -991,10 +1027,11 @@ function frame(t) {
   }
 
   // Direct impacts are extra to the editorial story chains, capped at four.
-  for (const [i, { impact, country }] of impactTargets(focus).entries()) {
+  for (const [i, { impact, country }] of (Number.isFinite(focus?.phi) ? impactTargets(focus) : []).entries()) {
     const target = { phi: country.c[1] * rad, lam: country.c[0] * rad };
     if (Math.abs(target.phi - focus.phi) + Math.abs(target.lam - focus.lam) < .001) continue;
     const points = arcPts(focus, target), col = IMPACT_COLOR[impact.direction];
+    connectionPaths.push({ points, story: focus, impact });
     ctx.lineWidth = 1; ctx.strokeStyle = `rgba(${col},.36)`; ctx.beginPath(); let pen = false;
     for (const [x, y, visible] of points) { if (!visible) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } ctx.stroke();
     const k = reduce ? .5 : (t / 2800 + i * .23) % 1, point = points[Math.round(k * (points.length - 1))];
@@ -1004,6 +1041,7 @@ function frame(t) {
   // markers: project, cluster nearby ones, then draw
   const vis = [];
   for (const s of shown) {
+    if (!Number.isFinite(s.phi) || !Number.isFinite(s.lam)) continue;
     if (!s.on) { s.on = true; s.vt = t; }
     const [x, y, z] = proj(s.phi, s.lam); if (z <= .04 || (!EMBED && (x < globeBox.left || x > globeBox.right || y < globeBox.top || y > globeBox.bottom))) continue; vis.push({ s, x, y, z });
   }
@@ -1046,6 +1084,7 @@ let LIVE = null;
 const load = u => fetch(u, { cache: 'no-cache' }).then(r => { if (!r.ok) throw 0; return r.json(); });
 load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return d; }).catch(() => load(DEMO_URL)).then(raw => {
   if (!raw.demo) { LIVE = raw; const b = $('badge'); b.className = 'demo live'; b.title = raw.notice || ''; b.innerHTML = '<i></i>Live news · updated ' + new Date(raw.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  window.NewsAlerts?.observe(raw.stories, s => 'news.html?story=' + encodeURIComponent(s.id));
   stories = normalize(raw); byId = Object.fromEntries(stories.map(s => [s.id, s])); incoming = {};
   for (const s of stories) for (const l of s.links) if (byId[l]) incoming[l] = s.id;
   refresh();
@@ -1053,6 +1092,28 @@ load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return 
   if (q.get('story') && byId[q.get('story')]) openStory(byId[q.get('story')]);
   else if (q.get('country') && byName[q.get('country')]) openCountry(byName[q.get('country')]);
 }).catch(() => { pbody.innerHTML = '<div class="empty">News could not be loaded. Please refresh the page.</div>'; });
+let refreshingNews = false;
+setInterval(async () => {
+  if (document.hidden || refreshingNews) return;
+  refreshingNews = true;
+  try {
+    const raw = await load(NEWS_URL);
+    if (!raw.stories?.length || (LIVE && raw.updated_at === LIVE.updated_at)) return;
+    window.NewsAlerts?.observe(raw.stories, s => 'news.html?story=' + encodeURIComponent(s.id));
+    T0 = Date.now();
+    const next = normalize(raw), nextIds = Object.fromEntries(next.map(s => [s.id, s]));
+    // Preserve an open story if it has just aged out of the feed.
+    if (view.k === 'story' && byId[view.id] && !nextIds[view.id]) next.push(byId[view.id]);
+    if (view.k === 'place' && view.ids.some(id => !nextIds[id])) view = { k: 'top' };
+    stories = next; byId = Object.fromEntries(next.map(s => [s.id, s])); incoming = {};
+    for (const s of stories) for (const id of s.links) if (byId[id]) incoming[id] = s.id;
+    LIVE = raw;
+    const badge = $('badge'); badge.className = 'demo live'; badge.title = raw.notice || '';
+    badge.innerHTML = '<i></i>Live news · updated ' + new Date(raw.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    refresh();
+  } catch { /* Keep the last feed while offline. */ }
+  finally { refreshingNews = false; }
+}, 30000);
 requestAnimationFrame(frame);
 </script>
 </body>

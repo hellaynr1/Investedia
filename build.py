@@ -44,6 +44,7 @@ HEAD = """<!doctype html>
 <script src="assets/news.js"></script>
 <script src="assets/mock.js?v={ver}"></script>
 <script src="assets/ui.js?v={ver}"></script>
+<script src="assets/news-alerts.js?v={ver}"></script>
 {extra}<main class="wrap">
 """
 TAIL = "</main>\n</body>\n</html>\n"
