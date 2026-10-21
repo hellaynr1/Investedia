@@ -9,6 +9,7 @@ We never copy articles: each story keeps its headline (rewritten neutrally), our
 Without keys or when a source fails, the previous news stays online."""
 import html, json, os, re, sys, time, hashlib, urllib.error, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone, timedelta
 
@@ -279,41 +280,70 @@ def backfill_impacts(stories, known_iso, generate=None, limit=40):
         return 0
 
 
-# ---------- photos (Pixabay, downloaded once per topic and reused) ----------
-def photo(topic, seed):
+# ---------- photos (Pixabay pools, downloaded once plus one legacy top-up) ----------
+def save_photo_index(idx):
+    for d in (G, D):
+        os.makedirs(os.path.join(d, PH), exist_ok=True)
+        with open(os.path.join(d, PH, 'index.json'), 'w') as f: json.dump(idx, f, indent=1)
+
+
+def photo(topic, seed, stories=None):
     if not topic or topic not in PHOTO_TOPICS: return None
     idx_path = os.path.join(G, PH, 'index.json')
-    idx = json.load(open(idx_path)) if os.path.exists(idx_path) else {}
-    if topic not in idx and PIXABAY:
+    try:
+        if os.path.exists(idx_path):
+            with open(idx_path) as f: idx = json.load(f)
+        else: idx = {}
+        if not isinstance(idx, dict): raise ValueError('invalid photo index')
+    except Exception as e:
+        err(f'Photo index: {e}'); return None
+    opts = idx.get(topic) or []
+    topups = idx.get('_topup_attempted', [])
+    if PIXABAY and (topic not in idx or len(opts) < 10 and topic not in topups):
         try:
+            # Persist before requesting, including on failure: a legacy topic gets
+            # at most one extra API request across stories and future robot runs.
+            if topic in idx: idx['_topup_attempted'] = [*topups, topic]
+            else: idx[topic] = []
+            save_photo_index(idx)
             r = json.loads(get('https://pixabay.com/api/?' + urllib.parse.urlencode({'key': PIXABAY, 'q': topic, 'image_type': 'photo', 'orientation': 'horizontal', 'safesearch': 'true', 'per_page': 20, 'min_width': 1200})))
-            hits = [h for h in r.get('hits', []) if h.get('largeImageURL')][:3]
-            got = []
-            for h in hits:
-                b = get(h['largeImageURL'], raw=True, timeout=60)
+            got = list(opts); files = {p['file'] for p in got}
+            for h in r.get('hits', []):
+                if len(got) >= 10: break
+                if not isinstance(h, dict) or not h.get('largeImageURL') or not h.get('id'): continue
                 name = f"{re.sub(r'[^a-z0-9]+', '-', topic)}-{h['id']}.jpg"
+                file = f'{PH}/{name}'
+                if file in files: continue
                 try:
-                    from PIL import Image; import io
-                    im = Image.open(io.BytesIO(b)).convert('RGB'); im.thumbnail((1200, 800)); bio = io.BytesIO(); im.save(bio, 'JPEG', quality=78, optimize=True, progressive=True); b = bio.getvalue()
-                except Exception: pass
-                for d in (G, D):
-                    os.makedirs(os.path.join(d, PH), exist_ok=True); open(os.path.join(d, PH, name), 'wb').write(b)
-                got.append({'file': f'{PH}/{name}', 'credit': h.get('user', 'Pixabay'), 'source_url': h.get('pageURL'), 'alt': topic})
+                    from PIL import Image
+                    import io
+                    b = get(h['largeImageURL'], raw=True, timeout=60)
+                    im = Image.open(io.BytesIO(b)).convert('RGB'); im.thumbnail((1200, 800)); bio = io.BytesIO(); im.save(bio, 'JPEG', quality=78, optimize=True, progressive=True)
+                    for d in (G, D):
+                        with open(os.path.join(d, PH, name), 'wb') as f: f.write(bio.getvalue())
+                    got.append({'file': file, 'credit': h.get('user', 'Pixabay'), 'source_url': h.get('pageURL'), 'alt': topic}); files.add(file)
+                except Exception as e: err(f'Pixabay photo {topic}: {e}')
             idx[topic] = got
-            for d in (G, D): open(os.path.join(d, PH, 'index.json'), 'w').write(json.dumps(idx, indent=1))
-            status['photos_downloaded'] = status.get('photos_downloaded', 0) + len(got)
+            save_photo_index(idx)
+            status['photos_downloaded'] = status.get('photos_downloaded', 0) + len(got) - len(opts)
         except Exception as e: err(f'Pixabay {topic}: {e}')
     opts = idx.get(topic) or []
     if not opts: return None
-    p = opts[int(hashlib.md5(seed.encode()).hexdigest(), 16) % len(opts)]
+    if stories is None:
+        try:
+            with open(os.path.join(G, OUT)) as f: stories = json.load(f).get('stories', [])
+        except Exception as e:
+            err(f'Photo usage: {e}'); stories = []
+    used = Counter((s.get('image') or {}).get('file') for s in stories)
+    p = min(opts, key=lambda p: (used[p['file']], hashlib.md5(f"{seed}:{p['file']}".encode()).digest()))
     return {'kind': 'topic', 'file': p['file'], 'alt': f'{topic} (illustration)', 'credit': p['credit'], 'license': 'Pixabay Content License',
             'license_url': 'https://pixabay.com/service/license-summary/', 'source': 'Pixabay', 'source_url': p['source_url']}
 
 
 # ---------- main ----------
-def pick_stories(cands, box, by_iso, sym, known_iso, n):
+def pick_stories(cands, box, by_iso, sym, known_iso, n, online_stories=None):
     """Editor step: Gemini picks, merges and summarises candidates; everything is validated before it is kept."""
-    new = []
+    new, photo_topics = [], {}
     if cands:
         with ThreadPoolExecutor(8) as ex: cands = list(ex.map(describe, cands))
         listing = json.dumps([{'i': i, 'title': c['title'], 'source': c['source'], **({'about': c['hint']} if c.get('hint') else {}), **({'description': c['desc']} if c.get('desc') else {})} for i, c in enumerate(cands)], ensure_ascii=False)
@@ -346,13 +376,19 @@ def pick_stories(cands, box, by_iso, sym, known_iso, n):
                      'entities': ents, 'links': [], 'source': srcs[0], 'sources': srcs, 'published_at': pub, 'retrieved_at': ISO_NOW,
                      'official': any(cands[m]['kind'] == 'official' for m in mem), 'ai_summary': True}
                 if isinstance(p.get('impacts'), list): s.update(validate_analysis(p, s['market_moving'], known_iso))
-                img = photo(p.get('photo'), sid) if s['importance'] >= 2 else None
-                if img: s['image'] = img
+                if s['importance'] >= 2: photo_topics[sid] = p.get('photo')
                 new.append(s); ids.append((s, p.get('leads_to')))
             except Exception as e:
                 ids.append(None); err(f'story {k}: {e}')
         for x in ids:  # connections between the new stories
             if x and isinstance(x[1], int) and 0 <= x[1] < len(ids) and ids[x[1]] and ids[x[1]][0] is not x[0]: x[0]['links'] = [ids[x[1]][0]['id']]
+    # Count the retained feed, including images assigned earlier in this batch.
+    # Stories trimmed by MAX_STORIES must not reserve otherwise unused photos.
+    online = sorted((online_stories or []) + new, key=lambda s: s['published_at'], reverse=True)[:MAX_STORIES]
+    for s in online:
+        if s['id'] in photo_topics:
+            img = photo(photo_topics[s['id']], s['id'], online)
+            if img: s['image'] = img
     return new
 
 
@@ -370,7 +406,7 @@ def main():
         day_raw = [c for c in gdelt(start, end) if c['url'] not in known_urls]
         day_cands = dedupe(day_raw, [s['headline'] for s in prev])[:80]
         log(f'backfill {start:%Y-%m-%d}: {len(day_raw)} fetched, {len(day_cands)} candidates')
-        got = pick_stories(day_cands, box, by_iso, sym, known_iso, 18) if day_cands else []
+        got = pick_stories(day_cands, box, by_iso, sym, known_iso, 18, prev) if day_cands else []
         prev += got; known_urls |= {u['url'] for s in got for u in s.get('sources', [])}
         status.setdefault('backfill', []).append({'day': f'{start:%Y-%m-%d}', 'stories': len(got)})
         if got:  # save after every day, so a slow or stopped run never loses finished days
@@ -383,7 +419,7 @@ def main():
     cands = dedupe(fresh, [s['headline'] for s in prev])[:90]
     status['candidates'] = len(cands)
     log(f'{len(raw)} fetched, {len(cands)} new candidates')
-    new = pick_stories(cands, box, by_iso, sym, known_iso, MAX_NEW)
+    new = pick_stories(cands, box, by_iso, sym, known_iso, MAX_NEW, prev)
     status['new_stories'] = len(new)
     stories = sorted(new + prev, key=lambda s: s['published_at'], reverse=True)[:MAX_STORIES]
     status['impacts_backfilled'] = backfill_impacts(stories, known_iso)
