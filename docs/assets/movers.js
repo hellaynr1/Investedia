@@ -40,7 +40,8 @@
     const r = h.parentElement, open = !r.classList.contains('open'); r.classList.toggle('open', open); h.setAttribute('aria-expanded', open);
     const d = r.querySelector('.mv-d'); if (open && !d.innerHTML) { const a = S.assets.find(x => x.s === r.dataset.s); d.innerHTML = detail(a, S.win, storiesFor(a, WIN.find(w => w[0] === S.win)[2])); }
   });
-  Promise.all([fetch('assets/globe/markets.json').then(r => r.json()), fetch('assets/intraday.json').then(r => r.json()).catch(() => ({ s: {} })), loadNews()])
-    .then(([m, i, n]) => { S.assets = m.assets; S.intra = i.s || {}; S.stories = n.stories || []; $('mv-up').textContent = 'Updated ' + new Date(m.asof).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); draw(); })
+  window.MV = { S, move, fmt, cls, detail, chart, storiesFor, ready: null };
+  window.MV.ready = Promise.all([fetch('assets/globe/markets.json').then(r => r.json()), fetch('assets/intraday.json').then(r => r.json()).catch(() => ({ s: {} })), loadNews()])
+    .then(([m, i, n]) => { S.assets = m.assets; S.by = Object.fromEntries(m.assets.map(a => [a.s, a])); S.intra = i.s || {}; S.stories = n.stories || []; $('mv-up').textContent = 'Updated ' + new Date(m.asof).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); draw(); return S; })
     .catch(() => { $('mv-list').innerHTML = '<div class="nb-none">Market data could not load. Please refresh.</div>'; });
 })();

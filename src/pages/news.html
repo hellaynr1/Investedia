@@ -1,11 +1,12 @@
 {"title":"News — Investedia","desc":"Live financial news from around the world. Filter markets, companies, economy, technology, crypto, commodities and geopolitics by region.","key":"news","scripts":["assets/home-news.js"]}
-<link rel="stylesheet" href="assets/news-board.css">
+<link rel="stylesheet" href="assets/news-board.css"><link rel="stylesheet" href="assets/movers.css">
 <div class="nb">
   <span class="nb-eb">News · <span id="nb-up">Loading</span></span>
   <h1>What's moving <span>money.</span></h1>
-  <p class="nb-lead">The countries, companies and assets the news touches most, and which way. Tap a row to see the stories and the reasons.</p>
-  <p class="nb-lead"><a href="movers.html" style="color:#FF7A1A">See what moved in the markets, and why →</a></p>
+  <p class="nb-lead">The countries, companies and assets the news touches most, which way it pushes them, and how their prices moved. Tap a row for the stories and the chart.</p>
   <div class="nb-find" id="nb-find"><label class="nb-pill"><i class="nb-ic"></i><input id="nb-q" type="search" placeholder="Search countries, companies, assets" autocomplete="off" aria-label="Search countries, companies and assets"><kbd>/</kbd></label><div class="nb-dd" id="nb-dd" hidden></div><div class="nb-sel-chip" id="nb-chip" hidden></div></div>
+  <div class="nb-seg nb-tabs" id="nb-tabs" role="tablist" aria-label="View"><button type="button" role="tab" data-v="exp" aria-pressed="true">Exposure</button><button type="button" role="tab" data-v="mv" aria-pressed="false">Movers</button></div>
+  <div id="nb-v-exp">
   <div class="nb-fb">
     <div class="nb-seg" id="nb-seg" role="group" aria-label="Rank by"></div>
     <select class="select nb-sel" id="nb-region" aria-label="Region"><option value="all">All regions</option><option value="na">North America</option><option value="eu">Europe</option><option value="asia">Asia</option><option value="me">Middle East</option><option value="af">Africa</option><option value="latam">Latin America</option><option value="oc">Oceania</option></select>
@@ -20,5 +21,12 @@
   </div>
   <section class="nb-sec"><h2>Latest stories</h2><p id="nb-n"></p><div id="nb-ls"></div><button class="nb-more" id="nb-more" type="button" hidden>Load more stories</button></section>
   <p class="nb-disc">Summaries are written with the help of AI from each source's own reporting. Every story links to its source. Not investment advice.</p>
+  </div>
+  <div id="nb-v-mv" hidden>
+    <div class="mv-bar"><div class="nb-seg" id="mv-win" role="group" aria-label="Time window"></div><div class="nb-cats" id="mv-type" role="group" aria-label="Asset type"></div></div>
+    <div class="nb-box"><div id="mv-list"></div></div>
+    <p class="mv-note">Price moves come from public market data and may be delayed. Stories are linked when they mention the asset; this shows the news around a move, not proof it caused it. Not investment advice.</p>
+  </div>
 </div>
+<script src="assets/movers.js"></script>
 <script src="assets/news-board.js"></script>

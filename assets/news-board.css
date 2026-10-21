@@ -49,3 +49,5 @@ body[data-page=news] main.wrap{max-width:1240px;padding-inline:max(20px,env(safe
 .nb-dd .nb-no{padding:12px;color:var(--fg-2);font-size:13px}
 .nb-sel-chip{margin-top:10px}.nb-sel-chip button{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:999px;border:0;background:rgba(255,122,26,.16);color:#FF7A1A;font:inherit;font-size:13px;cursor:pointer}
 @media(max-width:600px){.nb-pill kbd{display:none}}
+.nb-px{display:inline;font:600 12px 'Geist Mono',monospace}.nb-px.u{color:#34d399}.nb-px.d{color:#f87171}.nb-px.o{color:var(--fg-2)}.nb-tabs{margin:0 0 18px}.nb-lead+.nb-find{margin-top:18px}
+.nb-rh small{white-space:nowrap}.nb-tabs{margin:0 0 4px}
