@@ -378,5 +378,25 @@
    "source_url": "https://pixabay.com/photos/amsterdam-ship-bay-harbor-port-164818/",
    "alt": "oil tanker ship"
   }
+ ],
+ "smartphone": [
+  {
+   "file": "photos/smartphone-410311.jpg",
+   "credit": "JESHOOTS-com",
+   "source_url": "https://pixabay.com/photos/iphone-hand-screen-smartphone-apps-410311/",
+   "alt": "smartphone"
+  },
+  {
+   "file": "photos/smartphone-1851218.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/hands-phone-smartphone-electronics-1851218/",
+   "alt": "smartphone"
+  },
+  {
+   "file": "photos/smartphone-1917737.jpg",
+   "credit": "geralt",
+   "source_url": "https://pixabay.com/photos/mobile-phone-smartphone-keyboard-1917737/",
+   "alt": "smartphone"
+  }
  ]
 }
