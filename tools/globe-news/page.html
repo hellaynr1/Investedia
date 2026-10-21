@@ -116,6 +116,9 @@ h1 span{color:var(--fg-3)}
 .meta b{color:var(--fg-2);font-weight:500}
 .eyebrow{font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3)}
 .tag{display:inline-block;margin-right:6px;padding:2px 6px;border-radius:5px;background:var(--accent-soft);color:var(--accent);font-size:9.5px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;vertical-align:1px}
+.demo.live{border-style:solid;border-color:rgba(255,122,26,.35)}
+.demo.live i{width:6px;height:6px;border-radius:50%;background:#FF7A1A;box-shadow:0 0 8px #FF7A1A}
+.ai{margin-left:6px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.07);color:var(--fg-2);font-size:9.5px;letter-spacing:.04em}
 .dtag{display:inline-block;margin-left:6px;padding:1px 5px;border-radius:4px;border:1px dashed rgba(255,179,122,.5);color:#FFB37A;font-size:9.5px;font-weight:600;letter-spacing:.06em;vertical-align:1px}
 
 /* Panel */
@@ -156,6 +159,8 @@ h1 span{color:var(--fg-3)}
 .pout{position:absolute;z-index:1;right:12px;top:12px;width:64px;height:64px;padding:6px;border-radius:10px;background:rgba(10,10,11,.6);backdrop-filter:blur(6px);box-sizing:border-box}
 .plogo{position:absolute;z-index:2;right:12px;top:12px;width:min(196px,40%);height:46px;border-radius:8px;overflow:hidden;background:#fff}
 .art.photo .plogo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.plogo:has(img.bf){width:46px}
+.art.photo .plogo img.bf{object-fit:contain;padding:5px;box-sizing:border-box}
 .pchip{position:absolute;z-index:1;right:12px;top:12px;display:flex;align-items:center;gap:7px;padding:4px 9px 4px 5px;border-radius:8px;background:rgba(10,10,11,.75);backdrop-filter:blur(6px);font-size:12px;font-weight:550;color:#fff}
 .pchip img{position:static;width:20px;height:20px;border-radius:5px;background:#fff;object-fit:contain;padding:2px;box-sizing:border-box}
 .pchip em{font:500 11.5px var(--mono);font-style:normal}
@@ -241,7 +246,7 @@ h1 span{color:var(--fg-3)}
   <div class="brand">
     <a class="wm" href="/">Invested<span class="i">i</span>a</a>
     <span class="prod">Globe · News</span>
-    <span class="demo" title="Concept preview: every story is demo content written to show the design. Not real news.">Concept · demo stories</span>
+    <span class="demo" id="badge" title="Concept preview: every story is demo content written to show the design. Not real news.">Concept · demo stories</span>
   </div>
   <h1>The world's financial news, <span>happening across the globe.</span></h1>
   <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search a country, company or story" autocomplete="off" aria-label="Search the globe" aria-controls="res"><kbd>/</kbd>
@@ -270,7 +275,7 @@ h1 span{color:var(--fg-3)}
 // ===== Data =====
 // News is loaded from NEWS_URL. Today that is demo content; a live pipeline (sources → dedupe → location → entities → category → importance → validation → summary)
 // only has to write the same JSON shape (see tools/globe-news/news-demo.json "fields"). Nothing below is tied to the demo stories.
-const NEWS_URL = 'news-demo.json';
+const NEWS_URL = 'news-live.json', DEMO_URL = 'news-demo.json'; // live news (update_globe_news.py); demo stories only if there is no live file yet
 const ISO = __ISO__, DOTS = __DOTS__, CTRY = __COUNTRIES__, LOGOS = __LOGOS__, QD = window.QUOTES || { q: {} };
 const $ = id => document.getElementById(id), rad = Math.PI / 180, T0 = Date.now();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -295,7 +300,7 @@ const YLD = /\d+Y$/;
 const quoteOf = s => { for (const e of s.entities) { const q = e.sym && QD.q[e.sym]; if (q && q.sp && q.sp.length > 5) return { e, q }; } return null; };
 // Company logos: Brandfetch (free, sharp at any size, must be hotlinked) when BRANDFETCH_ID is set; our own vector (SVG) logos win,
 // and our logo files are the fallback if Brandfetch has no logo for that ticker.
-const BRANDFETCH_ID = ''; // public client ID from brandfetch.com/developers (not a secret: it is part of every logo URL)
+const BRANDFETCH_ID = '1idNJqyfpKbma454ae4'; // public client ID from brandfetch.com/developers (not a secret: it is part of every logo URL)
 function bfURL(e, px) {
   if (!BRANDFETCH_ID || !e.ticker) return null; const t = e.ticker;
   if (/-USD$/.test(t)) return `https://cdn.brandfetch.io/crypto/${encodeURIComponent(t.split('-')[0])}/w/${px}/h/${px}/fallback/404?c=${BRANDFETCH_ID}`;
@@ -304,7 +309,7 @@ function bfURL(e, px) {
 }
 function logoFor(e) { const local = LOGOS[e.sym] || LOGOS[e.ticker], remote = !(local && local.endsWith('.svg')) && bfURL(e, 512); return local || remote ? { e, l: remote || local, fb: remote && local ? local : '' } : null; }
 const logoOf = s => { for (const e of s.entities) { const l = logoFor(e); if (l) return l; } return null; };
-const limg = (lg, alt = '') => `<img src="${esc(lg.l)}" alt="${esc(alt)}" data-logo${lg.fb ? ` data-fb="${esc(lg.fb)}"` : ''} loading="lazy" referrerpolicy="strict-origin-when-cross-origin">`;
+const limg = (lg, alt = '') => `<img src="${esc(lg.l)}" alt="${esc(alt)}"${lg.l.startsWith('https://cdn.brandfetch.io') ? ' class="bf"' : ''} data-logo${lg.fb ? ` data-fb="${esc(lg.fb)}"` : ''} loading="lazy" referrerpolicy="strict-origin-when-cross-origin">`;
 addEventListener('error', ev => { const t = ev.target; if (t.tagName !== 'IMG' || !t.hasAttribute('data-logo')) return; if (t.dataset.fb) { t.src = t.dataset.fb; t.removeAttribute('data-fb'); } else (t.closest('.plogo') || t).remove(); }, true);
 const fmtP = (v, sym) => v.toLocaleString('en-US', { maximumFractionDigits: YLD.test(sym) ? 2 : v >= 1000 ? 0 : v >= 10 ? 2 : 4, minimumFractionDigits: YLD.test(sym) ? 2 : 0 });
 const outlineCache = {};
@@ -551,25 +556,27 @@ pbody.addEventListener('click', e => {
 addEventListener('keydown', e => { if (e.key === 'Escape' && view.k !== 'top') back(); });
 
 const item = s => `<button class="item" data-story="${s.id}"><span class="dot i${s.importance}"></span><span><span class="eyebrow">${s.flag ? `<span class="tag">${FLAG[s.flag]}</span>` : ''}${esc(CAT[s.category])} · ${esc(s.location.place)}</span><h4>${esc(s.headline)}</h4><span class="meta">${ago(s.t)} · ${esc(nm(s.location.country))}${s.demo ? '<span class="dtag">DEMO</span>' : ''}</span></span>${art(s, false)}</button>`;
-const NOTE = '<p class="note">Concept preview. Every story on this globe is demo content written to show the design: not real news, not live, not investment advice. When live sources are connected, each story will show its source, original link and publication time.</p>';
+const NOTE_DEMO = '<p class="note">Concept preview. Every story on this globe is demo content written to show the design: not real news, not live, not investment advice. When live sources are connected, each story will show its source, original link and publication time.</p>';
+const NOTE_LIVE = '<p class="note">Headlines and short summaries are written with AI from each source\'s own headline and description, and every story links to its original source. Locations are approximate. For information only, not investment advice.</p>';
+const noteHTML = () => LIVE ? NOTE_LIVE : NOTE_DEMO;
 function render() {
   if (view.k === 'top') {
     const list = [...shown].sort(sortTop), nc = new Set(list.map(s => s.location.country)).size, nb = list.filter(s => s.flag === 'breaking').length;
     const rg = REGIONS.find(r => r[0] === F.region)[1];
     pbody.innerHTML = `<div class="eyebrow">${F.region === 'global' ? 'Worldwide' : esc(rg)} · ${WLABEL[F.win]}</div><h2>${F.cat === 'all' ? 'Top stories' : esc(CAT[F.cat]) + ' stories'}</h2>
       <div class="stats"><div><b>${list.length}</b>stories</div><div><b>${nc}</b>countries</div><div><b>${nb}</b>breaking</div></div>
-      ${list.length ? `<div class="list">${list.slice(0, 12).map(item).join('')}</div>` : `<div class="empty">No stories match these filters in ${WLABEL[F.win]}. Try a wider time window or another category.</div>`}${NOTE}`;
+      ${list.length ? `<div class="list">${list.slice(0, 12).map(item).join('')}</div>` : `<div class="empty">No stories match these filters in ${WLABEL[F.win]}. Try a wider time window or another category.</div>`}${noteHTML()}`;
   } else if (view.k === 'story') {
     const s = byId[view.id], ch = chainOf(s);
     pbody.innerHTML = `<div class="story"><button class="back" data-back>← Back</button>${art(s)}
       <div class="eyebrow">${s.flag ? `<span class="tag">${FLAG[s.flag]}</span>` : ''}${esc(CAT[s.category])}</div>
       <h2>${esc(s.headline)}</h2>
       <div class="meta"><b>${esc(s.location.place)}</b>, <a href="#" data-country="${esc(s.location.country)}" style="color:inherit">${esc(nm(s.location.country))}</a> · ${ago(s.t)}${s.demo ? '<span class="dtag">DEMO</span>' : ''}</div>
-      <div class="sec-h" style="margin-top:0">Investedia summary</div><p>${esc(s.summary)}</p>
+      <div class="sec-h" style="margin-top:0">Investedia summary${s.ai_summary ? ' <span class="ai">AI-assisted</span>' : ''}</div><p>${esc(s.summary)}</p>
       ${s.why ? `<div class="why"><div class="eyebrow">Why this matters</div><p>${esc(s.why)}</p></div>` : ''}
       ${s.entities.length ? `<div class="sec-h">Companies & assets involved</div><div class="ents">${s.entities.map(x => `<span class="ent">${esc(x.name)}${x.ticker ? `<code>${esc(x.ticker)}</code>` : ''}</span>`).join('')}</div>` : ''}
       ${ch.length ? `<div class="sec-h">How it connects</div><div class="chain">${ch.map((c, i) => `${i ? '<span class="ar"></span>' : ''}<button data-story="${c.id}" class="${c.id === s.id ? 'cur' : ''}"><span class="n">${i + 1}</span><span>${esc(c.location.place)} · ${esc(c.headline)}</span></button>`).join('')}</div>` : ''}
-      <div class="src"><div class="meta">Source<br><b>${s.source?.name ? esc(s.source.name) : 'Demo content · no original article'}</b></div>${s.source?.url ? `<a class="read" style="opacity:1;cursor:pointer;display:inline-grid;place-items:center;text-decoration:none" href="${esc(s.source.url)}" target="_blank" rel="noopener">Read story ↗</a>` : '<button class="read" title="Available when live sources are connected" disabled>Read story ↗</button>'}</div>${NOTE}</div>`;
+      <div class="src"><div class="meta">${(s.sources || []).length > 1 ? 'Sources' : 'Source'}<br><b>${s.source?.name ? esc(s.source.name) : 'Demo content · no original article'}</b>${(s.sources || []).length > 1 ? ` <span>+ ${s.sources.slice(1, 4).map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(x.name)}</a>`).join(', ')}</span>` : ''}</div>${s.source?.url ? `<a class="read" style="opacity:1;cursor:pointer;display:inline-grid;place-items:center;text-decoration:none" href="${esc(s.source.url)}" target="_blank" rel="noopener">Read story ↗</a>` : '<button class="read" title="Available when live sources are connected" disabled>Read story ↗</button>'}</div>${noteHTML()}</div>`;
   } else if (view.k === 'country') {
     const c = byName[view.id], all = stories.filter(s => s.location.country === c.name), list = all.filter(match).sort(sortTop);
     const rest = list.length > 3 ? list.slice(3) : [], groups = CATS.slice(1).map(([k, l]) => [l, rest.filter(s => s.category === k)]).filter(g => g[1].length);
@@ -581,10 +588,10 @@ function render() {
       ${list.length ? `<div class="sec-h" style="margin-top:0">Top stories</div><div class="list">${list.slice(0, 3).map(item).join('')}</div>${groups.length ? '<div class="sec-h" style="margin-top:26px;color:var(--fg-2)">More by topic</div>' : ''}
         ${groups.map(([l, g]) => `<div class="sec-h">${l}</div><div class="list">${g.map(item).join('')}</div>`).join('')}
         ${cos.length ? `<div class="sec-h">Companies & assets</div><div class="cos">${cos.map(x => `<span class="ent">${esc(x.name)}<code>${esc(x.ticker)}</code></span>`).join('')}</div>` : ''}`
-      : `<div class="empty">${all.length ? `No ${F.cat === 'all' ? '' : esc(CAT[F.cat]).toLowerCase() + ' '}stories for ${esc(nm(c.name))} in ${WLABEL[F.win]}. ${all.length} in the last 7 days: switch the timeline to <b>7D</b>.` : `No financial or business stories for ${esc(nm(c.name))} right now. When live sources are connected, stories appear here as they are published. We never fill a country with invented news.`}</div>`}${NOTE}`;
+      : `<div class="empty">${all.length ? `No ${F.cat === 'all' ? '' : esc(CAT[F.cat]).toLowerCase() + ' '}stories for ${esc(nm(c.name))} in ${WLABEL[F.win]}. ${all.length} in the last 7 days: switch the timeline to <b>7D</b>.` : `No financial or business stories for ${esc(nm(c.name))} right now. When live sources are connected, stories appear here as they are published. We never fill a country with invented news.`}</div>`}${noteHTML()}`;
   } else if (view.k === 'place') {
     const list = view.ids.map(i => byId[i]).sort(sortTop);
-    pbody.innerHTML = `<button class="back" data-back>← Back</button><div class="eyebrow">${esc(nm(list[0].location.country))}</div><h2>${esc(list[0].location.place)}</h2><div class="stats"><div><b>${list.length}</b>stories here</div></div><div class="list">${list.map(item).join('')}</div>${NOTE}`;
+    pbody.innerHTML = `<button class="back" data-back>← Back</button><div class="eyebrow">${esc(nm(list[0].location.country))}</div><h2>${esc(list[0].location.place)}</h2><div class="stats"><div><b>${list.length}</b>stories here</div></div><div class="list">${list.map(item).join('')}</div>${noteHTML()}`;
   }
 }
 
@@ -737,9 +744,12 @@ function frame(t) {
 }
 
 // ===== Start =====
-fetch(NEWS_URL).then(r => r.json()).then(raw => {
+let LIVE = null;
+const load = u => fetch(u, { cache: 'no-cache' }).then(r => { if (!r.ok) throw 0; return r.json(); });
+load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return d; }).catch(() => load(DEMO_URL)).then(raw => {
+  if (!raw.demo) { LIVE = raw; const b = $('badge'); b.className = 'demo live'; b.title = raw.notice || ''; b.innerHTML = '<i></i>Live news · updated ' + new Date(raw.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
   stories = normalize(raw); byId = Object.fromEntries(stories.map(s => [s.id, s])); incoming = {};
-  for (const s of stories) for (const l of s.links) incoming[l] = s.id;
+  for (const s of stories) for (const l of s.links) if (byId[l]) incoming[l] = s.id;
   refresh();
   const q = new URLSearchParams(location.search);
   if (q.get('story') && byId[q.get('story')]) openStory(byId[q.get('story')]);
