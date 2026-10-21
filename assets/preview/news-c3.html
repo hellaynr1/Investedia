@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Board with filters</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Geist+Mono:wght@500&display=swap"><link rel="stylesheet" href="np.css">
+<style>
+.fb{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:24px 0 6px}
+.seg{display:inline-flex;padding:3px;border-radius:12px;border:1px solid var(--line);background:#0c0c0e}.seg button{height:34px;padding:0 14px;border-radius:9px;font-size:13px;color:var(--fg2)}.seg button.on{background:#fff;color:#0A0A0B;font-weight:600}
+.dd{position:relative}.dd>button{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:#0c0c0e;font-size:13.5px}.dd>button small{color:var(--fg3)}.dd>button:after{content:'⌄';color:var(--fg3);margin-left:4px}
+.menu{position:absolute;top:46px;left:0;min-width:210px;padding:6px;border-radius:14px;border:1px solid var(--line2);background:rgba(18,18,20,.97);box-shadow:0 24px 60px rgba(0,0,0,.6);z-index:5}
+.menu div{display:flex;justify-content:space-between;gap:20px;padding:9px 10px;border-radius:9px;font-size:13.5px}.menu div.on{background:rgba(255,255,255,.06)}.menu div.on:after{content:'✓';color:var(--ac)}
+.def{margin:8px 0 18px;font-size:12.5px;color:var(--fg3)}.def b{color:var(--fg2);font-weight:500}
+.box{border:1px solid var(--line);border-radius:20px;background:#0c0c0e;padding:6px 18px 10px}
+.r{display:grid;grid-template-columns:28px auto 1fr 190px 130px;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line)}.r:first-child{border-top:0}
+.r .k{font:500 12px var(--mono);color:var(--fg3)}.r b{font-size:15px;font-weight:600;display:block}.r small{font-size:12px;color:var(--fg3)}
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;gap:2px;background:rgba(255,255,255,.06)}.bar i{display:block}.bar .u{background:var(--up)}.bar .d{background:var(--dn)}.bar .o{background:#52525B}
+.vol{font-size:11.5px;color:var(--fg3)}.vol .t{height:6px;border-radius:3px;background:rgba(255,255,255,.07);margin-top:6px;overflow:hidden}.vol .t i{display:block;height:100%;background:linear-gradient(90deg,#FF7A1A55,#FF7A1A)}
+.pill{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;border-radius:999px;border:1px solid var(--line2);font-size:12.5px}
+.tg{margin-top:34px}
+@media(max-width:860px){.r{grid-template-columns:24px 1fr;}.r>*:nth-child(n+4){grid-column:2}}
+</style></head><body><div id="h"></div>
+<main class="w" style="padding-top:40px"><span class="eb">News</span><h1>What's exposed <span>this week.</span></h1>
+<div class="fb"><div class="seg" id="sg"></div>
+<div class="dd"><button>Region <small>All</small></button></div><div class="dd"><button>Time <small>7 days</small></button></div><div class="dd"><button>Direction <small>Any</small></button><div class="menu"><div class="on">Any</div><div>Mostly up</div><div>Mostly down</div><div>Conflicting</div></div></div></div>
+<p class="def" id="df"></p><div class="box" id="bd"></div></main><div id="f"></div><span class="pv">Filters concept</span>
+<script src="np.js"></script><script>
+h.innerHTML = HEADER; f.innerHTML = FOOTER; let all = [], mode = 'vol';
+const MODES = [['aff', 'Most affected', 'Ranked by how many stories touch it.'], ['vol', 'Most volatile', 'Ranked by <b>conflicting forces</b>: the more stories push it both up and down, the more volatile the news around it.'], ['one', 'Most one-sided', 'Ranked by how strongly the news points <b>one way</b>.'], ['new', 'Newest', 'Ranked by the latest story that touches it.']];
+function draw() {
+  const m = new Map(); for (const s of all) for (const i of s.impacts || []) { if (!i.country) continue; const e = m.get(i.country) || { c: i.country, u: 0, d: 0, o: 0, t: 0, last: 0 }; e[i.direction === 'up' ? 'u' : i.direction === 'down' ? 'd' : 'o']++; e.t++; e.last = Math.max(e.last, Date.parse(s.published_at)); m.set(i.country, e); }
+  const L = [...m.values()].filter(e => e.t >= 3).map(e => ({ ...e, vol: e.t ? 2 * Math.min(e.u, e.d) / (e.u + e.d || 1) * Math.min(1, (e.u + e.d) / 8) : 0, one: Math.abs(e.u - e.d) / (e.u + e.d || 1) }));
+  const key = { aff: e => e.t, vol: e => e.vol, one: e => e.one, new: e => e.last }[mode]; L.sort((a, b) => key(b) - key(a));
+  df.innerHTML = MODES.find(x => x[0] === mode)[2];
+  sg.innerHTML = MODES.map(([k, l]) => `<button class="${k === mode ? 'on' : ''}" data-k="${k}">${l}</button>`).join('');
+  bd.innerHTML = L.slice(0, 7).map((e, n) => `<div class="r"><span class="k">${String(n + 1).padStart(2, '0')}</span><span>${flag(e.c)}</span><span><b>${esc(e.c)}</b><small>${e.t} stories</small></span>
+   <span><span class="bar">${e.u ? `<i class="u" style="flex:${e.u}"></i>` : ''}${e.d ? `<i class="d" style="flex:${e.d}"></i>` : ''}${e.o ? `<i class="o" style="flex:${e.o}"></i>` : ''}</span><small>↑ ${e.u} · ↓ ${e.d} · ↔ ${e.o}</small></span>
+   <span class="vol">Volatility <b>${e.vol > .55 ? 'High' : e.vol > .25 ? 'Medium' : 'Low'}</b><div class="t"><i style="width:${Math.round(e.vol * 100)}%"></i></div></span></div>`).join('');
+}
+sg.onclick = e => { const b = e.target.closest('button'); if (b) { mode = b.dataset.k; draw(); } };
+load().then(s => { all = s; draw(); });
+</script></body></html>

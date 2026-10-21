@@ -1,0 +1,37 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Story page with timeline and next steps</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Geist+Mono:wght@500&display=swap"><link rel="stylesheet" href="np.css">
+<style>
+.pg{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:34px;margin-top:34px;align-items:start}
+h1{font-size:clamp(28px,3.4vw,40px)}.sum{margin:14px 0 0;font-size:16.5px;line-height:1.6;color:#d4d4d8}
+.sec{margin-top:34px}.sec h2{margin:0 0 4px;font-size:19px;font-weight:600}.sec>p{margin:0 0 16px;color:var(--fg3);font-size:13px}
+.tl{position:relative;padding-left:30px}.tl:before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,rgba(255,122,26,.9),rgba(255,122,26,.12))}
+.ev{position:relative;padding:0 0 22px}.ev:before{content:'';position:absolute;left:-30px;top:5px;width:16px;height:16px;border-radius:50%;background:#0A0A0B;border:2px solid var(--ac)}.ev.now:before{background:var(--ac);box-shadow:0 0 0 5px rgba(255,122,26,.2)}
+.ev .d{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ac)}.ev a{display:block;margin-top:4px;font-size:15.5px;font-weight:600;line-height:1.35}.ev p{margin:4px 0 0;font-size:13px;line-height:1.5;color:var(--fg2)}
+.ev .eff{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.ev .eff span{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 9px 0 5px;border-radius:8px;border:1px solid var(--line);font-size:12px}
+.side{position:sticky;top:78px;display:grid;gap:14px}
+.card{padding:18px;border-radius:18px;border:1px solid var(--line);background:#0e0e10}.card h3{margin:0 0 12px;font-size:15px;font-weight:600}
+.act{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}.act:first-of-type{border-top:0;padding-top:0}
+.act .ic{width:34px;height:34px;border-radius:10px;background:rgba(255,122,26,.12);display:grid;place-items:center;color:var(--ac);font-size:16px}.act b{font-size:13.5px;font-weight:600;display:block}.act small{font-size:12px;color:var(--fg3)}
+.btn2{height:32px;padding:0 12px;border-radius:9px;border:1px solid var(--line2);font-size:12.5px;font-weight:550;white-space:nowrap}.btn2.p{background:#fff;color:#0A0A0B;border-color:#fff}
+.sc{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sc div{padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);font-size:12.5px;line-height:1.5;color:var(--fg2)}.sc b{display:flex;gap:6px;align-items:center;font-size:12px;margin-bottom:5px;color:#fff}
+.note{font-size:11.5px;color:var(--fg3);line-height:1.5;margin-top:12px}
+@media(max-width:900px){.pg{grid-template-columns:1fr}.side{position:static}}
+</style></head><body><div id="h"></div><main class="w" id="p"></main><div id="f"></div><span class="pv">Timeline + next steps concept</span>
+<script src="np.js"></script><script>
+h.innerHTML = HEADER; f.innerHTML = FOOTER;
+load().then(all => {
+  const rel = s => all.filter(x => x.id !== s.id && (x.entities || []).some(e => (s.entities || []).some(z => z.name && z.name === e.name)));
+  const s = [...all].filter(x => x.impacts?.length).sort((a, b) => rel(b).length - rel(a).length)[0], th = [s, ...rel(s)].sort((a, b) => Date.parse(a.published_at) - Date.parse(b.published_at)).slice(-5);
+  const E = s.impacts[0], E2 = s.impacts[1] || E, name = (s.entities?.[0]?.name) || E.name;
+  p.innerHTML = `<div class="pg"><div><div class="m">${sflag(s)} <b>${esc(s.location.place.split(',')[0])}</b> · ${esc(CL[s.category])}</div><h1>${esc(s.headline)}</h1><p class="sum">${esc(s.summary)}</p>
+  <section class="sec"><h2>How this story developed</h2><p>Every report on the same thread, oldest first, and what each one moved.</p><div class="tl">${th.map((x, n) => `<div class="ev${x === th[th.length - 1] ? ' now' : ''}"><div class="d">${new Date(x.published_at).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} · ${new Date(x.published_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</div><a href="${url(x)}">${esc(x.headline)}</a><p>${esc(x.summary)}</p>
+    <div class="eff">${(x.impacts || []).slice(0, 3).map(i => `<span>${icon(i)}${esc(i.name)} ${arrow(i.direction)}</span>`).join('')}</div></div>`).join('')}</div></section>
+  <section class="sec"><h2>Who it touches, and why</h2><p>Direct effects only, with the reason.</p>${(s.impacts || []).slice(0, 3).map(i => `<div class="card" style="margin-bottom:10px"><div style="display:flex;gap:10px;align-items:center">${icon(i)}<b style="flex:1">${esc(i.name)}</b>${arrow(i.direction)}</div><p style="margin:8px 0 0;font-size:13.5px;line-height:1.55;color:var(--fg2)">${esc(i.why)}</p></div>`).join('')}</section></div>
+  <aside class="side"><div class="card"><h3>What you can do next</h3>
+   <div class="act"><span class="ic">◉</span><span><b>Follow ${esc(name)}</b><small>Get a heads-up when new stories touch it</small></span><button class="btn2 p">Follow</button></div>
+   <div class="act"><span class="ic">☰</span><span><b>Add to my morning briefing</b><small>This thread, summarised every morning</small></span><button class="btn2">Add</button></div>
+   <div class="act"><span class="ic">?</span><span><b>Learn the basics</b><small>What is a merger, and why does it move prices?</small></span><button class="btn2">Read</button></div></div>
+  <div class="card"><h3>Two scenarios to watch</h3><div class="sc"><div><b>${arrow('up')} If it continues</b>More stories like this keep pushing ${esc(E.name)} ${E.direction === 'down' ? 'down' : 'up'}; watch ${esc(E2.name)} next.</div><div><b>${arrow('down')} If it fades</b>The effect on ${esc(E.name)} usually eases once the news stops repeating.</div></div>
+   <p class="note">Scenarios describe what could happen, not what you should do. Investedia is media, not advice: this is not a recommendation to buy or sell anything.</p></div></aside></div>`;
+});
+</script></body></html>
