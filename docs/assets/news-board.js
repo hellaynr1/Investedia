@@ -8,7 +8,8 @@
   const nbFlag = c => c ? `<img class="nb-fl" src="assets/globe/flags/${c.toLowerCase()}.svg" alt="" onerror="this.remove()">` : '';
   const nbLogo = t => t && !/[\^=]/.test(t) ? `<img class="nb-lg" src="https://cdn.brandfetch.io/${/-USD$/.test(t) ? 'crypto/' + encodeURIComponent(t.split('-')[0]) : 'ticker/' + encodeURIComponent(t)}/w/96/h/96/fallback/404?c=${BF}" alt="" onerror="this.remove()">` : '';
   const ico = i => i.kind === 'country' || !i.ticker ? nbFlag(i.country) : nbLogo(i.ticker) || nbFlag(i.country);
-  const arr = d => `<span class="nb-dir ${d}">${d === 'up' ? '↑' : d === 'down' ? '↓' : d === 'mixed' ? '↔' : '·'}</span>`;
+  const arr = d => `<span class="nb-dir ${d}"><b>${d === 'up' ? '↑' : d === 'down' ? '↓' : d === 'mixed' ? '↔' : '?'}</b>${d === 'up' ? 'Up' : d === 'down' ? 'Down' : d === 'mixed' ? 'Mixed' : 'Unclear'}</span>`;
+  const net = e => e.u > e.d * 1.5 ? 'up' : e.d > e.u * 1.5 ? 'down' : 'mixed';
   const link = s => `story.html?id=${encodeURIComponent(s.id)}`;
   const pick = (list, key, label, icon) => {
     const m = new Map();
@@ -18,7 +19,7 @@
     return L.filter(f).sort((a, b) => ({ aff: e => e.t, vol: e => e.vol, one: e => e.one, new: e => e.last })[S.mode](b) - ({ aff: e => e.t, vol: e => e.vol, one: e => e.one, new: e => e.last })[S.mode](a)).slice(0, 7);
   };
   const rows = L => L.length ? L.map((e, n) => `<div class="nb-r${n === 0 ? ' open' : ''}"><button class="nb-rh" type="button" aria-expanded="${n === 0}"><span>${e.ic}</span><span><b>${esc(e.label)}</b><small>${e.t} ${e.t === 1 ? 'story' : 'stories'}</small></span>
-    <span class="bw"><span class="nb-bar">${e.u ? `<i class="u" style="flex:${e.u}"></i>` : ''}${e.d ? `<i class="d" style="flex:${e.d}"></i>` : ''}${e.o ? `<i class="o" style="flex:${e.o}"></i>` : ''}</span><span class="nb-cnt">${e.u ? `<span class="u">↑ ${e.u}</span>` : ''}${e.d ? `<span class="d">↓ ${e.d}</span>` : ''}${e.o ? `<span>↔ ${e.o}</span>` : ''}</span>${S.mode === 'vol' ? `<span class="nb-vol">Volatility <b>${e.vol > .55 ? 'High' : e.vol > .25 ? 'Medium' : 'Low'}</b></span>` : ''}</span><span class="nb-chev">›</span></button>
+    <span class="bw"><span class="nb-bar">${e.u ? `<i class="u" style="flex:${e.u}"></i>` : ''}${e.d ? `<i class="d" style="flex:${e.d}"></i>` : ''}${e.o ? `<i class="o" style="flex:${e.o}"></i>` : ''}</span><span class="nb-cnt">${e.u ? `<span class="u">↑ ${e.u}</span>` : ''}${e.d ? `<span class="d">↓ ${e.d}</span>` : ''}${e.o ? `<span>↔ ${e.o}</span>` : ''}</span>${S.mode === 'vol' ? `<span class="nb-vol">Volatility <b>${e.vol > .55 ? 'High' : e.vol > .25 ? 'Medium' : 'Low'}</b></span>` : ''}</span>${arr(net(e))}<span class="nb-chev">›</span></button>
     <div class="nb-det">${e.items.sort((a, b) => rank(a.s, b.s)).slice(0, 3).map(({ s, i }) => `<a class="nb-st" href="${link(s)}">${arr(i.direction)}<span><b>${esc(s.headline)}</b><p>${esc(i.why)}</p></span></a>`).join('')}</div></div>`).join('') : '<div class="nb-none">Nothing matches these filters yet. Try a wider time window or another category.</div>';
   const th = s => { const e = (s.entities || []).find(company); const f = flagSrc(s.location.country); return s.image ? `<img src="assets/globe/${esc(s.image.file)}" alt="" loading="lazy">` : e ? `<img class="nb-lg" src="${logoSrc(e)}" alt="" onerror="this.remove()">` : f ? `<img class="nb-lg" style="padding:0;background:none;border-radius:4px" src="${f}" alt="">` : ''; };
   function draw() {
