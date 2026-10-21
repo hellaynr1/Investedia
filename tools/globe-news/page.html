@@ -6,6 +6,7 @@
 <title>Investedia Globe News (concept)</title>
 <meta name="robots" content="noindex">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Geist+Mono:wght@400;500&display=swap">
 <style>
@@ -118,7 +119,6 @@ h1 span{color:var(--fg-3)}
 .tag{display:inline-block;margin-right:6px;padding:2px 6px;border-radius:5px;background:var(--accent-soft);color:var(--accent);font-size:9.5px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;vertical-align:1px}
 .demo.live{border-style:solid;border-color:rgba(255,122,26,.35)}
 .demo.live i{width:6px;height:6px;border-radius:50%;background:#FF7A1A;box-shadow:0 0 8px #FF7A1A}
-.ai{margin-left:6px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.07);color:var(--fg-2);font-size:9.5px;letter-spacing:.04em}
 .dtag{display:inline-block;margin-left:6px;padding:1px 5px;border-radius:4px;border:1px dashed rgba(255,179,122,.5);color:#FFB37A;font-size:9.5px;font-weight:600;letter-spacing:.06em;vertical-align:1px}
 
 /* Panel */
@@ -200,7 +200,9 @@ h1 span{color:var(--fg-3)}
 .why .eyebrow{color:var(--accent)}
 .why p{margin-top:6px!important;font-size:13.5px!important}
 .ents{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.ent{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:8px;border:1px solid var(--line);font-size:12.5px;color:var(--fg)}
+.ent{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:3px 9px 3px 5px;border-radius:8px;border:1px solid var(--line);font-size:12.5px;color:var(--fg)}
+.ent>img{width:18px;height:18px;flex:none;object-fit:contain;box-sizing:border-box;background:#fff;border-radius:4px;padding:2px}
+.story .note{font-size:12px;color:var(--fg-2);line-height:1.6}
 .ent code{font:500 11px var(--mono);color:var(--fg-3)}
 .chain{display:grid;margin-top:8px}
 .chain button{display:flex;align-items:center;gap:10px;text-align:left;padding:8px 10px;border-radius:10px;font-size:13px;color:var(--fg-2)}
@@ -360,6 +362,13 @@ function art(s, label = true) {
 }
 // Flags (vector, flag-icons MIT) and the World Bank economy snapshot (economy.json, refreshed weekly by update_economy.py)
 const flag = (name, cls = 'flag') => ISO[name] ? `<img class="${cls}" src="flags/${ISO[name].toLowerCase()}.svg" alt="" loading="lazy" onerror="this.remove()">` : '';
+function entityChip(e, country) {
+  const asset = /[\^=]/.test(e.ticker || '') || ['index', 'currency', 'future'].includes(e.type);
+  const lg = asset ? null : logoFor(e);
+  const image = asset ? flag(country, 'ent-flag') : lg ? limg(lg) : '';
+  return `<span class="ent">${image}<span>${esc(e.name)}</span>${e.ticker ? `<code>${esc(e.ticker)}</code>` : ''}</span>`;
+}
+
 let ECON = null; fetch('economy.json').then(r => r.json()).then(d => { ECON = d; if (view.k === 'country') render(); }).catch(() => {});
 const usd = v => v >= 1e12 ? '$' + (v / 1e12).toFixed(v >= 1e13 ? 1 : 2) + ' trillion' : v >= 1e9 ? '$' + (v / 1e9).toFixed(v >= 1e11 ? 0 : 1) + ' billion' : '$' + (v / 1e6).toFixed(0) + ' million';
 const people = v => v >= 1e9 ? (v / 1e9).toFixed(2) + ' billion' : v >= 1e6 ? (v / 1e6).toFixed(1) + ' million' : Math.round(v / 1e3) + ' thousand';
@@ -569,7 +578,7 @@ addEventListener('keydown', e => { if (e.key === 'Escape' && view.k !== 'top') b
 
 const item = s => `<button class="item" data-story="${s.id}"><span class="dot i${s.importance}"></span><span><span class="eyebrow">${s.flag ? `<span class="tag">${FLAG[s.flag]}</span>` : ''}${esc(CAT[s.category])} · ${esc(s.location.place)}</span><h4>${esc(s.headline)}</h4><span class="meta">${ago(s.t)} · ${esc(nm(s.location.country))}${s.demo ? '<span class="dtag">DEMO</span>' : ''}</span></span>${art(s, false)}</button>`;
 const NOTE_DEMO = '<p class="note">Concept preview. Every story on this globe is demo content written to show the design: not real news, not live, not investment advice. When live sources are connected, each story will show its source, original link and publication time.</p>';
-const NOTE_LIVE = '<p class="note">Headlines and short summaries are written with AI from each source\'s own headline and description, and every story links to its original source. Locations are approximate. For information only, not investment advice.</p>';
+const NOTE_LIVE = '<p class="note">Summaries are written with the help of AI from each source\'s own reporting. Every story links to its source. Not investment advice.</p>';
 const noteHTML = () => LIVE ? NOTE_LIVE : NOTE_DEMO;
 function render() {
   if (view.k === 'top') {
@@ -584,9 +593,9 @@ function render() {
       <div class="eyebrow">${s.flag ? `<span class="tag">${FLAG[s.flag]}</span>` : ''}${esc(CAT[s.category])}</div>
       <h2>${esc(s.headline)}</h2>
       <div class="meta"><b>${esc(s.location.place)}</b>, <a href="#" data-country="${esc(s.location.country)}" style="color:inherit">${esc(nm(s.location.country))}</a> · ${ago(s.t)}${s.demo ? '<span class="dtag">DEMO</span>' : ''}</div>
-      <div class="sec-h" style="margin-top:0">Investedia summary${s.ai_summary ? ' <span class="ai">AI-assisted</span>' : ''}</div><p>${esc(s.summary)}</p>
+      <div class="sec-h" style="margin-top:0">Investedia summary</div><p>${esc(s.summary)}</p>
       ${s.why ? `<div class="why"><div class="eyebrow">Why this matters</div><p>${esc(s.why)}</p></div>` : ''}
-      ${s.entities.length ? `<div class="sec-h">Companies & assets involved</div><div class="ents">${s.entities.map(x => `<span class="ent">${esc(x.name)}${x.ticker ? `<code>${esc(x.ticker)}</code>` : ''}</span>`).join('')}</div>` : ''}
+      ${s.entities.length ? `<div class="sec-h">Companies & assets involved</div><div class="ents">${s.entities.map(x => entityChip(x, s.location.country)).join('')}</div>` : ''}
       ${ch.length ? `<div class="sec-h">How it connects</div><div class="chain">${ch.map((c, i) => `${i ? '<span class="ar"></span>' : ''}<button data-story="${c.id}" class="${c.id === s.id ? 'cur' : ''}"><span class="n">${i + 1}</span><span>${esc(c.location.place)} · ${esc(c.headline)}</span></button>`).join('')}</div>` : ''}
       <div class="src"><div class="meta">${(s.sources || []).length > 1 ? 'Sources' : 'Source'}<br><b>${s.source?.name ? esc(s.source.name) : 'Demo content · no original article'}</b>${(s.sources || []).length > 1 ? ` <span>+ ${s.sources.slice(1, 4).map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(x.name)}</a>`).join(', ')}</span>` : ''}</div>${s.source?.url ? `<a class="read" style="opacity:1;cursor:pointer;display:inline-grid;place-items:center;text-decoration:none" href="${esc(s.source.url)}" target="_blank" rel="noopener">Read story ↗</a>` : '<button class="read" title="Available when live sources are connected" disabled>Read story ↗</button>'}</div>${noteHTML()}</div>`;
   } else if (view.k === 'country') {
@@ -599,7 +608,7 @@ function render() {
       <div class="stats"><div><b>${list.length}</b>${list.length === 1 ? 'story' : 'stories'} · ${F.win.toUpperCase()}</div><div><b>${all.length}</b>this week</div><div><b>${list.filter(s => s.importance === 3).length}</b>major</div></div>
       ${list.length ? `<div class="sec-h" style="margin-top:0">Top stories</div><div class="list">${list.slice(0, 3).map(item).join('')}</div>${groups.length ? '<div class="sec-h" style="margin-top:26px;color:var(--fg-2)">More by topic</div>' : ''}
         ${groups.map(([l, g]) => `<div class="sec-h">${l}</div><div class="list">${g.map(item).join('')}</div>`).join('')}
-        ${cos.length ? `<div class="sec-h">Companies & assets</div><div class="cos">${cos.map(x => `<span class="ent">${esc(x.name)}<code>${esc(x.ticker)}</code></span>`).join('')}</div>` : ''}`
+        ${cos.length ? `<div class="sec-h">Companies & assets</div><div class="cos">${cos.map(x => entityChip(x, c.name)).join('')}</div>` : ''}`
       : `<div class="empty">${all.length ? `No ${F.cat === 'all' ? '' : esc(CAT[F.cat]).toLowerCase() + ' '}stories for ${esc(nm(c.name))} in ${WLABEL[F.win]}. ${all.length} in the last 7 days: switch the timeline to <b>7D</b>.` : `No financial or business stories for ${esc(nm(c.name))} right now. When live sources are connected, stories appear here as they are published. We never fill a country with invented news.`}</div>`}${noteHTML()}`;
   } else if (view.k === 'place') {
     const list = view.ids.map(i => byId[i]).sort(sortTop);

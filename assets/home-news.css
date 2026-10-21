@@ -31,8 +31,8 @@ body[data-page=home]{--line-2:rgba(255,255,255,.15);--bg-2:#0B0B0D;--card:#12121
 .hn-why .hn-wl{font-size:11px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3);margin-top:4px}
 .hn-why p{margin:0;font-size:14px;line-height:1.55;color:#D4D4D8}
 .hn-why .hn-ents{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
-.hn-ent{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 9px 0 5px;border-radius:8px;border:1px solid var(--line);font-size:12.5px}
-.hn-ent img{width:18px;height:18px;border-radius:4px;background:#fff;padding:2px;object-fit:contain}
+.hn-ent{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:3px 9px 3px 5px;border-radius:8px;border:1px solid var(--line);font-size:12.5px}
+.hn-ent img{width:18px;height:18px;flex:none;box-sizing:border-box;border-radius:4px;background:#fff;padding:2px;object-fit:contain}
 .hn-ent code{font:500 11px var(--mono);color:var(--fg-3)}
 
 /* list rows */

@@ -70,6 +70,8 @@ LG = os.path.join(SITE, 'assets/logos')
 logos = {f.rsplit('.', 1)[0]: '../logos/' + f for f in sorted(os.listdir(LG)) if '.' in f}
 logos.update({f.rsplit('.', 1)[0]: '../logos/co/' + f for f in sorted(os.listdir(os.path.join(LG, 'co')))})
 page = page.replace('__LOGOS__', json.dumps(logos, separators=(',', ':')))
+# Share the same local fallback paths with the homepage entity chips.
+open(os.path.join(SITE, 'assets/globe/logos.json'), 'w').write(json.dumps(logos, separators=(',', ':')))
 # country name (as in the map data) -> ISO 3166 two-letter code, for flags and the World Bank economy data
 import re, unicodedata
 key = lambda t: re.sub(r'[^a-z]', '', unicodedata.normalize('NFD', t).encode('ascii', 'ignore').decode().lower())
