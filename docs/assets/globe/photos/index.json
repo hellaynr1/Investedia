@@ -398,5 +398,65 @@
    "source_url": "https://pixabay.com/photos/mobile-phone-smartphone-keyboard-1917737/",
    "alt": "smartphone"
   }
+ ],
+ "electric car charging": [
+  {
+   "file": "photos/electric-car-charging-2783573.jpg",
+   "credit": "Joenomias",
+   "source_url": "https://pixabay.com/photos/electric-car-hybrid-car-load-2783573/",
+   "alt": "electric car charging"
+  },
+  {
+   "file": "photos/electric-car-charging-5212924.jpg",
+   "credit": "AKrebs60",
+   "source_url": "https://pixabay.com/photos/charging-station-e-mobility-5212924/",
+   "alt": "electric car charging"
+  },
+  {
+   "file": "photos/electric-car-charging-1738969.jpg",
+   "credit": "Blomst",
+   "source_url": "https://pixabay.com/photos/tesla-tesla-model-x-charging-1738969/",
+   "alt": "electric car charging"
+  }
+ ],
+ "bitcoin cryptocurrency": [
+  {
+   "file": "photos/bitcoin-cryptocurrency-2007769.jpg",
+   "credit": "MichaelWuensch",
+   "source_url": "https://pixabay.com/photos/bitcoin-cryptocurrency-digital-2007769/",
+   "alt": "bitcoin cryptocurrency"
+  },
+  {
+   "file": "photos/bitcoin-cryptocurrency-8575459.jpg",
+   "credit": "PriismaDesign",
+   "source_url": "https://pixabay.com/photos/man-drinking-whiskey-brandy-liquor-8575459/",
+   "alt": "bitcoin cryptocurrency"
+  },
+  {
+   "file": "photos/bitcoin-cryptocurrency-9136818.jpg",
+   "credit": "Joel-image-Graphics23",
+   "source_url": "https://pixabay.com/photos/ai-generated-crowd-bitcoin-9136818/",
+   "alt": "bitcoin cryptocurrency"
+  }
+ ],
+ "housing construction": [
+  {
+   "file": "photos/housing-construction-1080592.jpg",
+   "credit": "jarmoluk",
+   "source_url": "https://pixabay.com/photos/architect-man-jump-jumping-1080592/",
+   "alt": "housing construction"
+  },
+  {
+   "file": "photos/housing-construction-6023375.jpg",
+   "credit": "JACLOU-DL",
+   "source_url": "https://pixabay.com/photos/house-construction-frame-6023375/",
+   "alt": "housing construction"
+  },
+  {
+   "file": "photos/housing-construction-2733678.jpg",
+   "credit": "Nikguy",
+   "source_url": "https://pixabay.com/photos/construction-site-architect-2733678/",
+   "alt": "housing construction"
+  }
  ]
 }
