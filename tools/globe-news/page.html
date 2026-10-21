@@ -237,6 +237,8 @@ h1 span{color:var(--fg-3)}
   .hover{display:none}
 }
 @media (prefers-reduced-motion:reduce){.panel{transition:none}}
+.embed body,.embed{background:transparent}
+.embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom{display:none!important}
 </style>
 </head>
 <body>
@@ -270,6 +272,7 @@ h1 span{color:var(--fg-3)}
   <div class="pbody" id="pbody"></div>
 </aside>
 
+<script>if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');</script>
 <script src="../quotes.js"></script>
 <script>
 // ===== Data =====
@@ -279,7 +282,7 @@ const NEWS_URL = 'news-live.json', DEMO_URL = 'news-demo.json'; // live news (up
 const ISO = __ISO__, DOTS = __DOTS__, CTRY = __COUNTRIES__, LOGOS = __LOGOS__, QD = window.QUOTES || { q: {} };
 const $ = id => document.getElementById(id), rad = Math.PI / 180, T0 = Date.now();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-const phone = () => innerWidth <= 760;
+const phone = () => innerWidth <= 760, EMBED = document.documentElement.classList.contains('embed');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const CATS = [['all', 'All'], ['markets', 'Markets'], ['companies', 'Companies'], ['economy', 'Economy'], ['technology', 'Technology'], ['crypto', 'Crypto'], ['commodities', 'Commodities'], ['geopolitics', 'Geopolitics']];
 const CAT = Object.fromEntries(CATS);
@@ -445,7 +448,8 @@ let cyT = 0, W = 0, H = 0, R0 = 0, R = 0, cx = 0, cy = 0, Z = 1, lon0 = -15, lat
 function size() {
   const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   // keep the globe clear of the filters on top and the timeline below; on phones it moves up when the sheet opens
-  if (phone()) { cx = W / 2; R0 = Math.min(W * .45, H * .29); cyT = panel.classList.contains('open') ? (120 + H * .4) / 2 + 10 : H * .47; }
+  if (EMBED) { const q = new URLSearchParams(location.search); cx = W * (+q.get('cx') || .5); cyT = H * (+q.get('cy') || .5); R0 = Math.min(W, H) * (+q.get('r') || .42); }
+  else if (phone()) { cx = W / 2; R0 = Math.min(W * .45, H * .29); cyT = panel.classList.contains('open') ? (120 + H * .4) / 2 + 10 : H * .47; }
   else { const aw = W - 392 - 32, top = 290, bot = 96; cx = aw / 2 + 8; cyT = top + (H - top - bot) / 2; R0 = Math.min(aw * .4, (H - top - bot) / 2 * .94); }
   if (!cy) cy = cyT; R = R0 * Z;
 }
@@ -495,7 +499,7 @@ function endPointer(e) {
 }
 cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
 cv.addEventListener('pointerleave', () => { if (!drag) hideHover(); });
-cv.addEventListener('wheel', e => { e.preventDefault(); setZ(Z * Math.exp(-e.deltaY * .0015)); }, { passive: false });
+cv.addEventListener('wheel', e => { if (EMBED) return; e.preventDefault(); setZ(Z * Math.exp(-e.deltaY * .0015)); }, { passive: false });
 cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) flyTo(g[0], g[1], Z < ZMAX - .1 ? Z * 1.8 : 1, 600); });
 $('zin').onclick = () => flyTo(lon0, lat0, Z * 1.6, 420); $('zout').onclick = () => flyTo(lon0, lat0, Z / 1.6, 420);
 
@@ -534,12 +538,14 @@ $('grab').onclick = () => panel.classList.toggle('open');
 function go(v, push = true) { if (push && view.k !== v.k || push && view.id !== v.id) hist.push(view); view = v; render(); pbody.scrollTop = 0; if (phone() && v.k !== 'top') panel.classList.add('open'); }
 function back() { view = hist.pop() || { k: 'top' }; if (view.k === 'top') { sel = null; selCountry = null; } else if (view.k === 'country') { sel = null; selCountry = byName[view.id]; } else if (view.k === 'story') { sel = byId[view.id]; } render(); }
 function openStory(s) {
+  if (EMBED) { top.location.href = '/assets/globe/news.html?story=' + encodeURIComponent(s.id); return; }
   sel = s; selCountry = byName[s.location.country] || null; go({ k: 'story', id: s.id });
   const ch = chainOf(s);
   if (ch.length) { let x = 0, y = 0, z = 0; for (const c of ch) { x += Math.cos(c.phi) * Math.cos(c.lam); y += Math.cos(c.phi) * Math.sin(c.lam); z += Math.sin(c.phi); } flyTo(Math.atan2(y, x) / rad, Math.min(38, Math.atan2(z, Math.hypot(x, y)) / rad), 1.05); }
   else flyTo(s.location.lon, s.location.lat, Math.max(Z, phone() ? 1.5 : 2.2));
 }
 function openCountry(c) {
+  if (EMBED) { top.location.href = '/assets/globe/news.html?country=' + encodeURIComponent(c.name); return; }
   sel = null; selCountry = c; go({ k: 'country', id: c.name });
   const span = Math.max((c.b[2] - c.b[0]) * Math.cos(c.c[1] * rad), c.b[3] - c.b[1]);
   flyTo(c.c[0], c.c[1], Math.max(1.4, Math.min(4.6, 46 / Math.max(span, 1))));
