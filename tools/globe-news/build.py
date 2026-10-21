@@ -87,6 +87,7 @@ for row in C50:
     n = row[0]; c = FIX.get(n) or codes.get(key(n))
     if c: ISO[n] = c
 page = page.replace('__ISO__', json.dumps(ISO, separators=(',', ':')))
+open(os.path.join(G, 'iso.json'), 'w').write(json.dumps(ISO, ensure_ascii=False, indent=0))  # also used by update_globe_news.py
 # rectangular vector flags (flag-icons, MIT) for the countries on the map
 FL = os.path.join(G, 'flags'); os.makedirs(os.path.join(SITE, 'assets/globe/flags'), exist_ok=True)
 for c in set(ISO.values()):
