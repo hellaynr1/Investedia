@@ -26,6 +26,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .glass{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2)}
 
 /* Top: brand, title, filters */
+.top::before{content:'';position:absolute;z-index:-1;left:-40px;top:-30px;right:-60px;bottom:-30px;background:radial-gradient(120% 100% at 0% 0%,rgba(5,5,6,.92) 45%,rgba(5,5,6,0) 100%);pointer-events:none}
+.embed .top::before{display:none}
 .top{position:fixed;left:max(24px,env(safe-area-inset-left));top:22px;right:calc(var(--pw) + 40px);pointer-events:none;z-index:3}
 .top>*{pointer-events:auto}
 .brand{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -36,9 +38,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 h1{margin:14px 0 0;font-size:clamp(22px,2.4vw,32px);font-weight:600;letter-spacing:-.035em;line-height:1.08;max-width:520px;pointer-events:none}
 h1 span{color:var(--fg-3)}
 .chips{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
-.search{z-index:5;position:relative;display:flex;align-items:center;gap:10px;width:min(440px,100%);height:44px;margin-top:18px;padding:0 12px 0 14px;border-radius:12px}
+.search{z-index:5;position:relative;display:flex;align-items:center;gap:10px;width:min(440px,100%);height:48px;margin-top:14px;padding:0 12px 0 14px;border-radius:12px}
 .search svg{width:16px;height:16px;flex:none;stroke:var(--fg-3);fill:none;stroke-width:2;stroke-linecap:round}
-.search input{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;color:var(--fg);font:15px var(--sans)}
+.search input{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;color:var(--fg);font:16px var(--sans)}
 .search input::placeholder{color:var(--fg-3)}
 .search input::-webkit-search-cancel-button{display:none}
 .search:focus-within{border-color:var(--line-2)}
@@ -157,8 +159,8 @@ h1 span{color:var(--fg-3)}
 .pq span{font:500 11px var(--mono);color:rgba(255,255,255,.75)}
 .pq em{font-style:normal}
 .pout{position:absolute;z-index:1;right:12px;top:12px;width:64px;height:64px;padding:6px;border-radius:10px;background:rgba(10,10,11,.6);backdrop-filter:blur(6px);box-sizing:border-box}
-.plogo{position:absolute;z-index:2;right:12px;top:12px;width:min(196px,40%);height:46px;border-radius:8px;overflow:hidden;background:#fff}
-.art.photo .plogo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.plogo{position:absolute;z-index:2;right:12px;top:12px;width:46px;height:46px;border-radius:9px;overflow:hidden;background:#fff}
+.art.photo .plogo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:6px;box-sizing:border-box}
 .plogo:has(img.bf){width:46px}
 .art.photo .plogo img.bf{object-fit:contain;padding:5px;box-sizing:border-box}
 .pchip{position:absolute;z-index:1;right:12px;top:12px;display:flex;align-items:center;gap:7px;padding:4px 9px 4px 5px;border-radius:8px;background:rgba(10,10,11,.75);backdrop-filter:blur(6px);font-size:12px;font-weight:550;color:#fff}
@@ -216,6 +218,13 @@ h1 span{color:var(--fg-3)}
 .cos{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .note{margin-top:24px;font-size:11.5px;line-height:1.55;color:var(--fg-3)}
 
+/* Direct impacts: optional analysis, with direction conveyed in words and arrows. */
+.impact-section{margin-top:22px}.impact-label{font-size:11.5px;color:var(--fg-3);margin:4px 0 12px}
+.impact-list{display:grid;gap:14px}.impact-head{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500}
+.impact-head img{width:18px;height:18px;object-fit:contain;background:#fff;padding:2px;border-radius:4px;flex:none}
+.impact-dir{margin-left:auto;font-size:16px}.impact-up{color:#22C55E}.impact-down{color:#F04444}.impact-mixed,.impact-unclear{color:var(--fg-2)}
+.story .impact-list p{font-size:12.5px;line-height:1.55;color:var(--fg-2);margin:5px 0 0}.story .moved p{font-size:13px;margin:6px 0 0}.moved{margin-bottom:16px}
+
 /* Phones: compact header, timeline above a bottom sheet */
 @media (max-width:760px){
   :root{--pw:0px}
@@ -224,7 +233,7 @@ h1 span{color:var(--fg-3)}
   .chips,.regions{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent)}
   .chips::-webkit-scrollbar,.regions::-webkit-scrollbar{display:none}
   .chips{margin-top:10px}.regions{margin-top:6px}
-  .search{margin-top:12px;height:42px;width:100%}.search kbd{display:none}
+  .search{margin-top:12px;height:48px;width:100%}.search kbd{display:none}
   .legend{display:none}
   .timeline{left:50%;bottom:calc(98px + env(safe-area-inset-bottom));padding:4px}
   .win{min-width:0;padding:0 9px;height:32px}.tl-play{width:32px;height:32px}
@@ -238,6 +247,51 @@ h1 span{color:var(--fg-3)}
   .pbody h2{font-size:19px}
   .hover{display:none}
 }
+/* Optional comparison layouts. Story and country views keep the original panel. */
+.compact-list{display:grid;gap:6px;margin-top:12px}
+.compact-item{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:center;width:100%;text-align:left;padding:8px 0;border-radius:8px;min-width:0}
+.compact-item:hover,.compact-item:focus-visible{background:rgba(255,255,255,.05)}
+.compact-item .art.thumb{width:40px;height:40px;border-radius:7px;aspect-ratio:1;margin:0}
+.compact-headline{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:13px;line-height:1.32;font-weight:550;letter-spacing:-.01em}
+.compact-item time{display:block;font-size:11px;color:var(--fg-3);margin-top:5px}
+.panel-more{display:inline-flex;align-items:center;min-height:36px;margin-top:12px;font-size:12px;color:var(--fg-2)}
+.panel-more:hover{color:var(--fg)}
+.panel-tabs{display:flex;gap:4px;margin:14px 0 8px}
+.panel-tabs button{min-height:34px;padding:0 11px;border-radius:7px;color:var(--fg-3);font-size:12px}
+.panel-tabs button[aria-selected=true]{background:rgba(255,255,255,.08);color:var(--fg)}
+.compact-country{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;text-align:left;font-size:13px}
+.compact-country small{margin-left:auto;color:var(--fg-3);font-size:11px}
+.strip-list{display:flex;gap:18px;overflow-x:auto;scrollbar-width:thin;scroll-snap-type:x proximity;padding-bottom:6px}
+.strip-list .compact-item{flex:0 0 255px;scroll-snap-align:start}
+@media(min-width:761px){
+  html[data-panel=a].panel-top{--pw:320px}
+  html[data-panel=c].panel-top{--pw:340px}
+  html[data-panel=b].panel-top{--pw:0px}
+  html[data-panel=a].panel-top .pbody{padding:18px}
+  html[data-panel=c].panel-top .panel{bottom:auto;max-height:calc(100vh - 32px)}
+  html[data-panel=c].panel-top .pbody{min-height:0;padding:18px}
+  html[data-panel=b].panel-top .panel{top:auto;left:24px;right:24px;bottom:84px;width:auto;height:180px;border-radius:14px}
+  html[data-panel=b].panel-top .top{right:24px}
+  html[data-panel=b].panel-top .top h1{display:none}
+  html[data-panel=b].panel-top .timeline{left:50%}
+  html[data-panel=b].panel-top .zoom{right:24px}
+  html[data-panel=b].panel-top .legend{display:none}
+  html[data-panel=b].panel-top .pbody{padding:12px 16px;overflow-y:hidden}
+  html[data-panel=b].panel-top .pbody h2{font-size:16px;margin:0 0 6px}
+  html[data-panel=b].panel-top .note{margin:6px 0 0;font-size:11px}
+}
+@media(max-width:760px){
+  html[data-panel=c].panel-top .panel:not(.open){transform:translateY(calc(100% - 116px - env(safe-area-inset-bottom)))}
+  html[data-panel=c].panel-top .timeline{bottom:calc(130px + env(safe-area-inset-bottom))}
+  html[data-panel=b].panel-top .panel{height:220px}
+  html[data-panel=b].panel-top .timeline{bottom:232px}
+  html[data-panel=b].panel-top .pbody{padding:0 18px 14px;overflow-y:auto}
+  html[data-panel=b].panel-top .pbody h2{font-size:17px;margin:0 0 8px}
+  html[data-panel=b].panel-top .strip-list{gap:14px}
+  html[data-panel=b].panel-top .strip-list .compact-item{flex-basis:82vw}
+  html[data-panel=b].panel-top .note{margin-top:8px;font-size:11px}
+}
+
 @media (prefers-reduced-motion:reduce){.panel{transition:none}}
 .embed body,.embed{background:transparent}
 .embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom{display:none!important}
@@ -253,7 +307,6 @@ h1 span{color:var(--fg-3)}
     <span class="prod">Globe · News</span>
     <span class="demo" id="badge" title="Concept preview: every story is demo content written to show the design. Not real news.">Concept · demo stories</span>
   </div>
-  <h1>The world's financial news, <span>happening across the globe.</span></h1>
   <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search a country, company or story" autocomplete="off" aria-label="Search the globe" aria-controls="res"><kbd>/</kbd>
     <div class="res" id="res" role="listbox" hidden></div></div>
   <div class="chips" id="cats" role="group" aria-label="Category"></div>
@@ -286,6 +339,11 @@ const ISO = __ISO__, DOTS = __DOTS__, CTRY = __COUNTRIES__, LOGOS = __LOGOS__, Q
 const $ = id => document.getElementById(id), rad = Math.PI / 180, T0 = Date.now();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const phone = () => innerWidth <= 760, EMBED = document.documentElement.classList.contains('embed');
+const panelParam = new URLSearchParams(location.search).get('panel');
+const PANEL_TEMPLATE = ['a', 'b', 'c'].includes(panelParam) ? panelParam : 'c'; // default: C (collapsible, chosen by the owner)
+document.documentElement.dataset.panel = PANEL_TEMPLATE;
+let panelTab = 'top', panelExpanded = false, panelInitialized = false;
+
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const CATS = [['all', 'All'], ['markets', 'Markets'], ['companies', 'Companies'], ['economy', 'Economy'], ['technology', 'Technology'], ['crypto', 'Crypto'], ['commodities', 'Commodities'], ['geopolitics', 'Geopolitics']];
 const CAT = Object.fromEntries(CATS);
@@ -429,6 +487,24 @@ function normalize(raw) {
   return (raw.stories || []).map(s => ({ ...s, demo: !!(raw.demo || s.demo), t: s.published_at ? Date.parse(s.published_at) : T0 - (s.age_minutes || 0) * 60000,
     phi: s.location.lat * rad, lam: s.location.lon * rad, links: s.links || [], entities: s.entities || [], vt: -1e9, on: false }));
 }
+// Analysis is optional. Malformed fields never affect the original reporting.
+const IMPACT_COLOR = { up: '34,197,94', down: '240,68,68', mixed: '161,161,170', unclear: '161,161,170' };
+const IMPACT_ARROW = { up: '↑', down: '↓', mixed: '↔', unclear: '→' };
+function impactsOf(s) {
+  return (Array.isArray(s?.impacts) ? s.impacts : []).filter(i => i && ['country', 'company', 'asset', 'sector'].includes(i.kind) && typeof i.name === 'string' && typeof i.why === 'string' && Object.values(ISO).includes(i.country) && IMPACT_COLOR[i.direction]).slice(0, 4);
+}
+function impactCountry(i) { const name = Object.keys(ISO).find(n => ISO[n] === i.country && byName[n]); return name && byName[name]; }
+function impactVisual(i) {
+  const lg = ['company', 'asset'].includes(i.kind) && !/[\^=]/.test(i.ticker || '') ? logoFor({ name: i.name, ticker: i.ticker }) : null;
+  return lg ? limg(lg) : `<img src="flags/${i.country.toLowerCase()}.svg" alt="" data-logo loading="lazy">`;
+}
+function impactHTML(s) {
+  const rows = impactsOf(s), moved = s.market_moving && typeof s.why_moved === 'string' ? s.why_moved : '';
+  if (!rows.length && !moved) return '';
+  return `<section class="impact-section" aria-label="How it affects">${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">How it affects</div><div class="impact-label">AI-assisted analysis</div><div class="impact-list">${rows.map(i => `<div><div class="impact-head">${impactVisual(i)}<span>${esc(i.name)}</span><span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p></div>`).join('')}</div></section>`;
+}
+function impactTargets(s) { return impactsOf(s).map(i => ({ impact: i, country: impactCountry(i) })).filter(x => x.country); }
+
 // Story chains: a → b → c through "links"
 function chainOf(s) {
   if (!s) return [];
@@ -454,13 +530,26 @@ function refresh() {
 
 // ===== Globe =====
 const cv = $('cv'), ctx = cv.getContext('2d');
-let cyT = 0, W = 0, H = 0, R0 = 0, R = 0, cx = 0, cy = 0, Z = 1, lon0 = -15, lat0 = 24, ZMAX = 5;
+let cyT = 0, W = 0, H = 0, R0 = 0, R = 0, cx = 0, cy = 0, Z = 1, Zt = 1, lon0 = -15, lat0 = 24, ZMAX = 6, globeBox = { left: 0, top: 0, right: 0, bottom: 0 };
 function size() {
   const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  // keep the globe clear of the filters on top and the timeline below; on phones it moves up when the sheet opens
-  if (EMBED) { const q = new URLSearchParams(location.search); cx = W * (+q.get('cx') || .5); cyT = H * (+q.get('cy') || .5); R0 = Math.min(W, H) * (+q.get('r') || .42); }
-  else if (phone()) { cx = W / 2; R0 = Math.min(W * .45, H * .29); cyT = panel.classList.contains('open') ? (120 + H * .4) / 2 + 10 : H * .47; }
-  else { const aw = W - 392 - 32, top = 290, bot = 96; cx = aw / 2 + 8; cyT = top + (H - top - bot) / 2; R0 = Math.min(aw * .4, (H - top - bot) / 2 * .94); }
+  // Measure the real controls: the drawing area stays clear of every panel and filter.
+  if (EMBED) { const q = new URLSearchParams(location.search); cx = W * (+q.get('cx') || .5); cyT = H * (+q.get('cy') || .5); R0 = Math.min(W, H) * (+q.get('r') || .42); globeBox = { left: 0, top: 0, right: W, bottom: H }; }
+  else {
+    const header = document.querySelector('.top').getBoundingClientRect();
+    const sheetOpen = phone() && panel.classList.contains('open');
+    $('tl').hidden = sheetOpen;
+    const timeline = $('tl').getBoundingClientRect();
+    globeBox = { left: phone() ? 8 : 24, top: header.bottom + 12,
+      right: phone() ? W - 8 : panel.getBoundingClientRect().left - 24,
+      bottom: sheetOpen ? H - panel.offsetHeight - 12 : timeline.top - 16 };
+    // template B (?panel=b): the stories sit in a strip along the bottom, so the globe uses the full width above it
+    if (PANEL_TEMPLATE === 'b' && panel.dataset.view === 'top') { globeBox.right = W - (phone() ? 8 : 24); globeBox.bottom = Math.min(globeBox.bottom, (phone() ? $('tl').getBoundingClientRect().top : panel.getBoundingClientRect().top) - 16); }
+    const aw = Math.max(1, globeBox.right - globeBox.left), ah = Math.max(1, globeBox.bottom - globeBox.top);
+    cx = (globeBox.left + globeBox.right) / 2; cyT = globeBox.top + ah / 2;
+    R0 = Math.min((phone() ? W : aw) * .47, ah * .47);
+    if (phone()) document.querySelector('.zoom').style.top = Math.max(globeBox.top, cyT - 36) + 'px';
+  }
   if (!cy) cy = cyT; R = R0 * Z;
 }
 addEventListener('resize', size);
@@ -475,11 +564,37 @@ function inv(x, y) {
 // Camera fly: ease along the shortest way round, with zoom
 let fly = null;
 function flyTo(lo, la, z = Z, dur) {
+  zoomAnchor = null;
+  if (reduce) { lon0 = lo; lat0 = Math.max(-70, Math.min(70, la)); Z = Zt = Math.max(1, Math.min(ZMAX, z)); R = R0 * Z; fly = null; return; }
   const dl = ((lo - lon0 + 540) % 360) - 180;
   fly = { from: [lon0, lat0, Z], dl, la: Math.max(-70, Math.min(70, la)), z: Math.max(1, Math.min(ZMAX, z)), t0: performance.now(), dur: reduce ? 1 : dur || 900 + Math.min(600, Math.abs(dl) * 3) };
 }
 const ease = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-const setZ = z => { fly = null; Z = Math.max(1, Math.min(ZMAX, z)); R = R0 * Z; };
+let zoomAnchor = null;
+function keepZoomAnchor() {
+  if (!zoomAnchor || Math.hypot(zoomAnchor.x - cx, zoomAnchor.y - cy) > R * .995) return;
+  // Solve the two camera angles against the original geographic point. This keeps
+  // north upright and avoids the drift caused by just shifting the canvas centre.
+  const { phi, lam, x, y } = zoomAnchor;
+  for (let i = 0; i < 5; i++) {
+    const p = proj(phi, lam); if (p[2] <= .01) break;
+    const dx = x - p[0], dy = y - p[1]; if (Math.hypot(dx, dy) < .02) break;
+    const h = .001;
+    lon0 += h; const a = proj(phi, lam); lon0 -= h;
+    lat0 += h; const b = proj(phi, lam); lat0 -= h;
+    const ax = (a[0] - p[0]) / h, ay = (a[1] - p[1]) / h, bx = (b[0] - p[0]) / h, by = (b[1] - p[1]) / h;
+    const det = ax * by - ay * bx; if (Math.abs(det) < 1e-8) break;
+    lon0 += Math.max(-8, Math.min(8, (dx * by - dy * bx) / det));
+    lat0 = Math.max(-70, Math.min(70, lat0 + Math.max(-8, Math.min(8, (ax * dy - ay * dx) / det))));
+  }
+}
+function setZ(z, x, y, anchor) {
+  fly = null;
+  const g = Number.isFinite(x) && Number.isFinite(y) ? (anchor || inv(x, y)) : null;
+  zoomAnchor = g ? { phi: g[1] * rad, lam: g[0] * rad, x, y } : null;
+  Zt = Math.max(1, Math.min(ZMAX, z));
+  if (reduce) { Z = Zt; R = R0 * Z; keepZoomAnchor(); zoomAnchor = null; }
+}
 
 // ===== Interaction state =====
 let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
@@ -487,15 +602,15 @@ let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [
 const touches = new Map(); let pinch = null, drag = null;
 cv.addEventListener('pointerdown', e => {
   touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); cv.setPointerCapture(e.pointerId);
-  if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), z: Z }; drag = null; return; }
+  if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), z: Zt, anchor: inv((a.x + b.x) / 2, (a.y + b.y) / 2) }; drag = null; return; }
   drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false };
 });
 cv.addEventListener('pointermove', e => {
   if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
-  if (pinch && touches.size === 2) { const [a, b] = [...touches.values()]; setZ(pinch.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d); return; }
+  if (pinch && touches.size === 2) { const [a, b] = [...touches.values()]; setZ(pinch.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2, pinch.anchor); return; }
   if (drag) {
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-    if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; fly = null; cv.classList.add('drag'); hideHover(); }
+    if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; fly = null; zoomAnchor = null; Zt = Z; cv.classList.add('drag'); hideHover(); }
     if (drag.moved) { lon0 = drag.lon - dx * .3 / Z; lat0 = Math.max(-70, Math.min(70, drag.lat + dy * .26 / Z)); }
     return;
   }
@@ -509,9 +624,9 @@ function endPointer(e) {
 }
 cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
 cv.addEventListener('pointerleave', () => { if (!drag) hideHover(); });
-cv.addEventListener('wheel', e => { if (EMBED) return; e.preventDefault(); setZ(Z * Math.exp(-e.deltaY * .0015)); }, { passive: false });
-cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) flyTo(g[0], g[1], Z < ZMAX - .1 ? Z * 1.8 : 1, 600); });
-$('zin').onclick = () => flyTo(lon0, lat0, Z * 1.6, 420); $('zout').onclick = () => flyTo(lon0, lat0, Z / 1.6, 420);
+cv.addEventListener('wheel', e => { if (EMBED) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
+cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) setZ(Zt < ZMAX - .1 ? Zt * 1.8 : 1, e.clientX, e.clientY); });
+$('zin').onclick = () => setZ(Zt * 1.6); $('zout').onclick = () => setZ(Zt / 1.6);
 
 let cTimer = null, lastX = 0, lastY = 0;
 addEventListener('wheel', () => { clearTimeout(cTimer); hideHover(); }, { passive: true });
@@ -550,6 +665,8 @@ function tap(x, y, touch) {
 // ===== Panel =====
 const panel = $('panel'), pbody = $('pbody'); size(); new MutationObserver(size).observe(panel, { attributes: true, attributeFilter: ['class'] }); let view = { k: 'top' }, hist = [];
 $('grab').onclick = () => panel.classList.toggle('open');
+const layoutObserver = new ResizeObserver(size); [document.querySelector('.top'), $('tl'), panel].forEach(e => layoutObserver.observe(e));
+document.fonts.ready.then(size);
 function go(v, push = true) { if (push && view.k !== v.k || push && view.id !== v.id) hist.push(view); view = v; render(); pbody.scrollTop = 0; if (phone() && v.k !== 'top') panel.classList.add('open'); }
 function back() { view = hist.pop() || { k: 'top' }; if (view.k === 'top') { sel = null; selCountry = null; } else if (view.k === 'country') { sel = null; selCountry = byName[view.id]; } else if (view.k === 'story') { sel = byId[view.id]; } render(); }
 function openStory(s) {
@@ -580,11 +697,44 @@ const item = s => `<button class="item" data-story="${s.id}"><span class="dot i$
 const NOTE_DEMO = '<p class="note">Concept preview. Every story on this globe is demo content written to show the design: not real news, not live, not investment advice. When live sources are connected, each story will show its source, original link and publication time.</p>';
 const NOTE_LIVE = '<p class="note">Summaries are written with the help of AI from each source\'s own reporting. Every story links to its source. Not investment advice.</p>';
 const noteHTML = () => LIVE ? NOTE_LIVE : NOTE_DEMO;
+function compactItem(s) {
+  return `<button class="compact-item" data-story="${esc(s.id)}">${art(s, false)}<span><span class="compact-headline">${esc(s.headline)}</span><time datetime="${esc(s.published_at || '')}">${ago(s.t)}</time></span></button>`;
+}
+function variantPanel(list) {
+  if (PANEL_TEMPLATE === 'a') return `<h2>Top stories</h2><div class="meta">${Math.min(8, list.length)} of ${list.length} stories</div><div class="compact-list">${list.slice(0, 8).map(compactItem).join('')}</div>${list.length > 8 ? '<a class="panel-more" href="../../news.html">See all news →</a>' : ''}${list.length ? '' : '<div class="empty">No stories match these filters.</div>'}${noteHTML()}`;
+  if (PANEL_TEMPLATE === 'b') return `<h2>Top stories</h2><div class="strip-list" aria-label="Top stories">${list.slice(0, phone() ? 3 : 12).map(compactItem).join('')}</div>${list.length ? '' : '<div class="empty">No stories match these filters.</div>'}${noteHTML()}`;
+  const tabs = [['top', 'Top'], ['latest', 'Latest'], ['countries', 'Countries']];
+  let items, count;
+  if (panelTab === 'countries') {
+    const countries = Object.entries(list.reduce((all, s) => { all[s.location.country] = (all[s.location.country] || 0) + 1; return all; }, {})).sort((a,b) => b[1]-a[1]);
+    count = countries.length;
+    items = countries.slice(0, panelExpanded ? countries.length : 3).map(([name, n]) => `<button class="compact-country" data-country="${esc(name)}">${flag(name)}<span>${esc(nm(name))}</span><small>${n} ${n === 1 ? 'story' : 'stories'}</small></button>`).join('');
+  } else {
+    const sorted = panelTab === 'latest' ? [...list].sort((a,b) => b.t-a.t) : list;
+    count = sorted.length; items = sorted.slice(0, panelExpanded ? sorted.length : 3).map(compactItem).join('');
+  }
+  return `<h2>Top stories</h2><div class="panel-tabs" role="tablist" aria-label="News view">${tabs.map(([key,label]) => `<button role="tab" id="panel-tab-${key}" aria-selected="${key === panelTab}" aria-controls="panel-contents" tabindex="${key === panelTab ? 0 : -1}" data-panel-tab="${key}">${label}</button>`).join('')}</div><div class="compact-list" id="panel-contents" role="tabpanel" aria-labelledby="panel-tab-${panelTab}">${items || '<div class="empty">No stories match these filters.</div>'}</div>${count > 3 ? `<button class="panel-more" data-panel-more aria-expanded="${panelExpanded}">${panelExpanded ? 'Show less' : 'Show more'}</button>` : ''}${noteHTML()}`;
+}
+pbody.addEventListener('click', e => {
+  const tab = e.target.closest('[data-panel-tab]'), more = e.target.closest('[data-panel-more]');
+  if (tab) { panelTab = tab.dataset.panelTab; panelExpanded = false; render(); $('panel-tab-' + panelTab).focus(); }
+  else if (more) { panelExpanded = !panelExpanded; render(); pbody.querySelector('[data-panel-more]')?.focus({ preventScroll: true }); }
+});
+pbody.addEventListener('keydown', e => {
+  const tab = e.target.closest('[data-panel-tab]'); if (!tab || !['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+  e.preventDefault(); const tabs = [...pbody.querySelectorAll('[data-panel-tab]')], index = tabs.indexOf(tab);
+  tabs[e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length-1 : (index + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length].click();
+});
 function render() {
+  panel.dataset.view = view.k;
+  document.documentElement.classList.toggle('panel-top', !!PANEL_TEMPLATE && view.k === 'top');
+  if (!panelInitialized) { panelInitialized = true; if (phone() && PANEL_TEMPLATE === 'b') panel.classList.add('open'); }
+  requestAnimationFrame(size);
   if (view.k === 'top') {
     const list = [...shown].sort(sortTop), nc = new Set(list.map(s => s.location.country)).size, nb = list.filter(s => s.flag === 'breaking').length;
     const rg = REGIONS.find(r => r[0] === F.region)[1];
-    pbody.innerHTML = `<div class="eyebrow">${F.region === 'global' ? 'Worldwide' : esc(rg)} · ${WLABEL[F.win]}</div><h2>${F.cat === 'all' ? 'Top stories' : esc(CAT[F.cat]) + ' stories'}</h2>
+    if (PANEL_TEMPLATE) pbody.innerHTML = variantPanel(list);
+    else pbody.innerHTML = `<div class="eyebrow">${F.region === 'global' ? 'Worldwide' : esc(rg)} · ${WLABEL[F.win]}</div><h2>${F.cat === 'all' ? 'Top stories' : esc(CAT[F.cat]) + ' stories'}</h2>
       <div class="stats"><div><b>${list.length}</b>stories</div><div><b>${nc}</b>countries</div><div><b>${nb}</b>breaking</div></div>
       ${list.length ? `<div class="list">${list.slice(0, 12).map(item).join('')}</div>` : `<div class="empty">No stories match these filters in ${WLABEL[F.win]}. Try a wider time window or another category.</div>`}${noteHTML()}`;
   } else if (view.k === 'story') {
@@ -595,6 +745,7 @@ function render() {
       <div class="meta"><b>${esc(s.location.place)}</b>, <a href="#" data-country="${esc(s.location.country)}" style="color:inherit">${esc(nm(s.location.country))}</a> · ${ago(s.t)}${s.demo ? '<span class="dtag">DEMO</span>' : ''}</div>
       <div class="sec-h" style="margin-top:0">Investedia summary</div><p>${esc(s.summary)}</p>
       ${s.why ? `<div class="why"><div class="eyebrow">Why this matters</div><p>${esc(s.why)}</p></div>` : ''}
+      ${impactHTML(s)}
       ${s.entities.length ? `<div class="sec-h">Companies & assets involved</div><div class="ents">${s.entities.map(x => entityChip(x, s.location.country)).join('')}</div>` : ''}
       ${ch.length ? `<div class="sec-h">How it connects</div><div class="chain">${ch.map((c, i) => `${i ? '<span class="ar"></span>' : ''}<button data-story="${c.id}" class="${c.id === s.id ? 'cur' : ''}"><span class="n">${i + 1}</span><span>${esc(c.location.place)} · ${esc(c.headline)}</span></button>`).join('')}</div>` : ''}
       <div class="src"><div class="meta">${(s.sources || []).length > 1 ? 'Sources' : 'Source'}<br><b>${s.source?.name ? esc(s.source.name) : 'Demo content · no original article'}</b>${(s.sources || []).length > 1 ? ` <span>+ ${s.sources.slice(1, 4).map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(x.name)}</a>`).join(', ')}</span>` : ''}</div>${s.source?.url ? `<a class="read" style="opacity:1;cursor:pointer;display:inline-grid;place-items:center;text-decoration:none" href="${esc(s.source.url)}" target="_blank" rel="noopener">Read story ↗</a>` : '<button class="read" title="Available when live sources are connected" disabled>Read story ↗</button>'}</div>${noteHTML()}</div>`;
@@ -692,12 +843,15 @@ function countryShape(c, fill, stroke, lw = 1) {
 let last = performance.now();
 function frame(t) {
   const dt = Math.min(50, t - last); last = t;
-  if (fly) { const k = Math.min(1, (t - fly.t0) / fly.dur), e = ease(k); lon0 = fly.from[0] + fly.dl * e; lat0 = fly.from[1] + (fly.la - fly.from[1]) * e; Z = fly.from[2] + (fly.z - fly.from[2]) * e; R = R0 * Z * (1 - .06 * Math.sin(Math.PI * k) * Math.min(1, Math.abs(fly.dl) / 60)); if (k >= 1) { fly = null; R = R0 * Z; } }
-  else if (!drag && !pinch && !reduce && !sel && !selCountry && !hoverC && !hoverCountry && view.k === 'top' && F.region === 'global' && Z < 1.05) lon0 -= dt * .0022;
+  if (fly) { const k = Math.min(1, (t - fly.t0) / fly.dur), e = ease(k); lon0 = fly.from[0] + fly.dl * e; lat0 = fly.from[1] + (fly.la - fly.from[1]) * e; Zt = fly.from[2] + (fly.z - fly.from[2]) * e; if (k >= 1) fly = null; }
+  else if (!drag && !pinch && !reduce && !sel && !selCountry && !hoverC && !hoverCountry && view.k === 'top' && F.region === 'global' && Zt < 1.05 && !zoomAnchor) lon0 -= dt * .0022;
+  Z += (Zt - Z) * (reduce ? 1 : .18); if (Math.abs(Zt - Z) < .0001) Z = Zt; R = R0 * Z;
   lon0 = ((lon0 + 540) % 360) - 180; cy += (cyT - cy) * (reduce ? 1 : .12);
+  keepZoomAnchor(); if (Z === Zt) zoomAnchor = null;
   if (play) { const k = Math.min(1, (t - play.t0) / play.dur); play.cur = play.start + (T0 - play.start) * k; refresh(); if (k >= 1) { play = null; refresh(); } }
 
   ctx.clearRect(0, 0, W, H);
+  ctx.save(); // no hard clip: when zoomed in, the map runs softly behind the controls (markers still stay inside the free area)
   // atmosphere + sphere
   const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, 'rgba(255,122,26,.22)'); at.addColorStop(.25, 'rgba(255,122,26,.07)'); at.addColorStop(1, 'rgba(255,122,26,0)');
   ctx.fillStyle = at; ctx.beginPath(); ctx.arc(cx, cy, R * 1.22, 0, 7); ctx.fill();
@@ -714,15 +868,17 @@ function frame(t) {
   const la = Math.min(.07, .012 + (Z - 1) * .02);
   const map = Z >= 1.8 ? countries : overview;
   ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = `rgba(255,255,255,${la})`; ctx.fill('evenodd');
+  const impactFocus = sel || (hoverC && drawn.find(d => d.key === hoverC)?.list.length === 1 ? drawn.find(d => d.key === hoverC).list[0] : null);
   // countries with news in the current filters get a soft orange tint
   for (const c of map) { const n = activity[c.name]; if (n) countryShape(c, `rgba(255,122,26,${(.035 + .025 * Math.min(4, n)).toFixed(3)})`); }
   ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = `rgba(255,255,255,${Math.min(.2, .07 + (Z - 1) * .04)})`; ctx.lineWidth = .7; ctx.stroke();
+  for (const { impact, country } of impactTargets(impactFocus)) countryShape(country, `rgba(${IMPACT_COLOR[impact.direction]},.10)`);
   if (hoverCountry && hoverCountry !== selCountry) countryShape(hoverCountry, 'rgba(255,255,255,.05)', 'rgba(255,255,255,.35)');
   if (selCountry) countryShape(selCountry, 'rgba(255,122,26,.10)', 'rgba(255,122,26,.75)', 1.2);
   ctx.restore();
 
   // connections (only for the story you're looking at)
-  const focus = sel || (hoverC && drawn.find(d => d.key === hoverC)?.list.length === 1 ? drawn.find(d => d.key === hoverC).list[0] : null);
+  const focus = impactFocus;
   const chain = chainOf(focus);
   for (let i = 0; i < chain.length - 1; i++) {
     const p = arcPts(chain[i], chain[i + 1]);
@@ -733,11 +889,22 @@ function frame(t) {
     if (q[2]) { const g = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], 8); g.addColorStop(0, 'rgba(255,200,150,.95)'); g.addColorStop(1, 'rgba(255,122,26,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q[0], q[1], 8, 0, 7); ctx.fill(); }
   }
 
+  // Direct impacts are extra to the editorial story chains, capped at four.
+  for (const [i, { impact, country }] of impactTargets(focus).entries()) {
+    const target = { phi: country.c[1] * rad, lam: country.c[0] * rad };
+    if (Math.abs(target.phi - focus.phi) + Math.abs(target.lam - focus.lam) < .001) continue;
+    const points = arcPts(focus, target), col = IMPACT_COLOR[impact.direction];
+    ctx.lineWidth = 1; ctx.strokeStyle = `rgba(${col},.36)`; ctx.beginPath(); let pen = false;
+    for (const [x, y, visible] of points) { if (!visible) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } ctx.stroke();
+    const k = reduce ? .5 : (t / 2800 + i * .23) % 1, point = points[Math.round(k * (points.length - 1))];
+    if (point[2]) { ctx.fillStyle = `rgba(${col},.8)`; ctx.beginPath(); ctx.arc(point[0], point[1], 2.5, 0, 7); ctx.fill(); }
+  }
+
   // markers: project, cluster nearby ones, then draw
   const vis = [];
   for (const s of shown) {
     if (!s.on) { s.on = true; s.vt = t; }
-    const [x, y, z] = proj(s.phi, s.lam); if (z <= .04) continue; vis.push({ s, x, y, z });
+    const [x, y, z] = proj(s.phi, s.lam); if (z <= .04 || (!EMBED && (x < globeBox.left || x > globeBox.right || y < globeBox.top || y > globeBox.bottom))) continue; vis.push({ s, x, y, z });
   }
   for (const s of stories) if (!shown.includes(s)) s.on = false;
   vis.sort((a, b) => sortTop(a.s, b.s));
@@ -769,6 +936,7 @@ function frame(t) {
       ctx.font = '500 11.5px Inter,sans-serif'; ctx.fillStyle = `rgba(255,255,255,${.92 * al})`; ctx.fillText(s.location.place.split(',')[0], lx, d.y + 7);
     }
   }
+  ctx.restore();
   requestAnimationFrame(frame);
 }
 
