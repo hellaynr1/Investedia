@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=0fb858bd6f">
+<link rel="stylesheet" href="assets/app.css?v=b718ba9ef4">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,58 +37,32 @@
 <body data-page="news">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=0fb858bd6f"></script>
-<script src="assets/ui.js?v=0fb858bd6f"></script>
-<script src="assets/news-alerts.js?v=0fb858bd6f" defer></script>
-<script src="assets/home-news.js?v=0fb858bd6f"></script>
+<script src="assets/mock.js?v=b718ba9ef4"></script>
+<script src="assets/ui.js?v=b718ba9ef4"></script>
+<script src="assets/news-alerts.js?v=b718ba9ef4" defer></script>
+<script src="assets/home-news.js?v=b718ba9ef4"></script>
 <main class="wrap">
-<link rel="stylesheet" href="assets/home-news.css">
-<link rel="stylesheet" href="assets/news-page.css">
-<div class="np">
-  <header class="np-head">
-    <div><h1>News</h1><p>The stories moving markets, with the context behind them.</p></div>
-    <p class="np-updated" id="np-updated">Loading the latest feed…</p>
-  </header>
-
-  <div class="np-filters">
-    <div class="np-categories" role="group" aria-label="News category" id="np-categories">
-      <button type="button" data-category="all" aria-pressed="true">All</button>
-      <button type="button" data-category="markets" aria-pressed="false">Markets</button>
-      <button type="button" data-category="companies" aria-pressed="false">Companies</button>
-      <button type="button" data-category="economy" aria-pressed="false">Economy</button>
-      <button type="button" data-category="technology" aria-pressed="false">Technology</button>
-      <button type="button" data-category="crypto" aria-pressed="false">Crypto</button>
-      <button type="button" data-category="commodities" aria-pressed="false">Commodities</button>
-      <button type="button" data-category="geopolitics" aria-pressed="false">Geopolitics</button>
-    </div>
-    <label class="np-region"><span>Region</span>
-      <select id="np-region" aria-label="News region" data-native>
-        <option value="all">All regions</option>
-        <option value="na">North America</option>
-        <option value="eu">Europe</option>
-        <option value="asia">Asia</option>
-        <option value="me">Middle East</option>
-        <option value="af">Africa</option>
-        <option value="latam">Latin America</option>
-        <option value="oc">Oceania</option>
-      </select>
-    </label>
+<link rel="stylesheet" href="assets/news-board.css">
+<div class="nb">
+  <span class="nb-eb">News · <span id="nb-up">Loading</span></span>
+  <h1>What's exposed <span>this week.</span></h1>
+  <p class="nb-lead">The countries, companies and assets the news touches most, and which way. Tap a row to see the stories and the reasons.</p>
+  <div class="nb-fb">
+    <div class="nb-seg" id="nb-seg" role="group" aria-label="Rank by"></div>
+    <select class="select nb-sel" id="nb-region" aria-label="Region"><option value="all">All regions</option><option value="na">North America</option><option value="eu">Europe</option><option value="asia">Asia</option><option value="me">Middle East</option><option value="af">Africa</option><option value="latam">Latin America</option><option value="oc">Oceania</option></select>
+    <select class="select nb-sel" id="nb-time" aria-label="Time"><option value="1">Last 24 hours</option><option value="3">Last 3 days</option><option value="7" selected>Last 7 days</option></select>
+    <select class="select nb-sel" id="nb-dir" aria-label="Direction"><option value="any">Any direction</option><option value="up">Mostly up</option><option value="down">Mostly down</option><option value="mixed">Conflicting</option></select>
   </div>
-
-  <p class="np-status" id="np-status" role="status" aria-live="polite">Loading stories…</p>
-  <div id="np-content" aria-busy="true">
-    <section aria-label="Lead story" id="np-lead"></section>
-    <section class="np-latest" id="np-latest" aria-labelledby="np-latest-title" hidden>
-      <div class="np-section-head"><h2 id="np-latest-title">Latest stories</h2><span id="np-count"></span></div>
-      <div class="np-grid" id="np-grid"></div>
-      <div class="np-pagination"><p id="np-showing"></p><button type="button" class="np-more" id="np-more" hidden>Load more stories</button></div>
-    </section>
+  <div class="nb-cats" id="nb-cats" role="group" aria-label="Category"></div>
+  <p class="nb-def" id="nb-def"></p>
+  <div class="nb-cols">
+    <section class="nb-box"><div class="nb-bh"><h2>Countries</h2><span>green up · red down · grey mixed</span></div><div id="nb-co"></div></section>
+    <section class="nb-box"><div class="nb-bh"><h2>Companies &amp; assets</h2><span>by stories affecting them</span></div><div id="nb-as"></div></section>
   </div>
-  <div class="np-message" id="np-message" hidden><h2 id="np-message-title"></h2><p id="np-message-text"></p><button type="button" class="np-more" id="np-action"></button></div>
-  <noscript><p class="np-message">Enable JavaScript to load and filter the live stories, or <a href="assets/globe/news.html">open the news globe</a>.</p></noscript>
-  <p class="np-disclosure">Summaries are written with the help of AI from each source's own reporting. Every story links to its source. Not investment advice.</p>
+  <section class="nb-sec"><h2>Latest stories</h2><p id="nb-n"></p><div id="nb-ls"></div><button class="nb-more" id="nb-more" type="button" hidden>Load more stories</button></section>
+  <p class="nb-disc">Summaries are written with the help of AI from each source's own reporting. Every story links to its source. Not investment advice.</p>
 </div>
-<script src="assets/news-page.js"></script>
+<script src="assets/news-board.js"></script>
 </main>
 </body>
 </html>

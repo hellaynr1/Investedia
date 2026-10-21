@@ -1,0 +1,46 @@
+// News page: what the news touches, ranked, with filters. Reads assets/globe/news-live.json (helpers come from home-news.js).
+(() => {
+  const $ = id => document.getElementById(id);
+  const MODES = [['aff', 'Most affected', 'Ranked by how many stories touch it.'], ['vol', 'Most volatile', 'Ranked by <b>conflicting forces</b>: the more stories push it both up and down, the more volatile the news around it. This is a news measure, not a price measure.'], ['one', 'Most one-sided', 'Ranked by how strongly the news points <b>one way</b>.'], ['new', 'Newest', 'Ranked by the latest story that touches it.']];
+  const CATS = [['all', 'All'], ['markets', 'Markets'], ['companies', 'Companies'], ['economy', 'Economy'], ['technology', 'Technology'], ['crypto', 'Crypto'], ['commodities', 'Commodities'], ['geopolitics', 'Geopolitics']];
+  const CN = { US: 'United States', GB: 'United Kingdom', DE: 'Germany', CN: 'China', JP: 'Japan', IN: 'India', FR: 'France', AU: 'Australia', CA: 'Canada', BR: 'Brazil', SA: 'Saudi Arabia', AE: 'United Arab Emirates', RU: 'Russia', KR: 'South Korea', MX: 'Mexico', IT: 'Italy', NL: 'Netherlands', CH: 'Switzerland', TR: 'Turkey', NG: 'Nigeria', ZA: 'South Africa', ES: 'Spain', ID: 'Indonesia', TW: 'Taiwan', SG: 'Singapore', IL: 'Israel', IE: 'Ireland', SE: 'Sweden', NO: 'Norway', BE: 'Belgium', EG: 'Egypt', AR: 'Argentina', CL: 'Chile', PL: 'Poland', EU: 'Euro area' };
+  const S = { mode: 'vol', cat: 'all', region: 'all', days: 7, dir: 'any', stories: [], shown: 12 };
+  const nbFlag = c => c ? `<img class="nb-fl" src="assets/globe/flags/${c.toLowerCase()}.svg" alt="" onerror="this.remove()">` : '';
+  const nbLogo = t => t && !/[\^=]/.test(t) ? `<img class="nb-lg" src="https://cdn.brandfetch.io/${/-USD$/.test(t) ? 'crypto/' + encodeURIComponent(t.split('-')[0]) : 'ticker/' + encodeURIComponent(t)}/w/96/h/96/fallback/404?c=${BF}" alt="" onerror="this.remove()">` : '';
+  const ico = i => i.kind === 'country' || !i.ticker ? nbFlag(i.country) : nbLogo(i.ticker) || nbFlag(i.country);
+  const arr = d => `<span class="nb-dir ${d}">${d === 'up' ? '↑' : d === 'down' ? '↓' : d === 'mixed' ? '↔' : '·'}</span>`;
+  const link = s => `story.html?id=${encodeURIComponent(s.id)}`;
+  const pick = (list, key, label, icon) => {
+    const m = new Map();
+    for (const s of list) for (const i of s.impacts || []) { const k = key(i); if (!k) continue; const e = m.get(k) || { k, label: label(i), ic: icon(i), u: 0, d: 0, o: 0, t: 0, last: 0, items: [] }; e[i.direction === 'up' ? 'u' : i.direction === 'down' ? 'd' : 'o']++; e.t++; e.last = Math.max(e.last, Date.parse(s.published_at)); e.items.push({ s, i }); m.set(k, e); }
+    const L = [...m.values()].filter(e => e.t >= 2).map(e => ({ ...e, vol: 2 * Math.min(e.u, e.d) / ((e.u + e.d) || 1) * Math.min(1, (e.u + e.d) / 6), one: Math.abs(e.u - e.d) / ((e.u + e.d) || 1) }));
+    const f = { any: () => true, up: e => e.u > e.d * 1.5, down: e => e.d > e.u * 1.5, mixed: e => e.u && e.d && e.vol > .25 }[S.dir];
+    return L.filter(f).sort((a, b) => ({ aff: e => e.t, vol: e => e.vol, one: e => e.one, new: e => e.last })[S.mode](b) - ({ aff: e => e.t, vol: e => e.vol, one: e => e.one, new: e => e.last })[S.mode](a)).slice(0, 7);
+  };
+  const rows = L => L.length ? L.map((e, n) => `<div class="nb-r${n === 0 ? ' open' : ''}"><button class="nb-rh" type="button" aria-expanded="${n === 0}"><span>${e.ic}</span><span><b>${esc(e.label)}</b><small>${e.t} ${e.t === 1 ? 'story' : 'stories'}</small></span>
+    <span class="bw"><span class="nb-bar">${e.u ? `<i class="u" style="flex:${e.u}"></i>` : ''}${e.d ? `<i class="d" style="flex:${e.d}"></i>` : ''}${e.o ? `<i class="o" style="flex:${e.o}"></i>` : ''}</span><span class="nb-cnt">${e.u ? `<span class="u">↑ ${e.u}</span>` : ''}${e.d ? `<span class="d">↓ ${e.d}</span>` : ''}${e.o ? `<span>↔ ${e.o}</span>` : ''}</span>${S.mode === 'vol' ? `<span class="nb-vol">Volatility <b>${e.vol > .55 ? 'High' : e.vol > .25 ? 'Medium' : 'Low'}</b></span>` : ''}</span><span class="nb-chev">›</span></button>
+    <div class="nb-det">${e.items.sort((a, b) => rank(a.s, b.s)).slice(0, 3).map(({ s, i }) => `<a class="nb-st" href="${link(s)}">${arr(i.direction)}<span><b>${esc(s.headline)}</b><p>${esc(i.why)}</p></span></a>`).join('')}</div></div>`).join('') : '<div class="nb-none">Nothing matches these filters yet. Try a wider time window or another category.</div>';
+  const th = s => { const e = (s.entities || []).find(company); const f = flagSrc(s.location.country); return s.image ? `<img src="assets/globe/${esc(s.image.file)}" alt="" loading="lazy">` : e ? `<img class="nb-lg" src="${logoSrc(e)}" alt="" onerror="this.remove()">` : f ? `<img class="nb-lg" style="padding:0;background:none;border-radius:4px" src="${f}" alt="">` : ''; };
+  function draw() {
+    const cut = Date.now() - S.days * 864e5;
+    const list = S.stories.filter(s => Date.parse(s.published_at) >= cut && (S.cat === 'all' || s.category === S.cat) && (S.region === 'all' || s.location.region === S.region));
+    $('nb-def').innerHTML = MODES.find(x => x[0] === S.mode)[2];
+    $('nb-co').innerHTML = rows(pick(list, i => i.country, i => CN[i.country] || i.country, i => nbFlag(i.country)));
+    $('nb-as').innerHTML = rows(pick(list, i => i.kind !== 'country' ? i.name.toLowerCase() : null, i => i.name, ico));
+    document.querySelectorAll('#nb-seg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === S.mode));
+    document.querySelectorAll('#nb-cats button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === S.cat));
+    const latest = [...list].sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at));
+    $('nb-n').textContent = latest.length + (latest.length === 1 ? ' story' : ' stories');
+    $('nb-ls').innerHTML = latest.slice(0, S.shown).map(s => `<a class="nb-li" href="${link(s)}"><span class="th">${th(s)}</span><span><span class="nb-eb">${esc(CAT[s.category] || '')} · ${esc(s.location.place.split(',')[0])}</span><h3>${esc(s.headline)}</h3><span class="m">${ago(s.published_at)} · ${esc(s.source?.name || '')}${s.impacts?.length ? ' · touches ' + esc(s.impacts.slice(0, 2).map(i => i.name).join(', ')) : ''}</span></span></a>`).join('') || '<div class="nb-none">No stories in this window.</div>';
+    $('nb-more').hidden = latest.length <= S.shown;
+  }
+  $('nb-seg').innerHTML = MODES.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="false">${l}</button>`).join('');
+  $('nb-cats').innerHTML = CATS.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="false">${l}</button>`).join('');
+  $('nb-seg').onclick = e => { const b = e.target.closest('button'); if (b) { S.mode = b.dataset.k; draw(); } };
+  $('nb-cats').onclick = e => { const b = e.target.closest('button'); if (b) { S.cat = b.dataset.k; S.shown = 12; draw(); } };
+  $('nb-region').onchange = e => { S.region = e.target.value; draw(); }; $('nb-time').onchange = e => { S.days = +e.target.value; S.shown = 12; draw(); }; $('nb-dir').onchange = e => { S.dir = e.target.value; draw(); };
+  $('nb-more').onclick = () => { S.shown += 12; draw(); };
+  document.addEventListener('click', e => { const r = e.target.closest('.nb-rh'); if (r) { const p = r.parentElement; p.classList.toggle('open'); r.setAttribute('aria-expanded', p.classList.contains('open')); } });
+  loadNews().then(d => { S.stories = d.stories; $('nb-up').textContent = 'Updated ' + new Date(d.updated).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); draw(); })
+    .catch(() => { $('nb-co').innerHTML = '<div class="nb-none">News could not load. Please refresh.</div>'; });
+})();
