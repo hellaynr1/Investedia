@@ -8,7 +8,7 @@
   const nbFlag = c => c ? `<img class="nb-fl" src="assets/globe/flags/${c.toLowerCase()}.svg" alt="" onerror="this.remove()">` : '';
   const nbLogo = t => t && !/[\^=]/.test(t) ? `<img class="nb-lg" src="https://cdn.brandfetch.io/${/-USD$/.test(t) ? 'crypto/' + encodeURIComponent(t.split('-')[0]) : 'ticker/' + encodeURIComponent(t)}/w/96/h/96/fallback/404?c=${BF}" alt="" onerror="this.remove()">` : '';
   const ico = i => i.kind === 'country' || !i.ticker ? nbFlag(i.country) : nbLogo(i.ticker) || nbFlag(i.country);
-  const arr = d => `<span class="nb-dir ${d}"><b>${d === 'up' ? '↑' : d === 'down' ? '↓' : d === 'mixed' ? '↔' : '?'}</b>${d === 'up' ? 'Up' : d === 'down' ? 'Down' : d === 'mixed' ? 'Mixed' : 'Unclear'}</span>`;
+  const arr = d => `<span class="nb-dir ${d}">${d === 'up' ? '↑' : d === 'down' ? '↓' : d === 'mixed' ? '↔' : '–'}</span>`;
   const net = e => e.u > e.d * 1.5 ? 'up' : e.d > e.u * 1.5 ? 'down' : 'mixed';
   const link = s => `story.html?id=${encodeURIComponent(s.id)}`;
   const pick = (list, key, label, icon) => {
