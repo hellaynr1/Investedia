@@ -43,7 +43,6 @@ body[data-page=news] main.wrap{max-width:1240px;padding-inline:max(20px,env(safe
 .np-category{color:var(--np-accent);font-weight:500}
 .np-attribution{font-size:13px;line-height:1.5;color:var(--np-muted);display:flex;flex-wrap:wrap;gap:4px 12px}
 .np-source{color:var(--fg);font-weight:500;overflow-wrap:anywhere}
-.np-ai{font-size:12px;line-height:1.5;color:var(--np-muted)}
 .np-read{font-size:14px;color:var(--fg);margin-top:4px}
 .np-read span{display:inline-block;color:var(--np-accent);margin-left:6px;transition:transform .2s}
 .np-lead:hover .np-read span{transform:translateX(4px)}
@@ -79,3 +78,6 @@ body[data-page=news] main.wrap{max-width:1240px;padding-inline:max(20px,env(safe
 /* flag/logo cards: hide the text fallback when an image shows; phone: one swipeable row of categories */
 .np-media:has(img:not([hidden])) .np-media-fallback{visibility:hidden}
 @media(max-width:760px){.np-categories{display:flex!important;grid-template-columns:none!important;flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent)}.np-categories::-webkit-scrollbar{display:none}.np-categories button{flex:none;min-height:40px;padding:8px 14px;border:1px solid var(--line)}.np-categories button[aria-pressed=true]{border-color:transparent}}
+
+.np>.np-disclosure{margin:32px 0 0;font-size:12px;color:var(--np-muted)}
+.np-filters{margin-bottom:28px}

@@ -28,7 +28,7 @@
   }
 
   const details = story => `<div class="np-details"><span class="np-category">${esc(CAT[story.category] || 'News')}</span><span>${esc(nm(story.location?.country || 'Global'))}</span></div>`;
-  const attribution = story => `<div class="np-attribution"><span class="np-source">${esc(story.source?.name || story.sources?.[0]?.name || 'Original reporting')}</span><time datetime="${esc(story.published_at)}" title="${esc(new Date(story.published_at).toLocaleString())}">${esc(ago(story.published_at))}</time></div>${story.ai_summary ? '<span class="np-ai">AI-assisted</span>' : ''}`;
+  const attribution = story => `<div class="np-attribution"><span class="np-source">${esc(story.source?.name || story.sources?.[0]?.name || 'Original reporting')}</span><time datetime="${esc(story.published_at)}" title="${esc(new Date(story.published_at).toLocaleString())}">${esc(ago(story.published_at))}</time></div>`;
   function storyCard(story, featured = false) {
     const copy = `<${featured ? 'h2' : 'h3'}>${esc(story.headline)}</${featured ? 'h2' : 'h3'}>${details(story)}<p>${esc(story.summary)}</p>${attribution(story)}${featured ? '<span class="np-read">Read the story <span aria-hidden="true">→</span></span>' : ''}`;
     return `<a class="np-story ${featured ? 'np-lead' : 'np-card'}" href="${url(story)}" data-story="${esc(story.id)}">${media(story, featured)}${featured ? `<div class="np-lead-copy">${copy}</div>` : copy}</a>`;
