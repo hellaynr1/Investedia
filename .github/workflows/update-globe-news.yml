@@ -27,11 +27,13 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PIXABAY_KEY: ${{ secrets.PIXABAY_KEY }}
         run: python3 update_globe_news.py
+      - name: Fetch economic calendar and earnings
+        run: python3 update_calendar.py || echo "Calendar update failed; keeping the previous data"
       - name: Publish
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add assets/globe docs/assets/globe
+          git add assets/globe docs/assets/globe assets/calendar-live.json docs/assets/calendar-live.json
           git diff --cached --quiet && exit 0
           git commit -q -m "Update globe news"
           for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep 5; done

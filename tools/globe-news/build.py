@@ -88,11 +88,11 @@ for row in C50:
     if c: ISO[n] = c
 page = page.replace('__ISO__', json.dumps(ISO, separators=(',', ':')))
 open(os.path.join(G, 'iso.json'), 'w').write(json.dumps(ISO, ensure_ascii=False, indent=0))  # also used by update_globe_news.py
+open(os.path.join(SITE, 'assets/globe/iso.json'), 'w').write(json.dumps(ISO, ensure_ascii=False, separators=(',', ':')))  # flags on other pages
 # rectangular vector flags (flag-icons, MIT) for the countries on the map
 FL = os.path.join(G, 'flags'); os.makedirs(os.path.join(SITE, 'assets/globe/flags'), exist_ok=True)
-for c in set(ISO.values()):
-    f = os.path.join(FL, c.lower() + '.svg')
-    if os.path.exists(f): shutil.copy(f, os.path.join(SITE, 'assets/globe/flags', c.lower() + '.svg'))
+for f in os.listdir(FL):  # all flags (also used by the homepage: market hours, events)
+    if f.endswith('.svg'): shutil.copy(os.path.join(FL, f), os.path.join(SITE, 'assets/globe/flags', f))
 out = os.path.join(SITE, 'assets/globe/news.html')
 open(out, 'w', encoding='utf-8').write(page)
 shutil.copy(os.path.join(G, 'news-demo.json'), os.path.join(SITE, 'assets/globe/news-demo.json'))

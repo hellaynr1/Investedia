@@ -1,226 +1,124 @@
-{"title":"Investedia — Invest with clarity","desc":"Markets, financial news, AI insights, screeners and calculators in one clear view.","key":"home"}
-<section class="hero hero-horizon">
-  <div>
-    <span class="eyebrow" id="hero-date">Markets</span>
-    <h1 style="margin-top:14px;font-size:clamp(34px,4.4vw,56px)">Invest with clarity.</h1>
-    <p class="lede" style="font-size:17px">Explore the markets. Understand the trends. Find the insights that matter.</p>
-    <button class="hero-search" type="button" data-search><span data-icon="search"></span><span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left">Search Apple, Bitcoin, EUR/USD, gold…</span><kbd>⌘K</kbd></button>
-    <div class="hero-ctas">
-      <a class="btn btn-primary" href="markets.html">Explore markets</a>
-      <a class="btn btn-ghost" href="about.html">Discover Investedia</a>
-    </div>
-    <div class="hero-stats">
-      <div><span>New York</span><b class="status" id="ny-status"><i class="off"></i>Closed · opens 09:30 ET</b></div>
-      <div><span>Crypto</span><b class="status"><i></i>Open 24/7</b></div>
-      <div><span>Next event</span><b class="status">US Retail Sales · 08:30 ET</b></div>
-    </div>
-  </div>
-  <div class="hero-globe"><iframe id="hero-globe" title="World markets globe: tap a country to see its markets" loading="eager"></iframe></div>
+{"title":"Investedia — Invest with clarity","desc":"Investing media for everyone: the world's financial news on one live globe, with what happened, where, and why it matters to your money.","key":"home","scripts":["assets/home-news.js"]}
+<style>
+/* News-first homepage. The globe is the hero; everything below is live news. */
+body[data-page=home] main.wrap{max-width:none;padding:0}
+.hn{max-width:1240px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left))}
+.hn-hero{position:relative;height:min(820px,calc(100vh - 64px));min-height:600px;overflow:hidden;border-bottom:1px solid var(--line)}
+.hn-hero iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.hn-hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,var(--bg) 0%,rgba(10,10,11,.85) 28%,transparent 55%),linear-gradient(0deg,var(--bg),transparent 22%)}
+.hn-copy{position:absolute;z-index:2;left:0;right:0;top:15%;pointer-events:none}
+.hn-copy .hn>*{pointer-events:auto}
+.hn-live{display:inline-flex;align-items:center;gap:8px;padding:5px 11px;border-radius:999px;border:1px solid rgba(255,122,26,.35);color:#FFB37A;font-size:12px;font-weight:550;background:rgba(255,122,26,.06)}
+.hn-live i{width:6px;height:6px;border-radius:50%;background:#FF7A1A;box-shadow:0 0 8px #FF7A1A;animation:hnp 1.8s ease-in-out infinite}
+@keyframes hnp{50%{opacity:.35}}
+.hn-title{margin:18px 0 0;font-weight:600;letter-spacing:-.04em;line-height:1.04;font-size:56px}
+.hn-title b,.hn-title span{display:block;width:max-content;white-space:nowrap;font-weight:600}
+.hn-title span{color:var(--fg-3)}
+.hn-lead{font-size:18px;line-height:1.55;color:var(--fg-2);max-width:500px;margin:18px 0 26px}
+.hn-search{display:flex;align-items:center;gap:10px;width:min(480px,100%);height:52px;padding:0 16px;border-radius:14px;border:1px solid var(--line-2,rgba(255,255,255,.15));background:rgba(18,18,20,.8);backdrop-filter:blur(10px);color:var(--fg-3);font-size:15px;text-decoration:none}
+.hn-search svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.hn-tick{position:absolute;z-index:2;left:0;right:0;bottom:0;border-top:1px solid var(--line);background:rgba(10,10,11,.7);backdrop-filter:blur(10px)}
+.hn-tick .hn{display:flex;gap:28px;height:54px;align-items:center;overflow:hidden;white-space:nowrap;font-size:13.5px}
+.hn-tick a{color:var(--fg);text-decoration:none}.hn-tick b{color:#FF7A1A;font:500 12px var(--mono,monospace);margin-right:8px}
+.grid3{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:28px}
+.grid3 .hn-card:first-child{grid-row:span 2}
+.grid3 .hn-card:first-child h3{font-size:26px}
+.whys{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:900px){.hn-hero{height:auto;min-height:0;display:flex;flex-direction:column}.hn-copy{position:relative;top:0;padding-top:28px}.hn-hero iframe{order:2;position:relative;inset:auto;height:min(96vw,460px);margin-top:8px;will-change:transform}.hn-tick{order:3}.hn-hero::after{background:linear-gradient(180deg,transparent 70%,var(--bg))}.hn-lead{font-size:16px;margin:14px 0 18px}.hn-tick{position:relative}
+  .grid3,.whys{grid-template-columns:1fr}.grid3 .hn-card:first-child{grid-row:auto}.grid3 .hn-card:first-child h3{font-size:21px}}
+.hn-mk{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:10px}
+.hn-m{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#101012}
+.hn-m img{width:26px;height:19px;border-radius:3px;object-fit:cover;flex:none}
+.hn-m b{display:block;font-size:13.5px;font-weight:600}
+.hn-m>span{min-width:0}
+.hn-m small{display:block;font-size:12px;color:var(--fg-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hn-m small i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#52525B;margin-right:6px;vertical-align:1px}
+.hn-m.on small{color:#4ADE80}.hn-m.on small i{background:#22C55E;box-shadow:0 0 8px #22C55E}
+.hn-cal{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.hn-box{border:1px solid var(--line);border-radius:16px;background:#0E0E10;padding:6px 18px 10px}
+.hn-bh{display:flex;justify-content:space-between;align-items:center;padding:12px 0 8px}
+.hn-bh h3{margin:0;font-size:16px;font-weight:600}.hn-bh a{font-size:13px;color:var(--fg-2);text-decoration:none}
+.hn-ci{display:grid;grid-template-columns:74px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.hn-ci .when{font:500 12.5px var(--mono,monospace);color:var(--fg)}.hn-ci .when small{display:block;font-family:inherit;color:var(--fg-3);font-size:11px}
+.hn-ci b{font-size:14px;font-weight:550}.hn-ci .sub{display:block;font-size:12px;color:var(--fg-3);margin-top:2px}
+.hn-imp{display:flex;gap:3px}.hn-imp i{width:5px;height:14px;border-radius:2px;background:#2a2a2e}.hn-imp i.on{background:#FF7A1A}
+.hn-ci .eps{font:500 12px var(--mono,monospace);color:var(--fg-3);text-align:right}.hn-ci .eps b{display:block;color:var(--fg);font-size:13px}
+.hn-ci img.lg{width:30px;height:30px;border-radius:7px;background:#fff;padding:3px;object-fit:contain}
+@media (max-width:900px){.hn-cal{grid-template-columns:1fr}.hn-mk{grid-template-columns:1fr 1fr}#hnClock{display:none}.hn-m{padding:11px 12px;gap:9px}}
+</style>
+<link rel="stylesheet" href="assets/home-news.css">
+<section class="hn-hero" aria-label="Live news globe">
+  <iframe id="hnGlobe" title="Live news globe"></iframe>
+  <div class="hn-copy"><div class="hn">
+    <span class="hn-live" id="hnLive"><i></i>Live</span>
+    <h1 class="hn-title" id="hnTitle"><b>Invest with clarity.</b><span>See the world move.</span></h1>
+    <p class="hn-lead">Investing media for everyone: what happened, where, and why it matters to your money.</p>
+    <a class="hn-search" href="assets/globe/news.html"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search a country, company or story</a>
+  </div></div>
+  <div class="hn-tick"><div class="hn" id="hnTick"></div></div>
 </section>
-
-<section class="sec resources" aria-label="Recommended resources">
-  <p class="res-label">Learn alongside the best free resources</p>
-  <div class="res-strip"><div class="res-track" id="res-track"></div></div>
-  <p class="res-note">Independent recommendations. Investedia is not affiliated with or endorsed by these organizations.</p>
-</section>
-
-<section class="sec" id="global-sec">
-  <div class="sec-head"><div><h2>Global markets</h2><p>Major benchmarks across asset classes.</p></div><div class="tabs" id="gl-tabs"><button class="tab" data-tab="overview" aria-selected="true">Overview</button><button class="tab" data-tab="indices">Indices</button><button class="tab" data-tab="crypto">Crypto</button><button class="tab" data-tab="currencies">Currencies</button><button class="tab" data-tab="commodities">Commodities</button><button class="tab" data-tab="bonds">Bonds</button></div></div>
-  <div class="grid g-4" id="global"></div>
-</section>
-
-<section class="sec" id="trending-markets">
-  <div class="sec-head"><div><h2>Trending markets</h2><p id="tm-sub"></p></div>
-    <div class="filters"><div class="seg" id="tm-mode" style="width:auto"><button type="button" data-v="up" class="on">Gainers</button><button type="button" data-v="down">Losers</button><button type="button" data-v="move">Biggest moves</button></div><div class="seg" id="tm-period" style="width:auto"><button type="button" data-v="d" class="on">Daily</button><button type="button" data-v="w">Weekly</button><button type="button" data-v="m1">Monthly</button></div></div></div>
-  <div class="chips-row" id="tm-class"></div>
-  <div class="grid g-4" id="tm-grid"></div>
-</section>
-
-<section class="sec" id="movers-sec">
-  <div class="sec-head"><div><h2>Top gainers &amp; losers</h2><p>Today’s biggest moves in each market.</p></div><div class="tabs" id="mv-class"></div></div>
-  <div class="grid g-2">
-    <div class="card"><div class="card-head"><h3>Top gainers</h3><a class="link" id="mv-all-up" href="stocks.html#gainers">See all</a></div><div id="gainers"></div></div>
-    <div class="card"><div class="card-head"><h3>Top losers</h3><a class="link" id="mv-all-down" href="stocks.html#losers">See all</a></div><div id="losers"></div></div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="sec-head"><div><h2>Trending stocks</h2><p>The most-viewed stocks on Investedia today.</p></div><a class="link" href="stocks.html#trending">All stocks <span data-icon="arrow"></span></a></div>
-  <div class="card">
-    <div class="toolbar">
-      <div class="tabs" id="ts-region"><button class="tab" data-tab="all" aria-selected="true">All regions</button><button class="tab" data-tab="us">US</button><button class="tab" data-tab="eu">Europe</button><button class="tab" data-tab="asia">Asia</button><button class="tab" data-tab="am">Americas</button></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><select class="select sel-sm" id="ts-sector" aria-label="Sector"><option value="">All sectors</option></select><select class="select sel-sm" id="ts-sort" aria-label="Sort by"><option value="views">Most viewed</option><option value="up">Top gainers</option><option value="down">Top losers</option><option value="vol">Most active</option><option value="cap">Largest</option></select></div>
-    </div>
-    <div id="trending"></div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="grid g-main-l">
-    <div class="card">
-      <div class="card-head" style="flex-wrap:wrap"><h3>Popular indices</h3><div class="tabs" id="idx-tabs"><button class="tab" data-tab="all" aria-selected="true">All</button><button class="tab" data-tab="am">Americas</button><button class="tab" data-tab="eu">Europe</button><button class="tab" data-tab="asia">Asia</button><button class="tab" data-tab="oc">Oceania</button><button class="tab" data-tab="af">Africa</button></div></div>
-      <div id="indices"></div>
-    </div>
-    <div class="card"><div class="card-head"><h3>S&amp;P 500 sectors</h3><span class="meta">Today</span></div><div class="card-pad" style="display:grid;gap:10px" id="sectors"></div></div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="sec-head"><div><h2>Cryptocurrency overview</h2><p>The crypto market at a glance.</p></div><a class="link" href="crypto.html">Crypto markets <span data-icon="arrow"></span></a></div>
-  <div class="card" style="margin-bottom:16px"><div class="stats-row" id="crypto-stats"></div></div>
-  <div class="grid g-3" id="coins"></div>
-</section>
-
-<section class="sec">
-  <div class="panel ai-glow" style="padding:clamp(20px,3vw,36px)">
-    <div class="grid g-2" style="gap:36px;align-items:center">
-      <div>
-        <span class="ai-badge"><span data-icon="sparkle"></span>Investedia AI</span>
-        <h2 style="margin-top:10px;font-size:clamp(24px,2.6vw,32px)">Your market analyst, available around the clock.</h2>
-        <p class="lede" style="font-size:15.5px">Ask questions in plain English. Get a morning brief, sentiment for any asset, and the scenarios that could move it next. Every answer cites its sources.</p>
-        <ul class="bullets" style="margin-top:20px" id="ai-points"></ul>
-        <div class="hero-ctas"><a class="btn btn-primary" href="ai-insights.html">Try AI Insights</a><a class="btn btn-ghost" href="ai-insights.html#picks">See AI stock picks</a></div>
-      </div>
-      <div class="card" style="overflow:hidden">
-        <div class="card-head"><span class="ai-badge"><span data-icon="sparkle"></span>Sample conversation</span><span class="demo">Demo</span></div>
-        <div class="card-pad" style="display:grid;gap:14px">
-          <div style="justify-self:end;background:var(--card-hi);border:1px solid var(--line);border-radius:12px 12px 2px 12px;padding:10px 14px;max-width:85%">Why did Nvidia fall today?</div>
-          <div style="display:grid;gap:10px;max-width:92%"><p style="margin:0;color:#d4d4d8">Nvidia slipped <span class="down num">1.84%</span> as investors took profits after a 9% two-week run. A downgrade of Dell raised doubts about AI server demand and weighed on chip stocks. There was no Nvidia-specific news.</p>
-          <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip">Barclays note</span><span class="chip">NVDA price</span><span class="chip">Sector moves</span></div></div>
-          <div class="ask" style="margin-top:4px"><input placeholder="Ask about any market…" aria-label="Ask Investedia AI"><a class="btn btn-primary btn-sm" href="ai-insights.html">Ask</a></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="sec-head"><div><h2>Latest news</h2></div><a class="link" href="news.html">All news <span data-icon="arrow"></span></a></div>
-  <div class="grid g-main-l">
-    <a class="card news-lead" href="article.html" id="lead"></a>
-    <div class="card" id="news-list"></div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="sec-head"><div><h2>Featured analysis</h2><p>Research from the Investedia desk.</p></div><a class="link" href="analysis.html">All analysis <span data-icon="arrow"></span></a></div>
-  <div class="grid g-3" id="an-cards"></div>
-</section>
-
-<section class="sec">
-  <div class="grid g-main-l">
-    <div class="card"><div class="card-head"><h3>Upcoming economic events</h3><a class="link" href="calendar.html">Full calendar</a></div><div id="events"></div></div>
-    <div class="card"><div class="card-head"><h3>Upcoming earnings</h3><a class="link" href="calendar.html#earnings">All earnings</a></div><div id="earn"></div></div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="sec-head"><div><h2>Learn to invest</h2><p>Short courses that take you from first questions to confident decisions.</p></div><a class="link" href="education.html">Browse all courses <span data-icon="arrow"></span></a></div>
-  <div class="grid g-4" id="learn"></div>
-</section>
-
-<section class="sec" id="testimonials">
-  <div class="sec-head"><div><span class="eyebrow">From our community</span><h2 style="margin-top:8px">What people say about Investedia</h2></div></div>
-  <div class="grid g-3" id="quotes"></div>
-</section>
-
-<section class="sec" data-newsletter></section>
+<div class="hn">
+  <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Top stories</span><h2>What matters right now</h2></div><a href="assets/globe/news.html">All news →</a></div><div class="grid3" id="hnTop"></div></section>
+  <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Why it moved</span><h2>The stories moving markets, explained</h2></div></div><div class="whys" id="hnWhy"></div></section>
+  <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Countries</span><h2>Explore by country</h2></div><a href="assets/globe/news.html">Open the globe →</a></div><div class="hn-ctys" id="hnCty"></div></section>
+  <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Markets right now</span><h2>Which markets are open</h2></div><span class="hn-meta" id="hnClock"></span></div><div class="hn-mk" id="hnMk"></div>
+    <p class="hn-disc" style="margin-top:12px">Regular trading hours in local time. Public holidays and lunch breaks are not shown.</p></section>
+  <section class="hn-sec"><div class="hn-cal">
+    <div class="hn-box"><div class="hn-bh"><h3>Upcoming economic events</h3><a href="calendar.html">Full calendar →</a></div><div id="hnEv"></div></div>
+    <div class="hn-box"><div class="hn-bh"><h3>Upcoming earnings</h3><a href="calendar.html#earnings">All earnings →</a></div><div id="hnEa"></div></div>
+  </div><p class="hn-disc" id="hnCalSrc"></p></section>
+  <section class="sec resources" aria-label="Recommended resources" style="margin-top:56px">
+    <p class="res-label">Learn alongside the best free resources</p>
+    <div class="res-strip"><div class="res-track" id="res-track"></div></div>
+    <p class="res-note">Independent recommendations. Investedia is not affiliated with or endorsed by these organizations.</p>
+  </section>
+  <div class="hn-band"><div><h2>Follow the countries and companies you care about.</h2><p>Their economy figures, rate decisions and market-moving news, explained simply.</p></div><button class="hn-btn hn-pri" type="button" data-auth="up">Create a free account</button></div>
+  <p class="hn-disc">Headlines and summaries are AI-assisted from each source's own headline and description; every story links to its original source. For information only, not investment advice.</p>
+</div>
 <script>
-const { icon, fmtP, fmtC, cls, cap, logo, href, spark, colorFor, areaChart, cover, assetTable, tabs, row } = UI, M = MOCK;
+// two lines exactly: shrink the title until the longer line fits next to the globe (PC) or the screen (phone)
+function fitTitle() { const h = hnTitle, lim = innerWidth > 900 ? 540 : Math.min(document.documentElement.clientWidth, innerWidth) - 48;
+  for (let f = 60; f >= 22; f--) { h.style.fontSize = f + 'px'; if (Math.max(...[...h.children].map(c => c.offsetWidth)) <= lim) break; } }
+const isPhone = () => innerWidth <= 900;
+hnGlobe.src = 'assets/globe/news.html?embed=1&' + (isPhone() ? 'cx=.5&cy=.5&r=.46' : 'cx=.7&cy=.5&r=.4');
+// phone: the globe glides up a little faster than the page as you scroll, then the news follows
+const glide = () => { if (!isPhone()) { hnGlobe.style.transform = ''; return; } const y = Math.min(scrollY, 600); hnGlobe.style.transform = `translateY(${-y * .18}px) scale(${1 - y / 3000})`; hnGlobe.style.opacity = Math.max(.25, 1 - y / 700); };
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) addEventListener('scroll', () => requestAnimationFrame(glide), { passive: true });
+fitTitle(); addEventListener('resize', fitTitle); document.fonts && document.fonts.ready.then(fitTitle);
+loadNews().then(d => {
+  hnLive.innerHTML = '<i></i>' + updatedText(d.updated);
+  hnTop.innerHTML = d.top.slice(0, 5).map((s, i) => card(s, i === 0)).join('');
+  hnWhy.innerHTML = d.moved.slice(0, 3).map(why).join('');
+  hnCty.innerHTML = countries(d.stories);
+  hnTick.innerHTML = d.latest.slice(0, 6).map(s => '<a href="' + url(s) + '"><b>' + ago(s.published_at) + '</b>' + esc(s.headline) + '</a>').join('');
+}).catch(() => { hnTop.innerHTML = '<p class="hn-meta">News is loading. Please refresh in a moment.</p>'; });
+// Markets open right now: regular local trading hours (no holidays)
+const EX = [['New York', 'us', 'America/New_York', 570, 960], ['Toronto', 'ca', 'America/Toronto', 570, 960], ['São Paulo', 'br', 'America/Sao_Paulo', 600, 1020], ['London', 'gb', 'Europe/London', 480, 990],
+  ['Frankfurt', 'de', 'Europe/Berlin', 540, 1050], ['Paris', 'fr', 'Europe/Paris', 540, 1050], ['Johannesburg', 'za', 'Africa/Johannesburg', 540, 1020], ['Riyadh', 'sa', 'Asia/Riyadh', 600, 900, [0, 1, 2, 3, 4]],
+  ['Mumbai', 'in', 'Asia/Kolkata', 555, 930], ['Shanghai', 'cn', 'Asia/Shanghai', 570, 900], ['Hong Kong', 'hk', 'Asia/Hong_Kong', 570, 960], ['Tokyo', 'jp', 'Asia/Tokyo', 540, 930], ['Sydney', 'au', 'Australia/Sydney', 600, 960]];
+const hm = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+function markets() {
+  const now = new Date();
+  hnMk.innerHTML = EX.map(([n, f, tz, o, c, days = [1, 2, 3, 4, 5]]) => {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(now).map(x => [x.type, x.value]));
+    const wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(p.weekday), m = +p.hour * 60 + +p.minute, open = days.includes(wd) && m >= o && m < c;
+    const txt = open ? 'Open until ' + hm(c) : days.includes(wd) && m < o ? 'Opens ' + hm(o) : 'Closed';
+    return `<div class="hn-m${open ? ' on' : ''}"><img src="assets/globe/flags/${f}.svg" alt=""><span><b>${n}</b><small><i></i>${txt}</small></span></div>`; }).join('')
+    + `<div class="hn-m on"><img src="assets/logos/BTC.svg" alt="" style="border-radius:50%;width:20px;height:20px"><span><b>Crypto</b><small><i></i>Open 24/7</small></span></div>`;
+  hnClock.textContent = 'Your time ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+markets(); setInterval(markets, 30000);
+// Upcoming economic events + earnings (real, refreshed by update_calendar.py)
+const CC = { USD: 'us', EUR: 'eu', GBP: 'gb', JPY: 'jp', CNY: 'cn', CAD: 'ca', AUD: 'au', NZD: 'nz', CHF: 'ch' };
+const dfmt = d => new Date(d).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+fetch('assets/calendar-live.json', { cache: 'no-cache' }).then(r => r.json()).then(c => {
+  const ev = c.events.filter(e => Date.parse(e.at) > Date.now() - 36e5).slice(0, 6), ea = c.earnings.filter(e => e.date >= new Date().toISOString().slice(0, 10)).slice(0, 6);
+  hnEv.innerHTML = ev.map(e => `<div class="hn-ci"><span class="when">${new Date(e.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<small>${dfmt(e.at)}</small></span><span><b>${CC[e.c] ? `<img src="assets/globe/flags/${CC[e.c]}.svg" alt="" style="display:inline-block;width:16px;height:12px;border-radius:2px;margin-right:7px;vertical-align:-1px">` : ''}${esc(e.t)}</b><span class="sub">${esc(e.c)}${e.fc ? ' · Forecast ' + esc(e.fc) : ''}${e.prev ? ' · Prev. ' + esc(e.prev) : ''}</span></span><span class="hn-imp" title="${e.imp === 3 ? 'High' : 'Medium'} impact"><i class="on"></i><i class="on"></i><i class="${e.imp === 3 ? 'on' : ''}"></i></span></div>`).join('') || '<p class="hn-meta" style="padding:12px 0">No major events in the next days.</p>';
+  hnEa.innerHTML = ea.map(e => `<div class="hn-ci" style="grid-template-columns:auto 1fr auto"><img class="lg" src="https://cdn.brandfetch.io/ticker/${encodeURIComponent(e.s)}/w/128/h/128/fallback/404?c=${BF}" alt="" onerror="this.remove()"><span><b>${esc(e.n)}</b><span class="sub">${esc(e.s)} · ${dfmt(e.date + 'T12:00:00Z')}${e.when ? ' · ' + esc(e.when) : ''}</span></span><span class="eps">EPS est.<b>${esc(e.eps || '—')}</b></span></div>`).join('') || '<p class="hn-meta" style="padding:12px 0">No large-company earnings in the next days.</p>';
+  hnCalSrc.textContent = 'Times in your time zone. Events: ' + c.sources.events + ' (medium and high impact). Earnings: ' + c.sources.earnings + ' (largest companies).';
+}).catch(() => {});
+// Free resources strip (moving logos)
 const RES = [['Investor.gov', 'https://www.investor.gov', 'sans'], ['TradingView', 'https://www.tradingview.com', 'sans'], ['Morningstar', 'https://www.morningstar.com', 'serif'], ['Yahoo Finance', 'https://finance.yahoo.com', 'sans'], ['Khan Academy', 'https://www.khanacademy.org/economics-finance-domain', 'sans'], ['FRED', 'https://fred.stlouisfed.org', 'mono'], ['CoinMarketCap', 'https://coinmarketcap.com', 'sans'], ['Bogleheads', 'https://www.bogleheads.org', 'serif'], ['Reuters Markets', 'https://www.reuters.com/markets/', 'sans']];
 const resItems = RES.map(([n, u, f]) => `<a class="res-item res-${f}" href="${u}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('<span class="res-sep" aria-hidden="true"></span>');
 document.getElementById('res-track').innerHTML = resItems + '<span class="res-sep" aria-hidden="true"></span>' + resItems.replace(/<a /g, '<a tabindex="-1" aria-hidden="true" ');
-
-
-const card = a => `<a class="card idx" href="${href(a)}"><div class="idx-top"><span class="ident">${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' || a.c === 'bonds' ? a.n : a.s}</b><small>${a.c === 'indices' ? 'Index' : a.n}</small></span></span><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></div><div class="idx-val" data-lp="${a.s}">${fmtP(a)}</div>${spark(a.spark, colorFor(a.w), 240, 38)}</a>`;
-const GL = { overview: ['SPX', 'NDX', 'DAX', 'NKY', 'BTC', 'XAU', 'EURUSD', 'US10Y'], indices: ['SPX', 'DJI', 'DAX', 'UKX', 'NKY', 'HSI', 'XJO', 'IBOV'], crypto: ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX'], currencies: ['EURUSD', 'GBPUSD', 'USDJPY', 'EURGBP', 'AUDUSD', 'USDCHF', 'DXY', 'USDMXN'], commodities: ['XAU', 'XAG', 'WTI', 'BRENT', 'NG', 'HG', 'PL', 'KC'], bonds: ['US10Y', 'US02Y', 'US30Y', 'DE10Y', 'UK10Y', 'FR10Y', 'IT10Y', 'JP10Y'] };
-const gl = k => document.getElementById('global').innerHTML = GL[k].map(s => card(M.bySym[s])).join('');
-tabs(document.getElementById('gl-tabs'), gl); gl('overview');
-
-// Trending markets: ranked by the chosen period; refreshes with the daily data
-const CLASSES = [['all', 'All markets'], ['stocks', 'Stocks'], ['crypto', 'Crypto'], ['indices', 'Indices'], ['futures', 'Futures'], ['currencies', 'Currencies'], ['commodities', 'Commodities'], ['funds', 'Funds']];
-const inClass = (a, k) => k === 'all' ? a.c !== 'bonds' && !a.stable : k === 'futures' ? (a.fut || a.c === 'commodities') : a.c === k && !a.fut && !a.stable;
-const tm = { mode: 'up', per: 'd', cls: 'all' };
-const perName = { d: 'today', w: 'this week', m1: 'this month' };
-document.getElementById('tm-sub').textContent = `Updated daily · ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · real prices, delayed`;
-(() => { const ny = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })), m = ny.getHours() * 60 + ny.getMinutes(), wd = ny.getDay() > 0 && ny.getDay() < 6, open = wd && m >= 570 && m < 960; document.getElementById('ny-status').innerHTML = open ? '<i></i>Open · closes 16:00 ET' : `<i class="off"></i>Closed · opens ${wd && m < 570 ? '' : (ny.getDay() === 5 || ny.getDay() === 6) ? 'Mon ' : ny.getDay() === 0 ? 'Mon ' : 'tomorrow '}09:30 ET`; })();
-// The globe rises from the bottom of the hero: bigger and lower on phones
-document.getElementById('hero-globe').src = 'assets/globe/index.html?mode=hero&hint=0&halo=0' + (matchMedia('(max-width:600px)').matches ? '&rs=.6&cyf=1.02&rim=1.6' : '&rs=.36&cyf=1.2&rim=1.6');
-// Scroll: the globe sinks and fades as the page moves on; each section below slides in once
-(() => { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const g = document.querySelector('.hero-globe'); let raf = 0;
-  const step = () => { raf = 0; const r = g.getBoundingClientRect(), p = Math.min(1, Math.max(0, -r.top / r.height + .35)); g.style.setProperty('--p', p.toFixed(3)); };
-  addEventListener('scroll', () => raf || (raf = requestAnimationFrame(step)), { passive: true }); step();
-  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
-  document.querySelectorAll('main > .sec').forEach(s => { s.classList.add('rv'); io.observe(s); }); })();
-document.getElementById('hero-date').textContent = 'Markets · ' + new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
-document.getElementById('tm-class').innerHTML = CLASSES.map(([k, t], i) => `<button class="chip ${i ? '' : 'on'}" type="button" data-k="${k}">${t}</button>`).join('');
-function trendingMarkets() {
-  const v = a => a[tm.per];
-  let list = M.assets.filter(a => inClass(a, tm.cls));
-  list.sort((x, y) => tm.mode === 'up' ? v(y) - v(x) : tm.mode === 'down' ? v(x) - v(y) : Math.abs(v(y)) - Math.abs(v(x)));
-  document.getElementById('tm-grid').innerHTML = list.slice(0, 8).map((a, i) => `<a class="card idx tm" href="${href(a)}"><div class="idx-top"><span class="ident"><span class="tm-rank num">${i + 1}</span>${logo(a)}<span><b style="color:var(--fg)">${a.c === 'indices' ? a.n : a.s}</b><small>${a.c === 'indices' ? a.s : a.n}</small></span></span><span class="pill ${cls(v(a))}">${fmtC(v(a), a.y)}</span></div><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="idx-val" style="font-size:17px" data-lp="${a.s}">${fmtP(a)}</span><span class="dim" style="font-size:11.5px">${perName[tm.per]}</span></div>${spark(a.spark, colorFor(v(a)), 240, 30)}</a>`).join('');
-}
-const segBind = (id, key) => document.querySelectorAll(`#${id} button`).forEach(b => b.onclick = () => { document.querySelectorAll(`#${id} button`).forEach(x => x.classList.toggle('on', x === b)); tm[key] = b.dataset.v; trendingMarkets(); });
-segBind('tm-mode', 'mode'); segBind('tm-period', 'per');
-document.querySelectorAll('#tm-class .chip').forEach(b => b.onclick = () => { document.querySelectorAll('#tm-class .chip').forEach(x => x.classList.toggle('on', x === b)); tm.cls = b.dataset.k; trendingMarkets(); });
-trendingMarkets();
-
-// Top gainers & losers per market
-const MV = CLASSES.filter(([k]) => k !== 'all'), mvPage = { stocks: 'stocks.html', crypto: 'crypto.html', indices: 'indices.html', futures: 'indices.html#futures', currencies: 'currencies.html', commodities: 'commodities.html', funds: 'funds.html' };
-document.getElementById('mv-class').innerHTML = MV.map(([k, t], i) => `<button class="tab" data-tab="${k}" ${i ? '' : 'aria-selected="true"'}>${t}</button>`).join('');
-function movers(k) {
-  const list = M.assets.filter(a => inClass(a, k)).sort((a, b) => b.d - a.d), n = Math.min(5, Math.floor(list.length / 2));
-  document.getElementById('gainers').innerHTML = list.slice(0, n).map(a => row(a)).join('');
-  document.getElementById('losers').innerHTML = list.slice(-n).reverse().map(a => row(a)).join('');
-  document.getElementById('mv-all-up').href = mvPage[k] + (k === 'stocks' || k === 'crypto' ? '#gainers' : '');
-  document.getElementById('mv-all-down').href = mvPage[k] + (k === 'stocks' || k === 'crypto' ? '#losers' : '');
-}
-tabs(document.getElementById('mv-class'), movers); movers('stocks');
-
-// Trending stocks with region, sector and sort filters
-const VIEWS = ['NVDA', 'TSLA', 'AAPL', 'DELL', 'LLY', 'AMD', 'META', 'MSFT', 'AMZN', 'GME', 'NFLX'];
-const REG = { us: ['US'], eu: ['UK', 'FR', 'DE', 'NL', 'DK'], asia: ['JP', 'CN', 'TW'], am: ['US', 'CA', 'BR', 'AR'] };
-const ts = { reg: 'all', sector: '', sort: 'views' };
-const allStocks = M.assets.filter(a => a.c === 'stocks');
-[...new Set(allStocks.map(a => a.sector))].sort().forEach(x => document.getElementById('ts-sector').add(new Option(x, x)));
-function trendingStocks() {
-  let l = allStocks.filter(a => (ts.reg === 'all' || REG[ts.reg].includes(a.country)) && (!ts.sector || a.sector === ts.sector));
-  const rank = a => { const i = VIEWS.indexOf(a.s); return i < 0 ? 99 : i; };
-  l.sort({ views: (a, b) => rank(a) - rank(b) || b.m - a.m, up: (a, b) => b.d - a.d, down: (a, b) => a.d - b.d, vol: (a, b) => parseFloat(b.vol) - parseFloat(a.vol), cap: (a, b) => b.m - a.m }[ts.sort]);
-  document.getElementById('trending').innerHTML = l.length ? assetTable(l.slice(0, 8), ['price', 'chg', 'week', 'cap', 'vol', 'spark']) : '<p class="card-pad muted" style="margin:0">No stocks match these filters.</p>';
-}
-tabs(document.getElementById('ts-region'), k => { ts.reg = k; trendingStocks(); });
-document.getElementById('ts-sector').onchange = e => { ts.sector = e.target.value; trendingStocks(); };
-document.getElementById('ts-sort').onchange = e => { ts.sort = e.target.value; trendingStocks(); };
-trendingStocks();
-
-const reg = { am: ['SPX', 'NDX', 'DJI', 'RUT', 'TSX', 'IBOV', 'MXX'], eu: ['DAX', 'CAC', 'UKX', 'SX5E'], asia: ['NKY', 'HSI', 'SSEC', 'SENSEX', 'KOSPI'], oc: ['XJO', 'NZ50'], af: ['J203', 'EGX30', 'NGSE'] };
-const idx = k => document.getElementById('indices').innerHTML = assetTable((k === 'all' ? ['SPX', 'NDX', 'DAX', 'UKX', 'NKY', 'SENSEX', 'XJO', 'IBOV', 'J203'] : reg[k]).map(s => M.bySym[s]), ['price', 'chg', 'week', 'spark']);
-tabs(document.getElementById('idx-tabs'), idx); idx('all');
-document.getElementById('sectors').innerHTML = [['Healthcare', 1.38], ['Utilities', 0.66], ['Financials', 0.51], ['Industrials', 0.35], ['Communication', 0.22], ['Materials', -0.12], ['Consumer', -0.21], ['Technology', -0.42], ['Energy', -1.24]].map(([n, v]) => `<div style="display:grid;grid-template-columns:110px 1fr 64px;gap:10px;align-items:center;font-size:13px"><span class="muted">${n}</span><div style="position:relative;height:16px"><div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line)"></div><div style="position:absolute;top:2px;bottom:2px;border-radius:2px;${v >= 0 ? `left:50%;width:${v / 1.5 * 50}%;background:var(--up)` : `right:50%;width:${-v / 1.5 * 50}%;background:var(--down)`}"></div></div><span class="num ${cls(v)}" style="text-align:right">${fmtC(v)}</span></div>`).join('');
-
-document.getElementById('crypto-stats').innerHTML = [['Total market cap', '$2.84T', '+0.9%'], ['24h volume', '$96.4B', '−12.1%'], ['Bitcoin dominance', '57.4%', '+0.3%'], ['Ethereum dominance', '10.3%', '−0.1%'], ['Fear & Greed', '34 · Fear', '']].map(([k, v, c]) => `<div class="stat"><span>${k}</span><b>${v} ${c ? `<i class="${c.startsWith('+') ? 'up' : 'down'}" style="font-size:12px;font-style:normal">${c}</i>` : ''}</b></div>`).join('');
-document.getElementById('coins').innerHTML = ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE'].map(s => M.bySym[s]).map(a => `<a class="card idx" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${a.n}</b><small>${a.s} · ${cap(a.m)}</small></span></span><span style="text-align:right"><div class="num" data-lp="${a.s}">${fmtP(a)}</div><div class="num ${cls(a.d)}" data-lc="${a.s}" style="font-size:12.5px">${fmtC(a.d)}</div></span><div style="grid-column:1/-1">${spark(a.spark, colorFor(a.w), 300, 34)}</div></a>`).join('');
-
-document.getElementById('ai-points').innerHTML = [['Morning brief', 'the five things that moved markets overnight.'], ['Sentiment scores', 'for every stock, coin and sector.'], ['Bull and bear scenarios', 'so you see both sides before you decide.']].map(([b, t]) => `<li>${icon('check')}<span><b>${b}:</b> ${t}</span></li>`).join('');
-
-const n0 = M.news[0], leadEl = document.getElementById('lead');
-if (n0.url) { leadEl.href = n0.url; leadEl.target = '_blank'; leadEl.rel = 'noopener'; }
-document.getElementById('lead').innerHTML = `<div class="cover">${cover('lead1')}</div><div class="card-pad" style="display:grid;gap:10px;align-content:center"><div class="news-meta"><span class="tag acc">${n0.cat}</span><span>${n0.time}</span></div><h2 style="font-size:24px">${n0.t}</h2><p class="muted" style="margin:0">${n0.d}</p><div class="news-meta"><span>${n0.a}</span>${n0.read ? `<i></i><span>${n0.read} min read</span>` : ''}</div></div>`;
-document.getElementById('news-list').innerHTML = M.news.slice(1, 7).map(n => `<a class="news-item" ${UI.nhref(n)}><div class="news-meta"><span class="accent" style="font-weight:600">${n.cat}</span><i></i><span>${n.time}</span><i></i><span class="mono">${n.tag}</span></div><h3>${n.t}</h3></a>`).join('');
-
-document.getElementById('an-cards').innerHTML = M.analysis.slice(0, 3).map((x, i) => UI.analysisCard(x, i)).join('');
-
-document.getElementById('events').innerHTML = M.calendar.slice(0, 6).map(e => `<a class="news-item" href="calendar.html" style="grid-template-columns:86px 1fr auto;align-items:center;gap:12px"><span><b class="num" style="font-weight:500">${e.time}</b><small class="dim" style="display:block;font-size:11.5px">${e.day.slice(0, 10)}</small></span><span><b style="font-weight:550">${e.e}</b><small class="dim" style="display:block;font-size:12px">${e.c} · Forecast ${e.fc} · Prev. ${e.prev}</small></span>${UI.impact(e.imp)}</a>`).join('');
-document.getElementById('earn').innerHTML = M.earnings.slice(0, 6).map(e => { const a = M.bySym[e.s]; return `<a class="news-item" href="${href(a)}" style="grid-template-columns:1fr auto;align-items:center"><span class="ident">${logo(a)}<span><b>${e.n}</b><small>${e.date} · ${e.when}</small></span></span><span class="num muted" style="font-size:12.5px;text-align:right">EPS est.<br><b style="color:var(--fg);font-weight:500">$${e.eps}</b></span></a>`; }).join('');
-
-// Testimonials: add only real quotes, shared with permission. Faceless by design.
-const QUOTES = [
-  // ['Quote text', 'Who (e.g. Early user, Belgium)'],
-];
-document.getElementById('quotes').innerHTML = QUOTES.length
-  ? QUOTES.map(([q, w]) => `<figure class="card card-pad quote"><blockquote>“${q}”</blockquote><figcaption>${w}</figcaption></figure>`).join('')
-  : `<div class="card card-pad quote-empty"><div><h3>Be one of the first voices here.</h3><p class="muted" style="margin:6px 0 0">Using Investedia? Tell us what helped, what didn’t and what you’d like to see next. With your permission, we’ll share it here, without names or faces.</p></div><a class="btn btn-primary" href="https://www.instagram.com/investedia/" target="_blank" rel="noopener">Share your experience</a></div>`;
-document.getElementById('learn').innerHTML = [['book', 'Investing basics', 'Stocks, bonds and funds explained from scratch.', 'Beginner', 8, 45], ['funds', 'ETFs and index funds', 'Why most people should start with low-cost funds.', 'Beginner', 6, 30], ['stocks', 'Reading a stock chart', 'Trends, support, resistance and volume.', 'Intermediate', 7, 40], ['crypto', 'Crypto without the hype', 'How blockchains, wallets and risk really work.', 'Beginner', 5, 25]].map(([i, t, d, lv, n, min], k) => `<a class="card tool" href="education.html"><div style="display:flex;justify-content:space-between;align-items:center"><span class="dd-ic">${icon(i)}</span><span class="tag ${k === 2 ? 'acc' : ''}">${lv}</span></div><h3>${t}</h3><p>${d}</p><div class="news-meta"><span>${n} lessons</span><i></i><span>${min} min</span></div><div class="meter" style="margin-top:4px"><i style="width:${[0, 0, 35, 0][k]}%;background:var(--accent)"></i></div></a>`).join('');
 </script>

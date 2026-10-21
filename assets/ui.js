@@ -176,13 +176,14 @@
   ];
   const tools = TOOL_GROUPS.flatMap(g => g[1]);
   const ddTools = `<div class="dd dd-tools" id="dd-tools" role="menu">${TOOL_GROUPS.map(([h, items]) => `<div class="tools-col"><h6>${h}</h6>${items.map(([i, t, d, u]) => `<a class="dd-item" role="menuitem" href="${u}"><span class="dd-ic">${icon(i)}</span><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>`).join('')}</div>`;
+  // News-first navigation (markets, dashboard and screener pages are no longer in the menu)
   const nav = [
     ['home', 'Home', 'index.html'],
-    ['dashboard', 'Dashboard', 'dashboard.html'],
-    ['markets', 'Markets', null, megaMarkets],
+    ['globe', 'Globe', 'assets/globe/news.html'],
     ['news', 'News', 'news.html'],
-    ['education', 'Education', 'education.html'],
+    ['education', 'Learn', 'education.html'],
     ['tools', 'Tools', null, ddTools],
+    ['about', 'About', 'about.html'],
   ];
   const hdr = document.createElement('header');
   hdr.className = 'hdr';
@@ -191,8 +192,7 @@
       ? `<li><button class="nav-link" type="button" aria-expanded="false" aria-haspopup="true" data-dd="dd-${k}" ${page === k || (k === 'tools' && ['screener', 'calendar', 'calc', 'compare', 'converter', 'realestate'].includes(page)) || (k === 'education' && page === 'lesson') ? 'aria-current="page"' : ''}>${t}${icon('chev', 'chev')}</button>${dd}</li>`
       : `<li><a class="nav-link" href="${h}" ${page === k || (k === 'news' && ['analysis', 'article'].includes(page)) || (k === 'dashboard' && page === 'ai') || (k === 'education' && page === 'lesson') ? 'aria-current="page"' : ''}>${t}${isNew ? '<span class="badge-new">NEW</span>' : ''}</a></li>`).join('')}</ul>
     <div class="hdr-tools">
-      <button class="search-btn" type="button" data-search aria-label="Search markets">${icon('search')}<span>Search markets, news…</span><kbd>⌘K</kbd></button>
-      <a class="icon-btn hide-sm" href="watchlist.html" aria-label="Watchlist" title="Watchlist">${icon('star')}</a>
+      <a class="search-btn" href="assets/globe/news.html" aria-label="Search news, countries and companies">${icon('search')}<span>Search news, countries…</span></a>
       <div class="notif-wrap hide-sm"><button class="icon-btn" type="button" id="notif-btn" aria-label="Notifications" aria-expanded="false" aria-haspopup="true" title="Notifications">${icon('bell')}<span class="dot" id="notif-dot"></span></button>
         <div class="dd notif-dd" id="notif-dd" role="dialog" aria-label="Notifications"></div></div>
       <a class="icon-btn hide-sm owner-only" href="admin.html" aria-label="Analytics dashboard" title="Analytics dashboard">${icon('heat')}</a>
@@ -281,12 +281,9 @@
   // mobile drawer
   const drawer = document.createElement('div');
   drawer.className = 'drawer';
-  drawer.innerHTML = `<button class="search-btn" type="button" data-search>${icon('search')}<span>Search markets, news…</span></button>
-    <a href="index.html">Home</a><a href="dashboard.html">Dashboard</a>
-    <details><summary>Markets ${icon('chev')}</summary><a href="markets.html">All markets</a><a href="globe.html">World map</a>${M.categories.map(c => `<a href="${c.page}">${c.t}</a>`).join('')}</details>
-    <a href="news.html">News &amp; analysis</a>
-    <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details>
-    <a href="education.html">Education</a><a href="watchlist.html">Watchlist</a>
+  drawer.innerHTML = `<a class="search-btn" href="assets/globe/news.html">${icon('search')}<span>Search news, countries…</span></a>
+    <a href="index.html">Home</a><a href="assets/globe/news.html">Globe</a><a href="news.html">News</a><a href="education.html">Learn</a>
+    <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details><a href="about.html">About</a>
     <div class="drawer-acct guest-only"><p>Save your watchlist and alerts on every device.</p><button class="btn btn-primary" type="button" data-auth="up">Create free account</button><button class="btn btn-ghost" type="button" data-auth="in">Log in</button></div>
     <div class="drawer-acct member-only"><a class="owner-only" href="admin.html">Analytics dashboard</a><a href="profile.html">Profile &amp; notifications</a><button class="btn btn-ghost" type="button" data-logout>Log out</button></div>`;
   hdr.after(drawer);
@@ -336,7 +333,7 @@
   tk.className = 'ticker'; tk.setAttribute('aria-label', 'Market ticker');
   const items = tickSyms.map(s => M.bySym[s]).map(a => `<a class="tk" href="${href(a)}"><b>${a.c === 'indices' ? a.n : a.s}</b><span class="num" data-lp="${a.s}">${fmtP(a)}</span><span class="num ${cls(a.d)}" data-lc="${a.s}">${fmtC(a.d, a.y)}</span></a>`).join('');
   tk.innerHTML = `<div class="ticker-track">${items}${items}</div>`;
-  drawer.after(tk);
+  // drawer.after(tk);  // price ticker removed from the news-first site (kept in code in case it comes back)
 
   // ---------- live prices: one helper updates every price and change shown for an asset ----------
   function setPrice(s, p, d) {
@@ -401,10 +398,10 @@
   const ftr = document.createElement('footer');
   ftr.className = 'ftr';
   ftr.innerHTML = `<div class="wrap"><div class="ftr-top">
-    <div>${brand}<p class="muted" style="margin:14px 0 0;max-width:34ch">Markets, news and tools for people who want to understand their money.</p>
+    <div>${brand}<p class="muted" style="margin:14px 0 0;max-width:34ch">Investing media for everyone: the world's financial news, explained.</p>
       <div class="socials"><a class="icon-btn" href="https://www.instagram.com/investedia/" aria-label="Instagram">${icon('ig')}</a></div></div>
-    <div><h6>Markets</h6><ul>${M.categories.map(c => `<li><a href="${c.page}">${c.t}</a></li>`).join('')}</ul></div>
-    <div><h6>Content</h6><ul><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li><li><a href="ai-insights.html">AI Insights</a></li><li><a href="education.html">Education</a></li><li><a href="real-estate.html">Real Estate</a></li></ul></div>
+    <div><h6>News</h6><ul><li><a href="index.html">Home</a></li><li><a href="assets/globe/news.html">Globe</a></li><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li></ul></div>
+    <div><h6>Learn</h6><ul><li><a href="education.html">Education</a></li></ul></div>
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
     <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li><li><a href="privacy.html">Privacy policy</a></li></ul></div>
   </div>
@@ -566,7 +563,7 @@
     <div class="pop-art">${mark}</div>
     <span class="eyebrow">The Investedia Brief</span>
     <h2 id="pop-t" style="margin:10px 0 6px;font-size:24px">Markets in five minutes, every morning.</h2>
-    <p class="muted" style="margin:0 0 18px">Join the list for the daily brief, weekly charts and early access to new dashboard features. Free, unsubscribe anytime.</p>
+    <p class="muted" style="margin:0 0 18px">Join the list for the daily brief: the news that moved markets, explained. Free, unsubscribe anytime.</p>
     <form class="subscribe" id="pop-f"><input class="input" type="email" id="pop-email" placeholder="you@email.com" aria-label="Email address" required><button class="btn btn-primary" type="submit">Join free</button></form>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${['Daily brief', 'Weekly charts', 'Crypto', 'Product updates'].map((t, i) => `<button type="button" class="chip ${i < 2 ? 'on' : ''}" onclick="this.classList.toggle('on')">${t}</button>`).join('')}</div>
     <p class="pop-ok up" hidden style="margin:14px 0 0;font-weight:550">You’re on the list. Check your inbox to confirm.</p>
@@ -610,7 +607,7 @@
   au.className = 'palette auth'; au.hidden = true;
   au.innerHTML = `<div class="palette-box auth-box" role="dialog" aria-modal="true" aria-labelledby="au-t">
     <button class="icon-btn pop-x" type="button" aria-label="Close">${icon('x')}</button>
-    <div class="auth-head"><span class="wm" aria-label="Investedia">Invested<span class="i">i</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Watchlists, price alerts and the daily brief. Free.</p></div>
+    <div class="auth-head"><span class="wm" aria-label="Investedia">Invested<span class="i">i</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Follow countries and companies, news alerts and the daily brief. Free.</p></div>
     <button class="btn auth-google" type="button">${gIcon}<span>Continue with Google</span></button>
     <div class="auth-or"><span>or with email</span></div>
     <form class="auth-f" novalidate>
@@ -627,7 +624,7 @@
   </div>`;
   let auMode = 'up';
   const auSet = m => { auMode = m; au.querySelectorAll('[data-only]').forEach(e => e.hidden = e.dataset.only !== m);
-    au.querySelector('#au-t').textContent = m === 'up' ? 'Create your account' : 'Welcome back'; au.querySelector('#au-sub').textContent = m === 'up' ? 'Watchlists, price alerts and the daily brief. Free.' : 'Log in to see your watchlist and alerts.'; au.querySelector('.auth-go').textContent = m === 'up' ? 'Create free account' : 'Log in';
+    au.querySelector('#au-t').textContent = m === 'up' ? 'Create your account' : 'Welcome back'; au.querySelector('#au-sub').textContent = m === 'up' ? 'Follow countries and companies, news alerts and the daily brief. Free.' : 'Log in to see your watchlist and alerts.'; au.querySelector('.auth-go').textContent = m === 'up' ? 'Create free account' : 'Log in';
     au.querySelector('[name=pw]').autocomplete = m === 'up' ? 'new-password' : 'current-password'; auMsg(''); };
   const auMsg = (t, ok) => { const e = au.querySelector('.auth-msg'); e.hidden = !t; e.textContent = t; e.classList.toggle('up', !!ok); e.classList.toggle('down', !ok); };
   const openAuth = (m = 'up') => { closePop(); auSet(m); if (au.hidden) modalOpen(au); au.hidden = false; store('inv-auth-seen', '1'); store('inv-pop', '1'); };
