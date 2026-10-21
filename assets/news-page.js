@@ -30,7 +30,7 @@
   const details = story => `<div class="np-details"><span class="np-category">${esc(CAT[story.category] || 'News')}</span><span>${esc(nm(story.location?.country || 'Global'))}</span></div>`;
   const attribution = story => `<div class="np-attribution"><span class="np-source">${esc(story.source?.name || story.sources?.[0]?.name || 'Original reporting')}</span><time datetime="${esc(story.published_at)}" title="${esc(new Date(story.published_at).toLocaleString())}">${esc(ago(story.published_at))}</time></div>`;
   function storyCard(story, featured = false) {
-    const copy = `<${featured ? 'h2' : 'h3'}>${esc(story.headline)}</${featured ? 'h2' : 'h3'}>${details(story)}<p>${esc(story.summary)}</p>${attribution(story)}${featured ? '<span class="np-read">Read the story <span aria-hidden="true">→</span></span>' : ''}`;
+    const copy = `<${featured ? 'h2' : 'h3'}>${esc(story.headline)}</${featured ? 'h2' : 'h3'}>${details(story)}${story.summary ? `<p>${esc(story.summary)}</p>` : ''}${impactChips(story)}${attribution(story)}${featured ? '<span class="np-read">Read the story <span aria-hidden="true">→</span></span>' : ''}`;
     return `<a class="np-story ${featured ? 'np-lead' : 'np-card'}" href="${url(story)}" data-story="${esc(story.id)}">${media(story, featured)}${featured ? `<div class="np-lead-copy">${copy}</div>` : copy}</a>`;
   }
 
@@ -110,7 +110,7 @@
     status.textContent = 'Loading stories…';
     try {
       const data = await loadNews();
-      state.stories = data.stories.filter(s => s.id && s.headline && s.summary && s.location && Number.isFinite(Date.parse(s.published_at)));
+      state.stories = data.stories.filter(s => s.id && s.headline && s.location && Number.isFinite(Date.parse(s.published_at)));
       const updated = new Date(data.updated);
       $('np-updated').textContent = Number.isFinite(updated.getTime()) ? `Feed updated ${updated.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} · ${updated.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}` : 'Latest available feed';
       render();
@@ -125,4 +125,9 @@
     }
   }
   load();
+  watchNews(data => {
+    state.stories = data.stories.filter(s => s.id && s.headline && s.location && Number.isFinite(Date.parse(s.published_at)));
+    $('np-updated').textContent = updatedText(data.updated);
+    render();
+  });
 })();

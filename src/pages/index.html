@@ -85,13 +85,13 @@ hnGlobe.src = 'assets/globe/news.html?embed=1&' + (isPhone() ? 'cx=.5&cy=.5&r=.4
 const glide = () => { if (!isPhone()) { hnGlobe.style.transform = ''; return; } const y = Math.min(scrollY, 600); hnGlobe.style.transform = `translateY(${-y * .18}px) scale(${1 - y / 3000})`; hnGlobe.style.opacity = Math.max(.25, 1 - y / 700); };
 if (!matchMedia('(prefers-reduced-motion: reduce)').matches) addEventListener('scroll', () => requestAnimationFrame(glide), { passive: true });
 fitTitle(); addEventListener('resize', fitTitle); document.fonts && document.fonts.ready.then(fitTitle);
-loadNews().then(d => {
+watchNews(d => {
   hnLive.innerHTML = '<i></i>' + updatedText(d.updated);
   hnTop.innerHTML = d.top.slice(0, 5).map((s, i) => card(s, i === 0)).join('');
   hnWhy.innerHTML = d.moved.slice(0, 3).map(why).join('');
   hnCty.innerHTML = countries(d.stories);
   hnTick.innerHTML = d.latest.slice(0, 6).map(s => '<a href="' + url(s) + '"><b>' + ago(s.published_at) + '</b>' + esc(s.headline) + '</a>').join('');
-}).catch(() => { hnTop.innerHTML = '<p class="hn-meta">News is loading. Please refresh in a moment.</p>'; });
+});
 // Markets open right now: regular local trading hours (no holidays)
 const EX = [['New York', 'us', 'America/New_York', 570, 960], ['Toronto', 'ca', 'America/Toronto', 570, 960], ['São Paulo', 'br', 'America/Sao_Paulo', 600, 1020], ['London', 'gb', 'Europe/London', 480, 990],
   ['Frankfurt', 'de', 'Europe/Berlin', 540, 1050], ['Paris', 'fr', 'Europe/Paris', 540, 1050], ['Johannesburg', 'za', 'Africa/Johannesburg', 540, 1020], ['Riyadh', 'sa', 'Asia/Riyadh', 600, 900, [0, 1, 2, 3, 4]],

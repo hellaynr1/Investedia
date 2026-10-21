@@ -81,3 +81,6 @@ body[data-page=news] main.wrap{max-width:1240px;padding-inline:max(20px,env(safe
 
 .np>.np-disclosure{margin:32px 0 0;font-size:12px;color:var(--np-muted)}
 .np-filters{margin-bottom:28px}
+
+/* Keep the horizontal category rail inside narrow screens. */
+@media(max-width:760px){.np-categories{width:calc(100% + 32px);max-width:calc(100vw - 8px);box-sizing:border-box;overflow-x:auto;flex-wrap:nowrap}.np-categories button{flex-shrink:0}}

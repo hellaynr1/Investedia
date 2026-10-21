@@ -1,9 +1,9 @@
 name: Update globe news
-# Live news for the Globe News page (update_globe_news.py): free sources (GDELT, official press releases), Gemini for selection + short summaries,
-# Pixabay for topic photos. Every 30 minutes; visitors only read the saved file, so traffic never uses the free limits.
+# Free headline collection every five minutes; GitHub schedules can be delayed.
+# Optional major-story summaries use a confirmed free-tier-only project, at most 8 batches/day.
 on:
   schedule:
-    - cron: "7,37 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
       backfill_days:
@@ -20,21 +20,26 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - run: pip install -q pillow
       - name: Fetch news
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          PIXABAY_KEY: ${{ secrets.PIXABAY_KEY }}
+          NEWS_FREE_TIER_CONFIRMED: ${{ vars.NEWS_FREE_TIER_CONFIRMED }}
+          NEWS_FREE_MODEL: ${{ vars.NEWS_FREE_MODEL }}
+          NEWS_AI_DAILY_CAP: '8'
           BACKFILL_DAYS: ${{ inputs.backfill_days || '0' }}
         run: python3 update_globe_news.py
-        timeout-minutes: 60
+        timeout-minutes: 8
       - name: Fetch economic calendar and earnings
-        run: python3 update_calendar.py || echo "Calendar update failed; keeping the previous data"
+        run: |
+          minute=$(date -u +%M)
+          if [ "${{ github.event_name }}" != "schedule" ] || [ $((10#$minute % 30)) -lt 5 ]; then
+            python3 update_calendar.py || echo "Calendar update failed; keeping the previous data"
+          fi
       - name: Publish
         if: always()
         run: |

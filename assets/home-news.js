@@ -31,18 +31,18 @@ function img(s) {
   if (e) return `<div class="hn-img"><img class="hn-big" src="${logoSrc(e)}" alt="${esc(e.name)}" style="background:#fff;border-radius:16px;padding:10px" ${hideBad}>${f ? `<img class="hn-fl" src="${f}" alt="">` : ''}</div>`;
   return `<div class="hn-img">${f ? `<img class="hn-bigfl" src="${f}" alt="${esc(nm(s.location.country))}">` : ''}</div>`;
 }
-const card = (s, sum = true) => `<a class="hn-card" href="${url(s)}">${img(s)}<div>${tags(s)}</div><h3>${esc(s.headline)}</h3>${sum ? `<p>${esc(s.summary)}</p>` : ''}<span class="hn-meta">${ago(s.published_at)} · <b>${esc(s.source?.name || '')}</b>${s.sources?.length > 1 ? ` + ${s.sources.length - 1} more` : ''}</span></a>`;
+const card = (s, sum = true) => `<a class="hn-card" href="${url(s)}">${img(s)}<div>${tags(s)}</div><h3>${esc(s.headline)}</h3>${sum && s.summary ? `<p>${esc(s.summary)}</p>` : ''}${impactChips(s)}<span class="hn-meta">${ago(s.published_at)} · <b>${esc(s.source?.name || '')}</b>${s.sources?.length > 1 ? ` + ${s.sources.length - 1} more` : ''}</span></a>`;
 function thumb(s) {
   const e = (s.entities || []).find(company), f = flagSrc(s.location.country);
   return s.image ? `<img src="assets/globe/${esc(s.image.file)}" alt="">` : e ? `<img class="hn-lgo" src="${logoSrc(e)}" alt="" ${hideBad}>` : f ? `<img class="hn-flg" src="${f}" alt="">` : '';
 }
-const row = s => `<a class="hn-row" href="${url(s)}"><span class="hn-th">${thumb(s)}</span><span><span>${tags(s)}</span><h4>${esc(s.headline)}</h4><span class="hn-meta">${ago(s.published_at)} · ${esc(nm(s.location.country))}</span></span></a>`;
+const row = s => `<a class="hn-row" href="${url(s)}"><span class="hn-th">${thumb(s)}</span><span><span>${tags(s)}</span><h4>${esc(s.headline)}</h4>${impactChips(s)}<span class="hn-meta">${ago(s.published_at)} · ${esc(nm(s.location.country))}</span></span></a>`;
 function impactChips(s) {
-  const rows = (Array.isArray(s.impacts) ? s.impacts : []).filter(i => i && typeof i.name === 'string' && ['up', 'down', 'mixed', 'unclear'].includes(i.direction) && Object.values(ISO).includes(i.country)).slice(0, 2);
-  const arrow = { up: '↑', down: '↓', mixed: '↔', unclear: '→' };
-  return rows.length ? `<div class="hn-ents hn-impacts" aria-label="AI-assisted analysis">${rows.map(i => `<span class="hn-ent"><img src="assets/globe/flags/${i.country.toLowerCase()}.svg" alt="" ${hideBad}><span class="hn-impact-${i.direction}">${arrow[i.direction]}</span>${esc(i.name)}</span>`).join('')}</div>` : '';
+  const rows = (Array.isArray(s.impacts) ? s.impacts : []).filter(i => i && typeof i.name === 'string').slice(0, 6);
+  return `<div class="hn-meta hn-exposure"><b>Potentially affected:</b> ${rows.length ? rows.map(i => esc(i.name)).join(' · ') : 'Impact unclear'}</div>`;
 }
-const why = (s, i) => `<a class="hn-why" href="${url(s)}"><span class="hn-n">0${i + 1}</span><div>${tags(s)}</div><h3>${esc(s.headline)}</h3><div class="hn-wl">What happened</div><p>${esc(s.summary)}</p><div class="hn-wl">Why it matters</div><p>${esc(s.why)}</p>${impactChips(s)}
+
+const why = (s, i) => `<a class="hn-why" href="${url(s)}"><span class="hn-n">0${i + 1}</span><div>${tags(s)}</div><h3>${esc(s.headline)}</h3><div class="hn-wl">What happened</div><p>${esc(s.summary || 'Read the original reporting for details.')}</p><div class="hn-wl">Why it matters</div><p>${esc(s.why || 'Potential exposure is shown below; price direction is unclear.')}</p>${impactChips(s)}
   ${(s.entities || []).length ? `<div class="hn-ents">${s.entities.map(e => `<span class="hn-ent">${entityImage(e, s.location.country)}<span>${esc(e.name)}</span>${e.ticker ? `<code>${esc(e.ticker)}</code>` : ''}</span>`).join('')}</div>` : ''}</a>`;
 function countries(list) {
   const c = {}; for (const s of list) c[s.location.country] = (c[s.location.country] || 0) + 1;
@@ -54,6 +54,26 @@ async function loadNews() {
   const [n, iso, logos] = await Promise.all([fetch('assets/globe/news-live.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/iso.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/logos.json').then(r => r.json()).catch(() => ({}))]);
   ISO = iso; ENTITY_LOGOS = Object.fromEntries(Object.entries(logos).map(([k, v]) => [k, v.replace('../logos/', 'assets/logos/')])); const stories = n.stories || [];
   return { stories, top: [...stories].sort(rank), latest: [...stories].sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at)), updated: n.updated_at,
-    moved: [...stories].filter(s => s.market_moving || s.importance === 3).sort(rank) };
+    moved: [...stories].filter(s => s.summary && (s.market_moving || s.importance === 3)).sort(rank) };
 }
 const updatedText = t => 'Live · updated ' + new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+// Poll saved public data only. Never call a provider or AI from a visitor's browser.
+function watchNews(receive) {
+  let last = '', busy = false, stopped = false;
+  async function check() {
+    if (busy || stopped || document.hidden) return;
+    busy = true;
+    try {
+      const data = await loadNews();
+      window.NewsAlerts?.observe(data.stories, url);
+      const signature = JSON.stringify([data.updated, data.stories]);
+      if (signature !== last) { receive(data); last = signature; }
+    } catch { /* Keep the last successful stories visible; retry on the next tick. */ }
+    finally { busy = false; }
+  }
+  check();
+  const timer = setInterval(check, 30000);
+  document.addEventListener('visibilitychange', check);
+  return () => { stopped = true; clearInterval(timer); document.removeEventListener('visibilitychange', check); };
+}
