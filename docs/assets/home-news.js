@@ -28,7 +28,7 @@ function entityImage(e, country) {
 function img(s) {
   const e = (s.entities || []).find(company), f = flagSrc(s.location.country);
   if (s.image) return `<div class="hn-img"><img class="hn-ph" src="assets/globe/${esc(s.image.file)}" alt="${esc(s.image.alt || '')}" loading="lazy"><span class="hn-il">${s.image.kind === 'place' ? 'Photo' : 'Illustration'} · ${esc(s.image.source || '')}</span>${e ? `<img class="hn-lg" src="${logoSrc(e)}" alt="" ${hideBad}>` : ''}${f ? `<img class="hn-fl" src="${f}" alt="">` : ''}</div>`;
-  if (e) return `<div class="hn-img"><img class="hn-big" src="${logoSrc(e)}" alt="${esc(e.name)}" style="background:#fff;border-radius:16px;padding:10px" ${hideBad}>${f ? `<img class="hn-fl" src="${f}" alt="">` : ''}</div>`;
+  if (e) return `<div class="hn-img"><img class="hn-big" src="${logoSrc(e)}" alt="${esc(e.name)}" style="background:rgba(255,255,255,.07);border-radius:16px;padding:10px" ${hideBad}>${f ? `<img class="hn-fl" src="${f}" alt="">` : ''}</div>`;
   return `<div class="hn-img">${f ? `<img class="hn-bigfl" src="${f}" alt="${esc(nm(s.location.country))}">` : ''}</div>`;
 }
 const card = (s, sum = true) => `<a class="hn-card" href="${url(s)}">${img(s)}<div>${tags(s)}</div><h3>${esc(s.headline)}</h3>${sum ? `<p>${esc(s.summary)}</p>` : ''}<span class="hn-meta">${ago(s.published_at)} · <b>${esc(s.source?.name || '')}</b>${s.sources?.length > 1 ? ` + ${s.sources.length - 1} more` : ''}</span></a>`;
