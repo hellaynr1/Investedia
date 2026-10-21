@@ -3,7 +3,9 @@
 Read this whole file before changing anything. The owner is not a developer: explain in plain words and show results.
 
 ## What this is
-investedia.com: a free investing-information website (markets, news, tools, a live world globe), built as a **static site** on GitHub Pages. Prices are real (Yahoo Finance, FRED), refreshed by GitHub Actions. Information and education only, never investment advice.
+investedia.com: **investing media for everyone**. A news-first website: the world's financial and business news on one live globe, with what happened, where, and why it matters to your money. Slogan: **"Invest with clarity. / See the world move."** Static site on GitHub Pages. Information and education only, never investment advice.
+
+**Direction (Oct 2026):** news first, not a trading/price site. Do not add live price tickers, screeners, gainers/losers or TradingView-style pages. Old market pages still exist but are out of the menu; ask before changing or deleting them.
 
 ## Owner's rules (always follow)
 1. **Never put anything live without the owner's "push" / "go".** Work on a branch (`git checkout -b preview/<topic>`), push the branch, show screenshots (PC 1440px wide + phone 390px), then merge to `main` only when told.
@@ -15,13 +17,19 @@ investedia.com: a free investing-information website (markets, news, tools, a li
 7. Never delete files, data, accounts or keys without asking.
 
 ## How the site is built
-- Pages live in `src/pages/*.html` (first line is JSON: title, desc, key). `python3 build.py` wraps them with the shared head/header/footer and writes the root `*.html` files **and** mirrors everything to `docs/`. GitHub Pages serves `docs/`.
+- Pages live in `src/pages/*.html` (first line is JSON: title, desc, key, optional scripts). `python3 build.py` wraps them with the shared head and writes the root `*.html` files **and** mirrors everything to `docs/`. GitHub Pages serves `docs/`.
 - **Always run `python3 build.py` after editing**, and commit both the source and the generated files.
-- Shared UI: `assets/ui.js` (header, menus, search, login popup, watchlist, analytics tracking) and `assets/app.css`.
-- Market data for most pages: `assets/mock.js` + `assets/quotes.js` (refreshed by `update_market.py`).
-- World globe: source in `tools/globe/` (`head.html` = CSS/layout, `script.js` = behaviour). Build with `python3 tools/globe/build.py && python3 build.py`. Its prices refresh via `update_globe.py`. It is embedded on the homepage (hero, `?mode=hero`) and on `globe.html`.
-- GitHub Actions (`.github/workflows/update-market.yml`) commit fresh prices/news every ~10 minutes. **Always `git pull --rebase origin main` before you push**, or the push is rejected.
+- Shared UI: `assets/ui.js` (menu Home · Globe · News · Learn · Tools · About, login popup, footer, analytics) and `assets/app.css`.
+- **Homepage** `src/pages/index.html` + `assets/home-news.js` + `assets/home-news.css` (classes prefixed `hn-` so they never clash with app.css): globe hero, top stories, why it moved, countries, markets open now, upcoming events + earnings, free-resources strip.
+- **Globe News page** `assets/globe/news.html`, source in `tools/globe-news/` (`page.html`, `build.py`). Build: `python3 tools/globe-news/build.py && python3 build.py`. `?embed=1` gives the globe alone (used by the homepage).
+- **Robots (GitHub Actions):**
+  - `update-globe-news.yml` every 30 min: `update_globe_news.py` (GDELT + ECB/Fed/BoE feeds, Gemini picks and summarises, Pixabay topic photos) → `assets/globe/news-live.json`; `update_calendar.py` (ForexFactory events, Nasdaq earnings) → `assets/calendar-live.json`.
+  - `update-economy.yml` weekly: `update_economy.py` (World Bank) → `assets/globe/economy.json`.
+  - `update-market.yml`: old price data (still used by Tools pages).
+  - Secrets in GitHub: `GEMINI_API_KEY`, `PIXABAY_KEY`. Brandfetch logo Client ID is public, in `tools/globe-news/page.html`.
+- Robots commit to `main` often: **always `git pull --rebase origin main` before you push.**
 - Preview locally: `cd docs && python3 -m http.server 8765` then open http://localhost:8765.
+- News rules: never copy articles or photos; every story keeps source name, link and time; AI summaries are labelled "AI-assisted"; topic photos are labelled "Illustration". No Wikimedia images.
 
 ## Accounts, emails, analytics (Supabase project `lfjyoeusblhfpmgwbrhj`)
 - Login popup: Google + email/password (Supabase Auth). Header account menu with Log out; `profile.html` saves to the account (user metadata).
