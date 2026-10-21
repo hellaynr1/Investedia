@@ -36,9 +36,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 h1{margin:14px 0 0;font-size:clamp(22px,2.4vw,32px);font-weight:600;letter-spacing:-.035em;line-height:1.08;max-width:520px;pointer-events:none}
 h1 span{color:var(--fg-3)}
 .chips{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
-.search{z-index:5;position:relative;display:flex;align-items:center;gap:10px;width:min(440px,100%);height:44px;margin-top:18px;padding:0 12px 0 14px;border-radius:12px}
+.search{z-index:5;position:relative;display:flex;align-items:center;gap:10px;width:min(440px,100%);height:48px;margin-top:14px;padding:0 12px 0 14px;border-radius:12px}
 .search svg{width:16px;height:16px;flex:none;stroke:var(--fg-3);fill:none;stroke-width:2;stroke-linecap:round}
-.search input{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;color:var(--fg);font:15px var(--sans)}
+.search input{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;color:var(--fg);font:16px var(--sans)}
 .search input::placeholder{color:var(--fg-3)}
 .search input::-webkit-search-cancel-button{display:none}
 .search:focus-within{border-color:var(--line-2)}
@@ -224,7 +224,7 @@ h1 span{color:var(--fg-3)}
   .chips,.regions{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent)}
   .chips::-webkit-scrollbar,.regions::-webkit-scrollbar{display:none}
   .chips{margin-top:10px}.regions{margin-top:6px}
-  .search{margin-top:12px;height:42px;width:100%}.search kbd{display:none}
+  .search{margin-top:12px;height:48px;width:100%}.search kbd{display:none}
   .legend{display:none}
   .timeline{left:50%;bottom:calc(98px + env(safe-area-inset-bottom));padding:4px}
   .win{min-width:0;padding:0 9px;height:32px}.tl-play{width:32px;height:32px}
@@ -253,7 +253,6 @@ h1 span{color:var(--fg-3)}
     <span class="prod">Globe · News</span>
     <span class="demo" id="badge" title="Concept preview: every story is demo content written to show the design. Not real news.">Concept · demo stories</span>
   </div>
-  <h1>The world's financial news, <span>happening across the globe.</span></h1>
   <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search a country, company or story" autocomplete="off" aria-label="Search the globe" aria-controls="res"><kbd>/</kbd>
     <div class="res" id="res" role="listbox" hidden></div></div>
   <div class="chips" id="cats" role="group" aria-label="Category"></div>
@@ -454,13 +453,24 @@ function refresh() {
 
 // ===== Globe =====
 const cv = $('cv'), ctx = cv.getContext('2d');
-let cyT = 0, W = 0, H = 0, R0 = 0, R = 0, cx = 0, cy = 0, Z = 1, lon0 = -15, lat0 = 24, ZMAX = 5;
+let cyT = 0, W = 0, H = 0, R0 = 0, R = 0, cx = 0, cy = 0, Z = 1, Zt = 1, lon0 = -15, lat0 = 24, ZMAX = 6, globeBox = { left: 0, top: 0, right: 0, bottom: 0 };
 function size() {
   const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  // keep the globe clear of the filters on top and the timeline below; on phones it moves up when the sheet opens
-  if (EMBED) { const q = new URLSearchParams(location.search); cx = W * (+q.get('cx') || .5); cyT = H * (+q.get('cy') || .5); R0 = Math.min(W, H) * (+q.get('r') || .42); }
-  else if (phone()) { cx = W / 2; R0 = Math.min(W * .45, H * .29); cyT = panel.classList.contains('open') ? (120 + H * .4) / 2 + 10 : H * .47; }
-  else { const aw = W - 392 - 32, top = 290, bot = 96; cx = aw / 2 + 8; cyT = top + (H - top - bot) / 2; R0 = Math.min(aw * .4, (H - top - bot) / 2 * .94); }
+  // Measure the real controls: the drawing area stays clear of every panel and filter.
+  if (EMBED) { const q = new URLSearchParams(location.search); cx = W * (+q.get('cx') || .5); cyT = H * (+q.get('cy') || .5); R0 = Math.min(W, H) * (+q.get('r') || .42); globeBox = { left: 0, top: 0, right: W, bottom: H }; }
+  else {
+    const header = document.querySelector('.top').getBoundingClientRect();
+    const sheetOpen = phone() && panel.classList.contains('open');
+    $('tl').hidden = sheetOpen;
+    const timeline = $('tl').getBoundingClientRect();
+    globeBox = { left: phone() ? 8 : 24, top: header.bottom + 12,
+      right: phone() ? W - 8 : panel.getBoundingClientRect().left - 24,
+      bottom: sheetOpen ? H - panel.offsetHeight - 12 : timeline.top - 16 };
+    const aw = Math.max(1, globeBox.right - globeBox.left), ah = Math.max(1, globeBox.bottom - globeBox.top);
+    cx = (globeBox.left + globeBox.right) / 2; cyT = globeBox.top + ah / 2;
+    R0 = Math.min((phone() ? W : aw) * .47, ah * .47);
+    if (phone()) document.querySelector('.zoom').style.top = Math.max(globeBox.top, cyT - 36) + 'px';
+  }
   if (!cy) cy = cyT; R = R0 * Z;
 }
 addEventListener('resize', size);
@@ -475,11 +485,37 @@ function inv(x, y) {
 // Camera fly: ease along the shortest way round, with zoom
 let fly = null;
 function flyTo(lo, la, z = Z, dur) {
+  zoomAnchor = null;
+  if (reduce) { lon0 = lo; lat0 = Math.max(-70, Math.min(70, la)); Z = Zt = Math.max(1, Math.min(ZMAX, z)); R = R0 * Z; fly = null; return; }
   const dl = ((lo - lon0 + 540) % 360) - 180;
   fly = { from: [lon0, lat0, Z], dl, la: Math.max(-70, Math.min(70, la)), z: Math.max(1, Math.min(ZMAX, z)), t0: performance.now(), dur: reduce ? 1 : dur || 900 + Math.min(600, Math.abs(dl) * 3) };
 }
 const ease = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-const setZ = z => { fly = null; Z = Math.max(1, Math.min(ZMAX, z)); R = R0 * Z; };
+let zoomAnchor = null;
+function keepZoomAnchor() {
+  if (!zoomAnchor || Math.hypot(zoomAnchor.x - cx, zoomAnchor.y - cy) > R * .995) return;
+  // Solve the two camera angles against the original geographic point. This keeps
+  // north upright and avoids the drift caused by just shifting the canvas centre.
+  const { phi, lam, x, y } = zoomAnchor;
+  for (let i = 0; i < 5; i++) {
+    const p = proj(phi, lam); if (p[2] <= .01) break;
+    const dx = x - p[0], dy = y - p[1]; if (Math.hypot(dx, dy) < .02) break;
+    const h = .001;
+    lon0 += h; const a = proj(phi, lam); lon0 -= h;
+    lat0 += h; const b = proj(phi, lam); lat0 -= h;
+    const ax = (a[0] - p[0]) / h, ay = (a[1] - p[1]) / h, bx = (b[0] - p[0]) / h, by = (b[1] - p[1]) / h;
+    const det = ax * by - ay * bx; if (Math.abs(det) < 1e-8) break;
+    lon0 += Math.max(-8, Math.min(8, (dx * by - dy * bx) / det));
+    lat0 = Math.max(-70, Math.min(70, lat0 + Math.max(-8, Math.min(8, (ax * dy - ay * dx) / det))));
+  }
+}
+function setZ(z, x, y, anchor) {
+  fly = null;
+  const g = Number.isFinite(x) && Number.isFinite(y) ? (anchor || inv(x, y)) : null;
+  zoomAnchor = g ? { phi: g[1] * rad, lam: g[0] * rad, x, y } : null;
+  Zt = Math.max(1, Math.min(ZMAX, z));
+  if (reduce) { Z = Zt; R = R0 * Z; keepZoomAnchor(); zoomAnchor = null; }
+}
 
 // ===== Interaction state =====
 let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
@@ -487,15 +523,15 @@ let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [
 const touches = new Map(); let pinch = null, drag = null;
 cv.addEventListener('pointerdown', e => {
   touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); cv.setPointerCapture(e.pointerId);
-  if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), z: Z }; drag = null; return; }
+  if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), z: Zt, anchor: inv((a.x + b.x) / 2, (a.y + b.y) / 2) }; drag = null; return; }
   drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false };
 });
 cv.addEventListener('pointermove', e => {
   if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
-  if (pinch && touches.size === 2) { const [a, b] = [...touches.values()]; setZ(pinch.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d); return; }
+  if (pinch && touches.size === 2) { const [a, b] = [...touches.values()]; setZ(pinch.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2, pinch.anchor); return; }
   if (drag) {
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-    if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; fly = null; cv.classList.add('drag'); hideHover(); }
+    if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; fly = null; zoomAnchor = null; Zt = Z; cv.classList.add('drag'); hideHover(); }
     if (drag.moved) { lon0 = drag.lon - dx * .3 / Z; lat0 = Math.max(-70, Math.min(70, drag.lat + dy * .26 / Z)); }
     return;
   }
@@ -509,9 +545,9 @@ function endPointer(e) {
 }
 cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
 cv.addEventListener('pointerleave', () => { if (!drag) hideHover(); });
-cv.addEventListener('wheel', e => { if (EMBED) return; e.preventDefault(); setZ(Z * Math.exp(-e.deltaY * .0015)); }, { passive: false });
-cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) flyTo(g[0], g[1], Z < ZMAX - .1 ? Z * 1.8 : 1, 600); });
-$('zin').onclick = () => flyTo(lon0, lat0, Z * 1.6, 420); $('zout').onclick = () => flyTo(lon0, lat0, Z / 1.6, 420);
+cv.addEventListener('wheel', e => { if (EMBED) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
+cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) setZ(Zt < ZMAX - .1 ? Zt * 1.8 : 1, e.clientX, e.clientY); });
+$('zin').onclick = () => setZ(Zt * 1.6); $('zout').onclick = () => setZ(Zt / 1.6);
 
 let cTimer = null, lastX = 0, lastY = 0;
 addEventListener('wheel', () => { clearTimeout(cTimer); hideHover(); }, { passive: true });
@@ -550,6 +586,8 @@ function tap(x, y, touch) {
 // ===== Panel =====
 const panel = $('panel'), pbody = $('pbody'); size(); new MutationObserver(size).observe(panel, { attributes: true, attributeFilter: ['class'] }); let view = { k: 'top' }, hist = [];
 $('grab').onclick = () => panel.classList.toggle('open');
+const layoutObserver = new ResizeObserver(size); [document.querySelector('.top'), $('tl'), panel].forEach(e => layoutObserver.observe(e));
+document.fonts.ready.then(size);
 function go(v, push = true) { if (push && view.k !== v.k || push && view.id !== v.id) hist.push(view); view = v; render(); pbody.scrollTop = 0; if (phone() && v.k !== 'top') panel.classList.add('open'); }
 function back() { view = hist.pop() || { k: 'top' }; if (view.k === 'top') { sel = null; selCountry = null; } else if (view.k === 'country') { sel = null; selCountry = byName[view.id]; } else if (view.k === 'story') { sel = byId[view.id]; } render(); }
 function openStory(s) {
@@ -692,12 +730,15 @@ function countryShape(c, fill, stroke, lw = 1) {
 let last = performance.now();
 function frame(t) {
   const dt = Math.min(50, t - last); last = t;
-  if (fly) { const k = Math.min(1, (t - fly.t0) / fly.dur), e = ease(k); lon0 = fly.from[0] + fly.dl * e; lat0 = fly.from[1] + (fly.la - fly.from[1]) * e; Z = fly.from[2] + (fly.z - fly.from[2]) * e; R = R0 * Z * (1 - .06 * Math.sin(Math.PI * k) * Math.min(1, Math.abs(fly.dl) / 60)); if (k >= 1) { fly = null; R = R0 * Z; } }
-  else if (!drag && !pinch && !reduce && !sel && !selCountry && !hoverC && !hoverCountry && view.k === 'top' && F.region === 'global' && Z < 1.05) lon0 -= dt * .0022;
+  if (fly) { const k = Math.min(1, (t - fly.t0) / fly.dur), e = ease(k); lon0 = fly.from[0] + fly.dl * e; lat0 = fly.from[1] + (fly.la - fly.from[1]) * e; Zt = fly.from[2] + (fly.z - fly.from[2]) * e; if (k >= 1) fly = null; }
+  else if (!drag && !pinch && !reduce && !sel && !selCountry && !hoverC && !hoverCountry && view.k === 'top' && F.region === 'global' && Zt < 1.05 && !zoomAnchor) lon0 -= dt * .0022;
+  Z += (Zt - Z) * (reduce ? 1 : .18); if (Math.abs(Zt - Z) < .0001) Z = Zt; R = R0 * Z;
   lon0 = ((lon0 + 540) % 360) - 180; cy += (cyT - cy) * (reduce ? 1 : .12);
+  keepZoomAnchor(); if (Z === Zt) zoomAnchor = null;
   if (play) { const k = Math.min(1, (t - play.t0) / play.dur); play.cur = play.start + (T0 - play.start) * k; refresh(); if (k >= 1) { play = null; refresh(); } }
 
   ctx.clearRect(0, 0, W, H);
+  ctx.save(); if (!EMBED) { ctx.beginPath(); ctx.rect(globeBox.left, globeBox.top, Math.max(0, globeBox.right - globeBox.left), Math.max(0, globeBox.bottom - globeBox.top)); ctx.clip(); }
   // atmosphere + sphere
   const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, 'rgba(255,122,26,.22)'); at.addColorStop(.25, 'rgba(255,122,26,.07)'); at.addColorStop(1, 'rgba(255,122,26,0)');
   ctx.fillStyle = at; ctx.beginPath(); ctx.arc(cx, cy, R * 1.22, 0, 7); ctx.fill();
@@ -737,7 +778,7 @@ function frame(t) {
   const vis = [];
   for (const s of shown) {
     if (!s.on) { s.on = true; s.vt = t; }
-    const [x, y, z] = proj(s.phi, s.lam); if (z <= .04) continue; vis.push({ s, x, y, z });
+    const [x, y, z] = proj(s.phi, s.lam); if (z <= .04 || (!EMBED && (x < globeBox.left || x > globeBox.right || y < globeBox.top || y > globeBox.bottom))) continue; vis.push({ s, x, y, z });
   }
   for (const s of stories) if (!shown.includes(s)) s.on = false;
   vis.sort((a, b) => sortTop(a.s, b.s));
@@ -769,6 +810,7 @@ function frame(t) {
       ctx.font = '500 11.5px Inter,sans-serif'; ctx.fillStyle = `rgba(255,255,255,${.92 * al})`; ctx.fillText(s.location.place.split(',')[0], lx, d.y + 7);
     }
   }
+  ctx.restore();
   requestAnimationFrame(frame);
 }
 
