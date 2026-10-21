@@ -239,6 +239,7 @@ h1 span{color:var(--fg-3)}
 @media (prefers-reduced-motion:reduce){.panel{transition:none}}
 .embed body,.embed{background:transparent}
 .embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom{display:none!important}
+.embed #cv{touch-action:pan-y}
 </style>
 </head>
 <body>
@@ -489,7 +490,7 @@ cv.addEventListener('pointermove', e => {
     if (drag.moved) { lon0 = drag.lon - dx * .3 / Z; lat0 = Math.max(-70, Math.min(70, drag.lat + dy * .26 / Z)); }
     return;
   }
-  if (fine) hoverAt(e.clientX, e.clientY);
+  if (fine) { lastX = e.clientX; lastY = e.clientY; hoverAt(e.clientX, e.clientY); }
 });
 function endPointer(e) {
   touches.delete(e.pointerId);
@@ -503,14 +504,19 @@ cv.addEventListener('wheel', e => { if (EMBED) return; e.preventDefault(); setZ(
 cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) flyTo(g[0], g[1], Z < ZMAX - .1 ? Z * 1.8 : 1, 600); });
 $('zin').onclick = () => flyTo(lon0, lat0, Z * 1.6, 420); $('zout').onclick = () => flyTo(lon0, lat0, Z / 1.6, 420);
 
+let cTimer = null, lastX = 0, lastY = 0;
+addEventListener('wheel', () => { clearTimeout(cTimer); hideHover(); }, { passive: true });
 function pick(x, y, r) { let best = null, bd = r * r; for (const d of drawn) { const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < bd) { bd = q; best = d; } } return best; }
 function hoverAt(x, y) {
   const d = pick(x, y, 16);
   if (d) { hoverCountry = null; if (hoverC !== d.key) { hoverC = d.key; showHover(d); } placeHover(d.x, d.y); cv.style.cursor = 'pointer'; return; }
-  hoverC = null; const g = inv(x, y), c = g && countryAt(g[0], g[1]);
-  hoverCountry = c; cv.style.cursor = c ? 'pointer' : '';
-  if (c) { const n = stories.filter(s => s.location.country === c.name && match(s)).length; const hv = $('hover'); hv.className = 'hover glass solo on'; hv.innerHTML = `<div><div class="eyebrow">Country</div><h3 style="margin-bottom:2px;display:flex;align-items:center;gap:8px">${flag(c.name)}${esc(nm(c.name))}</h3><div class="meta">${n ? `<b>${n}</b> ${n === 1 ? 'story' : 'stories'} in ${WLABEL[F.win]}` : 'No stories in this window'} · click to explore</div></div>`; placeHover(x, y + 6); }
-  else hideHover();
+  if (hoverC) { hoverC = null; $('hover').classList.remove('on'); }
+  const g = inv(x, y), c = g && countryAt(g[0], g[1]);
+  cv.style.cursor = c ? 'pointer' : '';
+  if (c === hoverCountry) return;
+  hoverCountry = c; clearTimeout(cTimer); $('hover').classList.remove('on');
+  if (c && !EMBED) cTimer = setTimeout(() => { if (hoverCountry !== c || drag) return; const n = stories.filter(s => s.location.country === c.name && match(s)).length, hv = $('hover');
+    hv.className = 'hover glass solo on'; hv.innerHTML = `<div><div class="eyebrow">Country</div><h3 style="margin-bottom:2px;display:flex;align-items:center;gap:8px">${flag(c.name)}${esc(nm(c.name))}</h3><div class="meta">${n ? `<b>${n}</b> ${n === 1 ? 'story' : 'stories'} in ${WLABEL[F.win]}` : 'No stories in this window'} · click to explore</div></div>`; placeHover(lastX, lastY + 6); }, 650);
 }
 function showHover(d) {
   const hv = $('hover');
@@ -524,7 +530,7 @@ function showHover(d) {
   }
 }
 function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.offsetHeight; let l = x + 16, t = y - h / 2; if (l + w > innerWidth - 12) l = x - w - 16; t = Math.max(12, Math.min(innerHeight - h - 12, t)); hv.style.left = l + 'px'; hv.style.top = t + 'px'; }
-function hideHover() { hoverC = null; hoverCountry = null; $('hover').classList.remove('on'); cv.style.cursor = ''; }
+function hideHover() { clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on'); cv.style.cursor = ''; }
 function tap(x, y, touch) {
   const d = pick(x, y, touch ? 26 : 16);
   if (d) { hideHover(); if (d.list.length === 1) return openStory(d.list[0]); if (d.same || Z >= ZMAX - .2) return openPlace(d.list); return flyTo(d.lo, d.la, Math.min(ZMAX, Z * 2.2)); }
@@ -655,10 +661,18 @@ function arcPts(a, b, n = 56) {
   return out;
 }
 function ringPath(rr, fill) {
-  let pen = false;
+  // fill: points behind the globe are pulled onto its edge, and the outline follows the edge (an arc) between them, so shapes never cut across the globe
+  let pen = false, pa = null;
   for (const [phi, lam] of rr) {
-    let [x, y, z] = proj(phi, lam);
-    if (z < 0) { if (!fill) { pen = false; continue; } const d = Math.hypot(x - cx, y - cy) || 1; x = cx + (x - cx) / d * R; y = cy + (y - cy) / d * R; }
+    const [x, y, z] = proj(phi, lam);
+    if (z < 0) {
+      if (!fill) { pen = false; continue; }
+      const a = Math.atan2(y - cy, x - cx);
+      if (pen && pa != null) { let d = a - pa; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; ctx.arc(cx, cy, R, pa, pa + d, d < 0); }
+      else { const ex = cx + Math.cos(a) * R, ey = cy + Math.sin(a) * R; if (pen) ctx.lineTo(ex, ey); else { ctx.moveTo(ex, ey); pen = true; } }
+      pa = a; continue;
+    }
+    pa = null;
     if (pen) ctx.lineTo(x, y); else { ctx.moveTo(x, y); pen = true; }
   }
 }
