@@ -35,6 +35,8 @@ jobs:
           fi
       - name: Fetch world globe prices
         run: python3 update_globe.py || echo "Globe update failed; keeping the previous prices"
+      - name: Fetch prices for assets in the news
+        run: python3 update_news_prices.py || echo "News prices failed; keeping the previous file"
       - name: Fetch news
         run: |
           M=$(date -u +%M)

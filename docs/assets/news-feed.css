@@ -21,3 +21,6 @@
 @media(max-width:800px){.nf-hero{grid-template-columns:1fr}.nf-hero .im{min-height:190px}.nf-hero .tx{padding:20px}.nf-ev{grid-template-columns:1fr}.nf-ev .r{border-left:0;border-top:1px solid var(--line)}.nf-t{width:150px}}
 .mv-ini{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-size:11px;font-weight:700}
 .nf-ev.solo{grid-template-columns:1fr}.nf-ev.solo .ph{height:150px}
+.ai-t{flex:none;width:26px;height:26px;border-radius:8px;display:inline-grid;place-items:center;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font:700 11px/1 Inter,system-ui,sans-serif;color:var(--fg-2)}.ai-t b{font-weight:700}.ai-t svg{display:block}
+.ai-i{flex:none;width:26px;height:26px;border-radius:8px;object-fit:contain;padding:3px;box-sizing:border-box;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.nf-chip .ai-t,.nf-chip .ai-i{width:20px;height:20px;border-radius:6px;font-size:9px;padding:2px}.nf-t small .ai-t,.nf-t small .ai-i{width:22px;height:22px}
