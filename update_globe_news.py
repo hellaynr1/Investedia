@@ -91,10 +91,11 @@ GDELT_QUERIES = [
 ]
 
 
-def gdelt():
+def gdelt(start=None, end=None):
+    """Latest 3 hours, or a past window (start/end datetimes) for the backfill."""
     out = []
     for i, q in enumerate(GDELT_QUERIES):
-        url = 'https://api.gdeltproject.org/api/v2/doc/doc?' + urllib.parse.urlencode({'query': q, 'mode': 'ArtList', 'format': 'json', 'maxrecords': 75, 'timespan': '3h', 'sort': 'HybridRel'})
+        url = 'https://api.gdeltproject.org/api/v2/doc/doc?' + urllib.parse.urlencode({'query': q, 'mode': 'ArtList', 'format': 'json', 'maxrecords': 75, 'sort': 'HybridRel', **({'startdatetime': start.strftime('%Y%m%d%H%M%S'), 'enddatetime': end.strftime('%Y%m%d%H%M%S')} if start else {'timespan': '3h'})})
         for t in range(4):
             time.sleep(8 + 12 * t)  # GDELT asks for one request every 5 seconds; back off when it is busy
             try:
@@ -307,26 +308,14 @@ def photo(topic, seed):
 
 
 # ---------- main ----------
-def main():
-    box, by_iso, sym = load_ref()
-    known_iso = set(by_iso)
-    prev_path = os.path.join(G, OUT)
-    prev = json.load(open(prev_path)).get('stories', []) if os.path.exists(prev_path) else []
-    cutoff = NOW - timedelta(days=KEEP_DAYS)
-    prev = [s for s in prev if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > cutoff]
-    known_urls = {u['url'] for s in prev for u in s.get('sources', [])}
-    raw = gdelt() + rss()
-    status['fetched'] = len(raw)
-    fresh = [c for c in raw if c['url'] not in known_urls]
-    cands = dedupe(fresh, [s['headline'] for s in prev])[:90]
-    status['candidates'] = len(cands)
-    log(f'{len(raw)} fetched, {len(cands)} new candidates')
+def pick_stories(cands, box, by_iso, sym, known_iso, n):
+    """Editor step: Gemini picks, merges and summarises candidates; everything is validated before it is kept."""
     new = []
     if cands:
         with ThreadPoolExecutor(8) as ex: cands = list(ex.map(describe, cands))
         listing = json.dumps([{'i': i, 'title': c['title'], 'source': c['source'], **({'about': c['hint']} if c.get('hint') else {}), **({'description': c['desc']} if c.get('desc') else {})} for i, c in enumerate(cands)], ensure_ascii=False)
         try:
-            picked = gemini(PROMPT.format(n=MAX_NEW, cats=', '.join(CATS), topics=', '.join(PHOTO_TOPICS), cands=listing))
+            picked = gemini(PROMPT.format(n=n, cats=', '.join(CATS), topics=', '.join(PHOTO_TOPICS), cands=listing))
             status['gemini_ok'] = True
         except Exception as e:
             err(f'Gemini: {e}'); picked = []
@@ -361,6 +350,33 @@ def main():
                 ids.append(None); err(f'story {k}: {e}')
         for x in ids:  # connections between the new stories
             if x and isinstance(x[1], int) and 0 <= x[1] < len(ids) and ids[x[1]] and ids[x[1]][0] is not x[0]: x[0]['links'] = [ids[x[1]][0]['id']]
+    return new
+
+
+def main():
+    box, by_iso, sym = load_ref()
+    known_iso = set(by_iso)
+    prev_path = os.path.join(G, OUT)
+    prev = json.load(open(prev_path)).get('stories', []) if os.path.exists(prev_path) else []
+    cutoff = NOW - timedelta(days=KEEP_DAYS)
+    prev = [s for s in prev if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > cutoff]
+    known_urls = {u['url'] for s in prev for u in s.get('sources', [])}
+    days = max(0, min(KEEP_DAYS, int(os.environ.get('BACKFILL_DAYS') or 0)))
+    for d in range(days, 0, -1):  # oldest day first; real publication dates and sources are kept
+        start = (NOW - timedelta(days=d)).replace(minute=0, second=0, microsecond=0); end = start + timedelta(days=1)
+        day_raw = [c for c in gdelt(start, end) if c['url'] not in known_urls]
+        day_cands = dedupe(day_raw, [s['headline'] for s in prev])[:80]
+        log(f'backfill {start:%Y-%m-%d}: {len(day_raw)} fetched, {len(day_cands)} candidates')
+        got = pick_stories(day_cands, box, by_iso, sym, known_iso, 18) if day_cands else []
+        prev += got; known_urls |= {u['url'] for s in got for u in s.get('sources', [])}
+        status.setdefault('backfill', []).append({'day': f'{start:%Y-%m-%d}', 'stories': len(got)})
+    raw = gdelt() + rss()
+    status['fetched'] = len(raw)
+    fresh = [c for c in raw if c['url'] not in known_urls]
+    cands = dedupe(fresh, [s['headline'] for s in prev])[:90]
+    status['candidates'] = len(cands)
+    log(f'{len(raw)} fetched, {len(cands)} new candidates')
+    new = pick_stories(cands, box, by_iso, sym, known_iso, MAX_NEW)
     status['new_stories'] = len(new)
     stories = sorted(new + prev, key=lambda s: s['published_at'], reverse=True)[:MAX_STORIES]
     status['impacts_backfilled'] = backfill_impacts(stories, known_iso)
