@@ -141,6 +141,48 @@
    "credit": "DenisStreltsov",
    "source_url": "https://pixabay.com/photos/mumbai-india-the-central-bank-4660039/",
    "alt": "bank building"
+  },
+  {
+   "file": "photos/bank-building-371288.jpg",
+   "credit": "hslergr1",
+   "source_url": "https://pixabay.com/photos/national-bank-swiss-national-bank-371288/",
+   "alt": "bank building"
+  },
+  {
+   "file": "photos/bank-building-2907728.jpg",
+   "credit": "JamesQube",
+   "source_url": "https://pixabay.com/photos/bank-money-shares-save-up-capital-2907728/",
+   "alt": "bank building"
+  },
+  {
+   "file": "photos/bank-building-5965153.jpg",
+   "credit": "don2365",
+   "source_url": "https://pixabay.com/photos/atm-sign-bank-financial-street-5965153/",
+   "alt": "bank building"
+  },
+  {
+   "file": "photos/bank-building-7315443.jpg",
+   "credit": "Surprising_Media",
+   "source_url": "https://pixabay.com/photos/couple-young-sitting-stairs-7315443/",
+   "alt": "bank building"
+  },
+  {
+   "file": "photos/bank-building-6043918.jpg",
+   "credit": "schauhi",
+   "source_url": "https://pixabay.com/photos/lake-house-trees-bank-water-6043918/",
+   "alt": "bank building"
+  },
+  {
+   "file": "photos/bank-building-7174540.jpg",
+   "credit": "17831348",
+   "source_url": "https://pixabay.com/photos/frankfurt-main-river-city-7174540/",
+   "alt": "bank building"
+  },
+  {
+   "file": "photos/bank-building-5147228.jpg",
+   "credit": "AJS1",
+   "source_url": "https://pixabay.com/photos/city-tower-urban-building-5147228/",
+   "alt": "bank building"
   }
  ],
  "parliament government building": [
@@ -406,6 +448,48 @@
    "file": "photos/cargo-trucks-highway-4932521.jpg",
    "credit": "rauschenberger",
    "source_url": "https://pixabay.com/photos/transport-truck-layer-of-the-sun-4932521/",
+   "alt": "cargo trucks highway"
+  },
+  {
+   "file": "photos/cargo-trucks-highway-3401529.jpg",
+   "credit": "rgaudet17",
+   "source_url": "https://pixabay.com/photos/truck-semi-transportation-3401529/",
+   "alt": "cargo trucks highway"
+  },
+  {
+   "file": "photos/cargo-trucks-highway-2701335.jpg",
+   "credit": "GREGOR",
+   "source_url": "https://pixabay.com/photos/formula-1-truck-red-queue-2701335/",
+   "alt": "cargo trucks highway"
+  },
+  {
+   "file": "photos/cargo-trucks-highway-2755172.jpg",
+   "credit": "Sch\u00e4ferle",
+   "source_url": "https://pixabay.com/photos/truck-road-sign-warning-canada-2755172/",
+   "alt": "cargo trucks highway"
+  },
+  {
+   "file": "photos/cargo-trucks-highway-534577.jpg",
+   "credit": "falco",
+   "source_url": "https://pixabay.com/photos/semi-trailer-truck-road-follower-534577/",
+   "alt": "cargo trucks highway"
+  },
+  {
+   "file": "photos/cargo-trucks-highway-2946821.jpg",
+   "credit": "6734180",
+   "source_url": "https://pixabay.com/photos/trucker-sunrise-truck-stop-sunset-2946821/",
+   "alt": "cargo trucks highway"
+  },
+  {
+   "file": "photos/cargo-trucks-highway-3578297.jpg",
+   "credit": "ElyPenner",
+   "source_url": "https://pixabay.com/photos/peterbilt-truck-tractor-tanker-3578297/",
+   "alt": "cargo trucks highway"
+  },
+  {
+   "file": "photos/cargo-trucks-highway-4916922.jpg",
+   "credit": "rauschenberger",
+   "source_url": "https://pixabay.com/photos/transport-truck-tractor-trailer-4916922/",
    "alt": "cargo trucks highway"
   }
  ],
@@ -1101,7 +1185,9 @@
   "bitcoin cryptocurrency",
   "banknotes money",
   "data center servers",
-  "car factory"
+  "car factory",
+  "cargo trucks highway",
+  "bank building"
  ],
  "airplane airport": [
   {
