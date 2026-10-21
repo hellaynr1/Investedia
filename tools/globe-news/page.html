@@ -340,7 +340,7 @@ const $ = id => document.getElementById(id), rad = Math.PI / 180, T0 = Date.now(
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const phone = () => innerWidth <= 760, EMBED = document.documentElement.classList.contains('embed');
 const panelParam = new URLSearchParams(location.search).get('panel');
-const PANEL_TEMPLATE = ['a', 'b', 'c'].includes(panelParam) ? panelParam : '';
+const PANEL_TEMPLATE = ['a', 'b', 'c'].includes(panelParam) ? panelParam : 'c'; // default: C (collapsible, chosen by the owner)
 document.documentElement.dataset.panel = PANEL_TEMPLATE;
 let panelTab = 'top', panelExpanded = false, panelInitialized = false;
 
