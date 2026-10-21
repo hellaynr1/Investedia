@@ -132,6 +132,8 @@ h1 span{color:var(--fg-3)}
 .pq span{font:500 11px var(--mono);color:rgba(255,255,255,.75)}
 .pq em{font-style:normal}
 .pout{position:absolute;z-index:1;right:12px;top:12px;width:64px;height:64px;padding:6px;border-radius:10px;background:rgba(10,10,11,.6);backdrop-filter:blur(6px);box-sizing:border-box}
+.plogo{position:absolute;z-index:2;right:12px;top:12px;width:min(196px,40%);height:46px;border-radius:8px;overflow:hidden;background:#fff}
+.art.photo .plogo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pchip{position:absolute;z-index:1;right:12px;top:12px;display:flex;align-items:center;gap:7px;padding:4px 9px 4px 5px;border-radius:8px;background:rgba(10,10,11,.75);backdrop-filter:blur(6px);font-size:12px;font-weight:550;color:#fff}
 .pchip img{position:static;width:20px;height:20px;border-radius:5px;background:#fff;object-fit:contain;padding:2px;box-sizing:border-box}
 .pchip em{font:500 11.5px var(--mono);font-style:normal}
@@ -294,12 +296,10 @@ function art(s, label = true) {
   if (s.image && typeof s.image === 'object') {
     const im = s.image, src = esc(im.url || im.file);
     if (!label) return `<div class="art thumb photo"><img src="${src}" alt="" loading="lazy"></div>`;
-    let over = '';
-    if (qq) { const { e, q } = qq, sp = q.sp, y = YLD.test(e.sym), lg2 = LOGOS[e.sym] || LOGOS[e.ticker], ch = (sp[sp.length - 1] / sp[0] - 1) * 100;
-      over = `${spark(sp, sp[sp.length - 1] >= sp[0])}<div class="pq">${lg2 ? `<img src="${lg2}" alt="">` : ''}<div><b>${esc(e.name)}</b><span>${fmtP(q.p, e.sym)}${y ? '%' : ''} <em class="${q.d >= 0 ? 'up' : 'dn'}">${y ? (q.d >= 0 ? '+' : '') + q.d.toFixed(1) + ' bp' : (q.d >= 0 ? '+' : '') + q.d.toFixed(2) + '%'} today</em></span></div></div>`; }
-    const where = im.kind === 'topic' && ol ? `<svg class="pout" viewBox="0 0 100 100">${ol}</svg>` : '';
+    // photo layout: clean photo, company logo top right (no chart on photos), credit at the bottom
+    const lgp = lg ? `<span class="plogo"><img src="${lg.l}" alt="${esc(lg.e.name)}"></span>` : '';
     const lic = im.license_url ? `<a href="${esc(im.license_url)}" target="_blank" rel="noopener license">${esc(im.license)}</a>` : esc(im.license);
-    return `<figure class="art photo"><img src="${src}" alt="${esc(im.alt || '')}" loading="lazy"><span class="pkind">${im.kind === 'place' ? 'Photo of the place' : 'Topic photo'}</span>${where}${over}
+    return `<figure class="art photo"><img src="${src}" alt="${esc(im.alt || '')}" loading="lazy"><span class="pkind">${im.kind === 'place' ? 'Photo of the place' : 'Topic photo'}</span>${lgp}
       <figcaption>${im.kind === 'topic' ? 'Illustration · ' : ''}Photo: ${esc(im.credit)} · ${lic} · <a href="${esc(im.source_url)}" target="_blank" rel="noopener">${esc(im.source || 'source')}</a></figcaption></figure>`;
   }
   const icon = `<svg class="cicon" viewBox="0 0 24 24"><path d="${ICON[s.category] || ICON.markets}"/></svg>`;
