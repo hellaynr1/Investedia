@@ -12,7 +12,7 @@ investedia.com: **investing media for everyone**. A news-first website: the worl
 2. If the owner mentions one device (PC or phone), change only that one; suggest the other and show it first.
 3. Always check on phone width.
 4. Real data only, no fake content. Keep "Not investment advice" visible.
-5. Design: black, dark-first, minimal (Stripe-like, no "AI slop", little glow). Accent orange `#FF7A1A`; green/red only for up/down, no multicolour. Fonts: Inter (text), Geist Mono (numbers). **Apple-like feel (owner request):** generous whitespace, large clean type, soft glass and rounded corners, subtle motion, few elements per screen, nothing busy. **Up/down must be obvious:** always show a clear "↑ Up" or "↓ Down" label (green/red), never only a small icon. Wordmark "Investedia" with the font's own i-dot in orange.
+5. Design: black, dark-first, minimal (Stripe-like, no "AI slop", little glow). Accent orange `#FF7A1A`; green/red only for up/down, no multicolour. Fonts: Inter (text), Geist Mono (numbers). **Apple-like feel (owner request):** generous whitespace, large clean type, soft glass and rounded corners, subtle motion, few elements per screen, nothing busy. **Up/down must be obvious:** show direction as a clear arrow only (↑ green, ↓ red, ↔ grey) in a round badge, never the words Up/Down (owner finds them childish). Wordmark "Investedia" with the font's own i-dot in orange.
 6. **Secrets:** never commit `.env`, API keys, the Supabase service_role key, the Google client secret or the Resend key. Only the Supabase *publishable* key may be in the code (it is in `assets/ui.js`).
 7. Never delete files, data, accounts or keys without asking.
 
