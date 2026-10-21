@@ -138,5 +138,105 @@
    "source_url": "https://pixabay.com/photos/girl-shop-souvenirs-woman-shelf-4181395/",
    "alt": "shopping retail store"
   }
+ ],
+ "car factory": [
+  {
+   "file": "photos/car-factory-6930824.jpg",
+   "credit": "Fotoment",
+   "source_url": "https://pixabay.com/photos/mercedes-benz-e-class-car-mercedes-6930824/",
+   "alt": "car factory"
+  },
+  {
+   "file": "photos/car-factory-7403476.jpg",
+   "credit": "SwastikArora",
+   "source_url": "https://pixabay.com/photos/welding-manufacturing-work-steel-7403476/",
+   "alt": "car factory"
+  },
+  {
+   "file": "photos/car-factory-10504052.jpg",
+   "credit": "u_eq9u07rcci",
+   "source_url": "https://pixabay.com/photos/factory-industry-building-smoke-10504052/",
+   "alt": "car factory"
+  }
+ ],
+ "telecom tower 5g": [
+  {
+   "file": "photos/telecom-tower-5g-6926764.jpg",
+   "credit": "torstensimon",
+   "source_url": "https://pixabay.com/photos/network-5g-cellular-technology-6926764/",
+   "alt": "telecom tower 5g"
+  },
+  {
+   "file": "photos/telecom-tower-5g-4759481.jpg",
+   "credit": "tianya1223",
+   "source_url": "https://pixabay.com/photos/handphone-phone-technology-huawei-4759481/",
+   "alt": "telecom tower 5g"
+  },
+  {
+   "file": "photos/telecom-tower-5g-1270871.jpg",
+   "credit": "652234",
+   "source_url": "https://pixabay.com/photos/radio-tower-wireless-antenna-1270871/",
+   "alt": "telecom tower 5g"
+  }
+ ],
+ "cargo trucks highway": [
+  {
+   "file": "photos/cargo-trucks-highway-2138974.jpg",
+   "credit": "andreas160578",
+   "source_url": "https://pixabay.com/photos/truck-highway-logistics-2138974/",
+   "alt": "cargo trucks highway"
+  },
+  {
+   "file": "photos/cargo-trucks-highway-1185254.jpg",
+   "credit": "monikawl999",
+   "source_url": "https://pixabay.com/photos/road-train-truck-australia-1185254/",
+   "alt": "cargo trucks highway"
+  },
+  {
+   "file": "photos/cargo-trucks-highway-4932521.jpg",
+   "credit": "rauschenberger",
+   "source_url": "https://pixabay.com/photos/transport-truck-layer-of-the-sun-4932521/",
+   "alt": "cargo trucks highway"
+  }
+ ],
+ "artificial intelligence robot": [
+  {
+   "file": "photos/artificial-intelligence-robot-3010309.jpg",
+   "credit": "51581",
+   "source_url": "https://pixabay.com/photos/robot-woman-face-cry-sad-3010309/",
+   "alt": "artificial intelligence robot"
+  },
+  {
+   "file": "photos/artificial-intelligence-robot-2167835.jpg",
+   "credit": "geralt",
+   "source_url": "https://pixabay.com/photos/artificial-intelligence-robot-ai-2167835/",
+   "alt": "artificial intelligence robot"
+  },
+  {
+   "file": "photos/artificial-intelligence-robot-7977960.jpg",
+   "credit": "Alexandra_Koch",
+   "source_url": "https://pixabay.com/photos/ai-robot-artificial-intelligence-7977960/",
+   "alt": "artificial intelligence robot"
+  }
+ ],
+ "semiconductor chip": [
+  {
+   "file": "photos/semiconductor-chip-581597.jpg",
+   "credit": "Magnascan",
+   "source_url": "https://pixabay.com/photos/mother-board-electronics-computer-581597/",
+   "alt": "semiconductor chip"
+  },
+  {
+   "file": "photos/semiconductor-chip-3092486.jpg",
+   "credit": "jplenio",
+   "source_url": "https://pixabay.com/photos/technology-industry-big-data-cpu-3092486/",
+   "alt": "semiconductor chip"
+  },
+  {
+   "file": "photos/semiconductor-chip-564771.jpg",
+   "credit": "blickpixel",
+   "source_url": "https://pixabay.com/photos/cpu-processor-macro-pen-pin-564771/",
+   "alt": "semiconductor chip"
+  }
  ]
 }
