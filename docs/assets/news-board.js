@@ -13,14 +13,16 @@
   const link = s => `story.html?id=${encodeURIComponent(s.id)}`;
   const pick = (list, key, label, icon) => {
     const m = new Map();
-    for (const s of list) for (const i of s.impacts || []) { const k = key(i); if (!k) continue; const e = m.get(k) || { k, label: label(i), ic: icon(i), u: 0, d: 0, o: 0, t: 0, last: 0, items: [] }; e[i.direction === 'up' ? 'u' : i.direction === 'down' ? 'd' : 'o']++; e.t++; e.last = Math.max(e.last, Date.parse(s.published_at)); e.items.push({ s, i }); m.set(k, e); }
+    for (const s of list) for (const i of s.impacts || []) { const k = key(i); if (!k) continue; const e = m.get(k) || { k, label: label(i), ic: icon(i), u: 0, d: 0, o: 0, t: 0, last: 0, items: [] }; e[i.direction === 'up' ? 'u' : i.direction === 'down' ? 'd' : 'o']++; e.t++; e.last = Math.max(e.last, Date.parse(s.published_at)); e.items.push({ s, i }); if (i.ticker) e.sym = i.ticker; m.set(k, e); }
     const L = [...m.values()].filter(e => e.t >= 2).map(e => ({ ...e, vol: 2 * Math.min(e.u, e.d) / ((e.u + e.d) || 1) * Math.min(1, (e.u + e.d) / 6), one: Math.abs(e.u - e.d) / ((e.u + e.d) || 1) }));
     const f = { any: () => true, up: e => e.u > e.d * 1.5, down: e => e.d > e.u * 1.5, mixed: e => e.u && e.d && e.vol > .25 }[S.dir];
     return L.filter(f).sort((a, b) => ({ aff: e => e.t, vol: e => e.vol, one: e => e.one, new: e => e.last })[S.mode](b) - ({ aff: e => e.t, vol: e => e.vol, one: e => e.one, new: e => e.last })[S.mode](a)).slice(0, 7);
   };
-  const rows = L => L.length ? L.map((e, n) => `<div class="nb-r${n === 0 ? ' open' : ''}"><button class="nb-rh" type="button" aria-expanded="${n === 0}"><span>${e.ic}</span><span><b>${esc(e.label)}</b><small>${e.t} ${e.t === 1 ? 'story' : 'stories'}</small></span>
+  const px = e => { const M = window.MV, a = e.sym && M.S.by && M.S.by[e.sym]; if (!a) return ''; const w = S.days <= 1 ? 'd' : S.days <= 3 ? 'd' : 'w', v = M.move(a, w); return ` · <b class="nb-px ${M.cls(v)}">${M.fmt(v)}</b> ${w === 'd' ? '24h' : 'week'}`; };
+  const pxChart = e => { const M = window.MV, a = e.sym && M.S.by && M.S.by[e.sym]; if (!a) return ''; const w = S.days <= 3 ? 'd' : 'w'; return `<div class="mv-d" style="display:block;padding:0 0 10px">${M.chart(a, w, M.storiesFor(a, w === 'd' ? 1 : 7))}</div>`; };
+  const rows = L => L.length ? L.map((e, n) => `<div class="nb-r${n === 0 ? ' open' : ''}"><button class="nb-rh" type="button" aria-expanded="${n === 0}"><span>${e.ic}</span><span><b>${esc(e.label)}</b><small>${e.t} ${e.t === 1 ? 'story' : 'stories'}${px(e)}</small></span>
     <span class="bw"><span class="nb-bar">${e.u ? `<i class="u" style="flex:${e.u}"></i>` : ''}${e.d ? `<i class="d" style="flex:${e.d}"></i>` : ''}${e.o ? `<i class="o" style="flex:${e.o}"></i>` : ''}</span><span class="nb-cnt">${e.u ? `<span class="u">↑ ${e.u}</span>` : ''}${e.d ? `<span class="d">↓ ${e.d}</span>` : ''}${e.o ? `<span>↔ ${e.o}</span>` : ''}</span>${S.mode === 'vol' ? `<span class="nb-vol">Volatility <b>${e.vol > .55 ? 'High' : e.vol > .25 ? 'Medium' : 'Low'}</b></span>` : ''}</span>${arr(net(e))}<span class="nb-chev">›</span></button>
-    <div class="nb-det">${e.items.sort((a, b) => rank(a.s, b.s)).slice(0, 3).map(({ s, i }) => `<a class="nb-st" href="${link(s)}">${arr(i.direction)}<span><b>${esc(s.headline)}</b><p>${esc(i.why)}</p></span></a>`).join('')}</div></div>`).join('') : '<div class="nb-none">Nothing matches these filters yet. Try a wider time window or another category.</div>';
+    <div class="nb-det">${pxChart(e)}${e.items.sort((a, b) => rank(a.s, b.s)).slice(0, 3).map(({ s, i }) => `<a class="nb-st" href="${link(s)}">${arr(i.direction)}<span><b>${esc(s.headline)}</b><p>${esc(i.why)}</p></span></a>`).join('')}</div></div>`).join('') : '<div class="nb-none">Nothing matches these filters yet. Try a wider time window or another category.</div>';
   const th = s => { const e = (s.entities || []).find(company); const f = flagSrc(s.location.country); return s.image ? `<img src="assets/globe/${esc(s.image.file)}" alt="" loading="lazy">` : e ? `<img class="nb-lg" src="${logoSrc(e)}" alt="" onerror="this.remove()">` : f ? `<img class="nb-lg" style="padding:0;background:none;border-radius:4px" src="${f}" alt="">` : ''; };
   const hits = (s, q) => (s.impacts || []).some(i => q.t === 'c' ? i.country === q.k : i.kind !== 'country' && i.name.toLowerCase() === q.k);
   const index = () => { const m = new Map(); for (const s of S.stories) for (const i of s.impacts || []) { const c = i.kind === 'country' || !i.ticker && i.kind === 'country'; const t = i.kind === 'country' ? 'c' : 'a', k = t === 'c' ? i.country : i.name.toLowerCase(); if (!k) continue; const id = t + k, e = m.get(id) || { t, k, label: t === 'c' ? (CN[i.country] || i.country) : i.name, ic: t === 'c' ? nbFlag(i.country) : ico(i), ids: new Set(), sub: t === 'c' ? 'Country' : (i.ticker || 'Asset') }; e.ids.add(s.id); m.set(id, e); } return [...m.values()].map(e => ({ ...e, n: e.ids.size })); };
@@ -39,7 +41,7 @@
     const list = S.stories.filter(s => (S.q ? hits(s, S.q) : Date.parse(s.published_at) >= cut) && (S.cat === 'all' || s.category === S.cat) && (S.region === 'all' || s.location.region === S.region));
     $('nb-def').innerHTML = MODES.find(x => x[0] === S.mode)[2];
     $('nb-co').innerHTML = rows(pick(list, i => i.country, i => CN[i.country] || i.country, i => nbFlag(i.country)));
-    $('nb-as').innerHTML = rows(pick(list, i => i.kind !== 'country' ? i.name.toLowerCase() : null, i => i.name, ico));
+    $('nb-as').innerHTML = rows(pick(list, i => i.kind !== 'country' ? (i.ticker || i.name.toLowerCase()) : null, i => i.name, ico));
     document.querySelectorAll('#nb-seg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === S.mode));
     document.querySelectorAll('#nb-cats button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === S.cat));
     const latest = [...list].sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at));
@@ -54,6 +56,9 @@
   $('nb-region').onchange = e => { S.region = e.target.value; draw(); }; $('nb-time').onchange = e => { S.days = +e.target.value; S.shown = 12; draw(); }; $('nb-dir').onchange = e => { S.dir = e.target.value; draw(); };
   $('nb-more').onclick = () => { S.shown += 12; draw(); };
   document.addEventListener('click', e => { const r = e.target.closest('.nb-rh'); if (r) { const p = r.parentElement; p.classList.toggle('open'); r.setAttribute('aria-expanded', p.classList.contains('open')); } });
-  loadNews().then(d => { S.stories = d.stories; IDX = index(); $('nb-up').textContent = 'Updated ' + new Date(d.updated).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); draw(); })
+  const tabs = v => { document.querySelectorAll('#nb-tabs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v)); $('nb-v-exp').hidden = v !== 'exp'; $('nb-v-mv').hidden = v !== 'mv'; $('nb-find').hidden = v !== 'exp'; if (v === 'mv') history.replaceState(null, '', '#movers'); else history.replaceState(null, '', location.pathname + location.search); };
+  $('nb-tabs').onclick = e => { const b = e.target.closest('button'); if (b) tabs(b.dataset.v); };
+  if (location.hash === '#movers') tabs('mv');
+  Promise.all([loadNews(), window.MV.ready.catch(() => {})]).then(([d]) => { S.stories = d.stories; IDX = index(); $('nb-up').textContent = 'Updated ' + new Date(d.updated).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); draw(); })
     .catch(() => { $('nb-co').innerHTML = '<div class="nb-none">News could not load. Please refresh.</div>'; });
 })();
