@@ -79,6 +79,48 @@
    "credit": "MabelAmber",
    "source_url": "https://pixabay.com/photos/dirham-moroccan-currency-banknote-3479568/",
    "alt": "banknotes money"
+  },
+  {
+   "file": "photos/banknotes-money-1726618.jpg",
+   "credit": "stevepb",
+   "source_url": "https://pixabay.com/photos/coins-banknotes-money-currency-1726618/",
+   "alt": "banknotes money"
+  },
+  {
+   "file": "photos/banknotes-money-1703349.jpg",
+   "credit": "stevepb",
+   "source_url": "https://pixabay.com/photos/hourglass-money-time-investment-1703349/",
+   "alt": "banknotes money"
+  },
+  {
+   "file": "photos/banknotes-money-7881948.jpg",
+   "credit": "Barta4",
+   "source_url": "https://pixabay.com/photos/money-cash-dollars-finance-7881948/",
+   "alt": "banknotes money"
+  },
+  {
+   "file": "photos/banknotes-money-496229.jpg",
+   "credit": "angelolucas",
+   "source_url": "https://pixabay.com/photos/money-cash-bills-currency-496229/",
+   "alt": "banknotes money"
+  },
+  {
+   "file": "photos/banknotes-money-1013789.jpg",
+   "credit": "stevepb",
+   "source_url": "https://pixabay.com/photos/wallet-cash-pocket-credit-card-1013789/",
+   "alt": "banknotes money"
+  },
+  {
+   "file": "photos/banknotes-money-256281.jpg",
+   "credit": "jarmoluk",
+   "source_url": "https://pixabay.com/photos/money-card-pocket-concept-idea-256281/",
+   "alt": "banknotes money"
+  },
+  {
+   "file": "photos/banknotes-money-7850299.jpg",
+   "credit": "fotoblend",
+   "source_url": "https://pixabay.com/photos/banknotes-currency-finance-euro-7850299/",
+   "alt": "banknotes money"
   }
  ],
  "bank building": [
@@ -282,6 +324,48 @@
    "file": "photos/car-factory-10504052.jpg",
    "credit": "u_eq9u07rcci",
    "source_url": "https://pixabay.com/photos/factory-industry-building-smoke-10504052/",
+   "alt": "car factory"
+  },
+  {
+   "file": "photos/car-factory-884364.jpg",
+   "credit": "WikimediaImages",
+   "source_url": "https://pixabay.com/photos/azia-avto-company-kazakhstan-884364/",
+   "alt": "car factory"
+  },
+  {
+   "file": "photos/car-factory-1616870.jpg",
+   "credit": "12019",
+   "source_url": "https://pixabay.com/photos/mercedes-benz-plant-factory-1616870/",
+   "alt": "car factory"
+  },
+  {
+   "file": "photos/car-factory-2601305.jpg",
+   "credit": "StockSnap",
+   "source_url": "https://pixabay.com/photos/factory-automotive-shop-steel-2601305/",
+   "alt": "car factory"
+  },
+  {
+   "file": "photos/car-factory-186847.jpg",
+   "credit": "mosswoodconnections",
+   "source_url": "https://pixabay.com/photos/factory-production-industry-186847/",
+   "alt": "car factory"
+  },
+  {
+   "file": "photos/car-factory-2380303.jpg",
+   "credit": "652234",
+   "source_url": "https://pixabay.com/photos/lost-places-automobile-wreck-old-2380303/",
+   "alt": "car factory"
+  },
+  {
+   "file": "photos/car-factory-4941347.jpg",
+   "credit": "This_is_Engineering",
+   "source_url": "https://pixabay.com/photos/engineer-engineering-4941347/",
+   "alt": "car factory"
+  },
+  {
+   "file": "photos/car-factory-1354678.jpg",
+   "credit": "652234",
+   "source_url": "https://pixabay.com/photos/factory-ruin-old-factory-abandoned-1354678/",
    "alt": "car factory"
   }
  ],
@@ -631,6 +715,48 @@
    "credit": "rebcenter-moscow",
    "source_url": "https://pixabay.com/photos/farm-mining-the-ethereum-market-2852024/",
    "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-4922449.jpg",
+   "credit": "This_is_Engineering",
+   "source_url": "https://pixabay.com/photos/engineer-engineering-broadcast-4922449/",
+   "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-2476782.jpg",
+   "credit": "Akela999",
+   "source_url": "https://pixabay.com/photos/electrical-data-center-2476782/",
+   "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-2588137.jpg",
+   "credit": "StockSnap",
+   "source_url": "https://pixabay.com/photos/glass-reflection-lights-door-stock-2588137/",
+   "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-2852025.jpg",
+   "credit": "rebcenter-moscow",
+   "source_url": "https://pixabay.com/photos/farm-mining-the-ethereum-market-2852025/",
+   "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-2476790.jpg",
+   "credit": "Akela999",
+   "source_url": "https://pixabay.com/photos/data-center-engine-room-2476790/",
+   "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-2927337.jpg",
+   "credit": "ann_zima",
+   "source_url": "https://pixabay.com/photos/data-center-industry-2927337/",
+   "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-90389.jpg",
+   "credit": "kewl",
+   "source_url": "https://pixabay.com/photos/server-room-datacenter-network-90389/",
+   "alt": "data center servers"
   }
  ],
  "oil refinery": [
@@ -972,7 +1098,10 @@
   "semiconductor chip",
   "office meeting",
   "gold bars",
-  "bitcoin cryptocurrency"
+  "bitcoin cryptocurrency",
+  "banknotes money",
+  "data center servers",
+  "car factory"
  ],
  "airplane airport": [
   {
@@ -1034,6 +1163,68 @@
    "credit": "rolandmey",
    "source_url": "https://pixabay.com/photos/airbus-plane-departure-lufthansa-8607152/",
    "alt": "airplane airport"
+  }
+ ],
+ "solar panels": [
+  {
+   "file": "photos/solar-panels-2138992.jpg",
+   "credit": "andreas160578",
+   "source_url": "https://pixabay.com/photos/photovoltaic-photovoltaic-system-2138992/",
+   "alt": "solar panels"
+  },
+  {
+   "file": "photos/solar-panels-2742302.jpg",
+   "credit": "mrganso",
+   "source_url": "https://pixabay.com/photos/photovoltaic-system-solar-2742302/",
+   "alt": "solar panels"
+  },
+  {
+   "file": "photos/solar-panels-8244680.jpg",
+   "credit": "Michael_Pointner",
+   "source_url": "https://pixabay.com/photos/solar-panels-solar-energy-8244680/",
+   "alt": "solar panels"
+  },
+  {
+   "file": "photos/solar-panels-8499901.jpg",
+   "credit": "This_is_Engineering",
+   "source_url": "https://pixabay.com/photos/solar-panel-solar-panels-8499901/",
+   "alt": "solar panels"
+  },
+  {
+   "file": "photos/solar-panels-67718.jpg",
+   "credit": "WikiImages",
+   "source_url": "https://pixabay.com/photos/satellite-spacecraft-space-67718/",
+   "alt": "solar panels"
+  },
+  {
+   "file": "photos/solar-panels-21581.jpg",
+   "credit": "PublicDomainPictures",
+   "source_url": "https://pixabay.com/photos/alternative-blue-cell-clean-eco-21581/",
+   "alt": "solar panels"
+  },
+  {
+   "file": "photos/solar-panels-2814504.jpg",
+   "credit": "torstensimon",
+   "source_url": "https://pixabay.com/photos/photovoltaic-solar-system-energy-2814504/",
+   "alt": "solar panels"
+  },
+  {
+   "file": "photos/solar-panels-2939560.jpg",
+   "credit": "ulleo",
+   "source_url": "https://pixabay.com/photos/solar-system-roof-power-generation-2939560/",
+   "alt": "solar panels"
+  },
+  {
+   "file": "photos/solar-panels-21761.jpg",
+   "credit": "PublicDomainPictures",
+   "source_url": "https://pixabay.com/photos/alternative-cell-clean-ecological-21761/",
+   "alt": "solar panels"
+  },
+  {
+   "file": "photos/solar-panels-491702.jpg",
+   "credit": "blickpixel",
+   "source_url": "https://pixabay.com/photos/photovoltaic-solar-cells-electricity-491702/",
+   "alt": "solar panels"
   }
  ]
 }
