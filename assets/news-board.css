@@ -36,3 +36,16 @@ body[data-page=news] main.wrap{max-width:1240px;padding-inline:max(20px,env(safe
 .nb-disc{margin-top:28px;font-size:12px;color:var(--fg-3)}
 @media(max-width:900px){.nb-cols{grid-template-columns:1fr}.nb-rh{grid-template-columns:auto 1fr auto 18px}.nb-rh .bw{grid-column:2/4;grid-row:2}.nb-det{padding-left:0}.nb-sel{flex:1 1 140px}}
 .nb-st{grid-template-columns:auto 1fr;align-items:start}.nb-vol b,.nb-dir b{display:inline;font-size:inherit;font-weight:inherit}.nb-dir b{font-size:15px}.nb-vol b{color:var(--fg-2);font-weight:500}
+
+.nb-find{position:relative;max-width:520px;margin:0 0 18px}
+.nb-pill{display:flex;align-items:center;gap:10px;height:42px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.07);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid transparent;color:var(--fg-2);transition:border-color .2s,background .2s,max-width .25s}
+.nb-pill:focus-within{border-color:rgba(255,122,26,.55);background:rgba(255,255,255,.09)}
+.nb-pill input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--fg);font:inherit;font-size:14px}.nb-pill input::-webkit-search-cancel-button{display:none}
+.nb-ic{flex:none;width:13px;height:13px;border:2px solid currentColor;border-radius:50%;position:relative}.nb-ic:after{content:"";position:absolute;width:6px;height:2px;background:currentColor;right:-6px;bottom:-3px;transform:rotate(45deg)}
+.nb-pill kbd{font:500 11px 'Geist Mono',monospace;border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:2px 6px}
+.nb-dd{position:absolute;left:0;right:0;top:48px;z-index:30;background:rgba(24,24,27,.97);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:6px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.nb-dd button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:12px;border:0;background:none;color:inherit;font:inherit;font-size:14px;text-align:left;cursor:pointer}
+.nb-dd button:hover,.nb-dd button.on{background:rgba(255,255,255,.07)}.nb-dd small{margin-left:auto;color:var(--fg-2);font-size:12px}.nb-dd .nb-lg,.nb-dd .nb-fl{flex:none}
+.nb-dd .nb-no{padding:12px;color:var(--fg-2);font-size:13px}
+.nb-sel-chip{margin-top:10px}.nb-sel-chip button{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:999px;border:0;background:rgba(255,122,26,.16);color:#FF7A1A;font:inherit;font-size:13px;cursor:pointer}
+@media(max-width:600px){.nb-pill kbd{display:none}}
