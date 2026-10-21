@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Concept A in depth · Story as a chain</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Geist+Mono:wght@500&display=swap"><link rel="stylesheet" href="np.css">
+<style>
+.wrap{max-width:860px;margin:0 auto;padding:36px max(20px,env(safe-area-inset-left)) 0}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+h1{font-size:clamp(28px,3.4vw,40px)}
+.sum{margin:16px 0 0;font-size:16.5px;line-height:1.6;color:#d4d4d8}
+.chain{position:relative;margin-top:34px;padding-left:46px}
+.chain::before{content:'';position:absolute;left:17px;top:18px;bottom:30px;width:2px;background:linear-gradient(180deg,rgba(255,122,26,.8),rgba(255,122,26,.15))}
+.step{position:relative;margin-bottom:22px}
+.step>.n{position:absolute;left:-46px;top:0;width:36px;height:36px;border-radius:50%;background:#0A0A0B;border:1px solid rgba(255,122,26,.7);display:grid;place-items:center;font:500 13px var(--mono);color:var(--ac);box-shadow:0 0 20px rgba(255,122,26,.25)}
+.lab{font:500 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ac);margin:8px 0 10px}
+.box{padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:var(--card2)}
+.box p{margin:0;font-size:14.5px;line-height:1.6;color:var(--fg2)}
+.fx{display:grid;gap:10px}.fi{padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:var(--card2)}
+.fi .hd{display:flex;gap:10px;align-items:center}.fi .hd b{font-size:15px;font-weight:600;flex:1}.fi .hd small{font:500 11px var(--mono);color:var(--fg3)}
+.fi p{margin:8px 0 0;font-size:13.5px;line-height:1.55;color:var(--fg2)}
+.also{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line2)}.also .t{font-size:11.5px;color:var(--fg3);margin-bottom:6px}
+.also a{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.4;padding:5px 0;color:var(--fg2)}.also a:hover{color:#fff}.also .dir{width:18px;height:18px;font-size:10px}
+.meaning{padding:18px;border-radius:16px;background:linear-gradient(180deg,rgba(255,122,26,.1),rgba(255,122,26,.03));border:1px solid rgba(255,122,26,.3)}
+.meaning p{margin:0;font-size:14.5px;line-height:1.6;color:#e4e4e7}
+.src{margin-top:26px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--fg3)}
+.go{height:40px;padding:0 16px;border-radius:10px;background:#fff;color:#0A0A0B;font-weight:600;display:inline-flex;align-items:center}
+</style></head><body><div id="h"></div><div class="wrap" id="p"></div><div id="f"></div><span class="pv">Concept A in depth · Story page</span>
+<script src="np.js"></script><script>
+h.innerHTML = HEADER; f.innerHTML = FOOTER;
+load().then(all => {
+  const s = all.filter(x => x.impacts?.length >= 2).sort((a, b) => (b.impacts.length - a.impacts.length) || rank(a, b))[0];
+  const others = i => all.filter(x => x.id !== s.id && (x.impacts || []).some(z => z.name === i.name)).slice(0, 2).map(x => ({ x, z: x.impacts.find(z => z.name === i.name) }));
+  const lg = (s.entities || []).find(e => e.ticker && !/[\^=]/.test(e.ticker));
+  p.innerHTML = `<div class="meta">${sflag(s)}<span class="eb">${esc(CL[s.category])} · ${esc(s.location.place.split(',')[0])} · ${ago(s.published_at)}</span></div><h1>${esc(s.headline)}</h1><p class="sum">${esc(s.summary)}</p>
+  <div class="chain">
+   <div class="step"><span class="n">1</span><div class="lab">What happened</div><div class="box"><p>${esc(s.summary)}</p></div></div>
+   <div class="step"><span class="n">2</span><div class="lab">Why it matters</div><div class="box"><p>${esc(s.why_moved || s.why)}</p></div></div>
+   <div class="step"><span class="n">3</span><div class="lab">Who it touches, and which way</div><div class="fx">${s.impacts.slice(0, 4).map(i => { const o = others(i); return `<div class="fi"><div class="hd">${icon(i)}<b>${esc(i.name)}</b><small>${esc(i.kind)}</small>${arrow(i.direction)}</div><p>${esc(i.why)}</p>
+     ${o.length ? `<div class="also"><div class="t">Also pushing on ${esc(i.name)} this week</div>${o.map(({ x, z }) => `<a href="${url(x)}">${arrow(z.direction)}<span>${esc(x.headline)}</span></a>`).join('')}</div>` : ''}</div>`; }).join('')}</div></div>
+   <div class="step"><span class="n">4</span><div class="lab">What to watch next</div><div class="meaning"><p>Follow ${esc(s.impacts[0].name)} and ${esc(s.impacts[1].name)}: the next stories that touch them will show whether this effect grows or fades.</p></div></div>
+  </div>
+  <div class="src"><span>Source: ${esc(s.source?.name || '')}${(s.sources || []).length > 1 ? ' + ' + (s.sources.length - 1) + ' more' : ''}</span><a class="go" href="${url(s)}">Open on the globe →</a></div>`;
+});
+</script></body></html>

@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Concept C in depth · Country exposure</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Geist+Mono:wght@500&display=swap"><link rel="stylesheet" href="np.css">
+<style>
+.crumb{margin-top:34px;font-size:13px;color:var(--fg3)}.crumb b{color:var(--fg2);font-weight:500}
+.top{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;margin-top:14px}
+.id{display:flex;gap:18px;align-items:center}.id .fl{width:64px;height:48px;border-radius:8px}.id h1{margin:0;font-size:clamp(30px,3.6vw,46px)}
+.gauge{padding:20px;border-radius:18px;border:1px solid var(--line);background:#0c0c0e}
+.gauge .nums{display:flex;gap:28px;margin-top:8px}.gauge .nums div{font-size:12px;color:var(--fg3)}.gauge .nums b{display:block;font:500 26px var(--mono);color:#fff;margin-bottom:2px}
+.gauge .u b{color:var(--up)}.gauge .d b{color:var(--dn)}
+.bar{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px;margin-top:16px}.bar i{display:block}.bar .u{background:var(--up)}.bar .d{background:var(--dn)}.bar .o{background:#52525B}
+.sec{margin-top:34px}.sec h2{margin:0 0 4px;font-size:19px;font-weight:600}.sec>p{margin:0 0 14px;color:var(--fg3);font-size:13px}
+.days{display:flex;align-items:flex-end;gap:10px;height:130px;padding:14px 16px 10px;border:1px solid var(--line);border-radius:18px;background:#0c0c0e}
+.day{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.col{width:100%;max-width:56px;display:flex;flex-direction:column-reverse;gap:2px}.col i{display:block;border-radius:2px;min-height:3px}.col .u{background:var(--up)}.col .d{background:var(--dn)}.col .o{background:#52525B}
+.day span{font:500 10.5px var(--mono);color:var(--fg3)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.drv{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card2);margin-bottom:10px}
+.drv .h{display:flex;gap:10px;align-items:center;margin-bottom:6px}.drv .h b{font-size:14.5px;font-weight:600}.drv p{margin:0;font-size:12.5px;line-height:1.5;color:var(--fg2)}
+.who{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.who span{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 9px 0 5px;border-radius:8px;border:1px solid var(--line);font-size:12px}.who .lg{width:18px;height:18px}
+.row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:13px 0;border-top:1px solid var(--line)}
+.row b{font-size:14px;font-weight:600;display:block}.row small{font-size:12px;color:var(--fg3)}.row .bar{width:120px;margin:0;height:7px}
+.st{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card2);margin-bottom:8px;display:grid;grid-template-columns:22px 1fr;gap:10px}
+.st a{font-size:13.5px;font-weight:550;line-height:1.35}.st p{margin:3px 0 0;font-size:12.5px;line-height:1.5;color:var(--fg2)}
+@media(max-width:860px){.top,.two{grid-template-columns:1fr}.row .bar{width:80px}}
+</style></head><body><div id="h"></div>
+<main class="w"><div class="crumb">News › Exposure › <b id="cn"></b></div>
+<div class="top"><div class="id" id="id"></div><div class="gauge" id="ga"></div></div>
+<section class="sec"><h2>This week, day by day</h2><p>Stories affecting the country each day. Green pushes up, red pushes down, grey is mixed.</p><div class="days" id="dy"></div></section>
+<div class="two"><section class="sec"><h2>Why it's exposed</h2><p>The biggest forces on this country, with the reason.</p><div id="dr"></div></section>
+<section class="sec"><h2>Companies &amp; assets involved</h2><p>Who feels it, and which way.</p><div id="co"></div></section></div>
+<section class="sec"><h2>All stories affecting it</h2><p>Newest first, with the reason each one matters here.</p><div id="sl"></div></section></main><div id="f"></div><span class="pv">Concept C in depth · Country page</span>
+<script src="np.js"></script><script>
+h.innerHTML = HEADER; f.innerHTML = FOOTER;
+load().then(all => {
+  const iso = 'US', items = []; for (const s of all) for (const i of s.impacts || []) if (i.country === iso) items.push({ s, i });
+  const c = { up: 0, down: 0, o: 0 }; items.forEach(({ i }) => c[i.direction === 'up' ? 'up' : i.direction === 'down' ? 'down' : 'o']++);
+  const t = items.length; cn.textContent = 'United States';
+  id.innerHTML = `${flag(iso, 'fl')}<div><span class="eb">Country exposure</span><h1>United States</h1></div>`;
+  ga.innerHTML = `<span class="eb">Net direction of the news</span><div class="nums"><div class="u"><b>↑ ${c.up}</b>push up</div><div class="d"><b>↓ ${c.down}</b>push down</div><div><b>↔ ${c.o}</b>mixed</div><div><b>${t}</b>stories</div></div>
+    <div class="bar"><i class="u" style="flex:${c.up}"></i><i class="d" style="flex:${c.down}"></i><i class="o" style="flex:${c.o}"></i></div>`;
+  const by = {}; items.forEach(x => { const k = x.s.published_at.slice(0, 10); (by[k] ||= { up: 0, down: 0, o: 0 })[x.i.direction === 'up' ? 'up' : x.i.direction === 'down' ? 'down' : 'o']++; });
+  const days = []; for (let d = 6; d >= 0; d--) days.push(new Date(Date.now() - d * 864e5).toISOString().slice(0, 10));
+  const mx = Math.max(1, ...days.map(d => { const v = by[d]; return v ? v.up + v.down + v.o : 0; }));
+  dy.innerHTML = days.map(d => { const v = by[d] || { up: 0, down: 0, o: 0 }, k = 96 / mx; return `<div class="day"><div class="col">${['up', 'down', 'o'].map(x => v[x] ? `<i class="${x[0]}" style="height:${v[x] * k}px"></i>` : '').join('')}</div><span>${new Date(d).toLocaleDateString('en-GB', { weekday: 'short' })}</span></div>`; }).join('');
+  // drivers: the strongest stories (importance, then most impacts) with their reason
+  dr.innerHTML = [...items].sort((a, b) => rank(a.s, b.s)).filter((x, n, a) => a.findIndex(y => y.s.id === x.s.id) === n).slice(0, 4).map(({ s, i }) => `<div class="drv"><div class="h">${arrow(i.direction)}<b>${esc(s.headline)}</b></div><p>${esc(i.why)}</p><div class="who">${(s.impacts || []).filter(z => z.country === iso).slice(0, 3).map(z => `<span>${icon(z)}${esc(z.name)}</span>`).join('')}</div></div>`).join('');
+  const m = new Map(); items.filter(x => x.i.kind !== 'country').forEach(({ i }) => { const e = m.get(i.name) || { i, up: 0, down: 0, o: 0 }; e[i.direction === 'up' ? 'up' : i.direction === 'down' ? 'down' : 'o']++; m.set(i.name, e); });
+  co.innerHTML = [...m.values()].sort((a, b) => (b.up + b.down + b.o) - (a.up + a.down + a.o)).slice(0, 6).map(e => `<div class="row">${icon(e.i)}<span><b>${esc(e.i.name)}</b><small>${e.up + e.down + e.o} stories</small></span><span class="bar"><i class="u" style="flex:${e.up}"></i><i class="d" style="flex:${e.down}"></i><i class="o" style="flex:${e.o}"></i></span></div>`).join('');
+  sl.innerHTML = [...items].sort((a, b) => Date.parse(b.s.published_at) - Date.parse(a.s.published_at)).slice(0, 6).map(({ s, i }) => `<div class="st">${arrow(i.direction)}<div><a href="${url(s)}">${esc(s.headline)}</a><p>${esc(i.why)}</p><span class="m">${ago(s.published_at)} · ${esc(s.source?.name || '')}</span></div></div>`).join('');
+});
+</script></body></html>
