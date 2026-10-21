@@ -159,6 +159,8 @@ h1 span{color:var(--fg-3)}
 .pout{position:absolute;z-index:1;right:12px;top:12px;width:64px;height:64px;padding:6px;border-radius:10px;background:rgba(10,10,11,.6);backdrop-filter:blur(6px);box-sizing:border-box}
 .plogo{position:absolute;z-index:2;right:12px;top:12px;width:min(196px,40%);height:46px;border-radius:8px;overflow:hidden;background:#fff}
 .art.photo .plogo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.plogo:has(img.bf){width:46px}
+.art.photo .plogo img.bf{object-fit:contain;padding:5px;box-sizing:border-box}
 .pchip{position:absolute;z-index:1;right:12px;top:12px;display:flex;align-items:center;gap:7px;padding:4px 9px 4px 5px;border-radius:8px;background:rgba(10,10,11,.75);backdrop-filter:blur(6px);font-size:12px;font-weight:550;color:#fff}
 .pchip img{position:static;width:20px;height:20px;border-radius:5px;background:#fff;object-fit:contain;padding:2px;box-sizing:border-box}
 .pchip em{font:500 11.5px var(--mono);font-style:normal}
@@ -307,7 +309,7 @@ function bfURL(e, px) {
 }
 function logoFor(e) { const local = LOGOS[e.sym] || LOGOS[e.ticker], remote = !(local && local.endsWith('.svg')) && bfURL(e, 512); return local || remote ? { e, l: remote || local, fb: remote && local ? local : '' } : null; }
 const logoOf = s => { for (const e of s.entities) { const l = logoFor(e); if (l) return l; } return null; };
-const limg = (lg, alt = '') => `<img src="${esc(lg.l)}" alt="${esc(alt)}" data-logo${lg.fb ? ` data-fb="${esc(lg.fb)}"` : ''} loading="lazy" referrerpolicy="strict-origin-when-cross-origin">`;
+const limg = (lg, alt = '') => `<img src="${esc(lg.l)}" alt="${esc(alt)}"${lg.l.startsWith('https://cdn.brandfetch.io') ? ' class="bf"' : ''} data-logo${lg.fb ? ` data-fb="${esc(lg.fb)}"` : ''} loading="lazy" referrerpolicy="strict-origin-when-cross-origin">`;
 addEventListener('error', ev => { const t = ev.target; if (t.tagName !== 'IMG' || !t.hasAttribute('data-logo')) return; if (t.dataset.fb) { t.src = t.dataset.fb; t.removeAttribute('data-fb'); } else (t.closest('.plogo') || t).remove(); }, true);
 const fmtP = (v, sym) => v.toLocaleString('en-US', { maximumFractionDigits: YLD.test(sym) ? 2 : v >= 1000 ? 0 : v >= 10 ? 2 : 4, minimumFractionDigits: YLD.test(sym) ? 2 : 0 });
 const outlineCache = {};
