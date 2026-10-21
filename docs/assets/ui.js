@@ -182,6 +182,8 @@
     ['globe', 'Globe', 'assets/globe/news.html'],
     ['news', 'News', 'news.html'],
     ['education', 'Learn', 'education.html'],
+    ['tools', 'Tools', null, ddTools],
+    ['about', 'About', 'about.html'],
   ];
   const hdr = document.createElement('header');
   hdr.className = 'hdr';
@@ -281,6 +283,7 @@
   drawer.className = 'drawer';
   drawer.innerHTML = `<a class="search-btn" href="assets/globe/news.html">${icon('search')}<span>Search news, countries…</span></a>
     <a href="index.html">Home</a><a href="assets/globe/news.html">Globe</a><a href="news.html">News</a><a href="education.html">Learn</a>
+    <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details><a href="about.html">About</a>
     <div class="drawer-acct guest-only"><p>Save your watchlist and alerts on every device.</p><button class="btn btn-primary" type="button" data-auth="up">Create free account</button><button class="btn btn-ghost" type="button" data-auth="in">Log in</button></div>
     <div class="drawer-acct member-only"><a class="owner-only" href="admin.html">Analytics dashboard</a><a href="profile.html">Profile &amp; notifications</a><button class="btn btn-ghost" type="button" data-logout>Log out</button></div>`;
   hdr.after(drawer);
@@ -398,7 +401,8 @@
     <div>${brand}<p class="muted" style="margin:14px 0 0;max-width:34ch">Investing media for everyone: the world's financial news, explained.</p>
       <div class="socials"><a class="icon-btn" href="https://www.instagram.com/investedia/" aria-label="Instagram">${icon('ig')}</a></div></div>
     <div><h6>News</h6><ul><li><a href="index.html">Home</a></li><li><a href="assets/globe/news.html">Globe</a></li><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li></ul></div>
-    <div><h6>Learn</h6><ul><li><a href="education.html">Education</a></li><li><a href="calculator.html">Calculators</a></li></ul></div>
+    <div><h6>Learn</h6><ul><li><a href="education.html">Education</a></li></ul></div>
+    <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
     <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li><li><a href="privacy.html">Privacy policy</a></li></ul></div>
   </div>
   <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Market data from Yahoo Finance, FRED and Coinbase. Prices may be delayed up to 30 minutes; crypto is live. This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis. <a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener">FRED terms</a>.</span></div></div>`;
@@ -559,7 +563,7 @@
     <div class="pop-art">${mark}</div>
     <span class="eyebrow">The Investedia Brief</span>
     <h2 id="pop-t" style="margin:10px 0 6px;font-size:24px">Markets in five minutes, every morning.</h2>
-    <p class="muted" style="margin:0 0 18px">Join the list for the daily brief, weekly charts and early access to new dashboard features. Free, unsubscribe anytime.</p>
+    <p class="muted" style="margin:0 0 18px">Join the list for the daily brief: the news that moved markets, explained. Free, unsubscribe anytime.</p>
     <form class="subscribe" id="pop-f"><input class="input" type="email" id="pop-email" placeholder="you@email.com" aria-label="Email address" required><button class="btn btn-primary" type="submit">Join free</button></form>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${['Daily brief', 'Weekly charts', 'Crypto', 'Product updates'].map((t, i) => `<button type="button" class="chip ${i < 2 ? 'on' : ''}" onclick="this.classList.toggle('on')">${t}</button>`).join('')}</div>
     <p class="pop-ok up" hidden style="margin:14px 0 0;font-weight:550">You’re on the list. Check your inbox to confirm.</p>

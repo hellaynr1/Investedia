@@ -26,6 +26,25 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .whys{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 @media (max-width:900px){.hn-hero{height:auto;min-height:0;display:flex;flex-direction:column}.hn-copy{position:relative;top:0;padding-top:28px}.hn-hero iframe{order:2;position:relative;inset:auto;height:min(96vw,460px);margin-top:8px;will-change:transform}.hn-tick{order:3}.hn-hero::after{background:linear-gradient(180deg,transparent 70%,var(--bg))}.hn-lead{font-size:16px;margin:14px 0 18px}.hn-tick{position:relative}
   .grid3,.whys{grid-template-columns:1fr}.grid3 .hn-card:first-child{grid-row:auto}.grid3 .hn-card:first-child h3{font-size:21px}}
+.hn-mk{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:10px}
+.hn-m{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#101012}
+.hn-m img{width:26px;height:19px;border-radius:3px;object-fit:cover;flex:none}
+.hn-m b{display:block;font-size:13.5px;font-weight:600}
+.hn-m>span{min-width:0}
+.hn-m small{display:block;font-size:12px;color:var(--fg-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hn-m small i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#52525B;margin-right:6px;vertical-align:1px}
+.hn-m.on small{color:#4ADE80}.hn-m.on small i{background:#22C55E;box-shadow:0 0 8px #22C55E}
+.hn-cal{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.hn-box{border:1px solid var(--line);border-radius:16px;background:#0E0E10;padding:6px 18px 10px}
+.hn-bh{display:flex;justify-content:space-between;align-items:center;padding:12px 0 8px}
+.hn-bh h3{margin:0;font-size:16px;font-weight:600}.hn-bh a{font-size:13px;color:var(--fg-2);text-decoration:none}
+.hn-ci{display:grid;grid-template-columns:74px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.hn-ci .when{font:500 12.5px var(--mono,monospace);color:var(--fg)}.hn-ci .when small{display:block;font-family:inherit;color:var(--fg-3);font-size:11px}
+.hn-ci b{font-size:14px;font-weight:550}.hn-ci .sub{display:block;font-size:12px;color:var(--fg-3);margin-top:2px}
+.hn-imp{display:flex;gap:3px}.hn-imp i{width:5px;height:14px;border-radius:2px;background:#2a2a2e}.hn-imp i.on{background:#FF7A1A}
+.hn-ci .eps{font:500 12px var(--mono,monospace);color:var(--fg-3);text-align:right}.hn-ci .eps b{display:block;color:var(--fg);font-size:13px}
+.hn-ci img.lg{width:30px;height:30px;border-radius:7px;background:#fff;padding:3px;object-fit:contain}
+@media (max-width:900px){.hn-cal{grid-template-columns:1fr}.hn-mk{grid-template-columns:1fr 1fr}#hnClock{display:none}.hn-m{padding:11px 12px;gap:9px}}
 </style>
 <link rel="stylesheet" href="assets/home-news.css">
 <section class="hn-hero" aria-label="Live news globe">
@@ -42,6 +61,17 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Top stories</span><h2>What matters right now</h2></div><a href="assets/globe/news.html">All news →</a></div><div class="grid3" id="hnTop"></div></section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Why it moved</span><h2>The stories moving markets, explained</h2></div></div><div class="whys" id="hnWhy"></div></section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Countries</span><h2>Explore by country</h2></div><a href="assets/globe/news.html">Open the globe →</a></div><div class="hn-ctys" id="hnCty"></div></section>
+  <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Markets right now</span><h2>Which markets are open</h2></div><span class="hn-meta" id="hnClock"></span></div><div class="hn-mk" id="hnMk"></div>
+    <p class="hn-disc" style="margin-top:12px">Regular trading hours in local time. Public holidays and lunch breaks are not shown.</p></section>
+  <section class="hn-sec"><div class="hn-cal">
+    <div class="hn-box"><div class="hn-bh"><h3>Upcoming economic events</h3><a href="calendar.html">Full calendar →</a></div><div id="hnEv"></div></div>
+    <div class="hn-box"><div class="hn-bh"><h3>Upcoming earnings</h3><a href="calendar.html#earnings">All earnings →</a></div><div id="hnEa"></div></div>
+  </div><p class="hn-disc" id="hnCalSrc"></p></section>
+  <section class="sec resources" aria-label="Recommended resources" style="margin-top:56px">
+    <p class="res-label">Learn alongside the best free resources</p>
+    <div class="res-strip"><div class="res-track" id="res-track"></div></div>
+    <p class="res-note">Independent recommendations. Investedia is not affiliated with or endorsed by these organizations.</p>
+  </section>
   <div class="hn-band"><div><h2>Follow the countries and companies you care about.</h2><p>Their economy figures, rate decisions and market-moving news, explained simply.</p></div><button class="hn-btn hn-pri" type="button" data-auth="up">Create a free account</button></div>
   <p class="hn-disc">Headlines and summaries are AI-assisted from each source's own headline and description; every story links to its original source. For information only, not investment advice.</p>
 </div>
@@ -61,5 +91,34 @@ loadNews().then(d => {
   hnWhy.innerHTML = d.moved.slice(0, 3).map(why).join('');
   hnCty.innerHTML = countries(d.stories);
   hnTick.innerHTML = d.latest.slice(0, 6).map(s => '<a href="' + url(s) + '"><b>' + ago(s.published_at) + '</b>' + esc(s.headline) + '</a>').join('');
-}).catch(() => { hnTop.innerHTML = '<p class="meta">News is loading. Please refresh in a moment.</p>'; });
+}).catch(() => { hnTop.innerHTML = '<p class="hn-meta">News is loading. Please refresh in a moment.</p>'; });
+// Markets open right now: regular local trading hours (no holidays)
+const EX = [['New York', 'us', 'America/New_York', 570, 960], ['Toronto', 'ca', 'America/Toronto', 570, 960], ['São Paulo', 'br', 'America/Sao_Paulo', 600, 1020], ['London', 'gb', 'Europe/London', 480, 990],
+  ['Frankfurt', 'de', 'Europe/Berlin', 540, 1050], ['Paris', 'fr', 'Europe/Paris', 540, 1050], ['Johannesburg', 'za', 'Africa/Johannesburg', 540, 1020], ['Riyadh', 'sa', 'Asia/Riyadh', 600, 900, [0, 1, 2, 3, 4]],
+  ['Mumbai', 'in', 'Asia/Kolkata', 555, 930], ['Shanghai', 'cn', 'Asia/Shanghai', 570, 900], ['Hong Kong', 'hk', 'Asia/Hong_Kong', 570, 960], ['Tokyo', 'jp', 'Asia/Tokyo', 540, 930], ['Sydney', 'au', 'Australia/Sydney', 600, 960]];
+const hm = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+function markets() {
+  const now = new Date();
+  hnMk.innerHTML = EX.map(([n, f, tz, o, c, days = [1, 2, 3, 4, 5]]) => {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(now).map(x => [x.type, x.value]));
+    const wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(p.weekday), m = +p.hour * 60 + +p.minute, open = days.includes(wd) && m >= o && m < c;
+    const txt = open ? 'Open until ' + hm(c) : days.includes(wd) && m < o ? 'Opens ' + hm(o) : 'Closed';
+    return `<div class="hn-m${open ? ' on' : ''}"><img src="assets/globe/flags/${f}.svg" alt=""><span><b>${n}</b><small><i></i>${txt}</small></span></div>`; }).join('')
+    + `<div class="hn-m on"><img src="assets/logos/BTC.svg" alt="" style="border-radius:50%;width:20px;height:20px"><span><b>Crypto</b><small><i></i>Open 24/7</small></span></div>`;
+  hnClock.textContent = 'Your time ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+markets(); setInterval(markets, 30000);
+// Upcoming economic events + earnings (real, refreshed by update_calendar.py)
+const CC = { USD: 'us', EUR: 'eu', GBP: 'gb', JPY: 'jp', CNY: 'cn', CAD: 'ca', AUD: 'au', NZD: 'nz', CHF: 'ch' };
+const dfmt = d => new Date(d).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+fetch('assets/calendar-live.json', { cache: 'no-cache' }).then(r => r.json()).then(c => {
+  const ev = c.events.filter(e => Date.parse(e.at) > Date.now() - 36e5).slice(0, 6), ea = c.earnings.filter(e => e.date >= new Date().toISOString().slice(0, 10)).slice(0, 6);
+  hnEv.innerHTML = ev.map(e => `<div class="hn-ci"><span class="when">${new Date(e.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<small>${dfmt(e.at)}</small></span><span><b>${CC[e.c] ? `<img src="assets/globe/flags/${CC[e.c]}.svg" alt="" style="display:inline-block;width:16px;height:12px;border-radius:2px;margin-right:7px;vertical-align:-1px">` : ''}${esc(e.t)}</b><span class="sub">${esc(e.c)}${e.fc ? ' · Forecast ' + esc(e.fc) : ''}${e.prev ? ' · Prev. ' + esc(e.prev) : ''}</span></span><span class="hn-imp" title="${e.imp === 3 ? 'High' : 'Medium'} impact"><i class="on"></i><i class="on"></i><i class="${e.imp === 3 ? 'on' : ''}"></i></span></div>`).join('') || '<p class="hn-meta" style="padding:12px 0">No major events in the next days.</p>';
+  hnEa.innerHTML = ea.map(e => `<div class="hn-ci" style="grid-template-columns:auto 1fr auto"><img class="lg" src="https://cdn.brandfetch.io/ticker/${encodeURIComponent(e.s)}/w/128/h/128/fallback/404?c=${BF}" alt="" onerror="this.remove()"><span><b>${esc(e.n)}</b><span class="sub">${esc(e.s)} · ${dfmt(e.date + 'T12:00:00Z')}${e.when ? ' · ' + esc(e.when) : ''}</span></span><span class="eps">EPS est.<b>${esc(e.eps || '—')}</b></span></div>`).join('') || '<p class="hn-meta" style="padding:12px 0">No large-company earnings in the next days.</p>';
+  hnCalSrc.textContent = 'Times in your time zone. Events: ' + c.sources.events + ' (medium and high impact). Earnings: ' + c.sources.earnings + ' (largest companies).';
+}).catch(() => {});
+// Free resources strip (moving logos)
+const RES = [['Investor.gov', 'https://www.investor.gov', 'sans'], ['TradingView', 'https://www.tradingview.com', 'sans'], ['Morningstar', 'https://www.morningstar.com', 'serif'], ['Yahoo Finance', 'https://finance.yahoo.com', 'sans'], ['Khan Academy', 'https://www.khanacademy.org/economics-finance-domain', 'sans'], ['FRED', 'https://fred.stlouisfed.org', 'mono'], ['CoinMarketCap', 'https://coinmarketcap.com', 'sans'], ['Bogleheads', 'https://www.bogleheads.org', 'serif'], ['Reuters Markets', 'https://www.reuters.com/markets/', 'sans']];
+const resItems = RES.map(([n, u, f]) => `<a class="res-item res-${f}" href="${u}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('<span class="res-sep" aria-hidden="true"></span>');
+document.getElementById('res-track').innerHTML = resItems + '<span class="res-sep" aria-hidden="true"></span>' + resItems.replace(/<a /g, '<a tabindex="-1" aria-hidden="true" ');
 </script>
