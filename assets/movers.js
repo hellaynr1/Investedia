@@ -41,7 +41,7 @@
     const d = r.querySelector('.mv-d'); if (open && !d.innerHTML) { const a = S.assets.find(x => x.s === r.dataset.s); d.innerHTML = detail(a, S.win, storiesFor(a, WIN.find(w => w[0] === S.win)[2])); }
   });
   window.MV = { S, move, fmt, cls, detail, chart, storiesFor, ready: null };
-  window.MV.ready = Promise.all([fetch('assets/globe/markets.json').then(r => r.json()), fetch('assets/intraday.json').then(r => r.json()).catch(() => ({ s: {} })), loadNews()])
+  window.MV.ready = Promise.all([fetch('assets/globe/markets.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/intraday.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ s: {} })), loadNews()])
     .then(([m, i, n]) => { S.assets = m.assets; S.by = Object.fromEntries(m.assets.map(a => [a.s, a])); S.intra = i.s || {}; S.stories = n.stories || []; $('mv-up').textContent = 'Updated ' + new Date(m.asof).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); draw(); return S; })
-    .catch(() => { $('mv-list').innerHTML = '<div class="nb-none">Market data could not load. Please refresh.</div>'; });
+      .catch(e => { console.error('movers', e); $('mv-list').innerHTML = '<div class="nb-none">Market data could not load. Please refresh.</div>'; });
 })();
