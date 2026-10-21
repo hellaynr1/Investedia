@@ -61,3 +61,5 @@ body[data-page=home]{--line-2:rgba(255,255,255,.15);--bg-2:#0B0B0D;--card:#12121
 @media (max-width:760px){.hn-sec{padding-top:44px}.hn-band{padding:26px;margin-top:48px}.hn-card h3{font-size:16px}}
 
 .hn-il{position:absolute;left:10px;bottom:10px;padding:3px 7px;border-radius:6px;background:rgba(10,10,11,.72);color:rgba(255,255,255,.8);font-size:10.5px;font-weight:500}
+
+.hn-impact-up{color:#22C55E}.hn-impact-down{color:#F04444}.hn-impact-mixed,.hn-impact-unclear{color:var(--fg-2)}
