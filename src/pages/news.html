@@ -1,61 +1,48 @@
-{"title":"News — Investedia","desc":"Financial news that moves markets: stocks, crypto, economy, commodities and real estate.","key":"news"}
-<div class="page-head">
-  <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>News</span></div>
-  <div class="sec-head" style="margin:0"><div><h1>News</h1><p class="lede">What happened, why it matters and what it means for your money.</p></div></div>
+{"title":"News — Investedia","desc":"Live financial news from around the world. Filter markets, companies, economy, technology, crypto, commodities and geopolitics by region.","key":"news","scripts":["assets/home-news.js"]}
+<link rel="stylesheet" href="assets/home-news.css">
+<link rel="stylesheet" href="assets/news-page.css">
+<div class="np">
+  <header class="np-head">
+    <div><h1>News</h1><p>The stories moving markets, with the context behind them.</p></div>
+    <p class="np-updated" id="np-updated">Loading the latest feed…</p>
+  </header>
+
+  <div class="np-filters">
+    <div class="np-categories" role="group" aria-label="News category" id="np-categories">
+      <button type="button" data-category="all" aria-pressed="true">All</button>
+      <button type="button" data-category="markets" aria-pressed="false">Markets</button>
+      <button type="button" data-category="companies" aria-pressed="false">Companies</button>
+      <button type="button" data-category="economy" aria-pressed="false">Economy</button>
+      <button type="button" data-category="technology" aria-pressed="false">Technology</button>
+      <button type="button" data-category="crypto" aria-pressed="false">Crypto</button>
+      <button type="button" data-category="commodities" aria-pressed="false">Commodities</button>
+      <button type="button" data-category="geopolitics" aria-pressed="false">Geopolitics</button>
+    </div>
+    <label class="np-region"><span>Region</span>
+      <select id="np-region" aria-label="News region" data-native>
+        <option value="all">All regions</option>
+        <option value="na">North America</option>
+        <option value="eu">Europe</option>
+        <option value="asia">Asia</option>
+        <option value="me">Middle East</option>
+        <option value="af">Africa</option>
+        <option value="latam">Latin America</option>
+        <option value="oc">Oceania</option>
+      </select>
+    </label>
+  </div>
+
+  <p class="np-disclosure">AI-assisted summaries link to the original reporting. <strong>Not investment advice.</strong></p>
+  <p class="np-status" id="np-status" role="status" aria-live="polite">Loading stories…</p>
+  <div id="np-content" aria-busy="true">
+    <section aria-label="Lead story" id="np-lead"></section>
+    <section class="np-latest" id="np-latest" aria-labelledby="np-latest-title" hidden>
+      <div class="np-section-head"><h2 id="np-latest-title">Latest stories</h2><span id="np-count"></span></div>
+      <div class="np-grid" id="np-grid"></div>
+      <div class="np-pagination"><p id="np-showing"></p><button type="button" class="np-more" id="np-more" hidden>Load more stories</button></div>
+    </section>
+  </div>
+  <div class="np-message" id="np-message" hidden><h2 id="np-message-title"></h2><p id="np-message-text"></p><button type="button" class="np-more" id="np-action"></button></div>
+  <noscript><p class="np-message">Enable JavaScript to load and filter the live stories, or <a href="assets/globe/news.html">open the news globe</a>.</p></noscript>
 </div>
-<nav class="subnav" id="news-nav"></nav>
-
-<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px" id="cats"></div>
-
-<section class="sec">
-  <div class="grid g-main-l">
-    <a class="card n-card" href="article.html" style="grid-template-rows:300px auto" id="lead"></a>
-    <div class="grid" style="align-content:start;gap:16px" id="second"></div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="grid g-main" style="align-items:start">
-    <div class="card"><div class="card-head"><h3>Latest</h3><span class="status"><i></i><span data-news-asof>Updating</span></span></div><div id="latest"></div>
-      <div style="padding:14px;border-top:1px solid var(--line-soft);text-align:center"><button class="btn btn-ghost btn-sm" type="button" id="more">Load more stories</button></div></div>
-    <aside class="grid" style="gap:16px">
-      <div class="card"><div class="card-head"><h3>Top stories</h3></div><ol style="margin:0;padding:0;list-style:none" id="most"></ol></div>
-      <div class="card"><div class="card-head"><h3>Trending tickers</h3></div><div id="trend"></div></div>
-      <div class="card card-pad ai-glow"><span class="ai-badge" id="ai"></span><h3 style="margin:8px 0 10px">News in 30 seconds</h3><ul class="bullets" id="quick" style="gap:8px;font-size:13.5px;margin:0 0 12px"></ul><a class="link" href="ai-insights.html">Open AI Insights</a></div>
-    </aside>
-  </div>
-</section>
-
-<section class="sec" data-newsletter></section>
-<script>
-UI.newsNav('news');
-const { icon, fmtP, fmtC, cls, logo, href, cover } = UI, M = MOCK;
-document.getElementById('ai').innerHTML = icon('clock') + 'Quick read';
-document.getElementById('cats').innerHTML = ['All', 'Markets', 'Stocks', 'Earnings', 'Economy', 'Crypto', 'Currencies', 'Commodities', 'Real Estate'].map((c, i) => `<button class="chip ${i === 0 ? 'on' : ''}" type="button">${c}</button>`).join('');
-document.querySelectorAll('#cats .chip').forEach(b => b.onclick = () => { document.querySelectorAll('#cats .chip').forEach(x => x.classList.toggle('on', x === b)); render(b.textContent); });
-const meta = n => `<div class="news-meta"><span class="accent" style="font-weight:600">${n.cat}</span><i></i><span>${n.time}</span><i></i><span>${n.read ? n.read + ' min read' : n.a}</span></div>`;
-function render(c) {
-  const only = M.news.filter(n => n.cat === c), list = c === 'All' || !only.length ? M.news : only;
-  const [l, ...rest] = list, le = document.getElementById('lead');
-  if (l.url) { le.href = l.url; le.target = '_blank'; le.rel = 'noopener'; } else { le.href = 'article.html'; le.removeAttribute('target'); }
-  shown = 12; latest = rest.slice(3);
-  document.getElementById('lead').innerHTML = `<div class="cover">${cover('nl' + l.id)}</div><div class="body" style="padding:20px 22px 22px">${meta(l)}<h2 style="font-size:26px">${l.t}</h2><p style="font-size:15px">${l.d}</p></div>`;
-  document.getElementById('second').innerHTML = rest.slice(0, 3).map(n => `<a class="card news-item" ${UI.nhref(n)} style="grid-template-columns:110px 1fr;gap:14px;align-items:center;border:1px solid var(--line)"><div class="cover" style="min-height:76px;border-radius:6px">${cover('ns' + n.id)}</div><div style="display:grid;gap:6px">${meta(n)}<h3>${n.t}</h3></div></a>`).join('');
-  drawLatest();
-}
-let shown = 12, latest = [];
-const clock = n => { if (!n.ts) return n.time; const d = new Date(n.ts * 1000), today = new Date().toDateString() === d.toDateString(); return today ? d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); };
-function drawLatest() {
-  document.getElementById('more').hidden = shown >= latest.length;
-  document.getElementById('latest').innerHTML = latest.slice(0, shown).map(n => `<a class="news-item" ${UI.nhref(n)} style="grid-template-columns:72px 1fr;gap:16px"><span class="mono dim" style="font-size:12px;padding-top:2px">${clock(n)}</span><div style="display:grid;gap:6px"><h3>${n.t}</h3><p class="muted" style="margin:0;font-size:13.5px">${n.d}</p><div class="news-meta"><span class="tag acc">${n.cat}</span><span class="mono">${n.tag}</span><i></i><span>${n.a}</span></div></div></a>`).join('');
-}
-document.getElementById('more').onclick = () => { shown += 12; drawLatest(); };
-render('All');
-document.getElementById('quick').innerHTML = ['Markets', 'Crypto', 'Economy'].map(c => M.news.find(n => n.cat === c)).filter(Boolean).map(n => `<li>${icon('arrow')}<a ${UI.nhref(n)} style="color:inherit">${n.t}</a></li>`).join('');
-document.getElementById('most').innerHTML = M.news.slice(0, 5).map((n, i) => `<li><a class="news-item" ${UI.nhref(n)} style="grid-template-columns:28px 1fr;gap:10px"><span class="num accent" style="font-size:18px;font-weight:600">${i + 1}</span><h3 style="font-size:14px">${n.t}</h3></a></li>`).join('');
-// Trending tickers: the assets mentioned most in today's headlines
-const counts = {}; M.news.forEach(n => (n.syms || [n.tag]).forEach(s => { if (M.bySym[s]) counts[s] = (counts[s] || 0) + 1; }));
-const trending = Object.keys(counts).sort((x, y) => counts[y] - counts[x]).slice(0, 5);
-document.getElementById('trend').innerHTML = (trending.length ? trending : ['NVDA', 'BTC', 'AAPL', 'XAU', 'SPX']).map(s => M.bySym[s]).map(r => `<a class="dd-row" style="padding:10px 18px;border-radius:0;border-bottom:1px solid var(--line-soft)" href="${href(r)}"><span class="ident">${logo(r)}<span><b>${r.s}</b><small>${r.n}</small></span></span><span class="num">${fmtP(r)}</span><span class="pill ${cls(r.d)}">${fmtC(r.d)}</span></a>`).join('');
-document.querySelectorAll('[data-news-asof]').forEach(e => { if (window.NEWS) e.textContent = 'Updated ' + new Date(NEWS.updated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); });
-</script>
+<script src="assets/news-page.js"></script>
