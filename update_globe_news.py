@@ -91,11 +91,14 @@ GDELT_QUERIES = [
 ]
 
 
+BACKFILL_QUERY = '("central bank" OR inflation OR GDP OR tariffs OR earnings OR "stock market" OR merger OR oil OR OPEC OR bitcoin OR semiconductor) sourcelang:english'
+
+
 def gdelt(start=None, end=None):
     """Latest 3 hours, or a past window (start/end datetimes) for the backfill."""
     out = []
-    for i, q in enumerate(GDELT_QUERIES):
-        url = 'https://api.gdeltproject.org/api/v2/doc/doc?' + urllib.parse.urlencode({'query': q, 'mode': 'ArtList', 'format': 'json', 'maxrecords': 75, 'sort': 'HybridRel', **({'startdatetime': start.strftime('%Y%m%d%H%M%S'), 'enddatetime': end.strftime('%Y%m%d%H%M%S')} if start else {'timespan': '3h'})})
+    for i, q in enumerate([BACKFILL_QUERY] if start else GDELT_QUERIES):
+        url = 'https://api.gdeltproject.org/api/v2/doc/doc?' + urllib.parse.urlencode({'query': q, 'mode': 'ArtList', 'format': 'json', 'maxrecords': 150 if start else 75, 'sort': 'HybridRel', **({'startdatetime': start.strftime('%Y%m%d%H%M%S'), 'enddatetime': end.strftime('%Y%m%d%H%M%S')} if start else {'timespan': '3h'})})
         for t in range(4):
             time.sleep(8 + 12 * t)  # GDELT asks for one request every 5 seconds; back off when it is busy
             try:
@@ -370,6 +373,10 @@ def main():
         got = pick_stories(day_cands, box, by_iso, sym, known_iso, 18) if day_cands else []
         prev += got; known_urls |= {u['url'] for s in got for u in s.get('sources', [])}
         status.setdefault('backfill', []).append({'day': f'{start:%Y-%m-%d}', 'stories': len(got)})
+        if got:  # save after every day, so a slow or stopped run never loses finished days
+            save(OUT, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW,
+                       'notice': 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.',
+                       'stories': sorted(prev, key=lambda s: s['published_at'], reverse=True)[:MAX_STORIES]})
     raw = gdelt() + rss()
     status['fetched'] = len(raw)
     fresh = [c for c in raw if c['url'] not in known_urls]

@@ -20,7 +20,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -32,9 +32,11 @@ jobs:
           PIXABAY_KEY: ${{ secrets.PIXABAY_KEY }}
           BACKFILL_DAYS: ${{ inputs.backfill_days || '0' }}
         run: python3 update_globe_news.py
+        timeout-minutes: 60
       - name: Fetch economic calendar and earnings
         run: python3 update_calendar.py || echo "Calendar update failed; keeping the previous data"
       - name: Publish
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
