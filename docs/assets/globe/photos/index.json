@@ -458,5 +458,45 @@
    "source_url": "https://pixabay.com/photos/construction-site-architect-2733678/",
    "alt": "housing construction"
   }
+ ],
+ "container port": [
+  {
+   "file": "photos/container-port-6631117.jpg",
+   "credit": "dendoktoor",
+   "source_url": "https://pixabay.com/photos/container-ship-container-transport-6631117/",
+   "alt": "container port"
+  },
+  {
+   "file": "photos/container-port-6794508.jpg",
+   "credit": "Peter_Lindenau",
+   "source_url": "https://pixabay.com/photos/ship-container-ship-tractor-6794508/",
+   "alt": "container port"
+  },
+  {
+   "file": "photos/container-port-7418239.jpg",
+   "credit": "LoboStudioHamburg",
+   "source_url": "https://pixabay.com/photos/port-container-ship-night-7418239/",
+   "alt": "container port"
+  }
+ ],
+ "city skyline business district": [
+  {
+   "file": "photos/city-skyline-business-district-255116.jpg",
+   "credit": "cegoh",
+   "source_url": "https://pixabay.com/photos/skyline-cityscape-buildings-255116/",
+   "alt": "city skyline business district"
+  },
+  {
+   "file": "photos/city-skyline-business-district-5772040.jpg",
+   "credit": "jeremy888",
+   "source_url": "https://pixabay.com/photos/city-skyline-twilight-night-5772040/",
+   "alt": "city skyline business district"
+  },
+  {
+   "file": "photos/city-skyline-business-district-7092747.jpg",
+   "credit": "Leonhard_Niederwimmer",
+   "source_url": "https://pixabay.com/photos/building-horizon-city-skyscraper-7092747/",
+   "alt": "city skyline business district"
+  }
  ]
 }
