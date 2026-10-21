@@ -26,6 +26,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .glass{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2)}
 
 /* Top: brand, title, filters */
+.top::before{content:'';position:absolute;z-index:-1;left:-40px;top:-30px;right:-60px;bottom:-30px;background:radial-gradient(120% 100% at 0% 0%,rgba(5,5,6,.92) 45%,rgba(5,5,6,0) 100%);pointer-events:none}
+.embed .top::before{display:none}
 .top{position:fixed;left:max(24px,env(safe-area-inset-left));top:22px;right:calc(var(--pw) + 40px);pointer-events:none;z-index:3}
 .top>*{pointer-events:auto}
 .brand{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -157,8 +159,8 @@ h1 span{color:var(--fg-3)}
 .pq span{font:500 11px var(--mono);color:rgba(255,255,255,.75)}
 .pq em{font-style:normal}
 .pout{position:absolute;z-index:1;right:12px;top:12px;width:64px;height:64px;padding:6px;border-radius:10px;background:rgba(10,10,11,.6);backdrop-filter:blur(6px);box-sizing:border-box}
-.plogo{position:absolute;z-index:2;right:12px;top:12px;width:min(196px,40%);height:46px;border-radius:8px;overflow:hidden;background:#fff}
-.art.photo .plogo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.plogo{position:absolute;z-index:2;right:12px;top:12px;width:46px;height:46px;border-radius:9px;overflow:hidden;background:#fff}
+.art.photo .plogo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:6px;box-sizing:border-box}
 .plogo:has(img.bf){width:46px}
 .art.photo .plogo img.bf{object-fit:contain;padding:5px;box-sizing:border-box}
 .pchip{position:absolute;z-index:1;right:12px;top:12px;display:flex;align-items:center;gap:7px;padding:4px 9px 4px 5px;border-radius:8px;background:rgba(10,10,11,.75);backdrop-filter:blur(6px);font-size:12px;font-weight:550;color:#fff}
@@ -245,6 +247,51 @@ h1 span{color:var(--fg-3)}
   .pbody h2{font-size:19px}
   .hover{display:none}
 }
+/* Optional comparison layouts. Story and country views keep the original panel. */
+.compact-list{display:grid;gap:6px;margin-top:12px}
+.compact-item{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:center;width:100%;text-align:left;padding:8px 0;border-radius:8px;min-width:0}
+.compact-item:hover,.compact-item:focus-visible{background:rgba(255,255,255,.05)}
+.compact-item .art.thumb{width:40px;height:40px;border-radius:7px;aspect-ratio:1;margin:0}
+.compact-headline{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:13px;line-height:1.32;font-weight:550;letter-spacing:-.01em}
+.compact-item time{display:block;font-size:11px;color:var(--fg-3);margin-top:5px}
+.panel-more{display:inline-flex;align-items:center;min-height:36px;margin-top:12px;font-size:12px;color:var(--fg-2)}
+.panel-more:hover{color:var(--fg)}
+.panel-tabs{display:flex;gap:4px;margin:14px 0 8px}
+.panel-tabs button{min-height:34px;padding:0 11px;border-radius:7px;color:var(--fg-3);font-size:12px}
+.panel-tabs button[aria-selected=true]{background:rgba(255,255,255,.08);color:var(--fg)}
+.compact-country{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;text-align:left;font-size:13px}
+.compact-country small{margin-left:auto;color:var(--fg-3);font-size:11px}
+.strip-list{display:flex;gap:18px;overflow-x:auto;scrollbar-width:thin;scroll-snap-type:x proximity;padding-bottom:6px}
+.strip-list .compact-item{flex:0 0 255px;scroll-snap-align:start}
+@media(min-width:761px){
+  html[data-panel=a].panel-top{--pw:320px}
+  html[data-panel=c].panel-top{--pw:340px}
+  html[data-panel=b].panel-top{--pw:0px}
+  html[data-panel=a].panel-top .pbody{padding:18px}
+  html[data-panel=c].panel-top .panel{bottom:auto;max-height:calc(100vh - 32px)}
+  html[data-panel=c].panel-top .pbody{min-height:0;padding:18px}
+  html[data-panel=b].panel-top .panel{top:auto;left:24px;right:24px;bottom:84px;width:auto;height:180px;border-radius:14px}
+  html[data-panel=b].panel-top .top{right:24px}
+  html[data-panel=b].panel-top .top h1{display:none}
+  html[data-panel=b].panel-top .timeline{left:50%}
+  html[data-panel=b].panel-top .zoom{right:24px}
+  html[data-panel=b].panel-top .legend{display:none}
+  html[data-panel=b].panel-top .pbody{padding:12px 16px;overflow-y:hidden}
+  html[data-panel=b].panel-top .pbody h2{font-size:16px;margin:0 0 6px}
+  html[data-panel=b].panel-top .note{margin:6px 0 0;font-size:11px}
+}
+@media(max-width:760px){
+  html[data-panel=c].panel-top .panel:not(.open){transform:translateY(calc(100% - 116px - env(safe-area-inset-bottom)))}
+  html[data-panel=c].panel-top .timeline{bottom:calc(130px + env(safe-area-inset-bottom))}
+  html[data-panel=b].panel-top .panel{height:220px}
+  html[data-panel=b].panel-top .timeline{bottom:232px}
+  html[data-panel=b].panel-top .pbody{padding:0 18px 14px;overflow-y:auto}
+  html[data-panel=b].panel-top .pbody h2{font-size:17px;margin:0 0 8px}
+  html[data-panel=b].panel-top .strip-list{gap:14px}
+  html[data-panel=b].panel-top .strip-list .compact-item{flex-basis:82vw}
+  html[data-panel=b].panel-top .note{margin-top:8px;font-size:11px}
+}
+
 @media (prefers-reduced-motion:reduce){.panel{transition:none}}
 .embed body,.embed{background:transparent}
 .embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom{display:none!important}
@@ -292,6 +339,11 @@ const ISO = {"Zimbabwe":"ZW","Zambia":"ZM","Yemen":"YE","Vietnam":"VN","Venezuel
 const $ = id => document.getElementById(id), rad = Math.PI / 180, T0 = Date.now();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const phone = () => innerWidth <= 760, EMBED = document.documentElement.classList.contains('embed');
+const panelParam = new URLSearchParams(location.search).get('panel');
+const PANEL_TEMPLATE = ['a', 'b', 'c'].includes(panelParam) ? panelParam : '';
+document.documentElement.dataset.panel = PANEL_TEMPLATE;
+let panelTab = 'top', panelExpanded = false, panelInitialized = false;
+
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const CATS = [['all', 'All'], ['markets', 'Markets'], ['companies', 'Companies'], ['economy', 'Economy'], ['technology', 'Technology'], ['crypto', 'Crypto'], ['commodities', 'Commodities'], ['geopolitics', 'Geopolitics']];
 const CAT = Object.fromEntries(CATS);
@@ -491,6 +543,8 @@ function size() {
     globeBox = { left: phone() ? 8 : 24, top: header.bottom + 12,
       right: phone() ? W - 8 : panel.getBoundingClientRect().left - 24,
       bottom: sheetOpen ? H - panel.offsetHeight - 12 : timeline.top - 16 };
+    // template B (?panel=b): the stories sit in a strip along the bottom, so the globe uses the full width above it
+    if (PANEL_TEMPLATE === 'b' && panel.dataset.view === 'top') { globeBox.right = W - (phone() ? 8 : 24); globeBox.bottom = Math.min(globeBox.bottom, (phone() ? $('tl').getBoundingClientRect().top : panel.getBoundingClientRect().top) - 16); }
     const aw = Math.max(1, globeBox.right - globeBox.left), ah = Math.max(1, globeBox.bottom - globeBox.top);
     cx = (globeBox.left + globeBox.right) / 2; cyT = globeBox.top + ah / 2;
     R0 = Math.min((phone() ? W : aw) * .47, ah * .47);
@@ -643,11 +697,44 @@ const item = s => `<button class="item" data-story="${s.id}"><span class="dot i$
 const NOTE_DEMO = '<p class="note">Concept preview. Every story on this globe is demo content written to show the design: not real news, not live, not investment advice. When live sources are connected, each story will show its source, original link and publication time.</p>';
 const NOTE_LIVE = '<p class="note">Summaries are written with the help of AI from each source\'s own reporting. Every story links to its source. Not investment advice.</p>';
 const noteHTML = () => LIVE ? NOTE_LIVE : NOTE_DEMO;
+function compactItem(s) {
+  return `<button class="compact-item" data-story="${esc(s.id)}">${art(s, false)}<span><span class="compact-headline">${esc(s.headline)}</span><time datetime="${esc(s.published_at || '')}">${ago(s.t)}</time></span></button>`;
+}
+function variantPanel(list) {
+  if (PANEL_TEMPLATE === 'a') return `<h2>Top stories</h2><div class="meta">${Math.min(8, list.length)} of ${list.length} stories</div><div class="compact-list">${list.slice(0, 8).map(compactItem).join('')}</div>${list.length > 8 ? '<a class="panel-more" href="../../news.html">See all news →</a>' : ''}${list.length ? '' : '<div class="empty">No stories match these filters.</div>'}${noteHTML()}`;
+  if (PANEL_TEMPLATE === 'b') return `<h2>Top stories</h2><div class="strip-list" aria-label="Top stories">${list.slice(0, phone() ? 3 : 12).map(compactItem).join('')}</div>${list.length ? '' : '<div class="empty">No stories match these filters.</div>'}${noteHTML()}`;
+  const tabs = [['top', 'Top'], ['latest', 'Latest'], ['countries', 'Countries']];
+  let items, count;
+  if (panelTab === 'countries') {
+    const countries = Object.entries(list.reduce((all, s) => { all[s.location.country] = (all[s.location.country] || 0) + 1; return all; }, {})).sort((a,b) => b[1]-a[1]);
+    count = countries.length;
+    items = countries.slice(0, panelExpanded ? countries.length : 3).map(([name, n]) => `<button class="compact-country" data-country="${esc(name)}">${flag(name)}<span>${esc(nm(name))}</span><small>${n} ${n === 1 ? 'story' : 'stories'}</small></button>`).join('');
+  } else {
+    const sorted = panelTab === 'latest' ? [...list].sort((a,b) => b.t-a.t) : list;
+    count = sorted.length; items = sorted.slice(0, panelExpanded ? sorted.length : 3).map(compactItem).join('');
+  }
+  return `<h2>Top stories</h2><div class="panel-tabs" role="tablist" aria-label="News view">${tabs.map(([key,label]) => `<button role="tab" id="panel-tab-${key}" aria-selected="${key === panelTab}" aria-controls="panel-contents" tabindex="${key === panelTab ? 0 : -1}" data-panel-tab="${key}">${label}</button>`).join('')}</div><div class="compact-list" id="panel-contents" role="tabpanel" aria-labelledby="panel-tab-${panelTab}">${items || '<div class="empty">No stories match these filters.</div>'}</div>${count > 3 ? `<button class="panel-more" data-panel-more aria-expanded="${panelExpanded}">${panelExpanded ? 'Show less' : 'Show more'}</button>` : ''}${noteHTML()}`;
+}
+pbody.addEventListener('click', e => {
+  const tab = e.target.closest('[data-panel-tab]'), more = e.target.closest('[data-panel-more]');
+  if (tab) { panelTab = tab.dataset.panelTab; panelExpanded = false; render(); $('panel-tab-' + panelTab).focus(); }
+  else if (more) { panelExpanded = !panelExpanded; render(); pbody.querySelector('[data-panel-more]')?.focus({ preventScroll: true }); }
+});
+pbody.addEventListener('keydown', e => {
+  const tab = e.target.closest('[data-panel-tab]'); if (!tab || !['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+  e.preventDefault(); const tabs = [...pbody.querySelectorAll('[data-panel-tab]')], index = tabs.indexOf(tab);
+  tabs[e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length-1 : (index + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length].click();
+});
 function render() {
+  panel.dataset.view = view.k;
+  document.documentElement.classList.toggle('panel-top', !!PANEL_TEMPLATE && view.k === 'top');
+  if (!panelInitialized) { panelInitialized = true; if (phone() && PANEL_TEMPLATE === 'b') panel.classList.add('open'); }
+  requestAnimationFrame(size);
   if (view.k === 'top') {
     const list = [...shown].sort(sortTop), nc = new Set(list.map(s => s.location.country)).size, nb = list.filter(s => s.flag === 'breaking').length;
     const rg = REGIONS.find(r => r[0] === F.region)[1];
-    pbody.innerHTML = `<div class="eyebrow">${F.region === 'global' ? 'Worldwide' : esc(rg)} · ${WLABEL[F.win]}</div><h2>${F.cat === 'all' ? 'Top stories' : esc(CAT[F.cat]) + ' stories'}</h2>
+    if (PANEL_TEMPLATE) pbody.innerHTML = variantPanel(list);
+    else pbody.innerHTML = `<div class="eyebrow">${F.region === 'global' ? 'Worldwide' : esc(rg)} · ${WLABEL[F.win]}</div><h2>${F.cat === 'all' ? 'Top stories' : esc(CAT[F.cat]) + ' stories'}</h2>
       <div class="stats"><div><b>${list.length}</b>stories</div><div><b>${nc}</b>countries</div><div><b>${nb}</b>breaking</div></div>
       ${list.length ? `<div class="list">${list.slice(0, 12).map(item).join('')}</div>` : `<div class="empty">No stories match these filters in ${WLABEL[F.win]}. Try a wider time window or another category.</div>`}${noteHTML()}`;
   } else if (view.k === 'story') {
@@ -764,7 +851,7 @@ function frame(t) {
   if (play) { const k = Math.min(1, (t - play.t0) / play.dur); play.cur = play.start + (T0 - play.start) * k; refresh(); if (k >= 1) { play = null; refresh(); } }
 
   ctx.clearRect(0, 0, W, H);
-  ctx.save(); if (!EMBED) { ctx.beginPath(); ctx.rect(globeBox.left, globeBox.top, Math.max(0, globeBox.right - globeBox.left), Math.max(0, globeBox.bottom - globeBox.top)); ctx.clip(); }
+  ctx.save(); // no hard clip: when zoomed in, the map runs softly behind the controls (markers still stay inside the free area)
   // atmosphere + sphere
   const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, 'rgba(255,122,26,.22)'); at.addColorStop(.25, 'rgba(255,122,26,.07)'); at.addColorStop(1, 'rgba(255,122,26,0)');
   ctx.fillStyle = at; ctx.beginPath(); ctx.arc(cx, cy, R * 1.22, 0, 7); ctx.fill();
