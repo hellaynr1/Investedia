@@ -154,6 +154,9 @@ def describe(c):  # the article's own short description (meta tag), used only as
     return c
 
 
+NOISE = re.compile(r'\b(stock to buy|stocks to buy|price target|horoscope|celebrity|football|soccer)\b', re.I)  # junk headlines, never sent to Gemini
+
+
 def norm(t): return set(w for w in re.sub(r'[^a-z0-9 ]', ' ', t.lower()).split() if len(w) > 2)
 
 
@@ -404,7 +407,7 @@ def main():
     for d in range(days, 0, -1):  # oldest day first; real publication dates and sources are kept
         start = (NOW - timedelta(days=d)).replace(minute=0, second=0, microsecond=0); end = start + timedelta(days=1)
         day_raw = [c for c in gdelt(start, end) if c['url'] not in known_urls]
-        day_cands = dedupe(day_raw, [s['headline'] for s in prev])[:80]
+        day_cands = dedupe([c for c in day_raw if not NOISE.search(c['title'])], [s['headline'] for s in prev])[:80]
         log(f'backfill {start:%Y-%m-%d}: {len(day_raw)} fetched, {len(day_cands)} candidates')
         got = pick_stories(day_cands, box, by_iso, sym, known_iso, 18, prev) if day_cands else []
         prev += got; known_urls |= {u['url'] for s in got for u in s.get('sources', [])}
@@ -416,6 +419,7 @@ def main():
     raw = gdelt() + rss()
     status['fetched'] = len(raw)
     fresh = [c for c in raw if c['url'] not in known_urls]
+    fresh = [c for c in fresh if not NOISE.search(c['title'])]  # skip junk before it reaches Gemini
     cands = dedupe(fresh, [s['headline'] for s in prev])[:90]
     status['candidates'] = len(cands)
     log(f'{len(raw)} fetched, {len(cands)} new candidates')
