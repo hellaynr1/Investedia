@@ -17,7 +17,7 @@
     "published_at": "ISO time from the source (required for real stories)",
     "retrieved_at": "ISO time we fetched it (required for real stories)",
     "age_minutes": "DEMO ONLY: age relative to page load, used when published_at is null",
-    "image": "null = Investedia card (A: real price chart of the first asset with data, logo, country outline). Or an object for openly licensed photos: kind 'place' (C: the real place or institution in the story) or 'topic' (B: illustration of the subject), file or url, alt, credit, license, license_url, source, source_url. Credit and licence are always shown."
+    "image": "null = Investedia card (real price chart of the first asset with data, logo, country outline). Or an object for a licensed photo: kind 'place' (the real place in the story) or 'topic' (illustration of the subject), file or url, alt, credit, license, license_url, source, source_url. The card is drawn on top of the photo; credit and licence are always shown. No Wikimedia images."
   },
   "stories": [
     {
@@ -109,17 +109,7 @@
       "links": [
         "asml-demand"
       ],
-      "age_minutes": 140,
-      "image": {
-        "kind": "topic",
-        "file": "img/wafer.jpg",
-        "alt": "A semiconductor wafer being removed from processing equipment, illustration",
-        "credit": "Purdue Engineering",
-        "license": "CC BY 4.0",
-        "license_url": "https://creativecommons.org/licenses/by/4.0",
-        "source": "Wikimedia Commons",
-        "source_url": "https://commons.wikimedia.org/wiki/File:A_semiconductor_wafer_being_removed_from_processing_equipment.jpg"
-      }
+      "age_minutes": 140
     },
     {
       "id": "asml-demand",
@@ -176,17 +166,7 @@
       "links": [
         "brent-swing"
       ],
-      "age_minutes": 9,
-      "image": {
-        "kind": "topic",
-        "file": "img/oil.jpg",
-        "alt": "An oil refinery at night (Mina Al-Ahmadi, Kuwait), illustration",
-        "credit": "Grubb",
-        "license": "Public domain",
-        "license_url": null,
-        "source": "Wikimedia Commons",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Mina-Al-Ahmadi_oil_refinery_night.jpg"
-      }
+      "age_minutes": 9
     },
     {
       "id": "brent-swing",
@@ -303,17 +283,7 @@
         }
       ],
       "links": [],
-      "age_minutes": 180,
-      "image": {
-        "kind": "place",
-        "file": "img/ecb.jpg",
-        "alt": "The European Central Bank tower and the Frankfurt skyline at dawn",
-        "credit": "DXR",
-        "license": "CC BY-SA 4.0",
-        "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
-        "source": "Wikimedia Commons",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Seat_of_the_European_Central_Bank_and_Frankfurt_Skyline_at_dawn_20150422_1.jpg"
-      }
+      "age_minutes": 180
     },
     {
       "id": "eu-finance-ministers",
@@ -501,17 +471,7 @@
         }
       ],
       "links": [],
-      "age_minutes": 420,
-      "image": {
-        "kind": "place",
-        "file": "img/boj.jpg",
-        "alt": "The Bank of Japan head office in Tokyo",
-        "credit": "Syced",
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "source": "Wikimedia Commons",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Bank_of_Japan_building_(25572).jpg"
-      }
+      "age_minutes": 420
     },
     {
       "id": "samsung-memory",
@@ -859,17 +819,7 @@
         }
       ],
       "links": [],
-      "age_minutes": 2500,
-      "image": {
-        "kind": "place",
-        "file": "img/suez.jpg",
-        "alt": "A container ship passing through the Suez Canal",
-        "credit": "Aah-Yeah",
-        "license": "CC BY 2.0",
-        "license_url": "https://creativecommons.org/licenses/by/2.0",
-        "source": "Wikimedia Commons",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Evergreen_container_ship_in_Suez_Canal_(4171874814).jpg"
-      }
+      "age_minutes": 2500
     },
     {
       "id": "aramco-pricing",
