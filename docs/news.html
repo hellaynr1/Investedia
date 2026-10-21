@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=4ebdb4e8fb">
+<link rel="stylesheet" href="assets/app.css?v=21e129cd1a">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,24 +37,31 @@
 <body data-page="news">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=4ebdb4e8fb"></script>
-<script src="assets/ui.js?v=4ebdb4e8fb"></script>
-<script src="assets/news-alerts.js?v=4ebdb4e8fb" defer></script>
-<script src="assets/home-news.js?v=4ebdb4e8fb"></script>
+<script src="assets/mock.js?v=21e129cd1a"></script>
+<script src="assets/ui.js?v=21e129cd1a"></script>
+<script src="assets/news-alerts.js?v=21e129cd1a" defer></script>
+<script src="assets/home-news.js?v=21e129cd1a"></script>
 <main class="wrap">
-<link rel="stylesheet" href="assets/news-board.css"><link rel="stylesheet" href="assets/movers.css">
-<main class="nb mv">
-  <span class="nb-eb">News · <span id="mv-up">Loading</span></span>
+<link rel="stylesheet" href="assets/news-board.css"><link rel="stylesheet" href="assets/news-feed.css">
+<main class="nb nf">
+  <span class="nb-eb">News · <span id="nf-up">Loading</span></span>
   <h1>What's moving <span>money.</span></h1>
-  <p class="nb-lead">The biggest moves in stocks, crypto and commodities, and the news around each one. Tap a row for the line and the stories.</p>
-  <div class="nb-find"><label class="nb-pill"><i class="nb-ic"></i><input id="mv-q" type="search" placeholder="Search a company, coin or commodity" autocomplete="off" aria-label="Search assets"><kbd>/</kbd></label></div>
-  <div class="mv-bar"><div class="nb-seg" id="mv-win" role="group" aria-label="Time window"></div><div class="nb-cats" id="mv-type" role="group" aria-label="Asset type"></div></div>
-  <div class="nb-box"><div id="mv-list"></div></div>
-  <button class="nb-more" id="mv-more" type="button" hidden>Show more movers</button>
-  <section class="nb-sec"><h2>Latest stories</h2><p id="nb-n"></p><div id="nb-ls"></div><button class="nb-more" id="nb-more" type="button" hidden>Load more stories</button></section>
-  <p class="mv-note">Price moves come from public market data and may be delayed. Stories are linked when they mention the asset; this shows the news around a move, not proof it caused it. Summaries are written with the help of AI from each source's own reporting. Not investment advice.</p>
+  <p class="nb-lead">Every story, and what it did to prices. The news and its reaction, together.</p>
+  <div id="nf-hero"></div>
+  <div class="nf-sh"><h2>Biggest movers</h2><span>24h</span></div>
+  <div class="nf-strip" id="nf-strip"></div>
+  <div class="nf-sh"><h2>News and reactions</h2></div>
+  <div class="nf-bar">
+    <label class="nb-pill"><i class="nb-ic"></i><input id="nf-q" type="search" placeholder="Search a story, company, coin or country" autocomplete="off" aria-label="Search stories"><kbd>/</kbd></label>
+    <div class="nb-seg" id="nf-win" role="group" aria-label="Time window"></div>
+    <div class="nb-seg" id="nf-sort" role="group" aria-label="Sort"></div>
+  </div>
+  <div id="nf-chip" hidden></div>
+  <div id="nf-list"></div>
+  <button class="nb-more" id="nf-more" type="button" hidden>Load more stories</button>
+  <p class="mv-note">Price moves come from public market data and may be delayed. A reaction shows the price move around a story; it is not proof the story caused it. Summaries are written with the help of AI from each source's own reporting. Not investment advice.</p>
 </main>
-<script src="assets/movers.js"></script>
+<script src="assets/news-feed.js"></script>
 </main>
 </body>
 </html>
