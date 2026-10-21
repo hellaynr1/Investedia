@@ -33,7 +33,27 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .demo{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;border:1px dashed rgba(255,122,26,.45);color:#FFB37A;font-size:11.5px;font-weight:550}
 h1{margin:14px 0 0;font-size:clamp(22px,2.4vw,32px);font-weight:600;letter-spacing:-.035em;line-height:1.08;max-width:520px;pointer-events:none}
 h1 span{color:var(--fg-3)}
-.chips{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.search{z-index:5;position:relative;display:flex;align-items:center;gap:10px;width:min(440px,100%);height:44px;margin-top:18px;padding:0 12px 0 14px;border-radius:12px}
+.search svg{width:16px;height:16px;flex:none;stroke:var(--fg-3);fill:none;stroke-width:2;stroke-linecap:round}
+.search input{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;color:var(--fg);font:15px var(--sans)}
+.search input::placeholder{color:var(--fg-3)}
+.search input::-webkit-search-cancel-button{display:none}
+.search:focus-within{border-color:var(--line-2)}
+.search kbd{font:500 11px var(--mono);color:var(--fg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+.res{position:absolute;left:-1px;right:-1px;top:calc(100% + 6px);max-height:min(420px,60vh);overflow:auto;padding:6px;border-radius:14px;background:rgba(18,18,20,.97);border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.55);z-index:6}
+.res .sec-h{margin:8px 10px 4px}
+.ri{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 10px;border-radius:9px;font-size:13.5px;color:var(--fg)}
+.ri[aria-selected=true],.ri:hover{background:rgba(255,255,255,.06)}
+.ri small{margin-left:auto;font:500 11px var(--mono);color:var(--fg-3);white-space:nowrap}
+.ri .dot{margin-top:0;flex:none}
+.ri span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.res .none{padding:12px 10px;font-size:13px;color:var(--fg-3)}
+.follow{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);font-size:12.5px;font-weight:550;color:var(--fg)}
+.follow svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.follow.on{background:var(--accent-soft);border-color:rgba(255,122,26,.5);color:#FFB37A}
+.fnote{margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--fg-3)}
+.ch{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
 .chip{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:rgba(16,16,18,.6);color:var(--fg-2);font-size:12.5px;font-weight:500;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
 .chip:hover{color:var(--fg);border-color:var(--line-2)}
 .chip[aria-pressed=true]{background:var(--fg);color:#0A0A0B;border-color:var(--fg)}
@@ -127,7 +147,8 @@ h1 span{color:var(--fg-3)}
   h1{display:none}
   .chips,.regions{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent)}
   .chips::-webkit-scrollbar,.regions::-webkit-scrollbar{display:none}
-  .chips{margin-top:12px}.regions{margin-top:6px}
+  .chips{margin-top:10px}.regions{margin-top:6px}
+  .search{margin-top:12px;height:42px;width:100%}.search kbd{display:none}
   .legend{display:none}
   .timeline{left:50%;bottom:calc(98px + env(safe-area-inset-bottom));padding:4px}
   .win{min-width:0;padding:0 9px;height:32px}.tl-play{width:32px;height:32px}
@@ -154,6 +175,8 @@ h1 span{color:var(--fg-3)}
     <span class="demo" title="Concept preview: every story is demo content written to show the design. Not real news.">Concept · demo stories</span>
   </div>
   <h1>The world's financial news, <span>happening across the globe.</span></h1>
+  <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search a country, company or story" autocomplete="off" aria-label="Search the globe" aria-controls="res"><kbd>/</kbd>
+    <div class="res" id="res" role="listbox" hidden></div></div>
   <div class="chips" id="cats" role="group" aria-label="Category"></div>
   <div class="regions" id="regions" role="group" aria-label="Region"></div>
 </div>
@@ -203,12 +226,17 @@ function art(s, label = true) {
 }
 function ago(t) { const m = Math.max(1, Math.round((Date.now() - t) / 60000)); return m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; }
 
-const countries = CTRY.map(r => {
-  const rings = r.slice(3).map(f => { const a = []; for (let i = 0; i < f.length; i += 2) a.push([f[i] / 10, f[i + 1] / 10]); return a; });
-  const b = [180, 90, -180, -90]; for (const g of rings) for (const [x, y] of g) { b[0] = Math.min(b[0], x); b[1] = Math.min(b[1], y); b[2] = Math.max(b[2], x); b[3] = Math.max(b[3], y); }
-  return { name: r[0], c: [r[1] / 10, r[2] / 10], b, rings, rr: rings.map(g => g.map(([x, y]) => [y * rad, x * rad])) };
-});
-const byName = Object.fromEntries(countries.map(c => [c.name, c]));
+function decode(rows, Q) {
+  return rows.map(r => {
+    const rings = r.slice(3).map(f => { const a = []; let x = 0, y = 0; for (let i = 0; i < f.length; i += 2) { x += f[i]; y += f[i + 1]; a.push([x / Q, y / Q]); } return a; });
+    const b = [180, 90, -180, -90]; for (const g of rings) for (const [x, y] of g) { b[0] = Math.min(b[0], x); b[1] = Math.min(b[1], y); b[2] = Math.max(b[2], x); b[3] = Math.max(b[3], y); }
+    return { name: r[0], c: [r[1] / Q, r[2] / Q], b, rings, rr: rings.map(g => g.map(([x, y]) => [y * rad, x * rad])) };
+  });
+}
+// Overview borders (1:110m) are inline; detailed borders (1:50m, incl. small countries like Singapore or Luxembourg) load in the background
+// and are used for clicks, search and whenever you zoom in. Natural Earth data, public domain.
+const overview = decode(CTRY, 10); let countries = overview, byName = Object.fromEntries(overview.map(c => [c.name, c]));
+fetch('countries-50m.json').then(r => r.json()).then(rows => { countries = decode(rows, 50); byName = Object.fromEntries(countries.map(c => [c.name, c])); if (selCountry) selCountry = byName[selCountry.name] || selCountry; hoverCountry = null; }).catch(() => {});
 function countryAt(lo, la) {
   for (const c of countries) {
     if (lo < c.b[0] || lo > c.b[2] || la < c.b[1] || la > c.b[3]) continue;
@@ -240,9 +268,9 @@ const winMin = () => WINS.find(w => w[0] === F.win)[2];
 const inTime = s => play ? s.t <= play.cur : T0 - s.t <= winMin() * 60000;
 const match = s => (F.cat === 'all' || s.category === F.cat) && (F.region === 'global' || s.location.region === F.region) && inTime(s);
 const sortTop = (a, b) => (b.importance - a.importance) || (b.t - a.t);
-let shown = [];
+let shown = [], activity = {};
 function refresh() {
-  shown = stories.filter(match);
+  shown = stories.filter(match); activity = {}; for (const s of shown) activity[s.location.country] = (activity[s.location.country] || 0) + 1;
   $('tlInfo').innerHTML = play ? `Replaying · <b>${new Date(play.cur).toLocaleDateString('en-GB', { weekday: 'short' })} ${new Date(play.cur).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</b>` : `<b>${shown.length}</b> ${shown.length === 1 ? 'story' : 'stories'}`;
   if (!play) render();
 }
@@ -254,7 +282,7 @@ function size() {
   const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   // keep the globe clear of the filters on top and the timeline below; on phones it moves up when the sheet opens
   if (phone()) { cx = W / 2; R0 = Math.min(W * .45, H * .29); cyT = panel.classList.contains('open') ? (120 + H * .4) / 2 + 10 : H * .47; }
-  else { const aw = W - 392 - 32, top = 230, bot = 96; cx = aw / 2 + 8; cyT = top + (H - top - bot) / 2; R0 = Math.min(aw * .4, (H - top - bot) / 2 * .94); }
+  else { const aw = W - 392 - 32, top = 290, bot = 96; cx = aw / 2 + 8; cyT = top + (H - top - bot) / 2; R0 = Math.min(aw * .4, (H - top - bot) / 2 * .94); }
   if (!cy) cy = cyT; R = R0 * Z;
 }
 addEventListener('resize', size);
@@ -354,7 +382,8 @@ function openCountry(c) {
 }
 function openPlace(list) { sel = null; selCountry = byName[list[0].location.country] || null; go({ k: 'place', ids: list.map(s => s.id), id: list.map(s => s.id).join() }); flyTo(list[0].location.lon, list[0].location.lat, Math.max(Z, 3)); }
 pbody.addEventListener('click', e => {
-  const b = e.target.closest('[data-story],[data-back],[data-country]'); if (!b) return;
+  const b = e.target.closest('[data-story],[data-back],[data-country],[data-follow]'); if (!b) return; e.preventDefault();
+  if (b.dataset.follow) return toggleFollow(b.dataset.follow);
   if (b.dataset.back != null) return back();
   if (b.dataset.story) return openStory(byId[b.dataset.story]);
   if (b.dataset.country) return openCountry(byName[b.dataset.country]);
@@ -385,7 +414,8 @@ function render() {
     const c = byName[view.id], all = stories.filter(s => s.location.country === c.name), list = all.filter(match).sort(sortTop);
     const rest = list.length > 3 ? list.slice(3) : [], groups = CATS.slice(1).map(([k, l]) => [l, rest.filter(s => s.category === k)]).filter(g => g[1].length);
     const cos = [...new Map(list.flatMap(s => s.entities).filter(x => x.ticker).map(x => [x.name, x])).values()];
-    pbody.innerHTML = `<button class="back" data-back>← Back</button><div class="eyebrow">Country</div><h2>${esc(nm(c.name))}</h2>
+    pbody.innerHTML = `<button class="back" data-back>← Back</button><div class="ch"><div><div class="eyebrow">Country</div><h2>${esc(nm(c.name))}</h2></div>${(() => { const on = follows().includes(c.name); return `<button class="follow${on ? ' on' : ''}" data-follow="${esc(c.name)}" aria-pressed="${on}"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>${on ? 'Following' : 'Follow'}</button>`; })()}</div>
+      ${follows().includes(c.name) ? `<p class="fnote">You're following ${esc(nm(c.name))}. Alerts by email or phone start when live news launches.</p>` : ''}
       <div class="stats"><div><b>${list.length}</b>${list.length === 1 ? 'story' : 'stories'} · ${F.win.toUpperCase()}</div><div><b>${all.length}</b>this week</div><div><b>${list.filter(s => s.importance === 3).length}</b>major</div></div>
       ${list.length ? `<div class="sec-h" style="margin-top:0">Top stories</div><div class="list">${list.slice(0, 3).map(item).join('')}</div>${groups.length ? '<div class="sec-h" style="margin-top:26px;color:var(--fg-2)">More by topic</div>' : ''}
         ${groups.map(([l, g]) => `<div class="sec-h">${l}</div><div class="list">${g.map(item).join('')}</div>`).join('')}
@@ -396,6 +426,37 @@ function render() {
     pbody.innerHTML = `<button class="back" data-back>← Back</button><div class="eyebrow">${esc(nm(list[0].location.country))}</div><h2>${esc(list[0].location.place)}</h2><div class="stats"><div><b>${list.length}</b>stories here</div></div><div class="list">${list.map(item).join('')}</div>${NOTE}`;
   }
 }
+
+// ===== Search: countries, places, companies and stories =====
+const qi = $('q'), res = $('res'); let hits = [], hi = 0;
+const norm = t => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+function search() {
+  const q = norm(qi.value.trim()); if (!q) { res.hidden = true; return; }
+  const cs = Object.values(byName).map(c => ({ c, n: norm(nm(c.name)), m: norm(c.name) })).filter(x => x.n.includes(q) || x.m.includes(q))
+    .sort((a, b) => (b.n.startsWith(q) - a.n.startsWith(q)) || a.n.length - b.n.length).slice(0, 4).map(x => ({ k: 'country', c: x.c }));
+  const ss = stories.filter(s => norm([s.headline, s.location.place, nm(s.location.country), CAT[s.category], ...s.entities.map(e => e.name + ' ' + (e.ticker || ''))].join(' ')).includes(q)).sort(sortTop).slice(0, 6).map(s => ({ k: 'story', s }));
+  hits = [...cs, ...ss]; hi = 0;
+  const cnt = c => stories.filter(s => s.location.country === c.name).length;
+  res.innerHTML = hits.length ? (cs.length ? '<div class="sec-h">Countries</div>' : '') + cs.map((h, i) => `<button class="ri" role="option" data-i="${i}"><span>${esc(nm(h.c.name))}</span><small>${cnt(h.c) ? cnt(h.c) + (cnt(h.c) === 1 ? ' story' : ' stories') : 'no stories yet'}</small></button>`).join('')
+    + (ss.length ? '<div class="sec-h">Stories</div>' : '') + ss.map((h, i) => `<button class="ri" role="option" data-i="${cs.length + i}"><span class="dot i${h.s.importance}"></span><span>${esc(h.s.headline)}</span><small>${esc(h.s.location.place.split(',')[0])}</small></button>`).join('')
+    : '<div class="none">No country or story matches “' + esc(qi.value.trim()) + '”.</div>';
+  res.hidden = false; mark();
+}
+const mark = () => res.querySelectorAll('.ri').forEach(b => b.setAttribute('aria-selected', +b.dataset.i === hi));
+function choose(h) { if (!h) return; res.hidden = true; qi.value = ''; qi.blur(); if (h.k === 'country') openCountry(h.c); else { if (!match(h.s)) { F.cat = 'all'; F.region = 'global'; F.win = '7d'; press($('cats'), 'all'); press($('regions'), 'global'); press($('wins'), '7d'); refresh(); } openStory(h.s); } }
+qi.addEventListener('input', search); qi.addEventListener('focus', search);
+qi.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); hi = (hi + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % Math.max(1, hits.length); mark(); }
+  else if (e.key === 'Enter') choose(hits[hi]); else if (e.key === 'Escape') { res.hidden = true; qi.blur(); }
+});
+res.addEventListener('pointerdown', e => { const b = e.target.closest('.ri'); if (b) { e.preventDefault(); choose(hits[+b.dataset.i]); } });
+qi.addEventListener('blur', () => setTimeout(() => { res.hidden = true; }, 120));
+addEventListener('keydown', e => { if (e.key === '/' && document.activeElement !== qi) { e.preventDefault(); qi.focus(); } });
+
+// Follow a country. Saved in this browser for the concept; alerts (email / push) come with live news and accounts.
+const FKEY = 'inv-follow';
+const follows = () => { try { return JSON.parse(localStorage.getItem(FKEY)) || []; } catch { return []; } };
+function toggleFollow(name) { const f = follows(), i = f.indexOf(name); i < 0 ? f.push(name) : f.splice(i, 1); try { localStorage.setItem(FKEY, JSON.stringify(f)); } catch {} render(); }
 
 // ===== Filter controls =====
 $('cats').innerHTML = CATS.map(([k, l]) => `<button class="chip" data-k="${k}" aria-pressed="${k === F.cat}">${l}</button>`).join('');
@@ -428,7 +489,7 @@ function ringPath(rr, fill) {
   }
 }
 function countryShape(c, fill, stroke, lw = 1) {
-  ctx.beginPath(); for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = fill; ctx.fill('evenodd');
+  ctx.beginPath(); for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = fill; ctx.fill('evenodd'); if (!stroke) return;
   ctx.beginPath(); for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke();
 }
 let last = performance.now();
@@ -446,12 +507,19 @@ function frame(t) {
   const sg = ctx.createRadialGradient(cx - R * .4, cy - R * .45, R * .05, cx, cy, R); sg.addColorStop(0, '#1a1a1e'); sg.addColorStop(1, '#09090b');
   ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill(); ctx.strokeStyle = 'rgba(255,160,100,.35)'; ctx.lineWidth = 1; ctx.stroke();
   ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.clip();
+  // faint latitude / longitude lines
+  if (Z < 2.6) { ctx.beginPath(); for (let lo = -180; lo < 180; lo += 30) { let pen = false; for (let la = -80; la <= 80; la += 4) { const [x, y, z] = proj(la * rad, lo * rad); if (z <= 0) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } }
+    for (let la = -60; la <= 60; la += 30) { let pen = false; for (let lo = -180; lo <= 180; lo += 4) { const [x, y, z] = proj(la * rad, lo * rad); if (z <= 0) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } }
+    ctx.strokeStyle = `rgba(255,255,255,${(.045 * (1 - (Z - 1) / 1.6)).toFixed(3)})`; ctx.lineWidth = .6; ctx.stroke(); }
   // land: dots fade out as you zoom in, country shapes take over
   const da = Math.max(0, 1.25 - Z * .25), ds = Math.max(1.1, Math.min(2.2, R / 230));
   if (da > .02) for (const [phi, lam] of pts) { const [x, y, z] = proj(phi, lam); if (z <= 0) continue; ctx.fillStyle = `rgba(161,161,170,${((.08 + z * .42) * da).toFixed(3)})`; ctx.fillRect(x - ds / 2, y - ds / 2, ds, ds); }
   const la = Math.min(.07, .012 + (Z - 1) * .02);
-  ctx.beginPath(); for (const c of countries) for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = `rgba(255,255,255,${la})`; ctx.fill('evenodd');
-  ctx.beginPath(); for (const c of countries) for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = `rgba(255,255,255,${Math.min(.2, .07 + (Z - 1) * .04)})`; ctx.lineWidth = .7; ctx.stroke();
+  const map = Z >= 1.8 ? countries : overview;
+  ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = `rgba(255,255,255,${la})`; ctx.fill('evenodd');
+  // countries with news in the current filters get a soft orange tint
+  for (const c of map) { const n = activity[c.name]; if (n) countryShape(c, `rgba(255,122,26,${(.035 + .025 * Math.min(4, n)).toFixed(3)})`); }
+  ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = `rgba(255,255,255,${Math.min(.2, .07 + (Z - 1) * .04)})`; ctx.lineWidth = .7; ctx.stroke();
   if (hoverCountry && hoverCountry !== selCountry) countryShape(hoverCountry, 'rgba(255,255,255,.05)', 'rgba(255,255,255,.35)');
   if (selCountry) countryShape(selCountry, 'rgba(255,122,26,.10)', 'rgba(255,122,26,.75)', 1.2);
   ctx.restore();
