@@ -73,7 +73,8 @@ class NewsImpacts(unittest.TestCase):
              patch.object(robot, 'NOW', latest):
             robot.main()
         self.assertIn('news-live.json', writes)
-        self.assertLessEqual(sum('impacts' in s for s in writes['news-live.json']['stories']), 40)
+        had = {s['id'] for s in FEED['stories'] if 'impacts' in s}  # the live feed may already carry real analysis
+        self.assertLessEqual(sum('impacts' in s and s['id'] not in had for s in writes['news-live.json']['stories']), 40)
         self.assertEqual((ROOT / 'assets/globe/news-live.json').read_bytes(), before)
 
 if __name__ == '__main__': unittest.main()
