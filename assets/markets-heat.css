@@ -82,3 +82,5 @@
 .mh-tl .mh-chip{font-size:13px!important;padding:5px 11px!important}.mh-tl .mh-ch svg{width:100%;height:40px;margin-top:8px}
 @media(max-width:800px){.mh-tg{grid-template-columns:repeat(2,1fr);gap:10px}.mh-tl{padding:14px;border-radius:22px}.mh-tlp{font-size:21px}}
 @media(max-width:800px){.mh-tg{gap:8px}.mh-tl{padding:11px 12px;border-radius:18px}.mh-tlh{font-size:12.5px;gap:7px}.mh-tlh .mh-ic2{width:20px;height:20px}.mh-tlp{font-size:17px;margin:6px 0 5px}.mh-tl .mh-chip{font-size:11.5px!important;padding:3px 8px!important}.mh-tl .mh-ch svg{height:26px;margin-top:5px}}
+.mh-tlh .mh-ic2{width:30px!important;height:30px!important}.mh-tlh{gap:10px}
+@media(max-width:800px){.mh-tlh .mh-ic2{width:24px!important;height:24px!important}}
