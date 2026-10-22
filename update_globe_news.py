@@ -188,13 +188,21 @@ NOISE = re.compile(r'\b(stock to buy|stocks to buy|price target|horoscope|celebr
 def norm(t): return set(w for w in re.sub(r'[^a-z0-9 ]', ' ', t.lower()).split() if len(w) > 2)
 
 
+def canon(u):
+    """Same article, different address: drop tracking parameters, fragments, www and trailing slashes."""
+    try:
+        p = urllib.parse.urlsplit(u.strip()); q = [(k, v) for k, v in urllib.parse.parse_qsl(p.query) if not re.match(r'(utm_|fbclid|gclid|ref|cmp|ito|at_|ocid|taid)', k, re.I)]
+        return (p.netloc.lower().removeprefix('www.') + p.path.rstrip('/') + ('?' + urllib.parse.urlencode(q) if q else '')).lower()
+    except Exception: return u
+
+
 def dedupe(items, known_titles):
-    out, seen = [], [norm(t) for t in known_titles]
+    out, seen, urls = [], [norm(t) for t in known_titles], set()
     for c in sorted(items, key=lambda c: c['kind'] != 'official'):
         w = norm(c['title'])
-        if len(w) < 3: continue
+        if len(w) < 3 or canon(c['url']) in urls: continue
         if any(len(w & s) / max(1, len(w | s)) > .55 for s in seen): continue
-        seen.append(w); out.append(c)
+        seen.append(w); urls.add(canon(c['url'])); out.append(c)
     return out
 
 
@@ -434,15 +442,15 @@ def main():
         prev += [s for s in json.load(open(arc_path)).get('stories', []) if s['id'] not in have]
     cutoff = NOW - timedelta(days=KEEP_DAYS)
     prev = [s for s in prev if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > cutoff]
-    known_urls = {u['url'] for s in prev for u in s.get('sources', [])}
+    known_urls = {canon(u['url']) for s in prev for u in s.get('sources', [])}
     days = max(0, min(KEEP_DAYS, int(os.environ.get('BACKFILL_DAYS') or 0)))
     for d in range(days, 0, -1):  # oldest day first; real publication dates and sources are kept
         start = (NOW - timedelta(days=d)).replace(minute=0, second=0, microsecond=0); end = start + timedelta(days=1)
-        day_raw = [c for c in gdelt(start, end) if c['url'] not in known_urls]
+        day_raw = [c for c in gdelt(start, end) if canon(c['url']) not in known_urls]
         day_cands = dedupe([c for c in day_raw if not NOISE.search(c['title'])], [s['headline'] for s in prev])[:80]
         log(f'backfill {start:%Y-%m-%d}: {len(day_raw)} fetched, {len(day_cands)} candidates')
         got = pick_stories(day_cands, box, by_iso, sym, known_iso, 18, prev) if day_cands else []
-        prev += got; known_urls |= {u['url'] for s in got for u in s.get('sources', [])}
+        prev += got; known_urls |= {canon(u['url']) for s in got for u in s.get('sources', [])}
         status.setdefault('backfill', []).append({'day': f'{start:%Y-%m-%d}', 'stories': len(got)})
         if got:  # save after every day, so a slow or stopped run never loses finished days
             save(OUT, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW,
@@ -450,7 +458,7 @@ def main():
                        'stories': sorted(prev, key=lambda s: s['published_at'], reverse=True)[:MAX_STORIES]})
     raw = gdelt() + rss()
     status['fetched'] = len(raw)
-    fresh = [c for c in raw if c['url'] not in known_urls]
+    fresh = [c for c in raw if canon(c['url']) not in known_urls]
     fresh = [c for c in fresh if not NOISE.search(c['title'])]  # skip junk before it reaches Gemini
     cands = dedupe(fresh, [s['headline'] for s in prev])[:140]
     status['candidates'] = len(cands)
