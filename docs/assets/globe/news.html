@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../consent.css">
 <script src="../consent.js"></script>
+<script src="../live-config.js"></script><script src="../prefs.js"></script><script src="../sectors.js"></script><script src="../peek.js"></script>
 <script>document.addEventListener("DOMContentLoaded",()=>window.InvConsent?.mount());</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia Globe News (concept)</title>
@@ -930,7 +931,11 @@ function search() {
 }
 const mark = () => res.querySelectorAll('.ri').forEach(b => b.setAttribute('aria-selected', +b.dataset.i === hi));
 function choose(h) { if (!h) return; res.hidden = true; qi.value = ''; qi.blur(); if (h.k === 'country') openCountry(h.c); else { if (!match(h.s)) { F.cat = 'all'; F.region = 'global'; F.win = '7d'; press($('cats'), 'all'); press($('regions'), 'global'); press($('wins'), '7d'); refresh(); } openStory(h.s); } }
-qi.addEventListener('input', search); qi.addEventListener('focus', search);
+qi.addEventListener('focus', () => { qi.blur(); if (window.InvPeek) InvPeek.search(); else search(); });
+window.InvGlobeNav = {
+  country: n => { const c = byName[n]; if (!c) return false; openCountry(c); return true; },
+  story: id => { const s = byId[id]; if (!s) return false; if (!match(s)) { F.cat = 'all'; F.region = 'global'; F.win = '7d'; press($('cats'), 'all'); press($('regions'), 'global'); press($('wins'), '7d'); refresh(); } openStory(s); return true; }
+};
 qi.addEventListener('keydown', e => {
   if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); hi = (hi + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % Math.max(1, hits.length); mark(); }
   else if (e.key === 'Enter') choose(hits[hi]); else if (e.key === 'Escape') { res.hidden = true; qi.blur(); }
