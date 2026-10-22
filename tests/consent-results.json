@@ -1,0 +1,822 @@
+[
+  {
+    "page": "404.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "about.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "accessibility.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "admin.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "affiliate-disclosure.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "ai-disclosure.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "ai-insights.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "analysis-article.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "analysis.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "article.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "asset.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "calculator.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "calendar.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "compare.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "contact.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "converter.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "cookies.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "copyright.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "corrections.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "dashboard.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "disclaimer.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "editorial-policy.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "education.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "globe.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "index.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "legal.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "lesson.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "markets.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "news.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "privacy.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "profile.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "screener.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "sources.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "stocks.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "story.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "studio.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "terms.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "watchlist.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "assets/globe/news.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "assets/globe/news.html?embed=1",
+    "width": 1440,
+    "first": "PASS (no banner in embed)",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "parent banner",
+    "errors": []
+  },
+  {
+    "page": "404.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "about.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "accessibility.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "admin.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "affiliate-disclosure.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "ai-disclosure.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "ai-insights.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "analysis-article.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "analysis.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "article.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "asset.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "calculator.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "calendar.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "compare.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "contact.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "converter.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "cookies.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "copyright.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "corrections.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "dashboard.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "disclaimer.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "editorial-policy.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "education.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "globe.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "index.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "legal.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "lesson.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "markets.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "news.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "privacy.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "profile.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "screener.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "sources.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "stocks.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "story.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "studio.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "terms.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "watchlist.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "assets/globe/news.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "assets/globe/news.html?embed=1",
+    "width": 390,
+    "first": "PASS (no banner in embed)",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "parent banner",
+    "errors": []
+  },
+  {
+    "page": "movers.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "movers.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  }
+]

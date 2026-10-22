@@ -1,0 +1,86 @@
+[
+  {
+    "name": "homepage",
+    "width": 1440,
+    "url": "index.html",
+    "consoleErrors": []
+  },
+  {
+    "name": "news",
+    "width": 1440,
+    "url": "news.html",
+    "consoleErrors": []
+  },
+  {
+    "name": "article",
+    "width": 1440,
+    "url": "story.html?id=n14daff13a1",
+    "consoleErrors": []
+  },
+  {
+    "name": "markets",
+    "width": 1440,
+    "url": "markets.html",
+    "consoleErrors": []
+  },
+  {
+    "name": "globe",
+    "width": 1440,
+    "url": "assets/globe/news.html?story=n14daff13a1",
+    "consoleErrors": []
+  },
+  {
+    "name": "legal",
+    "width": 1440,
+    "url": "legal.html",
+    "consoleErrors": []
+  },
+  {
+    "name": "cookies",
+    "width": 1440,
+    "url": "cookies.html",
+    "consoleErrors": []
+  },
+  {
+    "name": "homepage",
+    "width": 390,
+    "url": "index.html",
+    "consoleErrors": []
+  },
+  {
+    "name": "news",
+    "width": 390,
+    "url": "news.html",
+    "consoleErrors": []
+  },
+  {
+    "name": "article",
+    "width": 390,
+    "url": "story.html?id=n14daff13a1",
+    "consoleErrors": []
+  },
+  {
+    "name": "markets",
+    "width": 390,
+    "url": "markets.html",
+    "consoleErrors": []
+  },
+  {
+    "name": "globe",
+    "width": 390,
+    "url": "assets/globe/news.html?story=n14daff13a1",
+    "consoleErrors": []
+  },
+  {
+    "name": "legal",
+    "width": 390,
+    "url": "legal.html",
+    "consoleErrors": []
+  },
+  {
+    "name": "cookies",
+    "width": 390,
+    "url": "cookies.html",
+    "consoleErrors": []
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "width": 1440,
+    "check": "Skip link keyboard activation",
+    "pass": true
+  },
+  {
+    "width": 1440,
+    "check": "Consent controls, visible focus and focus return",
+    "pass": true
+  },
+  {
+    "width": 1440,
+    "check": "Header and menu keyboard traversal",
+    "pass": true
+  },
+  {
+    "width": 1440,
+    "check": "Search palette trap, Escape and return",
+    "pass": true
+  },
+  {
+    "width": 1440,
+    "check": "News filters keyboard activation",
+    "pass": true
+  },
+  {
+    "width": 1440,
+    "check": "Asset detail keyboard trigger, focus trap and return",
+    "pass": true
+  },
+  {
+    "width": 1440,
+    "check": "Globe search, zoom and panel tabs",
+    "pass": true
+  },
+  {
+    "width": 390,
+    "check": "Skip link keyboard activation",
+    "pass": true
+  },
+  {
+    "width": 390,
+    "check": "Consent controls, visible focus and focus return",
+    "pass": true
+  },
+  {
+    "width": 390,
+    "check": "Header and menu keyboard traversal",
+    "pass": true
+  },
+  {
+    "width": 390,
+    "check": "Search palette trap, Escape and return",
+    "pass": true
+  },
+  {
+    "width": 390,
+    "check": "News filters keyboard activation",
+    "pass": true
+  },
+  {
+    "width": 390,
+    "check": "Asset detail keyboard trigger, focus trap and return",
+    "pass": true
+  },
+  {
+    "width": 390,
+    "check": "Globe search, zoom and panel tabs",
+    "pass": true
+  }
+]
