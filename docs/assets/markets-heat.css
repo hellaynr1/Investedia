@@ -44,3 +44,6 @@
 [data-s]{cursor:pointer}.mh-tvbox{border:1px solid var(--line);border-radius:24px;background:#101012;padding:20px}.mh-tvh{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}.mh-tvh b{display:block;font-size:18px;letter-spacing:-.02em}.mh-tvh small{color:var(--fg-2);font-size:12.5px}
 .mh-tvbtn{border:0;border-radius:999px;background:#FF7A1A;color:#0a0a0b;font:inherit;font-weight:600;font-size:14px;padding:11px 20px;min-height:44px;cursor:pointer}.mh-tv p{color:var(--fg-2);font-size:13px;line-height:1.55;max-width:640px}.mh-tvw{height:480px;margin-top:14px;border-radius:18px;overflow:hidden}.mh-tvw.wide{height:76px}.mh-tvc{margin-top:10px!important;font-size:11.5px!important}.mh-tvc a{color:var(--fg-2)}
 .mh-tvw.wide{background:#131722;border-radius:14px}.mh-tvw .tradingview-widget-container__widget{border-radius:14px}
+/* Live charts: much larger */
+.mh-tvbox{padding:22px}.mh-tvw{height:max(680px,78vh)!important;margin-top:16px}.mh-tvw.wide{height:92px!important}
+@media(max-width:800px){.mh-tvw{height:max(560px,72vh)!important}.mh-tvbox{padding:14px}}

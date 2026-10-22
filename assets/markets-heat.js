@@ -93,7 +93,7 @@
       const add = (box, src, cfg) => { const sc = document.createElement('script'); sc.src = 'https://s3.tradingview.com/external-embedding/' + src; sc.async = true; sc.text = JSON.stringify(cfg); box.append(sc); };
       const [t, c] = host.querySelectorAll('.tradingview-widget-container');
       add(t, 'embed-widget-ticker-tape.js', { symbols: [{ proName: 'FOREXCOM:SPXUSD', title: 'S&P 500' }, { proName: 'FOREXCOM:NSXUSD', title: 'Nasdaq 100' }, { proName: 'BITSTAMP:BTCUSD', title: 'Bitcoin' }, { proName: 'BITSTAMP:ETHUSD', title: 'Ethereum' }, { proName: 'FX:EURUSD', title: 'EUR/USD' }, { proName: 'OANDA:XAUUSD', title: 'Gold' }], colorTheme: 'dark', isTransparent: false, displayMode: 'adaptive', locale: 'en' });
-      add(c, 'embed-widget-advanced-chart.js', { autosize: true, symbol: 'BITSTAMP:BTCUSD', interval: '15', theme: 'dark', style: '1', locale: 'en', backgroundColor: '#101012', hide_side_toolbar: true, allow_symbol_change: true, details: false, calendar: false });
+      add(c, 'embed-widget-advanced-chart.js', { autosize: true, symbol: 'BITSTAMP:BTCUSD', interval: '15', theme: 'dark', style: '1', locale: 'en', backgroundColor: '#101012', hide_side_toolbar: false, allow_symbol_change: true, details: false, calendar: false, withdateranges: true });
     };
   }
   // ---------- Render and live ----------
