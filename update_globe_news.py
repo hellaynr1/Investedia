@@ -18,7 +18,8 @@ G = os.path.join(ROOT, 'assets/globe'); D = os.path.join(ROOT, 'docs/assets/glob
 OUT = 'news-live.json'; STATUS = 'news-status.json'; PH = 'photos'
 UA = 'InvestediaNews/1.0 (+https://investedia.com; info@investedia.com)'
 NOW = datetime.now(timezone.utc); ISO_NOW = NOW.strftime('%Y-%m-%dT%H:%M:%SZ')
-KEEP_DAYS, MAX_STORIES, MAX_NEW = 7, 160, 30
+KEEP_DAYS, MAX_STORIES, MAX_NEW = 30, 160, 45  # live file: newest 160 (globe, home); archive file: up to ARCHIVE_MAX over KEEP_DAYS (News page)
+ARCHIVE_MAX, ARCHIVE, LIVE_DAYS = 600, 'news-archive.json', 7
 GEMINI = os.environ.get('GEMINI_API_KEY', '').strip(); PIXABAY = os.environ.get('PIXABAY_KEY', '').strip()
 status = {'ran_at': ISO_NOW, 'errors': []}
 CATS = ['markets', 'companies', 'economy', 'technology', 'crypto', 'commodities', 'geopolitics']
@@ -89,6 +90,9 @@ GDELT_QUERIES = [
     '("central bank" OR "interest rate" OR inflation OR GDP OR recession OR tariffs OR "trade deal") sourcelang:english',
     '(earnings OR "shares rose" OR "shares fell" OR "stock market" OR IPO OR merger OR acquisition OR bankruptcy) sourcelang:english',
     '(oil OR OPEC OR gas OR gold OR copper OR wheat OR bitcoin OR semiconductor OR "artificial intelligence") (prices OR market OR company) sourcelang:english',
+    '(bank OR lender OR insurer OR airline OR automaker OR retailer OR pharmaceutical OR miner) (profit OR revenue OR outlook OR guidance OR forecast) sourcelang:english',
+    '(currency OR yen OR euro OR sterling OR dollar OR rupee OR yuan OR peso) (falls OR rises OR weakens OR strengthens OR "central bank") sourcelang:english',
+    '(crypto OR ethereum OR stablecoin OR "bitcoin ETF" OR regulation OR sanctions OR "supply chain" OR shipping OR housing OR unemployment OR jobs) (market OR prices OR report OR data) sourcelang:english',
 ]
 
 
@@ -120,6 +124,10 @@ FEEDS = [  # official press releases: (url, source name, hint)
     ('https://www.ecb.europa.eu/rss/press.html', 'European Central Bank', 'ECB press release, Frankfurt, Germany'),
     ('https://www.federalreserve.gov/feeds/press_all.xml', 'Federal Reserve', 'US Federal Reserve press release, Washington DC'),
     ('https://www.bankofengland.co.uk/rss/news', 'Bank of England', 'Bank of England news, London, United Kingdom'),
+    ('https://www.sec.gov/news/pressreleases.rss', 'US Securities and Exchange Commission', 'SEC press release, Washington DC, United States'),
+    ('https://www.boj.or.jp/en/rss/whatsnew.xml', 'Bank of Japan', 'Bank of Japan news, Tokyo, Japan'),
+    ('https://www.bankofcanada.ca/content_type/press-releases/feed/', 'Bank of Canada', 'Bank of Canada press release, Ottawa, Canada'),
+    ('https://www.rba.gov.au/rss/rss-cb-media-releases.xml', 'Reserve Bank of Australia', 'Reserve Bank of Australia media release, Sydney, Australia'),
 ]
 
 
@@ -400,6 +408,10 @@ def main():
     known_iso = set(by_iso)
     prev_path = os.path.join(G, OUT)
     prev = json.load(open(prev_path)).get('stories', []) if os.path.exists(prev_path) else []
+    arc_path = os.path.join(G, ARCHIVE)
+    if os.path.exists(arc_path):  # the archive holds the older stories the live file no longer carries
+        have = {s['id'] for s in prev}
+        prev += [s for s in json.load(open(arc_path)).get('stories', []) if s['id'] not in have]
     cutoff = NOW - timedelta(days=KEEP_DAYS)
     prev = [s for s in prev if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > cutoff]
     known_urls = {u['url'] for s in prev for u in s.get('sources', [])}
@@ -420,12 +432,14 @@ def main():
     status['fetched'] = len(raw)
     fresh = [c for c in raw if c['url'] not in known_urls]
     fresh = [c for c in fresh if not NOISE.search(c['title'])]  # skip junk before it reaches Gemini
-    cands = dedupe(fresh, [s['headline'] for s in prev])[:90]
+    cands = dedupe(fresh, [s['headline'] for s in prev])[:140]
     status['candidates'] = len(cands)
     log(f'{len(raw)} fetched, {len(cands)} new candidates')
     new = pick_stories(cands, box, by_iso, sym, known_iso, MAX_NEW, prev)
     status['new_stories'] = len(new)
-    stories = sorted(new + prev, key=lambda s: s['published_at'], reverse=True)[:MAX_STORIES]
+    every = sorted(new + prev, key=lambda s: s['published_at'], reverse=True)[:ARCHIVE_MAX]
+    live_cut = NOW - timedelta(days=LIVE_DAYS)
+    stories = [s for s in every if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > live_cut][:MAX_STORIES]
     status['impacts_backfilled'] = backfill_impacts(stories, known_iso)
     # flags, used sparingly: breaking = major and under 90 minutes old; trending = 4+ sources; market moving = flagged by the editor step
     for s in stories: s['flag'] = None
@@ -439,7 +453,10 @@ def main():
         save(OUT, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW,
                    'notice': 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.',
                    'stories': stories})
-    status['stories_online'] = len(stories)
+        save(ARCHIVE, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW,
+                       'notice': 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.',
+                       'stories': every})
+    status['stories_online'] = len(stories); status['archive'] = len(every)
     save(STATUS, status)
     log(json.dumps(status, indent=1))
 
