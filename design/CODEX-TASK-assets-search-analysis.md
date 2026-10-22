@@ -31,6 +31,16 @@ Already on `main` and to build on (read these first): `assets/peek.js` (`InvPeek
   - "Related assets" row (same sector peers, correlated assets) as small chips that open their own pop-up.
 - Everything priced goes through `InvPrefs.fmt`; every number uses the Apple numeral font (`--num` in `skin.css`).
 
+## 3b. News pins on the chart: "why did it move" (owner priority, repeated several times)
+First version is already on `main` (`pins()` in `assets/asset-page.js`, styles at the end of `asset-page.css`): numbered round pins sit on the price line at the publication time of each article that names the asset; green = the article's analysis says up, red = down, grey = neutral; hover/tap opens a card with time, source, headline and the "why it matters" line; a second tap jumps to the article in the list below (same number). Improve and extend it for **every asset**:
+- Importance tiers decide the density: top assets (indices, gold, oil, bitcoin, ethereum, the 50 largest companies) up to 12 pins; mid-importance up to 6; the rest up to 3. Define the tiers in one place (`data/asset-importance.json`) and reuse them for robot frequency in sections 1, 4 and 5.
+- Feed the pins from the per-asset news files of section 4 (30 days), not only from `news-archive.json`, so 7-day and 30-day charts have real content.
+- On the 1D chart also mark scheduled events (earnings, central-bank decisions, data releases from `assets/calendar-live.json`) with a small diamond marker.
+- Add a "Why it moved" summary directly under the chart: 2 to 4 short bullet points with the measured move around each pin (for example "Gold fell 1.4 % in the 6 hours after article 3"), computed from our own price series between the pin time and the next pin; wording rule: "followed", "coincided with", never "caused".
+- Clustering: when pins overlap, merge them into one pin with a count that expands on tap; keep touch targets at 44 px on phone (the pin can stay 22 px visually with a larger invisible hit area).
+- Make the same pin layer reusable for the sector pop-up chart (sector fund) and for the Markets board mini-charts of the top assets (without tooltips there, just dots).
+- Accessibility: pins are real buttons with `aria-label`, reachable by keyboard (Tab), tooltip opens on focus, Esc closes it.
+
 ## 4. A lot more articles per asset (last 7 and 30 days)
 Today `asset-page.js` shows only the few articles of `news-archive.json` that name the asset. Build a per-asset news layer:
 - New robot script `update_asset_news.py` (GitHub Action `update-asset-news.yml`, tier A every 2 hours, tier B once a day, `concurrency: market-data`) that, for each asset, finds articles of the last 30 days using free sources only (GDELT DOC API by company name/ticker, official RSS feeds already used in `update_globe_news.py`, ECB/Fed/BoE). Save compact JSON per asset `assets/news/<SYM>.json`: `{asof, items:[{id, headline, source, url, published_at, direction?, why?}]}` capped at 60 items. Store only headline, source, link and time (never copy article text or photos).

@@ -13,6 +13,18 @@
   const series = (a, k) => k === 'd' ? (S.intra[a.s]?.d1?.c?.length > 3 ? S.intra[a.s].d1.c : (a.sp || []).slice(-6)) : k === 'w' ? (a.sp || []).slice(-6) : (a.sp || []);
   const chg = (a, k) => k === 'd' ? a.d : k === 'w' ? a.w : pc((a.sp || [])[a.sp.length - 1], (a.sp || [])[0]);
   const area = (v, c, w = 600, h = 220) => { if (!v || v.length < 2) return ''; const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1, pts = v.map((y, i) => [i / (v.length - 1) * w, h - 6 - (y - lo) / r * (h - 12)]), d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(''); return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${d}L${w} ${h}L0 ${h}Z" fill="${c}" opacity=".12"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`; };
+  // News pins on the chart: each article that names the asset sits on the line at its publication time; same numbers as the list below
+  function pins(a, rel, v) {
+    if (!v || v.length < 2 || !rel.length) return '';
+    const t = S.intra[a.s]?.d1?.t, end = S.win === 'd' && t?.length ? t[t.length - 1] * 1000 : Date.now(), start = S.win === 'd' ? (t?.length ? t[0] * 1000 : end - 864e5) : end - (S.win === 'w' ? 7 : 30) * 864e5;
+    const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1, big = a.m === 1 || a.t !== 'stocks' || a.g === 'Index', max = big ? 8 : 3, used = [];
+    const L = rel.map(({ s, i }, n) => ({ s, i, num: rel.length - n })).filter(x => { const ts = Date.parse(x.s.published_at); return ts >= start && ts <= end + 36e5; }).slice(0, max).map(x => ({ ...x, f: Math.round(Math.max(0, Math.min(1, (Date.parse(x.s.published_at) - start) / (end - start))) * (v.length - 1)) / (v.length - 1) })).sort((p, q) => p.f - q.f);
+    let prev = -9; for (const x of L) { x.left = Math.max(x.f * 100, prev + 5); prev = x.left; }
+    for (let k = L.length - 1, lim = 96; k >= 0; k--) { if (L[k].left > lim) L[k].left = lim; lim = L[k].left - 5; }
+    return L.map(x => { const y = v[Math.round(x.f * (v.length - 1))], top = (214 - (y - lo) / r * 208) / 220 * 100;
+      return `<button type="button" class="ap-pin ${cls(x.i.direction === 'up' ? 1 : x.i.direction === 'down' ? -1 : 0)}" style="left:${Math.max(2, x.left).toFixed(1)}%;top:${top.toFixed(1)}%" data-n="${x.num}" aria-label="Article ${x.num}: ${esc(x.s.headline)}">${x.num}</button>`;
+    }).join('');
+  }
   const find = (by, s) => by[s] || by[ALIAS[s]] || by[s + '-USD'] || by[s + '=F'] || by['^' + s] || Object.values(by).find(a => a.n && a.n.toLowerCase() === s.toLowerCase());
   function related(a, stories) {
     const sym = a.s.toUpperCase(), base = sym.replace('-USD', '').replace('=X', ''), name = (a.n || '').toLowerCase(), out = [];
@@ -37,14 +49,14 @@
       <header class="ap-h"><span class="ap-ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><div><h1>${esc(a.n)}</h1><small>${esc(sym)} · ${({ stocks: a.g === 'Index' ? 'Index' : 'Stock', crypto: 'Crypto', cmd: 'Commodity', fx: 'Currency pair' })[a.t] || ''}</small></div><span class="ap-st ${live ? 'live' : ''}"><i></i>${live ? 'Live' : 'Delayed'}</span></header>
       <div class="ap-px"><span class="ap-p mono" data-k="p">${money(price)}</span><span class="ap-chip ${cls(m)}" data-k="c">${arrow(m)} ${fmt(m)}</span></div>
       <div class="ap-seg">${[['d', 'Today'], ['w', 'Week'], ['m', 'Month']].map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.win}">${l}</button>`).join('')}</div>
-      <div class="ap-ch">${area(series(a, S.win), col(m))}</div>
+      <div class="ap-ch"><div class="ap-cv">${area(series(a, S.win), col(m))}${pins(a, rel, series(a, S.win))}<div class="ap-tip" hidden></div></div></div>
       <div class="ap-fig">${figs.join('')}</div>
       <div class="ap-act">${tvSym(a) ? '<button type="button" class="ap-btn p" id="ap-full">Full chart</button>' : ''}<button type="button" class="ap-btn" id="ap-watch" aria-pressed="false">☆ Watch</button></div>
       <section class="ap-card ${level ? level[1] : ''}"><div class="ap-ch2"><span class="nf-eb">Move analysis</span>${level ? `<span class="ap-lv">${level[0]}</span>` : ''}</div>
         <p class="ap-tx">${esc(an ? an.text : (base || 'Not enough price history to measure volatility yet.'))}</p>
         ${an ? `<small class="ap-meta">${an.ai ? 'Written with AI from the price data and the linked articles' : 'Generated from the price data and the linked articles'} · updated ${new Date(S.anAsof).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</small>` : ''}
         <div class="ap-pro"><b>Live analysis is coming to Investedia Pro.</b> Real-time alerts the moment ${esc(a.n)} makes an unusual move, and deeper analysis of every catalyst. Free analysis refreshes about every 15 minutes.</div></section>
-      <section class="ap-sec"><h2>Articles naming ${esc(a.n)}</h2>${rel.length ? `<ol class="ap-rail">${rel.slice(0, EMB ? 3 : 20).map(({ s, i }, n) => `<li class="${cls(i.direction === 'up' ? 1 : i.direction === 'down' ? -1 : 0)}"><span class="ap-dot">${rel.length - n}</span><div><span class="nf-eb">${new Date(s.published_at).toLocaleString('en-GB', { weekday: 'short', hour: '2-digit', minute: '2-digit' })} · ${esc(s.source?.name || '')}</span><a href="story.html?id=${encodeURIComponent(s.id)}"><b>${esc(s.headline)}</b></a><p>${esc(i.why || s.why || '')}</p></div><span class="ap-ar ${cls(i.direction === 'up' ? 1 : i.direction === 'down' ? -1 : 0)}">${i.direction === 'up' ? '↑' : i.direction === 'down' ? '↓' : '↔'}</span></li>`).join('')}</ol><a class="ap-more" href="news.html?asset=${encodeURIComponent(a.s)}">See all articles on the News page →</a>` : '<p class="ap-none">No article in our feed names this asset right now. Coverage appears here as soon as it is published.</p>'}</section>
+      <section class="ap-sec"><h2>Articles naming ${esc(a.n)}</h2>${rel.length ? `<ol class="ap-rail">${rel.slice(0, EMB ? 3 : 20).map(({ s, i }, n) => `<li id="ap-a${rel.length - n}" class="${cls(i.direction === 'up' ? 1 : i.direction === 'down' ? -1 : 0)}"><span class="ap-dot">${rel.length - n}</span><div><span class="nf-eb">${new Date(s.published_at).toLocaleString('en-GB', { weekday: 'short', hour: '2-digit', minute: '2-digit' })} · ${esc(s.source?.name || '')}</span><a href="story.html?id=${encodeURIComponent(s.id)}"><b>${esc(s.headline)}</b></a><p>${esc(i.why || s.why || '')}</p></div><span class="ap-ar ${cls(i.direction === 'up' ? 1 : i.direction === 'down' ? -1 : 0)}">${i.direction === 'up' ? '↑' : i.direction === 'down' ? '↓' : '↔'}</span></li>`).join('')}</ol><a class="ap-more" href="news.html?asset=${encodeURIComponent(a.s)}">See all articles on the News page →</a>` : '<p class="ap-none">No article in our feed names this asset right now. Coverage appears here as soon as it is published.</p>'}</section>
       <p class="mv-note">Prices are delayed by 15 to 30 minutes unless marked Live. Analysis describes the news around a move, not proof it caused it. Not investment advice.</p>`;
   }
   const paintWatch = () => { const b = document.getElementById('ap-watch'); if (!b || !window.INVWATCH) return; const on = INVWATCH.has({ kind: 'asset', src: 'site', s: S.a.s }); b.setAttribute('aria-pressed', on); b.textContent = on ? '★ Watching' : '☆ Watch'; };
@@ -66,7 +78,12 @@
       S.a = a; S.intra = i.s || {}; S.an = an?.items || {}; S.anAsof = an?.asof; S.rel = related(a, (arc && arc.stories) || []); render(); poll();
       root.addEventListener('click', e => { const b = e.target.closest('.ap-seg button'); if (b) { S.win = b.dataset.k; render(); return; }
         if (e.target.closest('#ap-watch') && window.INVWATCH) { INVWATCH.toggle({ kind: 'asset', src: 'site', s: S.a.s }); paintWatch(); return; }
-        if (e.target.closest('#ap-full')) fullChart(); });
+        if (e.target.closest('#ap-full')) { fullChart(); return; }
+        const pin = e.target.closest('.ap-pin'); const tip = root.querySelector('.ap-tip');
+        if (pin && tip) { const it = S.rel.find((x, n) => S.rel.length - n === +pin.dataset.n); if (!it) return; if (!tip.hidden && tip.dataset.n === pin.dataset.n) { const li = document.getElementById('ap-a' + pin.dataset.n); if (li) { li.scrollIntoView({ behavior: 'smooth', block: 'center' }); li.classList.add('hl'); setTimeout(() => li.classList.remove('hl'), 1600); } return; }
+          tip.dataset.n = pin.dataset.n; const dir = it.i.direction === 'up' ? '↑' : it.i.direction === 'down' ? '↓' : '↔'; tip.innerHTML = `<span class="nf-eb">${pin.dataset.n} · ${new Date(it.s.published_at).toLocaleString('en-GB', { weekday: 'short', hour: '2-digit', minute: '2-digit' })} · ${esc(it.s.source?.name || '')}</span><b>${esc(it.s.headline)}</b><p>${dir} ${esc(it.i.why || it.s.why || '')}</p><small>Tap again to jump to the article</small>`; tip.hidden = false;
+          const box = root.querySelector('.ap-cv').getBoundingClientRect(), pb = pin.getBoundingClientRect(); tip.style.left = Math.max(0, Math.min(box.width - 270, pb.left - box.left - 120)) + 'px'; tip.style.top = (pb.top - box.top > 90 ? pb.top - box.top - 118 : pb.top - box.top + 30) + 'px'; return; }
+        if (tip && !e.target.closest('.ap-tip')) tip.hidden = true; });
       paintWatch();
     }).catch(e => { console.error('asset', e); root.innerHTML = '<div class="nb-none">Asset data could not load. Please refresh.</div>'; });
 })();
