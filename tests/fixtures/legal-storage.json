@@ -18,8 +18,8 @@
     "duration": "Until cleared or removed; account copies follow account retention"
   },
   {
-    "name": "inv-follow, inv-follow-topics",
-    "purpose": "Requested globe country follows and topics",
+    "name": "inv-follow, inv-follow-topics, inv-follow-items",
+    "purpose": "Requested globe/story follows and topics",
     "type": "Strictly necessary for requested feature",
     "duration": "Until cleared or changed"
   },

@@ -37,7 +37,7 @@
   `;
   document.head.append(style);
   function close() { if (current) current.hidden = true; clearTimeout(timer); }
-  const logoOf = story => { const e = (story.entities || []).find(x => x.ticker && !/[\^=]/.test(x.ticker)); return e ? `https://cdn.brandfetch.io/${/-USD$/.test(e.ticker) ? 'crypto/' + encodeURIComponent(e.ticker.split('-')[0]) : 'ticker/' + encodeURIComponent(e.ticker)}/w/128/h/128/fallback/404?c=${BF}` : ''; };
+  const logoOf = story => { if (!window.InvConsent?.allows('images')) return ''; const e = (story.entities || []).find(x => x.ticker && !/[\^=]/.test(x.ticker)); return e ? `https://cdn.brandfetch.io/${/-USD$/.test(e.ticker) ? 'crypto/' + encodeURIComponent(e.ticker.split('-')[0]) : 'ticker/' + encodeURIComponent(e.ticker)}/w/128/h/128/fallback/404?c=${BF}` : ''; };
   function show(story, count = 1, href) {
     close();
     const link = href || new URL('assets/globe/news.html?story=' + encodeURIComponent(story.id), location.origin + '/').href;

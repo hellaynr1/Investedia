@@ -52,12 +52,12 @@ class LegalPages(unittest.TestCase):
     def test_storage_inventory_covers_real_literal_keys(self):
         fixture=json.loads((ROOT/'tests/fixtures/legal-storage.json').read_text())
         inventory=' '.join(row['name'] for row in fixture)
-        files=[ROOT/'assets/ui.js',ROOT/'tools/globe-news/page.html',*list((ROOT/'src/pages').glob('*.html'))]
+        files=[ROOT/'tools/globe-news/page.html',*list((ROOT/'assets').glob('*.js')),*list((ROOT/'src/pages').glob('*.html'))]
         keys=set()
         for path in files:
             text=path.read_text()
             keys.update(re.findall(r"(?:getItem|setItem|removeItem|\bstore|\bss)\(\s*['\"](inv-[a-z-]+)",text))
-        keys.update(['inv-watch','inv-follow','inv-follow-topics','inv-consent'])
+        keys.update(['inv-watch','inv-follow','inv-follow-topics','inv-follow-items','inv-consent'])
         for key in keys:self.assertIn(key,inventory,key)
         cookies=(ROOT/'src/pages/cookies.html').read_text()
         for row in fixture:self.assertIn(row['name'],cookies)

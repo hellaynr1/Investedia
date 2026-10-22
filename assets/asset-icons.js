@@ -26,13 +26,13 @@
     const base = sym.replace(/-USD$/, '');
     const srcs = [];
     if (LOGOS[base]) srcs.push('assets/globe/' + LOGOS[base]);
-    if (a.t === 'crypto' || /-USD$/.test(sym)) srcs.push(`https://cdn.brandfetch.io/crypto/${encodeURIComponent(base)}/w/96/h/96/fallback/404?c=${BFID}`);
-    else if (!/[\^=]/.test(sym) && a.t !== 'fx') srcs.push(`https://cdn.brandfetch.io/ticker/${encodeURIComponent(sym)}/w/96/h/96/fallback/404?c=${BFID}`);
+    if (window.InvConsent?.allows('images') && (a.t === 'crypto' || /-USD$/.test(sym))) srcs.push(`https://cdn.brandfetch.io/crypto/${encodeURIComponent(base)}/w/96/h/96/fallback/404?c=${BFID}`);
+    else if (window.InvConsent?.allows('images') && !/[\^=]/.test(sym) && a.t !== 'fx') srcs.push(`https://cdn.brandfetch.io/ticker/${encodeURIComponent(sym)}/w/96/h/96/fallback/404?c=${BFID}`);
     const flag = a.cc ? `assets/globe/flags/${String(a.cc).toLowerCase()}.svg` : '';
     if (flag) srcs.push(flag);
     if (!srcs.length) return initial(n);
     return `<img class="ai-i" src="${esc(srcs[0])}" alt="" data-q="${esc(JSON.stringify(srcs.slice(1)))}" data-f="${esc(initial(n))}" onerror="window.AssetIcons.next(this)">`;
   }
-  function next(img) { let q = []; try { q = JSON.parse(img.dataset.q || '[]'); } catch {} if (q.length) { img.dataset.q = JSON.stringify(q.slice(1)); img.src = q[0]; } else img.outerHTML = img.dataset.f; }
+  function next(img) { let q = []; try { q = JSON.parse(img.dataset.q || '[]'); } catch {} if (!window.InvConsent?.allows('images')) q = q.filter(src => !src.startsWith('https://cdn.brandfetch.io/')); if (q.length) { img.dataset.q = JSON.stringify(q.slice(1)); img.src = q[0]; } else img.outerHTML = img.dataset.f; }
   window.AssetIcons = { icon, next, ready };
 })();

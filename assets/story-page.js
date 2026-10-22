@@ -3,7 +3,7 @@
   const root = document.getElementById('sp'), id = new URLSearchParams(location.search).get('id');
   const arr = d => `<span class="sp-dir ${d}">${d === 'up' ? '↑' : d === 'down' ? '↓' : d === 'mixed' ? '↔' : '–'}</span>`;
   const fl = c => c ? `<img class="sp-fl" src="assets/globe/flags/${c.toLowerCase()}.svg" alt="" onerror="this.remove()">` : '';
-  const lg = t => t && !/[\^=]/.test(t) ? `<img class="sp-lg" src="https://cdn.brandfetch.io/${/-USD$/.test(t) ? 'crypto/' + encodeURIComponent(t.split('-')[0]) : 'ticker/' + encodeURIComponent(t)}/w/96/h/96/fallback/404?c=${BF}" alt="" onerror="this.remove()">` : '';
+  const lg = t => window.InvConsent?.allows('images') && t && !/[\^=]/.test(t) ? `<img class="sp-lg" src="https://cdn.brandfetch.io/${/-USD$/.test(t) ? 'crypto/' + encodeURIComponent(t.split('-')[0]) : 'ticker/' + encodeURIComponent(t)}/w/96/h/96/fallback/404?c=${BF}" alt="" onerror="this.remove()">` : '';
   const ic = i => i.kind === 'country' || !i.ticker ? fl(i.country) : lg(i.ticker) || fl(i.country);
   const link = s => `story.html?id=${encodeURIComponent(s.id)}`;
   const FKEY = 'inv-follow-items';
