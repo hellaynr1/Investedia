@@ -48,6 +48,7 @@ HEAD = """<!doctype html>
 <link rel="stylesheet" href="assets/news-menu.css?v={ver}">
 <script src="assets/live-config.js?v={ver}"></script>
 <script src="assets/prefs.js?v={ver}"></script>
+<script src="assets/peek.js?v={ver}"></script>
 <script src="assets/sectors.js?v={ver}"></script>
 <script src="assets/news-menu.js?v={ver}"></script>
 <script src="assets/ui.js?v={ver}"></script>
