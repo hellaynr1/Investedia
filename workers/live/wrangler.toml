@@ -1,0 +1,5 @@
+name = "investedia-live"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+# After deploying, add a custom domain in the Cloudflare dashboard: Workers & Pages > investedia-live > Settings > Domains & Routes > Add > Custom domain: live.investedia.com

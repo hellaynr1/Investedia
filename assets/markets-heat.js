@@ -88,7 +88,7 @@
     document.querySelectorAll('#mh-view button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === S.view));
     if (!S.ready) return skeleton();
     ({ sec: sectors, idx: indices, cmd: commodities, cry: crypto, fx })[S.view]();
-    $('mh-live-note').hidden = !(S.view === 'cry' && !S.liveOn);
+    $('mh-live-note').hidden = !(S.view === 'cry' && !S.liveOn && !window.INV_LIVE_URL);
     status();
   }
   function status() { const el = $('mh-status'); el.className = 'mh-status' + (S.view === 'cry' && S.liveOn ? ' live' : ''); el.lastChild.textContent = S.view === 'cry' && S.liveOn ? 'Live' : 'Delayed'; }
@@ -96,7 +96,14 @@
   let ws, retry = 0, pend = {}, raf = 0, rt;
   const PROD = CRY.map(s => s);
   function flush() { raf = 0; for (const [id, l] of Object.entries(pend)) { document.querySelectorAll(`[data-s="${id}"]`).forEach(row => { const p = row.querySelector('[data-k=p]'), c = row.querySelector('[data-k=c]'); if (p) { const prev = p.textContent; p.textContent = nf(l.p); if (prev !== p.textContent && !matchMedia('(prefers-reduced-motion: reduce)').matches) { p.classList.remove('up', 'dn'); void p.offsetWidth; p.classList.add(l.dir > 0 ? 'up' : 'dn'); } } if (c && S.win === 'd' && l.o) { const m = pc(l.p, l.o); c.className = (c.className.replace(/\b(u|d|o)\b/g, '') + ' ' + cls(m)).replace(/\s+/g, ' '); c.textContent = `${arrow(m)} ${fmt(m)}`; } }); } pend = {}; }
+  // Preferred path: our own relay (no third party sees the visitor), polled every 3 s. Fallback: direct Coinbase socket with consent.
+  let poll;
+  function relay() {
+    const tick = async () => { try { const r = await fetch(window.INV_LIVE_URL, { cache: 'no-store' }); if (!r.ok) throw 0; const j = await r.json(); let any = false; for (const [id, v] of Object.entries(j.p || {})) { const prev = S.live[id]?.p; S.live[id] = { p: v.p, o: v.o }; pend[id] = { ...S.live[id], dir: prev == null ? 0 : v.p - prev }; any = true; } if (any) { if (!S.liveOn) { S.liveOn = true; if (S.ready) draw(); } if (!raf) raf = requestAnimationFrame(flush); } } catch { if (S.liveOn) { S.liveOn = false; if (S.ready) draw(); } } };
+    tick(); poll = setInterval(() => { if (!document.hidden) tick(); }, 3000);
+  }
   function connect() {
+    if (window.INV_LIVE_URL) { if (!poll) relay(); return; }
     if (ws || !(window.InvConsent && InvConsent.allows('live'))) return;
     try { ws = new WebSocket('wss://ws-feed.exchange.coinbase.com'); } catch { return; }
     ws.onopen = () => { retry = 0; S.liveOn = true; ws.send(JSON.stringify({ type: 'subscribe', product_ids: PROD, channels: ['ticker'] })); if (S.ready) draw(); };
@@ -104,7 +111,7 @@
     ws.onclose = () => { ws = null; S.liveOn = false; if (S.ready) status(); if (window.InvConsent && InvConsent.allows('live')) { clearTimeout(rt); rt = setTimeout(connect, Math.min(30000, 1500 * 2 ** retry++)); } };
     ws.onerror = () => { try { ws.close(); } catch {} };
   }
-  function disconnect() { clearTimeout(rt); if (ws) { ws.onclose = null; try { ws.close(); } catch {} ws = null; } S.liveOn = false; S.live = {}; if (S.ready) draw(); }
+  function disconnect() { if (window.INV_LIVE_URL) return; clearTimeout(rt); if (ws) { ws.onclose = null; try { ws.close(); } catch {} ws = null; } S.liveOn = false; S.live = {}; if (S.ready) draw(); }
   window.addEventListener('inv-consent-change', () => (window.InvConsent && InvConsent.allows('live')) ? connect() : disconnect());
   $('mh-live-on').onclick = () => window.InvConsent && InvConsent.open();
   // ---------- Events ----------
