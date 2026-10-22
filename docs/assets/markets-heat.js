@@ -2,8 +2,8 @@
 (() => {
   const $ = id => document.getElementById(id);
   const WIN = [['d', 'Today'], ['w', 'Week'], ['m', 'Month']];
-  const VIEW = [['sec', 'Sectors'], ['idx', 'Indices'], ['cmd', 'Commodities'], ['cry', 'Crypto'], ['fx', 'FX']];
-  const S = { win: 'd', view: 'sec', sel: null, by: {}, intra: {}, ready: false, live: {}, liveOn: false };
+  const VIEW = [['sec', 'Sectors'], ['idx', 'Indices'], ['cmd', 'Commodities'], ['cry', 'Crypto'], ['fx', 'FX'], ['tv', 'Live charts']];
+  const S = { win: 'd', view: 'sec', sel: null, by: {}, intra: {}, ready: false, live: {}, liveOn: false, relay: {} };
   const nf = v => v == null || !isFinite(v) ? '—' : v.toLocaleString('en-US', { maximumFractionDigits: Math.abs(v) >= 1000 ? 2 : Math.abs(v) >= 1 ? 2 : 4, minimumFractionDigits: Math.abs(v) >= 1 ? 2 : 4 });
   const fmt = v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(Math.abs(v) >= 10 ? 1 : 2) + '%';
   const cls = v => v > 0.005 ? 'u' : v < -0.005 ? 'd' : 'o';
@@ -45,7 +45,7 @@
     el.innerHTML = `<section class="mh-p"><div class="mh-ph"><span class="mh-ic lg">${InvSectors.icon(x.name)}</span><div><b>${x.name}</b><small>Sector fund ${x.etf.replace('-USD', '')}</small></div><button type="button" class="mh-x" id="mh-x">Close ×</button></div>
       <div class="mh-ps">${['d', 'w', 'm'].map(k => `<div><small>${{ d: 'Today', w: 'Week', m: 'Month' }[k]}</small><span class="mono ${cls(move(a, k))}">${arrow(move(a, k))} ${fmt(move(a, k))}</span></div>`).join('')}<div class="mh-pc">${chart(a.sp, col(move(a, 'm')), 200, 48, true)}</div></div>
       <div class="mh-lab">Largest movers · ${{ d: 'today', w: 'this week', m: 'this month' }[S.win]}</div>
-      ${mv.length ? mv.map(r => { const m = move(r, S.win); return `<div class="mh-row"><span class="mh-ic2">${icon(r)}</span><span class="mh-nm"><b>${r.n}</b><small>${String(r.s).replace(/[=^]/g, '')}</small></span><span class="mh-sp">${chart(series(r, S.win), col(m))}</span><span class="mono ${cls(m)}">${arrow(m)} ${fmt(m)}</span></div>`; }).join('') : '<div class="nb-none">No tracked names for this sector yet.</div>'}
+      ${mv.length ? mv.map(r => { const m = move(r, S.win); return `<div class="mh-row" data-s="${r.s}"><span class="mh-ic2">${icon(r)}</span><span class="mh-nm"><b>${r.n}</b><small>${String(r.s).replace(/[=^]/g, '')}</small></span><span class="mh-sp">${chart(series(r, S.win), col(m))}</span><span class="mono ${cls(m)}">${arrow(m)} ${fmt(m)}</span></div>`; }).join('') : '<div class="nb-none">No tracked names for this sector yet.</div>'}
       <a class="mh-link" href="news.html?sector=${encodeURIComponent(x.slug)}">See articles on the News page →</a></section>`;
   }
 
@@ -58,17 +58,21 @@
   // ---------- Commodities ----------
   const CMD = ['GC=F', 'SI=F', 'HG=F', 'PL=F', 'BZ=F', 'CL=F', 'NG=F', 'HO=F', 'RB=F', 'ZW=F', 'ZC=F', 'ZS=F', 'KC=F', 'SB=F', 'CC=F', 'CT=F'];
   function commodities() {
-    $('mh-body').innerHTML = `<div class="mh-idx">${CMD.map(s => S.by[s]).filter(Boolean).map(a => { const m = move(a, S.win); return `<div class="mh-c"><small>${icon(a)}<span>${a.n}</span></small><span class="mono ${cls(m)}">${arrow(m)} ${fmt(m)}</span>${chart(series(a, S.win), col(m))}</div>`; }).join('')}</div>`;
+    $('mh-body').innerHTML = `<div class="mh-idx">${CMD.map(s => S.by[s]).filter(Boolean).map(a => { const m = move(a, S.win); return `<div class="mh-c" data-s="${a.s}"><small>${icon(a)}<span>${a.n}</span></small><span class="mono ${cls(m)}">${arrow(m)} ${fmt(m)}</span>${chart(series(a, S.win), col(m))}</div>`; }).join('')}</div>`;
   }
   // ---------- Crypto ----------
   const CRY = ['BTC-USD', 'ETH-USD', 'SOL-USD', 'XRP-USD', 'BNB-USD', 'DOGE-USD', 'ADA-USD', 'TRX-USD', 'AVAX-USD', 'LINK-USD', 'DOT-USD', 'LTC-USD'];
   function crypto() {
-    const L = CRY.map(s => S.by[s]).filter(Boolean), big = L.slice(0, 2), liveChg = a => { const l = S.live[a.s]; return l && l.o ? pc(l.p, l.o) : null; };
-    const dayM = a => (S.win === 'd' && liveChg(a) != null) ? liveChg(a) : move(a, S.win);
-    const sorted = [...L].sort((a, b) => dayM(b) - dayM(a));
-    $('mh-body').innerHTML = `<div class="mh-big2">${big.map(a => { const m = dayM(a), cur = S.live[a.s]?.p ?? a.p; return `<article class="mh-bt" data-s="${a.s}"><div class="mh-c1"><span class="mh-ic2">${icon(a)}</span><span class="mh-cn"><b>${a.n}</b><small>${a.s.replace('-USD', '')}</small></span></div><div class="mh-big mono" data-k="p">${nf(cur)}</div><span class="mh-chip ${cls(m)}" data-k="c">${arrow(m)} ${fmt(m)}</span><div class="mh-ch tall">${chart(series(a, S.win === 'd' ? 'w' : S.win), col(m), 200, 90, true)}</div></article>`; }).join('')}</div>
-      <div class="mh-tbl"><div class="mh-th"><span>#</span><span>Coin</span><span>Price</span><span>${{ d: '24h', w: '7d', m: '30d' }[S.win]}</span><span class="mh-hide">7d</span></div>${L.map((a, i) => { const m = dayM(a), cur = S.live[a.s]?.p ?? a.p; return `<div class="mh-tr" data-s="${a.s}"><span class="mh-rk">${i + 1}</span><span class="mh-co"><span class="mh-ic2">${icon(a)}</span><b>${a.n}</b><small>${a.s.replace('-USD', '')}</small></span><span class="mono" data-k="p">${nf(cur)}</span><span class="mono ${cls(m)}" data-k="c">${arrow(m)} ${fmt(m)}</span><span class="mh-sp mh-hide">${chart(a.sp, col(move(a, 'w')))}</span></div>`; }).join('')}</div>
-      <div class="mh-gl"><div><div class="mh-lab">Top gainers</div>${sorted.slice(0, 3).map(a => `<div class="mh-mini"><b>${a.s.replace('-USD', '')}</b><span class="mono ${cls(dayM(a))}">${arrow(dayM(a))} ${fmt(dayM(a))}</span></div>`).join('')}</div><div><div class="mh-lab">Top losers</div>${sorted.slice(-3).reverse().map(a => `<div class="mh-mini"><b>${a.s.replace('-USD', '')}</b><span class="mono ${cls(dayM(a))}">${arrow(dayM(a))} ${fmt(dayM(a))}</span></div>`).join('')}</div></div>`;
+    const R = S.relay, haveRelay = Object.keys(R).length > 20;
+    const mk = (id, v) => ({ s: id, n: v.n, t: 'crypto', p: v.p, d: v.pc, w: S.by[id]?.w ?? null, sp: S.by[id]?.sp || [], mc: v.mc, v: v.v });
+    const L = haveRelay ? Object.entries(R).map(([id, v]) => mk(id, v)).sort((a, b) => (b.mc || b.v) - (a.mc || a.v)).slice(0, 50) : CRY.map(s => S.by[s]).filter(Boolean);
+    const big = L.slice(0, 2), liveChg = a => { const l = S.live[a.s]; return l && l.o ? pc(l.p, l.o) : null; };
+    const dayM = a => (S.win === 'd' && liveChg(a) != null) ? liveChg(a) : (S.win === 'd' ? a.d : move(a, S.win));
+    const sorted = [...L].filter(a => isFinite(dayM(a))).sort((a, b) => dayM(b) - dayM(a)), useMc = L.some(a => a.mc > 0), key = a => useMc ? a.mc : a.v;
+    const bigCard = a => { const m = dayM(a), cur = S.live[a.s]?.p ?? a.p, sp = S.by[a.s]?.sp || a.sp; return `<article class="mh-bt" data-s="${a.s}"><div class="mh-c1"><span class="mh-ic2">${icon(a)}</span><span class="mh-cn"><b>${a.n}</b><small>${a.s.replace('-USD', '')}</small></span></div><div class="mh-big mono" data-k="p">${nf(cur)}</div><span class="mh-chip ${cls(m)}" data-k="c">${arrow(m)} ${fmt(m)}</span><div class="mh-ch tall">${chart(S.win === 'd' ? sp.slice(-8) : series({ ...a, sp }, S.win), col(m), 200, 90, true)}</div></article>`; };
+    $('mh-body').innerHTML = `<div class="mh-big2">${big.map(bigCard).join('')}</div>
+      <div class="mh-tbl"><div class="mh-th"><span>#</span><span>Coin</span><span>Price</span><span>${{ d: '24h', w: '7d', m: '30d' }[S.win]}</span><span class="mh-hide">${haveRelay ? (useMc ? 'Market share' : '24h volume') : '7d'}</span></div>${L.map((a, i) => { const m = dayM(a), cur = S.live[a.s]?.p ?? a.p; return `<div class="mh-tr" data-s="${a.s}"><span class="mh-rk">${i + 1}</span><span class="mh-co"><span class="mh-ic2">${icon(a)}</span><b>${a.n}</b><small>${a.s.replace('-USD', '')}</small></span><span class="mono" data-k="p">${nf(cur)}</span><span class="mono ${cls(m)}" data-k="c">${isFinite(m) ? arrow(m) + ' ' + fmt(m) : '—'}</span><span class="mh-sp mh-hide">${haveRelay ? `<span class="mh-ms"><i style="width:${Math.max(2, Math.min(100, (key(a) || 0) / (key(L[0]) || 1) * 100)).toFixed(0)}%"></i></span>` : chart(a.sp, col(move(a, 'w')))}</span></div>`; }).join('')}</div>
+      <div class="mh-gl"><div><div class="mh-lab">Top gainers${haveRelay ? ' · top 50' : ''}</div>${sorted.slice(0, 4).map(a => `<div class="mh-mini"><b>${a.s.replace('-USD', '')}</b><span class="mono ${cls(dayM(a))}">${arrow(dayM(a))} ${fmt(dayM(a))}</span></div>`).join('')}</div><div><div class="mh-lab">Top losers${haveRelay ? ' · top 50' : ''}</div>${sorted.slice(-4).reverse().map(a => `<div class="mh-mini"><b>${a.s.replace('-USD', '')}</b><span class="mono ${cls(dayM(a))}">${arrow(dayM(a))} ${fmt(dayM(a))}</span></div>`).join('')}</div></div>`;
   }
   // ---------- FX ----------
   const CUR = [['USD', 'us'], ['EUR', 'eu'], ['GBP', 'gb'], ['JPY', 'jp'], ['CHF', 'ch'], ['AUD', 'au'], ['CAD', 'ca'], ['NZD', 'nz']];
@@ -79,7 +83,18 @@
     const cell = (i, j) => { if (v[i] == null || v[j] == null) return '<td></td>'; if (i === j) return '<td class="mh-dg">—</td>'; const m = ((1 + v[i] / 100) / (1 + v[j] / 100) - 1) * 100; return `<td style="background:${tint(m * 3)}" class="${cls(m)}">${fmt(m)}</td>`; };
     const MAJ = ['EURUSD', 'GBPUSD', 'USDJPY', 'USDCHF', 'AUDUSD', 'USDCAD'], FC = { EUR: 'eu', USD: 'us', GBP: 'gb', JPY: 'jp', CHF: 'ch', AUD: 'au', CAD: 'ca' };
     $('mh-body').innerHTML = `<section class="mh-sec"><h2>Currency strength</h2><p class="mh-sub">Change of the row currency against the column currency, ${{ d: 'today', w: 'this week', m: 'this month' }[k]}.</p><div class="mh-mx"><table><thead><tr><th></th>${CUR.map(([c, f]) => `<th><img class="mh-fl" src="assets/globe/flags/${f}.svg" alt=""><span>${c}</span></th>`).join('')}</tr></thead><tbody>${CUR.map(([c, f], i) => `<tr><th><img class="mh-fl" src="assets/globe/flags/${f}.svg" alt=""><span>${c}</span></th>${CUR.map((_, j) => cell(i, j)).join('')}</tr>`).join('')}</tbody></table></div></section>
-      <section class="mh-sec"><h2>Major pairs</h2><div class="mh-cards">${MAJ.map(s => S.by[s]).filter(Boolean).map(a => { const m = move(a, S.win), b = a.s.slice(0, 3), q = a.s.slice(3); return `<article class="mh-ic3"><div class="mh-c1"><span class="mh-pr"><img class="mh-fl" src="assets/globe/flags/${FC[q]}.svg" alt=""><img class="mh-fl mid" src="assets/globe/flags/${FC[b]}.svg" alt=""></span><span class="mh-cn"><b>${b}/${q}</b><small>${a.n}</small></span></div><div class="mh-big mono">${nf(a.p)}</div><div class="mh-c2"><span class="mh-chip ${cls(m)}">${arrow(m)} ${fmt(m)}</span></div><div class="mh-ch">${chart(series(a, S.win), col(m), 160, 56, true)}</div>${rangeBar(a, a.p)}</article>`; }).join('')}</div></section>`;
+      <section class="mh-sec"><h2>Major pairs</h2><div class="mh-cards">${MAJ.map(s => S.by[s]).filter(Boolean).map(a => { const m = move(a, S.win), b = a.s.slice(0, 3), q = a.s.slice(3); return `<article class="mh-ic3" data-s="${a.s}"><div class="mh-c1"><span class="mh-pr"><img class="mh-fl" src="assets/globe/flags/${FC[q]}.svg" alt=""><img class="mh-fl mid" src="assets/globe/flags/${FC[b]}.svg" alt=""></span><span class="mh-cn"><b>${b}/${q}</b><small>${a.n}</small></span></div><div class="mh-big mono">${nf(a.p)}</div><div class="mh-c2"><span class="mh-chip ${cls(m)}">${arrow(m)} ${fmt(m)}</span></div><div class="mh-ch">${chart(series(a, S.win), col(m), 160, 56, true)}</div>${rangeBar(a, a.p)}</article>`; }).join('')}</div></section>`;
+  }
+  // ---------- Live charts: TradingView free widgets, loaded only after a click ----------
+  function liveCharts() {
+    $('mh-body').innerHTML = `<section class="mh-tvbox"><div class="mh-tvh"><div><b>Live charts</b><small>Free real-time-style charts by TradingView. Real-time or delayed depends on each exchange.</small></div><button type="button" class="mh-tvbtn" id="mh-tv-go">Load live charts</button></div><div id="mh-tv" class="mh-tv"><p>These charts are provided by TradingView. Loading them connects your browser to TradingView, which receives your IP address and may set its own cookies. Nothing loads until you press the button.</p></div></section>`;
+    $('mh-tv-go').onclick = () => {
+      const host = $('mh-tv'); host.innerHTML = '<div class="tradingview-widget-container mh-tvw wide"><div class="tradingview-widget-container__widget"></div></div><div class="tradingview-widget-container mh-tvw"><div class="tradingview-widget-container__widget" style="height:100%"></div></div><p class="mh-tvc">Charts and quotes by <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView</a>.</p>';
+      const add = (box, src, cfg) => { const sc = document.createElement('script'); sc.src = 'https://s3.tradingview.com/external-embedding/' + src; sc.async = true; sc.text = JSON.stringify(cfg); box.append(sc); };
+      const [t, c] = host.querySelectorAll('.tradingview-widget-container');
+      add(t, 'embed-widget-ticker-tape.js', { symbols: [{ proName: 'FOREXCOM:SPXUSD', title: 'S&P 500' }, { proName: 'FOREXCOM:NSXUSD', title: 'Nasdaq 100' }, { proName: 'BITSTAMP:BTCUSD', title: 'Bitcoin' }, { proName: 'BITSTAMP:ETHUSD', title: 'Ethereum' }, { proName: 'FX:EURUSD', title: 'EUR/USD' }, { proName: 'OANDA:XAUUSD', title: 'Gold' }], colorTheme: 'dark', isTransparent: true, displayMode: 'adaptive', locale: 'en' });
+      add(c, 'embed-widget-advanced-chart.js', { autosize: true, symbol: 'BITSTAMP:BTCUSD', interval: '15', theme: 'dark', style: '1', locale: 'en', backgroundColor: '#101012', hide_side_toolbar: true, allow_symbol_change: true, details: false, calendar: false });
+    };
   }
   // ---------- Render and live ----------
   const skeleton = () => { $('mh-body').innerHTML = '<div class="mh-cards">' + Array(6).fill('<div class="mh-sk"></div>').join('') + '</div>'; };
@@ -87,7 +102,7 @@
     document.querySelectorAll('#mh-win button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === S.win));
     document.querySelectorAll('#mh-view button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === S.view));
     if (!S.ready) return skeleton();
-    ({ sec: sectors, idx: indices, cmd: commodities, cry: crypto, fx })[S.view]();
+    ({ sec: sectors, idx: indices, cmd: commodities, cry: crypto, fx, tv: liveCharts })[S.view]();
     $('mh-live-note').hidden = !(S.view === 'cry' && !S.liveOn && !window.INV_LIVE_URL);
     status();
   }
@@ -99,7 +114,7 @@
   // Preferred path: our own relay (no third party sees the visitor), polled every 3 s. Fallback: direct Coinbase socket with consent.
   let poll;
   function relay() {
-    const tick = async () => { try { const r = await fetch(window.INV_LIVE_URL, { cache: 'no-store' }); if (!r.ok) throw 0; const j = await r.json(); let any = false; for (const [id, v] of Object.entries(j.p || {})) { const prev = S.live[id]?.p; S.live[id] = { p: v.p, o: v.o }; pend[id] = { ...S.live[id], dir: prev == null ? 0 : v.p - prev }; any = true; } if (any) { if (!S.liveOn) { S.liveOn = true; if (S.ready) draw(); } if (!raf) raf = requestAnimationFrame(flush); } } catch { if (S.liveOn) { S.liveOn = false; if (S.ready) draw(); } } };
+    const tick = async () => { try { const r = await fetch(window.INV_LIVE_URL, { cache: 'no-store' }); if (!r.ok) throw 0; const j = await r.json(); let any = false; for (const [id, v] of Object.entries(j.p || {})) { const prev = S.live[id]?.p; S.relay[id] = v; S.live[id] = { p: v.p, o: v.o || v.p / (1 + (v.pc || 0) / 100) }; pend[id] = { ...S.live[id], dir: prev == null ? 0 : v.p - prev }; any = true; } if (any) { if (!S.liveOn) { S.liveOn = true; if (S.ready) draw(); } else if (!S.fullDrawn && S.view === 'cry' && S.ready && Object.keys(S.relay).length > 20) { S.fullDrawn = true; draw(); } if (!raf) raf = requestAnimationFrame(flush); } } catch { if (S.liveOn) { S.liveOn = false; if (S.ready) draw(); } } };
     tick(); poll = setInterval(() => { if (!document.hidden) tick(); }, 3000);
   }
   function connect() {
@@ -119,7 +134,7 @@
   $('mh-view').innerHTML = VIEW.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="false">${l}</button>`).join('');
   $('mh-win').onclick = e => { const b = e.target.closest('button'); if (b) { S.win = b.dataset.k; draw(); } };
   $('mh-view').onclick = e => { const b = e.target.closest('button'); if (b) { S.view = b.dataset.k; S.sel = null; draw(); } };
-  $('mh-body').addEventListener('click', e => { const t = e.target.closest('.mh-t'); if (t) { S.sel = S.sel === t.dataset.n ? null : t.dataset.n; sectors(); if (S.sel) $('mh-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } if (e.target.closest('#mh-x')) { S.sel = null; sectors(); } });
+  $('mh-body').addEventListener('click', e => { const card = e.target.closest('[data-s]'); if (card && !e.target.closest('a,button,.mh-t')) { location.href = 'asset.html?s=' + encodeURIComponent(card.dataset.s); return; } const t = e.target.closest('.mh-t'); if (t) { S.sel = S.sel === t.dataset.n ? null : t.dataset.n; sectors(); if (S.sel) $('mh-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } if (e.target.closest('#mh-x')) { S.sel = null; sectors(); } });
   const params = new URLSearchParams(location.search); if (VIEW.some(v => v[0] === params.get('view'))) S.view = params.get('view');
   draw();
   const refresh = () => Promise.all([AssetIcons.ready, fetch('assets/globe/markets.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/news-prices.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ assets: {} })), fetch('assets/intraday.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ s: {} }))])

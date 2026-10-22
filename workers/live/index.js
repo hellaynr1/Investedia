@@ -1,9 +1,8 @@
 // Investedia live crypto relay (Cloudflare Worker, free plan).
 // Visitors call THIS worker (our own subdomain), not Coinbase, so no third party sees their IP.
-// One edge-cached snapshot of Coinbase's public 24h stats is shared by everyone and refreshed at most every 3 seconds.
-const PRODUCTS = ['BTC-USD', 'ETH-USD', 'SOL-USD', 'XRP-USD', 'BNB-USD', 'DOGE-USD', 'ADA-USD', 'TRX-USD', 'AVAX-USD', 'LINK-USD', 'DOT-USD', 'LTC-USD'];
+// One edge-cached snapshot of Coinbase's public market data (top 100 coins) is shared by everyone and refreshed at most every 3 seconds.
 const ALLOWED = ['https://investedia.com', 'https://www.investedia.com'];
-const TTL = 3;
+const TTL = 3, TOP = 100;
 
 const cors = (req) => {
   const o = req.headers.get('Origin') || '';
@@ -11,17 +10,17 @@ const cors = (req) => {
   return { 'Access-Control-Allow-Origin': ok ? o : ALLOWED[0], 'Vary': 'Origin', 'Access-Control-Allow-Methods': 'GET, OPTIONS', 'Access-Control-Max-Age': '86400' };
 };
 
+// One call returns every Coinbase spot product with price, 24h change, 24h range, volume and market cap.
 async function snapshot() {
   const out = {};
-  await Promise.all(PRODUCTS.map(async (id) => {
-    try {
-      const r = await fetch(`https://api.exchange.coinbase.com/products/${id}/stats`, { headers: { 'User-Agent': 'Investedia live relay (info@investedia.com)' } });
-      if (!r.ok) return;
-      const s = await r.json(), p = +s.last, o = +s.open;
-      if (p > 0 && o > 0) out[id] = { p, o, h: +s.high, l: +s.low };
-    } catch { /* skip this product this round */ }
-  }));
-  return { t: Date.now(), source: 'Coinbase Exchange public data', ttl: TTL, p: out };
+  try {
+    const r = await fetch('https://api.coinbase.com/api/v3/brokerage/market/products?product_type=SPOT&limit=1000', { headers: { 'User-Agent': 'Investedia live relay (info@investedia.com)' } });
+    if (!r.ok) throw new Error(String(r.status));
+    const rows = ((await r.json()).products || []).filter(x => x.quote_currency_id === 'USD' && !x.is_disabled && !x.trading_disabled && +x.price > 0 && +x.approximate_quote_24h_volume > 0 && !/^(USDT|USDC|DAI|PYUSD|EURC|GUSD|PAX|TUSD)$/.test(x.base_currency_id));
+    rows.sort((x, y) => (+y.market_cap || 0) - (+x.market_cap || 0) || (+y.approximate_quote_24h_volume) - (+x.approximate_quote_24h_volume));
+    for (const x of rows.slice(0, TOP)) out[x.product_id] = { p: +x.price, pc: +x.price_percentage_change_24h || 0, h: +x.high_24h || null, l: +x.low_24h || null, v: Math.round(+x.approximate_quote_24h_volume || 0), mc: Math.round(+x.market_cap || 0), n: (x.base_name || x.base_currency_id).replace(/\s+/g, ' ').trim() };
+  } catch { /* upstream error: return what we have (nothing) so the caller serves 503 and the page falls back */ }
+  return { t: Date.now(), source: 'Coinbase public market data', ttl: TTL, p: out };
 }
 
 export default {

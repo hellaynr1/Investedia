@@ -37,6 +37,10 @@ jobs:
         run: python3 update_globe.py || echo "Globe update failed; keeping the previous prices"
       - name: Fetch prices for assets in the news
         run: python3 update_news_prices.py || echo "News prices failed; keeping the previous file"
+      - name: Big-move analysis for assets
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 update_asset_analysis.py || echo "Analysis failed; keeping the previous file"
       - name: Fetch news
         run: |
           M=$(date -u +%M)
