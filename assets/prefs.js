@@ -16,7 +16,7 @@
   const num = (v, c) => { const x = Math.abs(v), d = x >= 1 ? 2 : x >= 0.01 ? 4 : 6; try { return v.toLocaleString(loc(), c ? { style: 'currency', currency: c, minimumFractionDigits: d, maximumFractionDigits: d } : { minimumFractionDigits: d, maximumFractionDigits: d }); } catch { return v.toFixed(d); } };
   const fmt = (v, a) => {
     if (v == null || !isFinite(v)) return '—';
-    let own = a && a.cur; if (own === 'GBp') { v /= 100; own = 'GBP'; }
+    let own = a && a.cur; if (own === 'GBp') { v /= 100; own = 'GBP'; } else if (own === 'USX') { v /= 100; own = 'USD'; }
     if (own && own !== 'USD' && a.t === 'stocks' && a.g !== 'Index') { const ro = rates[own]; if (!ro) return num(v, own); v /= ro; }
     else if (!convertible(a)) return num(v);
     else if (own && own !== 'USD') return num(v, own);

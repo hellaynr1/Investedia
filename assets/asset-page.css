@@ -31,3 +31,7 @@ html.embed .ap-seg button{padding:6px 14px;min-height:34px;font-size:12.5px}html
 html.embed .ap-card{padding:16px;border-radius:20px}html.embed .ap-tx{font-size:14px;margin:8px 0 6px}html.embed .ap-pro{display:none}html.embed .ap-sec{margin-top:20px}html.embed .ap-sec h2{font-size:15px}html.embed .ap-rail b{font-size:13.5px}html.embed .ap-rail p{display:none}html.embed .ap-rail li{padding-bottom:12px}html.embed .mv-note{font-size:11.5px}
 @media(max-width:700px){html.embed .ap{padding:64px 16px 20px}html.embed .ap-p{font-size:30px!important}html.embed .ap-ch{height:110px}}
 html.embed main,html.embed .nb,html.embed .ap-main{padding-top:0!important;margin-top:0!important}html.embed .ap{padding-top:44px!important}
+/* Header icon keeps a fixed size (commodity tiles fill their holder) */
+.ap-ic{display:block;flex:none;width:48px;height:48px}.ap-ic .ai-t,.ap-ic .ai-i{width:100%!important;height:100%!important}
+html.embed .ap-ic{width:36px;height:36px}
+@media(max-width:700px){.ap-ic{width:40px;height:40px}html.embed .ap-ic{width:34px;height:34px}}

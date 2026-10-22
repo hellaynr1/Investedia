@@ -24,7 +24,7 @@
     const a = S.a, live = S.live, price = live?.p ?? a.p, m = S.win === 'd' && live?.o ? pc(live.p, live.o) : chg(a, S.win), sd = std(a.sp), z = sd ? a.d / sd : null, rel = S.rel, an = S.an?.[a.s];
     const level = z == null ? null : Math.abs(z) >= 2 ? ['Unusually large move', 'big'] : Math.abs(z) >= 1.3 ? ['Notable move', 'mid'] : ['Within its normal range', 'ok'];
     const lo = Math.min(...(a.sp || [a.p])), hi = Math.max(...(a.sp || [a.p])), pos = hi === lo ? 50 : (price - lo) / (hi - lo) * 100;
-    const sym = a.s.replace(/[=^]/g, '').replace('-USD', '');
+    const sym = a.s.replace(/=F$/, '').replace(/^\^/, '').replace(/=X$/, '').replace('-USD', '');
     const base = z == null ? '' : `${a.n} is ${a.d > 0 ? 'up' : a.d < 0 ? 'down' : 'flat'} ${Math.abs(a.d).toFixed(2)}% today, ${Math.abs(z).toFixed(1)}× its typical daily move (21-day volatility ${sd.toFixed(2)}%).`;
     const cell = (l, v, bar) => `<div><small>${l}</small><b class="mono">${v}</b>${bar != null ? `<div class="mh-rg"><i style="left:${bar}%"></i></div>` : ''}</div>`;
     const rgc = (l, lo, hi, cur) => isFinite(lo) && isFinite(hi) && hi > lo ? cell(l, `${money(lo)} – ${money(hi)}`, Math.max(0, Math.min(100, (cur - lo) / (hi - lo) * 100)).toFixed(0)) : '';
