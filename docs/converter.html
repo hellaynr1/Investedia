@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=b4e69f62f7">
-<script src="assets/consent.js?v=b4e69f62f7"></script>
+<link rel="stylesheet" href="assets/consent.css?v=8e2323a807">
+<script src="assets/consent.js?v=8e2323a807"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Currency converter — Investedia</title>
 <meta name="description" content="Convert between major world currencies at illustrative rates.">
@@ -14,7 +14,7 @@
 <meta property="og:image" content="assets/logo.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=b4e69f62f7">
+<link rel="stylesheet" href="assets/app.css?v=8e2323a807">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -34,12 +34,14 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="assets/app/splash-640x1136.png">
 </head>
 <body data-page="converter">
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=b4e69f62f7"></script>
-<script src="assets/ui.js?v=b4e69f62f7"></script>
-<script src="assets/news-alerts.js?v=b4e69f62f7" defer></script>
-<main class="wrap">
+<script src="assets/mock.js?v=8e2323a807"></script>
+<script src="assets/legal-owner.js?v=8e2323a807"></script>
+<script src="assets/ui.js?v=8e2323a807"></script>
+<script src="assets/news-alerts.js?v=8e2323a807" defer></script>
+<main class="wrap" id="main-content" tabindex="-1">
 <div class="page-head">
   <div class="crumbs"><a href="index.html">Home</a><span>/</span><span>Tools</span><span>/</span><span>Currency converter</span></div>
   <div class="sec-head" style="margin:0"><div><h1>Currency converter</h1><p class="lede">Convert between the world’s major currencies.</p></div><span class="demo">Sample rates · not for trading</span></div>
@@ -55,7 +57,7 @@
     </div>
     <div style="margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
       <div><div class="muted" id="res-from" style="font-size:15px"></div><div class="num" id="res" style="font-size:clamp(32px,4.4vw,48px);font-weight:500;letter-spacing:-.03em"></div><div class="dim num" id="rate" style="font-size:13px;margin-top:4px"></div></div>
-      <a class="btn btn-ghost" id="pair-link" href="currencies.html">View chart</a>
+      <a class="btn btn-ghost" id="pair-link" href="markets.html">View chart</a>
     </div>
   </div>
 </section>
@@ -80,7 +82,7 @@ function conv() {
   document.getElementById('res-from').textContent = `${f(a)} ${from.value} =`;
   document.getElementById('res').textContent = `${f(a * r)} ${to.value}`;
   document.getElementById('rate').textContent = `1 ${from.value} = ${f(r, 4)} ${to.value} · 1 ${to.value} = ${f(1 / r, 4)} ${from.value} · sample rate`;
-  const pair = from.value + to.value; document.getElementById('pair-link').href = MOCK.bySym[pair] ? 'asset.html?s=' + pair : 'currencies.html';
+  const pair = from.value + to.value; document.getElementById('pair-link').href = MOCK.bySym[pair] ? 'asset.html?s=' + pair : 'markets.html';
   document.getElementById('tbl-title').textContent = `1 ${from.value} in other currencies`;
   document.getElementById('rates').innerHTML = Object.entries(C).filter(([k]) => k !== from.value).map(([k, [n, v, d]]) => { const rr = C[from.value][1] / v; return `<tr><td><span class="ident"><span class="logo" style="background:#27272a">${k}</span><span><b>${k}</b><small>${n}</small></span></span></td><td class="num">${f(rr, 4)}</td><td class="num muted">${f(1 / rr, 4)}</td><td class="num ${cls(-d)}">${fmtC(-d)}</td></tr>`; }).join('');
   document.getElementById('quick').innerHTML = [1, 10, 100, 1000, 10000, 100000].map(x => `<div class="arow" style="grid-template-columns:1fr auto"><span class="num">${f(x, 0)} ${from.value}</span><b class="num" style="font-weight:500">${f(x * r)} ${to.value}</b></div>`).join('');

@@ -12,7 +12,7 @@
   const col = v => v > 0.005 ? '#34d399' : v < -0.005 ? '#f87171' : '#8b8b94';
   const series = (a, k) => k === 'd' ? (S.intra[a.s]?.d1?.c || (a.sp || []).slice(-2)) : k === 'w' ? (a.sp || []).slice(-6) : (a.sp || []);
   const line = (v, w, h, c) => { if (v.length < 2) return ''; const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1; return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${v.map((y, i) => (i ? 'L' : 'M') + (i / (v.length - 1) * w).toFixed(1) + ' ' + (h - 3 - (y - lo) / r * (h - 6)).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`; };
-  const arrow = d => `<span class="nf-ar ${d === 'up' ? 'u' : d === 'down' ? 'd' : 'o'}">${d === 'up' ? '↑' : d === 'down' ? '↓' : d === 'mixed' ? '↔' : '–'}</span>`;
+  const arrow = d => `<span role="img" aria-label="${d==='up'?'up':d==='down'?'down':'mixed or neutral'}" class="nf-ar ${d === 'up' ? 'u' : d === 'down' ? 'd' : 'o'}">${d === 'up' ? '↑' : d === 'down' ? '↓' : d === 'mixed' ? '↔' : '–'}</span>`;
   const bf = a => !window.InvConsent?.allows('images') ? '' : a.t === 'crypto' ? `https://cdn.brandfetch.io/crypto/${encodeURIComponent(a.s.split('-')[0])}/w/96/h/96/fallback/404?c=${BF}` : a.t === 'stocks' && !/[\^=]/.test(a.s) ? `https://cdn.brandfetch.io/ticker/${encodeURIComponent(a.s)}/w/96/h/96/fallback/404?c=${BF}` : '';
   const aIcon = a => AssetIcons.icon(a);
   const iIcon = i => i.kind === 'country' ? (flagSrc(i.country) ? `<img class="nb-fl" src="${flagSrc(i.country)}" alt="" onerror="this.remove()">` : AssetIcons.icon({ n: i.name })) : AssetIcons.icon({ s: i.ticker || '', n: i.name, t: /-USD$/.test(i.ticker || '') ? 'crypto' : 'stocks', cc: i.country ? String(i.country).toLowerCase() : '' });
@@ -34,7 +34,7 @@
     const s = pool[0] && pool[0].s; if (!s) { $('nf-hero').innerHTML = ''; return; }
     const th = thumbOf(s), e = (s.entities || []).find(company);
     const chips = reactions(s).map(({ i, a }) => a ? `<span class="nf-chip">${aIcon(a)}<b>${esc(a.n)}</b>${arrow(i.direction)}<span class="mono ${cls(move(a, 'd'))}">${fmt(move(a, 'd'))}</span></span>` : `<span class="nf-chip">${iIcon(i)}<b>${esc(i.name)}</b>${arrow(i.direction)}</span>`).join('');
-    $('nf-hero').innerHTML = `<a class="nf-hero" href="story.html?id=${encodeURIComponent(s.id)}"><div class="im"${th ? ` style="background-image:url('${th}')"` : ''}>${e ? `<img class="nb-lg" src="${logoSrc(e)}" alt="" onerror="this.remove()">` : ''}</div><div class="tx"><span class="nf-eb">Article of the day · ${esc(CATN[s.category] || '')} · ${ago(s.published_at)}</span><h2>${esc(s.headline)}</h2><p>${esc(s.why || s.summary || '')}</p><div class="nf-chips">${chips}</div><span class="nf-go">Read the article →</span></div></a>`;
+    $('nf-hero').innerHTML = `<a class="nf-hero" href="story.html?id=${encodeURIComponent(s.id)}"><div class="im"${th ? ` style="background-image:url('${th}')" role="img" aria-label="${esc(s.image?.alt || 'Illustrative topic photograph')}"` : ''}>${th ? `<span class="nf-photo-credit">Illustration · ${esc(s.image?.credit || s.image?.source || 'Pixabay')}</span>` : ''}${e ? `<img class="nb-lg" src="${logoSrc(e)}" alt="" onerror="this.remove()">` : ''}</div><div class="tx"><span class="nf-eb">Article of the day · ${esc(CATN[s.category] || '')} · ${ago(s.published_at)}</span><h2>${esc(s.headline)}</h2><p>${esc(s.why || s.summary || '')}</p><div class="nf-chips">${chips}</div><span class="nf-go">Read the article →</span></div></a>`;
   }
   function strip() {
     const known = a => !/[.\d]/.test(a.s.replace(/[=^-]/g, '')) && a.t !== 'fx' && (a.m || a.t === 'crypto' || a.t === 'cmd' || S.intra[a.s]);
@@ -69,7 +69,7 @@
   function sheet(a, k) {
     const m = move(a, k), v = series(a, k), st = steps(a, k), up = m >= 0;
     const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1;
-    const pins = st.map(z => { const j = Math.round(z.x * (v.length - 1)); const y = 1 - (v[j] - lo) / r; return `<button type="button" class="nf-pin ${cls(z.m)}" data-n="${z.n}" style="left:${(z.x * 100).toFixed(1)}%;top:${(y * 88 + 6).toFixed(1)}%">${z.n}</button>`; }).join('');
+    const pins = st.map(z => { const j = Math.round(z.x * (v.length - 1)); const y = 1 - (v[j] - lo) / r; return `<button type="button" aria-label="Article step ${z.n}" class="nf-pin ${cls(z.m)}" data-n="${z.n}" style="left:${(z.x * 100).toFixed(1)}%;top:${(y * 88 + 6).toFixed(1)}%">${z.n}</button>`; }).join('');
     const best = st.length ? st.reduce((b, z) => Math.abs(z.m) > Math.abs(b.m) ? z : b) : null;
     const gapOf = (z, nx) => { const to = nx ? v[nx.j] : v[v.length - 1], g = pc(to, v[z.j]); return `<li class="nf-gap ${cls(g)}"><span>${g > 0.005 ? '↑' : g < -0.005 ? '↓' : '↔'} then ${fmt(g)} ${nx ? 'until step ' + nx.n : 'until now'}</span></li>`; };
     const mx = Math.max(0.01, ...st.map(z => Math.abs(z.m)));
@@ -81,15 +81,20 @@
       <ol class="nf-rail">${rail}</ol>
       <p class="mv-note">Moves shown are the asset's price change on the day of each article (or since it, for 24h). They show the news around a move, not proof it caused it. Not investment advice.</p>`;
   }
-  let cur = null;
+  let cur = null, sheetFocus = null;
   function openSheet(sym, k) {
-    const a = S.by[sym]; if (!a) return; cur = { a, k: k || S.win };
-    let el = $('nf-sheet'); if (!el) { el = document.createElement('div'); el.id = 'nf-sheet'; el.className = 'nf-sheet'; el.innerHTML = '<div class="nf-bg"></div><aside class="nf-pane" role="dialog" aria-modal="true"></aside>'; document.body.append(el); el.addEventListener('click', e => { if (e.target.closest('.nf-bg,.nf-close')) closeSheet(); const w = e.target.closest('.nf-wtabs button'); if (w) { cur.k = w.dataset.k; paint(); } const p = e.target.closest('.nf-pin'); if (p) { el.querySelectorAll('.nf-step').forEach(x => x.classList.toggle('on', x.dataset.n === p.dataset.n)); el.querySelectorAll('.nf-pin').forEach(x => x.classList.toggle('on', x === p)); const t = el.querySelector(`.nf-step[data-n="${p.dataset.n}"]`); t && t.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } }); }
-    paint(); el.hidden = false; document.documentElement.classList.add('nf-lock'); el.querySelector('.nf-pane').scrollTop = 0;
+    const a = S.by[sym]; if (!a) return; if (!$('nf-sheet') || $('nf-sheet').hidden) sheetFocus=document.activeElement; cur = { a, k: k || S.win };
+    let el = $('nf-sheet'); if (!el) { el = document.createElement('div'); el.id = 'nf-sheet'; el.className = 'nf-sheet'; el.innerHTML = '<div class="nf-bg"></div><aside class="nf-pane" role="dialog" aria-modal="true" aria-label="Asset news and price context"></aside>'; document.body.append(el); el.addEventListener('click', e => { if (e.target.closest('.nf-bg,.nf-close')) closeSheet(); const w = e.target.closest('.nf-wtabs button'); if (w) { cur.k = w.dataset.k; paint(); } const p = e.target.closest('.nf-pin'); if (p) { el.querySelectorAll('.nf-step').forEach(x => x.classList.toggle('on', x.dataset.n === p.dataset.n)); el.querySelectorAll('.nf-pin').forEach(x => x.classList.toggle('on', x === p)); const t = el.querySelector(`.nf-step[data-n="${p.dataset.n}"]`); t && t.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' }); } }); }
+    paint(); el.hidden = false; document.documentElement.classList.add('nf-lock'); el.querySelector('.nf-pane').scrollTop = 0; el.querySelector('.nf-close').focus({preventScroll:true});
   }
   const paint = () => { $('nf-sheet').querySelector('.nf-pane').innerHTML = sheet(cur.a, cur.k); };
-  function closeSheet() { const el = $('nf-sheet'); if (el) el.hidden = true; document.documentElement.classList.remove('nf-lock'); }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+  function closeSheet() { const el = $('nf-sheet'); if (el && !el.hidden) {el.hidden = true;sheetFocus?.focus({preventScroll:true});} document.documentElement.classList.remove('nf-lock'); }
+  document.addEventListener('keydown', e => {
+ const el=$('nf-sheet');
+ if(el&&!el.hidden&&e.key==='Tab'){const f=[...el.querySelectorAll('button,a[href]')].filter(x=>x.offsetParent!==null),first=f[0],last=f.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+ if(e.key==='Escape')closeSheet();
+ const row=e.target.closest('.nf-rx[role=button]');if(row&&['Enter',' '].includes(e.key)){e.preventDefault();openSheet(row.dataset.s);}
+ });
   $('nf-win').innerHTML = WIN.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="false">${l}</button>`).join('');
   $('nf-sort').innerHTML = SORT.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="false">${l}</button>`).join('');
   $('nf-win').onclick = e => { const b = e.target.closest('button'); if (b) { S.win = b.dataset.k; S.shown = 10; draw(); } };
@@ -101,6 +106,6 @@
   $('nf-list').addEventListener('click', e => { const r = e.target.closest('.nf-rx[data-s]'); if (r) openSheet(r.dataset.s); });
   document.addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); $('nf-q').focus(); } });
   Promise.all([AssetIcons.ready, fetch('assets/globe/news-archive.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Promise.reject()).catch(() => loadNews()), fetch('assets/globe/markets.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ assets: [] })), fetch('assets/globe/news-prices.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ assets: {} })), fetch('assets/intraday.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ s: {} }))])
-    .then(([, n, m, np, i]) => { S.stories = n.stories || []; S.mk = m.assets || []; S.by = Object.fromEntries(S.mk.map(a => [a.s, a])); for (const [k, a] of Object.entries(np.assets || {})) S.by[k] = a; S.intra = i.s || {}; $('nf-up').textContent = 'Updated ' + new Date(n.updated).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); hero(); strip(); draw(); })
+    .then(([, n, m, np, i]) => { S.stories = n.stories || []; S.mk = m.assets || []; S.by = Object.fromEntries(S.mk.map(a => [a.s, a])); for (const [k, a] of Object.entries(np.assets || {})) S.by[k] = a; S.intra = i.s || {}; $('nf-up').textContent = 'Updated ' + new Date(n.updated || n.updated_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); hero(); strip(); draw(); { const mv = new URLSearchParams(location.search).get('mover'); if (mv && S.by[mv]) openSheet(mv, 'w'); } })
     .catch(e => { console.error('news', e); $('nf-list').innerHTML = '<div class="nf-none">News could not load. Please refresh.</div>'; });
 })();

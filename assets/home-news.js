@@ -35,7 +35,7 @@ function img(s) {
 const card = (s, sum = true) => `<a class="hn-card" href="${url(s)}">${img(s)}<div>${tags(s)}</div><h3>${esc(s.headline)}</h3>${sum ? `<p>${esc(s.summary)}</p>` : ''}<span class="hn-meta">${ago(s.published_at)} · <b>${esc(s.source?.name || '')}</b>${s.sources?.length > 1 ? ` + ${s.sources.length - 1} more` : ''}</span></a>`;
 function thumb(s) {
   const e = (s.entities || []).find(company), f = flagSrc(s.location.country);
-  return s.image ? `<img src="assets/globe/${esc(s.image.file)}" alt="">` : e ? `<img class="hn-lgo" src="${logoSrc(e)}" alt="" ${hideBad}>` : f ? `<img class="hn-flg" src="${f}" alt="">` : '';
+  return s.image ? `<img src="assets/globe/${esc(s.image.file)}" alt="${esc(s.image.alt || 'Topic photograph')}"><span class="hn-thumb-label">Illustration</span>` : e ? `<img class="hn-lgo" src="${logoSrc(e)}" alt="" ${hideBad}>` : f ? `<img class="hn-flg" src="${f}" alt="">` : '';
 }
 const row = s => `<a class="hn-row" href="${url(s)}"><span class="hn-th">${thumb(s)}</span><span><span>${tags(s)}</span><h4>${esc(s.headline)}</h4><span class="hn-meta">${ago(s.published_at)} · ${esc(nm(s.location.country))}</span></span></a>`;
 function impactChips(s) {

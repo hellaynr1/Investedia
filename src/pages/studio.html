@@ -19,7 +19,7 @@
     <div class="studio-preview">
       <div class="sec-head"><div><h2>Trending markets</h2><p>A live preview built from the site's real parts.</p></div></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
-        <div class="tabs" id="pv-tabs"><button class="tab" type="button" aria-selected="true">Gainers</button><button class="tab" type="button" aria-selected="false">Losers</button><button class="tab" type="button" aria-selected="false">Biggest moves</button></div>
+        <div class="tabs" id="pv-tabs"><button class="tab" type="button" aria-pressed="true">Gainers</button><button class="tab" type="button" aria-pressed="false">Losers</button><button class="tab" type="button" aria-pressed="false">Biggest moves</button></div>
         <select class="select sel-sm" id="pv-sel" aria-label="Sector"><option>All sectors</option><option>Technology</option><option>Finance</option><option>Healthcare</option><option>Energy</option></select>
       </div>
       <div class="chips-row" id="pv-chips"><button class="chip on" type="button">All markets</button><button class="chip" type="button">Stocks</button><button class="chip" type="button">Crypto</button><button class="chip" type="button">Indices</button></div>
@@ -59,10 +59,10 @@ const save = () => { try { localStorage.setItem('inv-studio', JSON.stringify(cfg
 function drawOpts() {
   document.getElementById('st-opts').innerHTML = OPTS.map(([k, label, list]) => `<div class="st-row"><span class="st-label">${label}</span>${k === 'accent'
     ? `<div class="st-swatches">${list.map(([v, n]) => `<button type="button" class="st-sw" style="--sw:${v}" aria-label="${n}" aria-pressed="${cfg.accent.toLowerCase() === v.toLowerCase()}" data-k="accent" data-v="${v}"></button>`).join('')}<label class="st-sw st-custom" aria-label="Custom colour" style="--sw:${cfg.accent}"><input type="color" value="${cfg.accent}" id="st-color"></label></div>`
-    : `<div class="tabs st-tabs">${list.map(([v, n]) => `<button class="tab" type="button" aria-selected="${cfg[k] === v}" data-k="${k}" data-v="${v}">${n}</button>`).join('')}</div>`}</div>`).join('');
+    : `<div class="tabs st-tabs">${list.map(([v, n]) => `<button class="tab" type="button" aria-pressed="${cfg[k] === v}" data-k="${k}" data-v="${v}">${n}</button>`).join('')}</div>`}</div>`).join('');
   document.getElementById('st-color').oninput = e => set('accent', e.target.value);
 }
-function set(k, v) { cfg[k] = v; applyStudio(cfg); save(); if (k === 'accent') { drawOpts(); drawPreview(); } else document.querySelectorAll(`[data-k="${k}"]`).forEach(b => b.setAttribute(b.classList.contains('tab') ? 'aria-selected' : 'aria-pressed', b.dataset.v === v)); }
+function set(k, v) { cfg[k] = v; applyStudio(cfg); save(); if (k === 'accent') { drawOpts(); drawPreview(); } else document.querySelectorAll(`[data-k="${k}"]`).forEach(b => b.setAttribute(b.classList.contains('tab') ? 'aria-pressed' : 'aria-pressed', b.dataset.v === v)); }
 document.getElementById('st-opts').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (b) set(b.dataset.k, b.dataset.v); });
 
 const ap = document.getElementById('st-apply'); ap.checked = !!cfg.apply;
@@ -83,7 +83,7 @@ function drawPreview() {
   const spx = M.bySym.SPX; document.getElementById('pv-ident').innerHTML = `${logo(spx)}<span><b>S&amp;P 500</b><small>${fmtP(spx)}</small></span>`;
   M.history('SPX', '1Y').then(r => areaChart(document.getElementById('pv-chart'), r ? r.vals : M.series('SPXst', 120, spx.p, 14), { height: 200, labels: r ? r.labels : [], fmt: v => v.toLocaleString('en-US', { maximumFractionDigits: 0 }) }));
 }
-document.querySelectorAll('#pv-tabs .tab').forEach(b => b.onclick = () => document.querySelectorAll('#pv-tabs .tab').forEach(x => x.setAttribute('aria-selected', x === b)));
+document.querySelectorAll('#pv-tabs .tab').forEach(b => b.onclick = () => document.querySelectorAll('#pv-tabs .tab').forEach(x => x.setAttribute('aria-pressed', x === b)));
 document.querySelectorAll('#pv-range button').forEach(b => b.onclick = () => document.querySelectorAll('#pv-range button').forEach(x => x.setAttribute('aria-pressed', x === b)));
 document.querySelectorAll('#pv-chips .chip').forEach(b => b.onclick = () => document.querySelectorAll('#pv-chips .chip').forEach(x => x.classList.toggle('on', x === b)));
 

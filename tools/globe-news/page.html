@@ -327,10 +327,37 @@ h1 span{color:var(--fg-3)}
 .embed body,.embed{background:transparent}
 .embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom{display:none!important}
 .embed #cv{touch-action:pan-y}
+
+/* Atlas-style floating glass: segmented category + region bars, richer news panel */
+.chips{display:inline-flex;flex-wrap:nowrap;gap:2px;padding:4px;border-radius:999px;background:rgba(24,24,27,.62);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border:1px solid rgba(255,255,255,.1);box-shadow:0 12px 40px rgba(0,0,0,.35);max-width:100%;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{height:34px;padding:0 15px;border:0;background:none;color:var(--fg-2);font-size:13px}
+.chip:hover{color:var(--fg);border:0}.chip[aria-pressed=true]{background:#fafafa;color:#0A0A0B;border:0;font-weight:600}
+.regions{display:inline-flex;flex-wrap:nowrap;gap:2px;padding:3px;border-radius:999px;background:rgba(24,24,27,.5);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);max-width:100%;overflow-x:auto;scrollbar-width:none;margin-top:10px}
+.regions::-webkit-scrollbar{display:none}
+.reg{padding:6px 12px;border-radius:999px}.reg[aria-pressed=true]{background:rgba(255,255,255,.14);color:var(--fg)}
+.reg[data-k=global]::before{content:"";display:inline-block;width:11px;height:11px;margin:0 6px -1px 0;border:1.5px solid currentColor;border-radius:50%;opacity:.8}
+.panel{border-radius:28px;background:rgba(24,24,27,.62)!important;backdrop-filter:blur(28px) saturate(1.4);-webkit-backdrop-filter:blur(28px) saturate(1.4);border:1px solid rgba(255,255,255,.1)}
+.panel-hero{position:relative;display:block;width:100%;height:168px;border-radius:20px;overflow:hidden;margin:4px 0 12px;background:#1b1b1e center/cover;text-align:left;padding:0}
+.panel-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 25%,rgba(0,0,0,.88))}
+.panel-hero span{position:absolute;left:14px;right:14px;bottom:12px;z-index:1;color:#fff;font-weight:600;font-size:15px;line-height:1.28;letter-spacing:-.01em}
+.panel-hero small{position:absolute;left:14px;top:12px;z-index:1;font:500 10px 'Geist Mono',monospace;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.mv-row{display:grid;grid-template-columns:32px minmax(0,1fr) 58px 64px;gap:10px;align-items:center;width:100%;padding:10px 4px;color:inherit;text-decoration:none;border-top:1px solid rgba(255,255,255,.07)}
+.mv-row:first-child{border-top:0}.mv-row:hover{background:rgba(255,255,255,.04);border-radius:12px}
+.mv-row b{display:block;font-weight:600;font-size:13.5px}.mv-row small{color:var(--fg-3);font-size:11.5px}.mv-row svg{width:58px;height:20px}
+.mv-row .mono{font-family:'Geist Mono',monospace;font-weight:600;font-size:13px;text-align:right}.mv-row .u{color:#34d399}.mv-row .d{color:#f87171}
+.mv-row .ai-t,.mv-row .ai-i{width:30px;height:30px;border-radius:9px}
+@media(max-width:760px){.chip{height:36px;padding:0 14px}}
+
+:focus-visible{outline:3px solid #FF7A1A!important;outline-offset:3px!important}.globe-skip{position:fixed;top:8px;left:8px;z-index:30000;transform:translateY(-200%);padding:12px;background:#FF7A1A;color:#111113}.globe-skip:focus{transform:none}@media(pointer:coarse){button,.chip,.regions button,.panel a{min-height:44px}.zoom button,.sheet-actions button{min-width:44px}.chips,.regions,.panel-tabs{gap:8px}}
+
+@media(pointer:coarse){a,button{min-width:44px;min-height:44px}.wm{display:inline-flex;align-items:center}.timeline{overflow-x:auto;max-width:calc(100vw - 24px)}.timeline button{flex-shrink:0}.grab{height:44px}.panel a:not([class]){display:inline-flex;align-items:center}}
+
+@media(pointer:coarse){.timeline .win{min-width:44px}}
 </style>
 </head>
 <body>
-<canvas id="cv" aria-label="3D globe of financial and business news. Use the article list in the panel to browse by keyboard."></canvas>
+<a class="globe-skip" href="#pbody">Skip to article panel</a><canvas id="cv" aria-label="3D globe of financial and business news. Use the article list in the panel to browse by keyboard."></canvas>
 
 <div class="top">
   <div class="brand">
@@ -339,13 +366,13 @@ h1 span{color:var(--fg-3)}
     <button type="button" class="globe-privacy" data-cookie-settings>Privacy</button>
     <span class="demo" id="badge" title="Concept preview: every article is demo content written to show the design. Not real news.">Concept · demo articles</span>
   </div>
-  <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search a country, company or story" autocomplete="off" aria-label="Search the globe" aria-controls="res"><kbd>/</kbd>
+  <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search a country, company or article" autocomplete="off" aria-label="Search the globe" aria-controls="res"><kbd>/</kbd>
     <div class="res" id="res" role="listbox" hidden></div></div>
   <div class="chips" id="cats" role="group" aria-label="Category"></div>
   <div class="regions" id="regions" role="group" aria-label="Region"></div>
 </div>
 
-<div class="legend" aria-hidden="true"><span><i></i>Major</span><span><i class="m"></i>Notable</span><span><i class="s"></i>Story</span></div>
+<div class="legend" aria-hidden="true"><span><i></i>Major</span><span><i class="m"></i>Notable</span><span><i class="s"></i>Article</span></div>
 <div class="timeline glass" id="tl" role="group" aria-label="Time window">
   <button class="tl-play" id="play" aria-label="Replay the last 7 days"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.8v10.4a.6.6 0 0 0 .9.5l8.4-5.2a.6.6 0 0 0 0-1L4.9 2.3a.6.6 0 0 0-.9.5z"/></svg></button>
   <span class="tl-sep"></span>
@@ -358,12 +385,13 @@ h1 span{color:var(--fg-3)}
 <aside class="panel glass" id="panel" aria-label="News panel">
   <button class="grab" id="grab" aria-label="Change news panel height" aria-controls="pbody"></button>
   <div class="sheet-actions"><button id="sheet-expand" aria-label="Expand news panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button id="sheet-close" class="sheet-close" aria-label="Close news panel">×</button></div>
-  <div class="pbody" id="pbody"></div>
+  <div class="pbody" id="pbody" tabindex="-1"></div>
 </aside>
 
 <script>if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');</script>
 <script src="../quotes.js"></script>
 <script src="../news-alerts.js" defer></script>
+<script src="../asset-icons.js"></script>
 <script>
 // ===== Data =====
 // News is loaded from NEWS_URL. Today that is demo content; a live pipeline (sources → dedupe → location → entities → category → importance → validation → summary)
@@ -462,6 +490,13 @@ function entityChip(e, country) {
   return `<span class="ent">${image}<span>${esc(e.name)}</span>${e.ticker ? `<code>${esc(e.ticker)}</code>` : ''}</span>`;
 }
 
+let MKT = { by: {}, intra: {}, list: [] };
+Promise.all([fetch('markets.json').then(r => r.json()), fetch('news-prices.json').then(r => r.json()).catch(() => ({ assets: {} })), fetch('../intraday.json').then(r => r.json()).catch(() => ({ s: {} }))]).then(([m, np, i]) => {
+  MKT.intra = i.s || {}; MKT.by = Object.fromEntries((m.assets || []).map(a => [a.s, a]));
+  const known = a => !/[.\d]/.test(a.s.replace(/[=^-]/g, '')) && a.t !== 'fx' && Math.abs(a.d) < 20 && (a.m || a.t === 'crypto' || a.t === 'cmd' || MKT.intra[a.s]);
+  MKT.list = (m.assets || []).filter(known).sort((x, y) => Math.abs(y.d) - Math.abs(x.d)).slice(0, 12);
+  if (view.k === 'top' && panelTab === 'movers') render();
+}).catch(() => {});
 let ECON = null; fetch('economy.json').then(r => r.json()).then(d => { ECON = d; if (view.k === 'country') render(); }).catch(() => {});
 const usd = v => v >= 1e12 ? '$' + (v / 1e12).toFixed(v >= 1e13 ? 1 : 2) + ' trillion' : v >= 1e9 ? '$' + (v / 1e9).toFixed(v >= 1e11 ? 0 : 1) + ' billion' : '$' + (v / 1e6).toFixed(0) + ' million';
 const people = v => v >= 1e9 ? (v / 1e9).toFixed(2) + ' billion' : v >= 1e6 ? (v / 1e6).toFixed(1) + ' million' : Math.round(v / 1e3) + ' thousand';
@@ -809,15 +844,20 @@ function compactItem(s) {
 function variantPanel(list) {
   if (PANEL_TEMPLATE === 'a') return `<h2>Top articles</h2><div class="meta">${Math.min(8, list.length)} of ${list.length} articles</div><div class="compact-list">${list.slice(0, 8).map(compactItem).join('')}</div>${list.length > 8 ? '<a class="panel-more" href="../../news.html">See all news →</a>' : ''}${list.length ? '' : '<div class="empty">No articles match these filters.</div>'}${noteHTML()}`;
   if (PANEL_TEMPLATE === 'b') return `<h2>Top articles</h2><div class="strip-list" aria-label="Top articles">${list.slice(0, phone() ? 3 : 12).map(compactItem).join('')}</div>${list.length ? '' : '<div class="empty">No articles match these filters.</div>'}${noteHTML()}`;
-  const tabs = [['top', 'Top'], ['latest', 'Latest'], ['countries', 'Countries']];
+  const tabs = [['top', 'Top'], ['movers', 'Movers'], ['latest', 'Latest'], ['countries', 'Countries']];
   let items, count;
-  if (panelTab === 'countries') {
+  if (panelTab === 'movers') {
+    const sp = (v, c) => { if (!v || v.length < 2) return ''; const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1; return `<svg viewBox="0 0 58 20" preserveAspectRatio="none"><path d="${v.map((y, i) => (i ? 'L' : 'M') + (i / (v.length - 1) * 58).toFixed(1) + ' ' + (18 - (y - lo) / r * 16).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`; };
+    items = MKT.list.length ? MKT.list.slice(0, panelExpanded ? 12 : 6).map(a => { const v = MKT.intra[a.s]?.d1?.c || (a.sp || []).slice(-6), c = a.d > 0 ? '#34d399' : a.d < 0 ? '#f87171' : '#8b8b94'; return `<a class="mv-row" href="../../news.html?mover=${encodeURIComponent(a.s)}"><span>${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><span><b>${esc(a.n)}</b><small>${esc(a.s.replace(/[=^]/g, ''))}</small></span>${sp(v, c)}<span class="mono ${a.d > 0 ? 'u' : a.d < 0 ? 'd' : ''}">${a.d > 0 ? '+' : a.d < 0 ? '−' : ''}${Math.abs(a.d).toFixed(2)}%</span></a>`; }).join('') : '<div class="empty">Loading movers…</div>';
+    count = MKT.list.length;
+  } else if (panelTab === 'countries') {
     const countries = Object.entries(list.reduce((all, s) => { all[s.location.country] = (all[s.location.country] || 0) + 1; return all; }, {})).sort((a,b) => b[1]-a[1]);
     count = countries.length;
     items = countries.slice(0, panelExpanded ? countries.length : 3).map(([name, n]) => `<button class="compact-country" data-country="${esc(name)}">${flag(name)}<span>${esc(nm(name))}</span><small>${n} ${n === 1 ? 'article' : 'articles'}</small></button>`).join('');
   } else {
     const sorted = panelTab === 'latest' ? [...list].sort((a,b) => b.t-a.t) : list;
-    count = sorted.length; items = sorted.slice(0, panelExpanded ? sorted.length : 3).map(compactItem).join('');
+    const hs = panelTab === 'top' && sorted.find(x => x.image && x.image.file), rest = hs ? sorted.filter(x => x !== hs) : sorted;
+    count = sorted.length; items = (hs ? `<button class="panel-hero" data-story="${esc(hs.id)}" style="background-image:url('${esc(hs.image.file)}')"><small>${esc(CAT[hs.category] || 'News')} · ${ago(hs.t)}</small><span>${esc(hs.headline)}</span></button>` : '') + rest.slice(0, panelExpanded ? rest.length : 3).map(compactItem).join('');
   }
   return `<h2>Top articles</h2><div class="panel-tabs" role="tablist" aria-label="News view">${tabs.map(([key,label]) => `<button role="tab" id="panel-tab-${key}" aria-selected="${key === panelTab}" aria-controls="panel-contents" tabindex="${key === panelTab ? 0 : -1}" data-panel-tab="${key}">${label}</button>`).join('')}</div><div class="compact-list" id="panel-contents" role="tabpanel" aria-labelledby="panel-tab-${panelTab}">${items || '<div class="empty">No articles match these filters.</div>'}</div>${count > 3 ? `<button class="panel-more" data-panel-more aria-expanded="${panelExpanded}">${panelExpanded ? 'Show less' : 'Show more'}</button>` : ''}${noteHTML()}`;
 }

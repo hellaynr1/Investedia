@@ -25,5 +25,5 @@ self.addEventListener('fetch', e => {
     if (isData(u)) return e.respondWith(networkFirst(req));
     return e.respondWith(staleWhileRevalidate(req));
   }
-  if (u.host === 'fonts.googleapis.com' || u.host === 'fonts.gstatic.com') e.respondWith(staleWhileRevalidate(req));
+  // Optional third-party responses are never persisted in the offline cache.
 });

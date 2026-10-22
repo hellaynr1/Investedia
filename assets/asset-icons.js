@@ -1,7 +1,8 @@
 // One place for asset logos: local logo file -> Brandfetch -> flag -> clean glyph/initial tile. Never a white box.
 (() => {
+  const BASE = (() => { try { return new URL('.', document.currentScript.src).href; } catch { return ''; } })() || 'assets/';
   const BFID = typeof BF !== 'undefined' ? BF : '1idNJqyfpKbma454ae4';
-  let LOGOS = {}; const ready = fetch('assets/globe/logos.json').then(r => r.json()).then(j => { LOGOS = j; }).catch(() => {});
+  let LOGOS = {}; const ready = fetch(BASE + 'globe/logos.json').then(r => r.json()).then(j => { LOGOS = j; }).catch(() => {});
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const svg = d => `<svg viewBox="0 0 24 24" width="62%" height="62%" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
   const G = {
@@ -25,10 +26,11 @@
     if (c) return tile(G[c], 'color:#c8c8cf');
     const base = sym.replace(/-USD$/, '');
     const srcs = [];
-    if (LOGOS[base]) srcs.push('assets/globe/' + LOGOS[base]);
+    if (LOGOS[base]) srcs.push(BASE + 'globe/' + LOGOS[base]);
     if (window.InvConsent?.allows('images') && (a.t === 'crypto' || /-USD$/.test(sym))) srcs.push(`https://cdn.brandfetch.io/crypto/${encodeURIComponent(base)}/w/96/h/96/fallback/404?c=${BFID}`);
     else if (window.InvConsent?.allows('images') && !/[\^=]/.test(sym) && a.t !== 'fx') srcs.push(`https://cdn.brandfetch.io/ticker/${encodeURIComponent(sym)}/w/96/h/96/fallback/404?c=${BFID}`);
-    const flag = a.cc ? `assets/globe/flags/${String(a.cc).toLowerCase()}.svg` : '';
+    const flag = a.cc ? `${BASE}globe/flags/${String(a.cc).toLowerCase()}.svg` : '';
+
     if (flag) srcs.push(flag);
     if (!srcs.length) return initial(n);
     return `<img class="ai-i" src="${esc(srcs[0])}" alt="" data-q="${esc(JSON.stringify(srcs.slice(1)))}" data-f="${esc(initial(n))}" onerror="window.AssetIcons.next(this)">`;

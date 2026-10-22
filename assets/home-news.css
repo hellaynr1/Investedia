@@ -1,5 +1,5 @@
 /* News-first homepage components (prefixed hn- so they never clash with app.css). Dark-first. */
-body[data-page=home]{--line-2:rgba(255,255,255,.15);--bg-2:#0B0B0D;--card:#121214;--fg-2:#A1A1AA;--fg-3:#71717A;--accent:#FF7A1A;--up:#22C55E;--down:#F04444}
+body[data-page=home]{--line-2:rgba(255,255,255,.15);--bg-2:#0B0B0D;--card:#121214;--fg-2:#A1A1AA;--fg-3:#a1a1aa;--accent:#FF7A1A;--up:#22C55E;--down:#ff7373}
 /* common bits */
 .hn-eyebrow{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3)}
 .hn-tag{display:inline-block;padding:2px 7px;border-radius:5px;background:rgba(255,122,26,.14);color:var(--accent);font-size:10px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;vertical-align:1px;margin-right:6px}
@@ -63,3 +63,5 @@ body[data-page=home]{--line-2:rgba(255,255,255,.15);--bg-2:#0B0B0D;--card:#12121
 .hn-il{position:absolute;left:10px;bottom:10px;padding:3px 7px;border-radius:6px;background:rgba(10,10,11,.72);color:rgba(255,255,255,.8);font-size:10.5px;font-weight:500}
 
 .hn-impact-up{color:#22C55E}.hn-impact-down{color:#F04444}.hn-impact-mixed,.hn-impact-unclear{color:var(--fg-2)}
+
+.hn-th{position:relative}.hn-thumb-label{position:absolute;bottom:0;left:0;right:0;background:#111e;color:#fff;font:9px/1.5 system-ui;text-align:center}
