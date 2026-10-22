@@ -16,3 +16,8 @@
 .nn-active-filter a{margin-left:16px;color:#ffad73}
 
 @media(max-width:1140px){.drawer>a{display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:14px 4px;border-bottom:1px solid var(--line-soft)}.drawer .nn-foot a{min-height:0;display:inline;padding:0}.drawer .nn-menu{margin-bottom:10px}}
+
+/* Real logos and flags on dark glass, never white tiles */
+.nn-cluster>img{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.14)!important;padding:1px}
+.nn-cluster>img.nn-fl{padding:0;object-fit:cover;background:none!important}
+.nn-icon.nn-cluster{background:rgba(255,255,255,.04)}

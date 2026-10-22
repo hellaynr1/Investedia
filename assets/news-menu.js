@@ -12,13 +12,14 @@ window.InvNewsMenu = (() => {
   const svg = key => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[key] || paths.economy}</svg>`;
   const groups = {
     companies:['AAPL.svg','TSLA.svg','AMZN.png'], technology:['GOOGL.svg','MSFT.svg','NVDA.svg'],
-    crypto:['BTC.svg','ETH.svg','SOL.svg'], stocks:['AAPL.svg','AMZN.png','TSLA.svg'], energy:['oil','XOM.png','SHEL.svg'], bonds:['bond','US','EU'], currencies:['€','$','¥']
+    crypto:['BTC.svg','ETH.svg','SOL.svg'], stocks:['AAPL.svg','AMZN.png','TSLA.svg'], energy:['ENB.png','CVX.png','SHEL.svg'],
+    indices:['AAPL.svg','MSFT.svg','NVDA.svg'], bonds:['flag:us','flag:de','flag:jp'], currencies:['flag:us','flag:eu','flag:gb'],
+    europe:['flag:de','flag:fr','flag:gb'], northamerica:['flag:us','flag:ca','flag:mx'], asia:['flag:jp','flag:au','flag:in'],
+    middleeast:['flag:sa','flag:ae','flag:il'], africa:['flag:za','flag:ng','flag:eg'], latinamerica:['flag:br','flag:mx','flag:ar']
   };
   function mark(key){
     const members=groups[key];
-    if(members)return `<span class="nn-icon nn-cluster" aria-hidden="true">${members.map(m=>/\.(svg|png)$/.test(m)?`<img src="assets/logos/${m}" alt="" loading="lazy">`:paths[m]?`<span class="nn-mini">${svg(m)}</span>`:`<span class="nn-mini nn-symbol">${m}</span>`).join('')}</span>`;
-    if(key==='indices')return '<span class="nn-icon nn-cluster" aria-hidden="true"><span class="nn-mini nn-symbol">NQ</span><span class="nn-mini nn-symbol">SPX</span><span class="nn-mini nn-symbol">DJI</span></span>';
-    if(['europe','northamerica','asia','middleeast','africa','latinamerica'].includes(key))return `<span class="nn-icon nn-region" aria-hidden="true"><img src="assets/menu-icons/${key}.svg" alt="" loading="lazy"></span>`;
+    if(members)return `<span class="nn-icon nn-cluster" aria-hidden="true">${members.map(m=>/^flag:/.test(m)?`<img class="nn-fl" src="assets/globe/flags/${m.slice(5)}.svg" alt="" loading="lazy">`:/\.(svg|png)$/.test(m)?`<img src="assets/logos/${m}" alt="" loading="lazy">`:paths[m]?`<span class="nn-mini">${svg(m)}</span>`:`<span class="nn-mini nn-symbol">${m}</span>`).join('')}</span>`;
     return `<span class="nn-icon" aria-hidden="true">${svg(key)}</span>`;
   }
   const items = {
