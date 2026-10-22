@@ -31,7 +31,7 @@
     } else if (!allows('images') && fonts) fonts.remove();
   }
   function save(values) {
-    choice = { version: VERSION, date: new Date().toISOString(), preferences: !!values.preferences, images: !!values.images, analytics: !!values.analytics };
+    choice = { version: VERSION, date: new Date().toISOString(), preferences: !!values.preferences, images: !!values.images, analytics: !!values.analytics, live: !!values.live };
     try { nativeSet.call(localStorage,KEY,JSON.stringify(choice)); } catch {}
     if (!choice.preferences) for (const k of preferences) try { nativeRemove.call(localStorage,k); nativeRemove.call(sessionStorage,k); } catch {}
     if (!choice.images && 'caches' in window) caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('inv-')).map(async k=>{const cache=await caches.open(k);for(const req of await cache.keys())if(new URL(req.url).origin!==location.origin)await cache.delete(req);}))).catch(()=>{});
@@ -43,11 +43,11 @@
     if (panel || new URLSearchParams(location.search).get('embed') === '1') return;
     panel = document.createElement('section'); panel.id = 'inv-consent-panel'; panel.className = 'consent-card'; panel.hidden = true;
     panel.setAttribute('aria-labelledby','consent-title'); panel.setAttribute('role','region');
-    panel.innerHTML = `<div class="consent-summary"><h2 id="consent-title">Your privacy choices</h2><p>Accept all optional services, or accept only the storage needed for the site and features you request.</p><a href="${new URL('cookies.html',root)}">Read our cookie policy</a></div><details id="consent-options"><summary>What’s included</summary><div class="consent-option"><span><b>Essential</b><small>Consent choice, sign-in and features you request.</small></span><span class="consent-status" data-category="necessary">Always on</span></div><div class="consent-option"><span><b>Preferences</b><small>Theme, chart settings and learning progress.</small></span><span class="consent-status" data-category="preferences"></span></div><div class="consent-option"><span><b>Third-party images & services</b><small>Brandfetch logos, Google Fonts and live Coinbase rates. Local fallbacks work without them.</small></span><span class="consent-status" data-category="images"></span></div><div class="consent-option"><span><b>Analytics</b><small>Existing first-party usage events stored with Supabase. No advertising trackers.</small></span><span class="consent-status" data-category="analytics"></span></div></details><p class="consent-current"></p><div class="consent-actions"><button type="button" data-consent="accept">Accept all</button><button type="button" data-consent="essential">Accept essential</button></div><p class="consent-hint">You can change your choice at any time in Cookie settings.</p>`;
+    panel.innerHTML = `<div class="consent-summary"><h2 id="consent-title">Your privacy choices</h2><p>Accept all optional services, or accept only the storage needed for the site and features you request.</p><a href="${new URL('cookies.html',root)}">Read our cookie policy</a></div><details id="consent-options"><summary>What’s included</summary><div class="consent-option"><span><b>Essential</b><small>Consent choice, sign-in and features you request.</small></span><span class="consent-status" data-category="necessary">Always on</span></div><div class="consent-option"><span><b>Preferences</b><small>Theme, chart settings and learning progress.</small></span><span class="consent-status" data-category="preferences"></span></div><div class="consent-option"><span><b>Third-party images & services</b><small>Brandfetch logos, Google Fonts and live Coinbase rates. Local fallbacks work without them.</small></span><span class="consent-status" data-category="images"></span></div><div class="consent-option"><span><b>Analytics</b><small>Existing first-party usage events stored with Supabase. No advertising trackers.</small></span><span class="consent-status" data-category="analytics"></span></div><div class="consent-option"><span><b>Live prices</b><small>Streams live crypto prices from Coinbase to your browser.</small></span><span class="consent-status" data-category="live">Off</span></div></details><p class="consent-current"></p><div class="consent-actions"><button type="button" data-consent="accept">Accept all</button><button type="button" data-consent="essential">Accept essential</button></div><p class="consent-hint">You can change your choice at any time in Cookie settings.</p>`;
     document.body.append(panel);
     panel.addEventListener('click', e => {
       const action = e.target.closest('[data-consent]')?.dataset.consent;
-      if (action === 'accept' || action === 'essential') save({preferences:action==='accept',images:action==='accept',analytics:action==='accept'});
+      if (action === 'accept' || action === 'essential') save({preferences:action==='accept',images:action==='accept',analytics:action==='accept',live:action==='accept'});
     });
     panel.addEventListener('keydown', e => { if (e.key === 'Escape') { if (choice) { panel.hidden=true; returnFocus?.focus(); } else panel.querySelector('#consent-options').open=false; } });
     if (!choice) show(false);
@@ -57,8 +57,8 @@
     if (panel.hidden) returnFocus = document.activeElement;
     panel.hidden = false;
     panel.querySelector('#consent-options').open = settings;
-    const all = !!choice && ['preferences','images','analytics'].every(k => allows(k));
-    const essential = !!choice && ['preferences','images','analytics'].every(k => !allows(k));
+    const all = !!choice && ['preferences','images','analytics','live'].every(k => allows(k));
+    const essential = !!choice && ['preferences','images','analytics','live'].every(k => !allows(k));
     for(const [action,current] of [['accept',all],['essential',essential]]) {
       const button = panel.querySelector('[data-consent='+action+']');
       button.setAttribute('aria-pressed',String(current));

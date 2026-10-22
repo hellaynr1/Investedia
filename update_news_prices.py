@@ -29,6 +29,12 @@ SECTORS = {'Technology': 'XLK', 'Semiconductors': 'SMH', 'Energy': 'XLE', 'Banks
            'Industrials': 'XLI', 'Aerospace & Defence': 'ITA', 'Materials & Mining': 'XLB', 'Utilities': 'XLU', 'Real estate': 'XLRE', 'Insurance': 'KIE', 'Crypto': 'BTC-USD', 'Communication': 'XLC', 'Autos': 'CARZ'}
 
 
+# Majors for the Markets page (crypto board and the three US indices missing from markets.json).
+CRYPTOS = {'BTC-USD': 'Bitcoin', 'ETH-USD': 'Ethereum', 'SOL-USD': 'Solana', 'XRP-USD': 'XRP', 'BNB-USD': 'BNB', 'DOGE-USD': 'Dogecoin', 'ADA-USD': 'Cardano', 'TRX-USD': 'TRON',
+           'AVAX-USD': 'Avalanche', 'LINK-USD': 'Chainlink', 'DOT-USD': 'Polkadot', 'LTC-USD': 'Litecoin'}
+EXTRA_INDICES = {'^NDX': 'Nasdaq 100', '^RUT': 'Russell 2000', '^VIX': 'VIX'}
+
+
 def alias_known(t, known):
     return t in known or t.replace('-USD', '') in known or t.replace('=X', '') in known
 
@@ -41,6 +47,7 @@ def main():
             t = (i.get('ticker') or '').strip()
             if t and i.get('kind') != 'country' and not alias_known(t, mk): want.setdefault(t, i.get('name') or t)
     for nm, t in SECTORS.items(): want[t] = nm  # sector ETFs always fetched
+    for t, nm in {**CRYPTOS, **EXTRA_INDICES}.items(): want[t] = nm
     path = os.path.join(G, 'news-prices.json')
     old = {}
     try: old = json.load(open(path, encoding='utf-8')).get('assets', {})
@@ -53,7 +60,7 @@ def main():
         if not c: 
             if t in old: out[t] = old[t]
             continue
-        out[t] = {'s': t, 'n': want[t], **({'sector': True} if t in sector_syms else {}), 't': 'crypto' if t.endswith(CRYPTO) else 'fx' if t.endswith('=X') else 'stocks',
+        out[t] = {'s': t, 'n': want[t], **({'sector': True} if t in sector_syms else {}), **({'g': 'Index', 'cc': 'us'} if t in EXTRA_INDICES else {}), 't': 'crypto' if t.endswith(CRYPTO) else 'fx' if t.endswith('=X') else 'stocks',
                   'p': round(c[-1], 6), 'd': round((c[-1] / c[-2] - 1) * 100, 2), 'w': round((c[-1] / c[-6] - 1) * 100, 2), 'sp': [round(x, 6) for x in c[-22:]]}
     print(f'news prices: {len([t for t in syms if t in out])}/{len(syms)} tickers')
     doc = json.dumps({'asof': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'), 'assets': out}, separators=(',', ':'), ensure_ascii=False)

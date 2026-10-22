@@ -1,14 +1,13 @@
-{"title":"Markets — Investedia","desc":"The market in one glance: sectors, indices, commodities and crypto, sized by news and coloured by price move.","key":"markets","scripts":["assets/home-news.js"]}
+{"title":"Markets — Investedia","desc":"Live and delayed market board: sectors, indices, commodities, crypto and currencies.","key":"markets","scripts":["assets/home-news.js"]}
 <link rel="stylesheet" href="assets/news-board.css"><link rel="stylesheet" href="assets/markets-heat.css">
-<div class="nb mh">
-  <span class="nb-eb">Markets · <span id="mh-up">Loading</span></span>
-  <h1>The market, <span>in one glance.</span></h1>
-  <p class="nb-lead">Sectors sized by how much news they have and coloured by how their price moved. Tap a sector for its articles.</p>
-  <div class="mh-bar"><div class="nb-seg" id="mh-win" role="group" aria-label="Time window"></div><div class="nb-seg" id="mh-view" role="group" aria-label="View"></div></div>
-  <div class="mh-grid" id="mh-grid"></div>
-  <div class="nf-sh" id="mh-sh" hidden><h2 id="mh-t"></h2><button type="button" class="mh-x" id="mh-x">Clear ×</button></div>
-  <div id="mh-ls"></div>
-  <p class="mv-note">Sector prices are tracked through public sector funds (ETFs) and may be delayed; they show how a sector moved, not a recommendation. Tile size counts articles from the last 7 days. Not investment advice.</p>
-</div>
+<main class="nb mh">
+  <div class="mh-top"><span class="nb-eb">Markets · <span id="mh-up">Loading</span></span><span class="mh-status" id="mh-status"><i></i><span>Delayed</span></span></div>
+  <h1>The market, <span>live.</span></h1>
+  <p class="nb-lead">Sectors, indices, commodities, crypto and currencies on one board. Crypto streams live when you allow it; everything else refreshes from our price feed every minute.</p>
+  <div class="mh-bar"><div class="nb-seg" id="mh-view" role="group" aria-label="View"></div><div class="nb-seg" id="mh-win" role="group" aria-label="Time window"></div></div>
+  <div id="mh-live-note" class="mh-note2" hidden>Crypto prices are delayed. <button type="button" id="mh-live-on">Turn on live prices</button> to stream them from Coinbase.</div>
+  <div id="mh-body"></div>
+  <p class="mv-note">Prices come from public market data and are delayed up to 10–15 minutes unless marked Live. Sector moves use sector funds (ETFs). Not investment advice.</p>
+</main>
 <script src="assets/asset-icons.js"></script>
 <script src="assets/markets-heat.js"></script>
