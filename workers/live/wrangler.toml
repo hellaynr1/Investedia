@@ -2,4 +2,17 @@ name = "investedia-live"
 main = "index.js"
 compatibility_date = "2026-10-01"
 
+# Prices for stocks, indices, commodities and currencies: a cron job saves a snapshot in KV, /prices serves it.
+# KV is created automatically on the first deploy.
+[[kv_namespaces]]
+binding = "PRICES"
+
+[triggers]
+crons = ["*/2 * * * *"]
+
+# Free plan: 50 outgoing requests per run. On the paid plan ($5/month) raise these so every asset refreshes on every run.
+[vars]
+BATCH_A = "30"
+BATCH_B = "15"
+
 # After deploying, add a custom domain in the Cloudflare dashboard: Workers & Pages > investedia-live > Settings > Domains & Routes > Add > Custom domain: live.investedia.com

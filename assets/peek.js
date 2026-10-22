@@ -14,7 +14,7 @@
   .pk-r{max-height:min(60vh,520px);overflow:auto;padding:8px}.pk-r h6{margin:12px 12px 6px;font:600 11px ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45)}
   .pk-i{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;border:0;background:none;color:inherit;text-align:left;font:inherit;padding:10px 12px;border-radius:14px;cursor:pointer;min-height:56px;text-decoration:none}.pk-i:hover,.pk-i[aria-selected=true]{background:rgba(255,255,255,.08)}
   .pk-i .ic{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:rgba(255,255,255,.08)}.pk-i .ic svg,.pk-i .ic img{width:100%;height:100%;object-fit:cover}.pk-i b{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pk-i small{display:block;font-size:12px;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pk-i .pv{text-align:right;font:500 13px ui-monospace,monospace}.pk-i .pv i{display:block;font-style:normal;font-size:12px;margin-top:2px}
-  .pk-i .u{color:#34d399}.pk-i .d{color:#f87171}.pk-i .o{color:#8b8b94}.pk-none{padding:28px 16px;text-align:center;opacity:.6;font-size:14px}
+  .pk-i .u{color:#34d399}.pk-i .d{color:#f87171}.pk-i .o{color:#8b8b94}.pk-r h6 em{font-style:normal;margin-left:8px;opacity:.7}.pk-i .ic img{border-radius:50%}.pk-none{padding:28px 16px;text-align:center;opacity:.6;font-size:14px}
   @media(max-width:800px){.pk{padding:0;place-items:end center}.pk-sheet{width:100%;height:94vh;border-radius:26px 26px 0 0}.pk-s{place-items:start center;padding-top:0}.pk-sb{border-radius:0 0 26px 26px;width:100%}.pk-full{right:62px}}
   @media(prefers-reduced-motion:reduce){.pk,.pk-sheet,.pk-sb{transition:none}}`;
   document.head.appendChild(css);
@@ -42,29 +42,40 @@
     fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] })),
     fetch('assets/globe/iso.json').then(r => r.json()).catch(() => ({})),
     fetch('assets/globe/news-live.json').then(r => r.json()).catch(() => ({ stories: [] })),
+    fetch('assets/globe/news-archive.json').then(r => r.json()).catch(() => ({ stories: [] })),
     window.INV_LIVE_URL ? fetch(window.INV_LIVE_URL, { cache: 'no-store' }).then(r => r.json()).catch(() => null) : Promise.resolve(null)
-  ]).then(([m, iso, n, live]) => {
+  ]).then(([m, iso, n, arc, live]) => {
     const by = new Map((m.assets || []).map(a => [a.s, a]));
     if (live?.p) for (const [id, v] of Object.entries(live.p)) { const a = by.get(id); if (a) { a.p = v.p; a.d = v.pc; } else by.set(id, { s: id, n: v.n, t: 'crypto', p: v.p, d: v.pc }); }
-    DATA = { assets: [...by.values()], countries: Object.keys(iso), stories: (n.stories || []).slice(0, 160) };
+    const seen = new Set(), stories = []; for (const x of [...(n.stories || []), ...(arc.stories || [])]) if (x.id && !seen.has(x.id)) { seen.add(x.id); stories.push(x); }
+    DATA = { assets: [...by.values()], iso, countries: Object.keys(iso).filter(c => !/\bIs\.$/.test(c)), stories };
   }));
   const label = a => a.s.replace(/-USD$/, '').replace(/=F$/, '');
   const money = (v, a) => window.InvPrefs ? InvPrefs.fmt(v, a) : v?.toLocaleString('en-US', { maximumFractionDigits: 2 });
   const rank = (q, a) => { const s = label(a).toLowerCase(), n = (a.n || '').toLowerCase(); if (s === q) return 0; if (n === q) return 1; if (s.startsWith(q)) return 2; if (n.startsWith(q)) return 3; if (n.split(/[\s.-]+/).some(w => w.startsWith(q))) return 4; if (n.includes(q) || s.includes(q)) return 5; return 9; };
+  const PAGES = [['Markets', 'markets.html', 'Prices, sectors, crypto, currencies'], ['Crypto', 'markets.html?view=cry', 'Top coins with live prices'], ['Indices', 'markets.html?view=idx', 'World stock indices'], ['Commodities', 'markets.html?view=cmd', 'Oil, gold, metals, agriculture'], ['Currencies', 'markets.html?view=fx', 'Major pairs and cross rates'], ['Live charts', 'markets.html?view=tv', 'TradingView charts'], ['News', 'assets/globe/news.html', 'All articles'], ['Globe', 'globe.html', 'News on the world map'], ['Economic calendar', 'calendar.html', 'Releases and earnings'], ['Stock screener', 'screener.html', 'Filter companies'], ['Compare', 'compare.html', 'Compare assets side by side'], ['Calculator', 'calculator.html', 'Investment calculators'], ['Currency converter', 'converter.html', 'Convert between currencies'], ['Watchlist', 'watchlist.html', 'Your saved assets'], ['Learn', 'education.html', 'Lessons and guides'], ['About', 'about.html', 'Who we are'], ['Contact', 'contact.html', 'Get in touch'], ['Sources and methodology', 'sources.html', 'Where our data comes from'], ['Editorial policy', 'editorial-policy.html', 'How we publish'], ['Corrections', 'corrections.html', 'Fixes and updates'], ['Privacy', 'privacy.html', 'Privacy policy'], ['Cookies', 'cookies.html', 'Cookie policy'], ['Terms', 'terms.html', 'Terms of use']];
+  const GROUPS = [['Stocks', a => a.t === 'stocks' && a.g !== 'Index'], ['Indices', a => a.t === 'stocks' && a.g === 'Index'], ['Crypto', a => a.t === 'crypto'], ['Commodities', a => a.t === 'cmd'], ['Currencies', a => a.t === 'fx']];
   const POP = ['BTC-USD', 'ETH-USD', '^GSPC', 'NVDA', 'GC=F', 'EURUSD'];
   const row = a => { const d = a.d, c = d > 0.005 ? 'u' : d < -0.005 ? 'd' : 'o', ar = d > 0.005 ? '↑' : d < -0.005 ? '↓' : '↔'; return `<button class="pk-i" type="button" data-a="${esc(a.s)}"><span class="ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><span><b>${esc(a.n)}</b><small>${esc(label(a))} · ${({ stocks: a.g === 'Index' ? 'Index' : 'Stock', crypto: 'Crypto', cmd: 'Commodity', fx: 'Currency pair' })[a.t] || ''}</small></span><span class="pv">${money(a.p, a)}<i class="${c}">${isFinite(d) ? ar + ' ' + Math.abs(d).toFixed(2) + '%' : ''}</i></span></button>`; };
   function searchUI() {
-    const l = mount('pk-s', `<div class="pk-sb" role="dialog" aria-modal="true" aria-label="Search"><div class="pk-in">${SEARCH}<input type="search" autocomplete="off" spellcheck="false" placeholder="Search assets, countries and articles" aria-label="Search"><kbd>esc</kbd></div><div class="pk-r"><div class="pk-none">Loading…</div></div></div>`);
+    const l = mount('pk-s', `<div class="pk-sb" role="dialog" aria-modal="true" aria-label="Search"><div class="pk-in">${SEARCH}<input type="search" autocomplete="off" spellcheck="false" placeholder="Search assets, countries, articles and pages" aria-label="Search"><kbd>esc</kbd></div><div class="pk-r"><div class="pk-none">Loading…</div></div></div>`);
     const inp = l.querySelector('input'), res = l.querySelector('.pk-r'); inp.focus(); let sel = 0;
     const items = () => [...res.querySelectorAll('.pk-i')], mark = () => items().forEach((e, i) => e.setAttribute('aria-selected', i === sel ? 'true' : 'false'));
     const paint = () => {
       if (!DATA) return; const q = inp.value.trim().toLowerCase(); let h = '';
-      if (!q) { const pop = POP.map(s => DATA.assets.find(a => a.s === s)).filter(Boolean); h = `<h6>Popular</h6>` + pop.map(row).join(''); }
+      const link = (href, ic, t, sub) => `<a class="pk-i" href="${esc(href)}"><span class="ic">${ic}</span><span><b>${esc(t)}</b><small>${esc(sub || '')}</small></span><span></span></a>`;
+      if (!q) { const pop = POP.map(s => DATA.assets.find(a => a.s === s)).filter(Boolean); h = `<h6>Popular</h6>` + pop.map(row).join('') + '<h6>Go to</h6>' + PAGES.slice(0, 6).map(p => link(p[1], '↗', p[0], p[2])).join(''); }
       else {
-        const as = DATA.assets.map(a => [rank(q, a), a]).filter(x => x[0] < 9).sort((a, b) => a[0] - b[0] || (b[1].m || 0) - (a[1].m || 0)).slice(0, 7).map(x => x[1]);
-        const cs = DATA.countries.filter(c => c.toLowerCase().includes(q)).slice(0, 4);
-        const ns = DATA.stories.filter(s => (s.headline || '').toLowerCase().includes(q)).slice(0, 4);
-        h = (as.length ? '<h6>Assets</h6>' + as.map(row).join('') : '') + (cs.length ? '<h6>Countries</h6>' + cs.map(c => `<a class="pk-i" href="assets/globe/news.html?country=${encodeURIComponent(c)}"><span class="ic">🌐</span><span><b>${esc(c)}</b><small>Articles and markets</small></span><span></span></a>`).join('') : '') + (ns.length ? '<h6>Articles</h6>' + ns.map(s => `<a class="pk-i" href="assets/globe/news.html?story=${encodeURIComponent(s.id)}"><span class="ic"></span><span><b>${esc(s.headline)}</b><small>${esc(s.source?.name || '')}</small></span><span></span></a>`).join('') : '');
+        const ranked = DATA.assets.map(a => [rank(q, a), a]).filter(x => x[0] < 9).sort((a, b) => a[0] - b[0] || (b[1].m || 0) - (a[1].m || 0)).map(x => x[1]);
+        for (const [name, fn] of GROUPS) { const g = ranked.filter(fn); if (g.length) h += `<h6>${name}<em>${g.length}</em></h6>` + g.slice(0, 4).map(row).join(''); }
+        const sec = (window.InvSectors ? InvSectors.list : []).filter(x => x.name.toLowerCase().includes(q)).slice(0, 3);
+        if (sec.length) h += '<h6>Sectors</h6>' + sec.map(x => link('assets/globe/news.html?sector=' + encodeURIComponent(x.slug), InvSectors.icon(x.name), x.name, 'Sector · articles and sector fund move')).join('');
+        const cs = DATA.countries.filter(c => c.toLowerCase().includes(q)).sort((a, b) => (a.toLowerCase().startsWith(q) ? 0 : 1) - (b.toLowerCase().startsWith(q) ? 0 : 1)).slice(0, 4);
+        if (cs.length) h += '<h6>Countries</h6>' + cs.map(c => link('assets/globe/news.html?country=' + encodeURIComponent(c), DATA.iso[c] ? `<img src="assets/globe/flags/${DATA.iso[c].toLowerCase()}.svg" alt="">` : '', c, 'Articles and markets')).join('');
+        const ns = DATA.stories.filter(s => ((s.headline || '') + ' ' + (s.summary || '') + ' ' + (s.entities || []).map(e => e.name).join(' ')).toLowerCase().includes(q)).sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at));
+        if (ns.length) h += `<h6>Articles<em>${ns.length}</em></h6>` + ns.slice(0, 5).map(s => link('assets/globe/news.html?story=' + encodeURIComponent(s.id), '', s.headline, (s.source?.name || '') + ' · ' + new Date(s.published_at).toLocaleDateString(window.InvPrefs ? undefined : 'en-GB', { day: 'numeric', month: 'short' }))).join('');
+        const ps = PAGES.filter(p => (p[0] + ' ' + p[2]).toLowerCase().includes(q)).slice(0, 4);
+        if (ps.length) h += '<h6>Pages and tools</h6>' + ps.map(p => link(p[1], '↗', p[0], p[2])).join('');
         if (!h) h = `<div class="pk-none">No result for “${esc(inp.value)}”.</div>`;
       }
       res.innerHTML = h; sel = 0; mark();
@@ -76,7 +87,7 @@
   // ---- wiring ----
   document.addEventListener('click', e => {
     if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
-    const s = e.target.closest('.search-btn, [data-search]'); if (s) { e.preventDefault(); e.stopImmediatePropagation(); searchUI(); return; }
+    const s = e.target.closest('.search-btn, [data-search], .hn-search'); if (s) { e.preventDefault(); e.stopImmediatePropagation(); searchUI(); return; }
     const a = e.target.closest('a[href*="asset.html?s="]'); if (a && !a.closest('.pk')) { const m = /asset\.html\?s=([^&#]+)/.exec(a.getAttribute('href')); if (m) { e.preventDefault(); open(decodeURIComponent(m[1])); } }
   }, true);
   document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); e.stopImmediatePropagation(); searchUI(); } }, true);
