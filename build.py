@@ -7,6 +7,8 @@ HEAD = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="assets/consent.css?v={ver}">
+<script src="assets/consent.js?v={ver}"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{title}</title>
 <meta name="description" content="{desc}">
@@ -17,9 +19,6 @@ HEAD = """<!doctype html>
 <meta property="og:image" content="assets/logo.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/app.css?v={ver}">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -86,6 +85,7 @@ def mirror_docs():
         if f.exists():
             shutil.copy2(f, docs / f.name)
     shutil.copytree(ROOT / "assets", docs / "assets")
+    shutil.copytree(ROOT / ".well-known", docs / ".well-known", dirs_exist_ok=True)
 
 if __name__ == "__main__":
     build()

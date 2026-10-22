@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="../consent.css">
+<script src="../consent.js"></script>
+<script>document.addEventListener("DOMContentLoaded",()=>window.InvConsent?.mount());</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia Globe News (concept)</title>
 <meta name="robots" content="noindex">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Geist+Mono:wght@400;500&display=swap">
 <style>
 /* Globe News concept: the globe fills the screen; filters on top, timeline at the bottom, one glass panel on the right (bottom sheet on phones). */
 :root{
@@ -125,6 +126,7 @@ h1 span{color:var(--fg-3)}
 
 /* Panel */
 .panel{position:fixed;top:16px;right:16px;bottom:16px;width:var(--pw);border-radius:20px;z-index:4;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.globe-privacy{font-size:11px;color:var(--fg-2);padding:4px;border-radius:4px}.globe-privacy:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .grab,.sheet-actions{display:none}
 .pbody{flex:1;overflow-y:auto;padding:22px 22px 28px;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#333 transparent}
 .pbody h2{margin:6px 0 4px;font-size:22px;line-height:1.15;font-weight:600;letter-spacing:-.03em}
@@ -334,6 +336,7 @@ h1 span{color:var(--fg-3)}
   <div class="brand">
     <a class="wm" href="/">Invested<span class="i">i</span>a</a>
     <span class="prod">Globe · News</span>
+    <button type="button" class="globe-privacy" data-cookie-settings>Privacy</button>
     <span class="demo" id="badge" title="Concept preview: every story is demo content written to show the design. Not real news.">Concept · demo stories</span>
   </div>
   <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search a country, company or story" autocomplete="off" aria-label="Search the globe" aria-controls="res"><kbd>/</kbd>
@@ -397,7 +400,7 @@ const quoteOf = s => { for (const e of s.entities) { const q = e.sym && QD.q[e.s
 // and our logo files are the fallback if Brandfetch has no logo for that ticker.
 const BRANDFETCH_ID = '1idNJqyfpKbma454ae4'; // public client ID from brandfetch.com/developers (not a secret: it is part of every logo URL)
 function bfURL(e, px) {
-  if (!BRANDFETCH_ID || !e.ticker) return null; const t = e.ticker;
+  if (!window.InvConsent?.allows('images') || !BRANDFETCH_ID || !e.ticker) return null; const t = e.ticker;
   if (/-USD$/.test(t)) return `https://cdn.brandfetch.io/crypto/${encodeURIComponent(t.split('-')[0])}/w/${px}/h/${px}/fallback/404?c=${BRANDFETCH_ID}`;
   if (/[\^=]/.test(t)) return null; // indices, currencies, futures have no company logo
   return `https://cdn.brandfetch.io/ticker/${encodeURIComponent(t)}/w/${px}/h/${px}/fallback/404?c=${BRANDFETCH_ID}`;
@@ -406,6 +409,7 @@ function logoFor(e) { const local = LOGOS[e.sym] || LOGOS[e.ticker], remote = !(
 const logoOf = s => { for (const e of s.entities) { const l = logoFor(e); if (l) return l; } return null; };
 const limg = (lg, alt = '') => `<img src="${esc(lg.l)}" alt="${esc(alt)}"${lg.l.startsWith('https://cdn.brandfetch.io') ? ' class="bf"' : ''} data-logo${lg.fb ? ` data-fb="${esc(lg.fb)}"` : ''} loading="lazy" referrerpolicy="strict-origin-when-cross-origin">`;
 addEventListener('error', ev => { const t = ev.target; if (t.tagName !== 'IMG' || !t.hasAttribute('data-logo')) return; if (t.dataset.fb) { t.src = t.dataset.fb; t.removeAttribute('data-fb'); } else (t.closest('.plogo') || t).remove(); }, true);
+addEventListener('inv-consent-change', () => { if (!window.InvConsent.allows('images')) document.querySelectorAll('img.bf').forEach(i => { if(i.dataset.fb){ i.src=i.dataset.fb; delete i.dataset.fb; } else i.remove(); }); });
 const fmtP = (v, sym) => v.toLocaleString('en-US', { maximumFractionDigits: YLD.test(sym) ? 2 : v >= 1000 ? 0 : v >= 10 ? 2 : 4, minimumFractionDigits: YLD.test(sym) ? 2 : 0 });
 const outlineCache = {};
 function outline(name, lat, lon) {

@@ -2,6 +2,8 @@
 (function () {
   const M = window.MOCK;
   const page = document.body.dataset.page || '';
+  const isLegalPage = ['legal','terms','privacy','cookies','disclaimer','ai-disclosure','sources','copyright','editorial-policy','corrections','affiliate-disclosure','accessibility','contact'].includes(page);
+  document.addEventListener('DOMContentLoaded', () => window.InvConsent?.mount());
 
   // ---------- icons (24px stroke set) ----------
   const P = {
@@ -53,7 +55,7 @@
     [...h.classList].filter(k => k.startsWith('st-')).forEach(k => h.classList.remove(k));
     h.style.setProperty('--accent', cfg.accent); h.style.setProperty('--accent-hi', `color-mix(in srgb, ${cfg.accent} 82%, #fff)`);
     ['corners', 'size', 'font', 'icons', 'motion', 'cards', 'numbers', 'dropdown'].forEach(k => cfg[k] !== STUDIO_DEF[k] && h.classList.add(`st-${k}-${cfg[k]}`));
-    if (cfg.font === 'geist' && !document.getElementById('st-geist')) document.head.insertAdjacentHTML('beforeend', '<link id="st-geist" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">');
+    if (window.InvConsent?.allows('images') && cfg.font === 'geist' && !document.getElementById('st-geist')) document.head.insertAdjacentHTML('beforeend', '<link id="st-geist" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">');
   }
   let studio = null; try { studio = JSON.parse(localStorage.getItem('inv-studio') || 'null'); } catch {}
   if (studio && studio.apply) applyStudio(studio);
@@ -348,7 +350,7 @@
   const whenVisible = (fn, ms) => { let t = 0; const run = () => { clearTimeout(t); if (!document.hidden) fn(); t = setTimeout(run, ms); }; document.addEventListener('visibilitychange', () => { if (!document.hidden) run(); }); setTimeout(run, 4000); };
 
   // Live currencies: Coinbase's free exchange-rate feed, every 30 seconds while the page is open
-  whenVisible(() => fetch('https://api.coinbase.com/v2/exchange-rates?currency=USD', { cache: 'no-store' }).then(r => r.json()).then(j => {
+  whenVisible(() => window.InvConsent?.allows('images') && fetch('https://api.coinbase.com/v2/exchange-rates?currency=USD', { cache: 'no-store' }).then(r => r.json()).then(j => {
     const R = j.data.rates; R.USD = '1';
     M.assets.filter(a => a.c === 'currencies' && a.s.length === 6).forEach(a => { const b = +R[a.s.slice(0, 3)], q = +R[a.s.slice(3)]; if (b && q) { a.live = true; setPrice(a.s, +(q / b).toFixed(a.p > 20 ? 3 : 5)); } });
     document.dispatchEvent(new CustomEvent('inv:tick'));
@@ -403,9 +405,10 @@
     <div><h6>News</h6><ul><li><a href="index.html">Home</a></li><li><a href="assets/globe/news.html">Globe</a></li><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li></ul></div>
     <div><h6>Learn</h6><ul><li><a href="education.html">Education</a></li></ul></div>
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li><li><a href="privacy.html">Privacy policy</a></li></ul></div>
+    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="ftr-legal"><h6>Legal</h6><ul><li><a href="legal.html">Legal hub</a></li><li><a href="terms.html">Terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="cookies.html">Cookies</a></li><li><a href="disclaimer.html">Disclaimer</a></li><li><a href="ai-disclosure.html">AI use</a></li><li><a href="sources.html">Sources</a></li><li><a href="copyright.html">Copyright & takedown</a></li><li><a href="editorial-policy.html">Editorial policy</a></li><li><a href="corrections.html">Corrections</a></li><li><a href="affiliate-disclosure.html">Advertising & affiliates</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="contact.html">Contact</a></li><li><button type="button" data-cookie-settings>Cookie settings</button></li></ul></div>
   </div>
-  <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Market data from Yahoo Finance, FRED and Coinbase. Prices may be delayed up to 30 minutes; crypto is live. This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis. <a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener">FRED terms</a>.</span></div></div>`;
+  <div class="ftr-bottom"><span>© ${new Date().getFullYear()} Investedia · [OWNER: legal name]. <a href="disclaimer.html">Not investment advice.</a></span><span>Data: Yahoo Finance, FRED & Coinbase. <a href="sources.html">Sources & attributions</a>.</span></div></div>`;
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
 
   // ---------- charts ----------
@@ -578,7 +581,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(pop);
     document.querySelectorAll('[data-subscribe]').forEach(b => b.onclick = openPop);
-    if (!store('inv-pop') && !store('inv-sub') && store('inv-auth-seen')) {
+    if (!isLegalPage && !store('inv-pop') && !store('inv-sub') && store('inv-auth-seen')) {
       const t = setTimeout(openPop, 12000);
       const onScroll = () => { if (scrollY > (document.body.scrollHeight - innerHeight) * .6) { clearTimeout(t); removeEventListener('scroll', onScroll); if (!store('inv-pop')) openPop(); } };
       addEventListener('scroll', onScroll, { passive: true });
@@ -590,9 +593,10 @@
   let sb = null;
   const sbLoad = () => sb ? Promise.resolve(sb) : new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'; s.onload = () => ok(sb = window.supabase.createClient(SB_URL, SB_KEY)); s.onerror = no; document.head.append(s); });
   window.invSB = sbLoad;
-  // ---------- analytics: no cookies, no IDs, nothing personal; only the owner's account can read them (Supabase row-level security) ----------
+  // ---------- optional first-party usage events, gated by analytics consent ----------
   const OWNERS = ['adonaykabeya10@gmail.com', 'info@investedia.com'];
   const track = (type, detail) => { try {
+    if (!window.InvConsent?.allows('analytics')) return;
     if (navigator.webdriver || /bot|crawl|spider|headless|lighthouse/i.test(navigator.userAgent) || !/investedia\.com$/.test(location.hostname) || store('inv-owner') === '1') return;
     const rh = document.referrer ? new URL(document.referrer).hostname : '', own = rh === location.hostname;
     const body = { type, path: (location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/').slice(0, 200), ref: rh && !own ? rh.replace(/^www\./, '').slice(0, 200) : null, entry: !own,
@@ -618,7 +622,7 @@
       <p class="auth-msg" role="status" hidden></p>
       <button class="btn btn-primary auth-go" type="submit">Create free account</button>
     </form>
-    <p class="auth-legal dim" data-only="up">By continuing you agree to our <a href="about.html#terms">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+    <p class="auth-legal dim" data-only="up">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</p>
     <p class="auth-switch"><span data-only="up">Have an account? <button type="button" data-m="in">Log in</button></span><span data-only="in">New here? <button type="button" data-m="up">Create an account</button></span></p>
     <button class="auth-guest" type="button">Continue as guest</button>
   </div>`;
@@ -704,7 +708,7 @@
     // members who come back logged out: a quiet "Welcome back" once per visit
     else if (store('inv-had-account') && !ss('inv-wb')) setTimeout(() => { ss('inv-wb', '1'); if (pop.hidden && au.hidden && hdr.querySelector('#hdr-login') && !hdr.querySelector('#hdr-login').hidden) openAuth('in'); }, 2500);
   });
-  function standaloneAuthSkip() { return /[?&]noauth/.test(location.search); }
+  function standaloneAuthSkip() { return isLegalPage || /[?&]noauth/.test(location.search); }
   // ---------- home-screen app ----------
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   if (standalone) document.documentElement.classList.add('is-app');

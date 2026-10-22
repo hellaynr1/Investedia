@@ -1141,3 +1141,7 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .is-owner .acct-dd .owner-only{display:flex!important}
 /* iPhone zooms the page into any field smaller than 16px: keep fields at 16px on phones */
 @media (max-width:760px){input,select,textarea{font-size:16px!important}}
+
+/* Legal navigation follows the shared footer's existing visual language. */
+.ftr-top{grid-template-columns:1.5fr repeat(4,.85fr) 1.5fr;gap:22px}.ftr-top>div{min-width:0}.ftr-legal a,.ftr-legal button{line-height:1.55}.ftr-legal button{padding:0;background:none;border:0;color:inherit;font:inherit;cursor:pointer;text-align:left}.ftr a:focus-visible,.ftr button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}.ftr-bottom{color:var(--fg-2)}.ftr-bottom span{max-width:65ch}
+@media(max-width:1000px){.ftr-top{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:600px){.ftr-top{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 20px}.ftr-top>div:first-child,.ftr-legal{grid-column:1/-1}.ftr-legal ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}.ftr-bottom{display:grid;line-height:1.6}}

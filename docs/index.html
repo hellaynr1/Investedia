@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="assets/consent.css?v=1d8c1e1a87">
+<script src="assets/consent.js?v=1d8c1e1a87"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia — Invest with clarity</title>
 <meta name="description" content="Investing media for everyone: the world's financial news on one live globe, with what happened, where, and why it matters to your money.">
@@ -12,10 +14,7 @@
 <meta property="og:image" content="assets/logo.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=e874e022dc">
+<link rel="stylesheet" href="assets/app.css?v=1d8c1e1a87">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,10 +36,10 @@
 <body data-page="home">
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=e874e022dc"></script>
-<script src="assets/ui.js?v=e874e022dc"></script>
-<script src="assets/news-alerts.js?v=e874e022dc" defer></script>
-<script src="assets/home-news.js?v=e874e022dc"></script>
+<script src="assets/mock.js?v=1d8c1e1a87"></script>
+<script src="assets/ui.js?v=1d8c1e1a87"></script>
+<script src="assets/news-alerts.js?v=1d8c1e1a87" defer></script>
+<script src="assets/home-news.js?v=1d8c1e1a87"></script>
 <main class="wrap">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -157,7 +156,7 @@ const dfmt = d => new Date(d).toLocaleDateString('en-GB', { weekday: 'short', da
 fetch('assets/calendar-live.json', { cache: 'no-cache' }).then(r => r.json()).then(c => {
   const ev = c.events.filter(e => Date.parse(e.at) > Date.now() - 36e5).slice(0, 6), ea = c.earnings.filter(e => e.date >= new Date().toISOString().slice(0, 10)).slice(0, 6);
   hnEv.innerHTML = ev.map(e => `<div class="hn-ci"><span class="when">${new Date(e.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<small>${dfmt(e.at)}</small></span><span><b>${CC[e.c] ? `<img src="assets/globe/flags/${CC[e.c]}.svg" alt="" style="display:inline-block;width:16px;height:12px;border-radius:2px;margin-right:7px;vertical-align:-1px">` : ''}${esc(e.t)}</b><span class="sub">${esc(e.c)}${e.fc ? ' · Forecast ' + esc(e.fc) : ''}${e.prev ? ' · Prev. ' + esc(e.prev) : ''}</span></span><span class="hn-imp" title="${e.imp === 3 ? 'High' : 'Medium'} impact"><i class="on"></i><i class="on"></i><i class="${e.imp === 3 ? 'on' : ''}"></i></span></div>`).join('') || '<p class="hn-meta" style="padding:12px 0">No major events in the next days.</p>';
-  hnEa.innerHTML = ea.map(e => `<div class="hn-ci" style="grid-template-columns:auto 1fr auto"><img class="lg" src="https://cdn.brandfetch.io/ticker/${encodeURIComponent(e.s)}/w/128/h/128/fallback/404?c=${BF}" alt="" onerror="this.remove()"><span><b>${esc(e.n)}</b><span class="sub">${esc(e.s)} · ${dfmt(e.date + 'T12:00:00Z')}${e.when ? ' · ' + esc(e.when) : ''}</span></span><span class="eps">EPS est.<b>${esc(e.eps || '—')}</b></span></div>`).join('') || '<p class="hn-meta" style="padding:12px 0">No large-company earnings in the next days.</p>';
+  hnEa.innerHTML = ea.map(e => `<div class="hn-ci" style="grid-template-columns:auto 1fr auto"><img class="lg" src="${esc(logoSrc({ticker:e.s,name:e.n}))}" alt="" onerror="this.remove()"><span><b>${esc(e.n)}</b><span class="sub">${esc(e.s)} · ${dfmt(e.date + 'T12:00:00Z')}${e.when ? ' · ' + esc(e.when) : ''}</span></span><span class="eps">EPS est.<b>${esc(e.eps || '—')}</b></span></div>`).join('') || '<p class="hn-meta" style="padding:12px 0">No large-company earnings in the next days.</p>';
   hnCalSrc.textContent = 'Times in your time zone. Events: ' + c.sources.events + ' (medium and high impact). Earnings: ' + c.sources.earnings + ' (largest companies).';
 }).catch(() => {});
 // Free resources strip (moving logos)
