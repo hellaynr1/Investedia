@@ -22,3 +22,7 @@ html:not([data-theme=light]) :is(.mh-bt,.mh-tbl,.mh-ic3,.mh-p,.ap-card,.ap-ch){b
 /* Commodity colour tiles: squircle, glyph with breathing room */
 .ai-c{border-radius:28%!important}.ai-c svg{width:64%!important;height:64%!important}
 .ic:has(.ai-c),.mh-ic2:has(.ai-c),.pv-h .ic:has(.ai-c){border-radius:28%!important;background:none!important}
+/* Smaller change pills */
+.mh-chip,.ap-chip{font-size:12.5px!important;padding:3px 9px!important;font-weight:650!important;box-shadow:none!important}
+.mh-tl .mh-chip{font-size:11.5px!important;padding:2px 8px!important}
+.pk-i .pc{font-size:11px;padding:1px 7px}
