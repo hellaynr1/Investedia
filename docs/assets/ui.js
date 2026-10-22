@@ -68,6 +68,7 @@
   // ---------- formatters ----------
   const fmtP = (a, v = a.p) => {
     if (a.y) return v.toFixed(3) + '%';
+    if (window.InvPrefs && (a.c === 'crypto' || a.cur === 'USD')) return InvPrefs.fmt(v, { t: 'crypto' });
     const d = v >= 1000 ? 2 : v >= 10 ? 2 : v >= 1 ? 4 : 4;
     return (a.c === 'currencies' || a.c === 'indices' || a.c === 'bonds' ? '' : ({ EUR: '€', GBP: '£', JPY: '¥', USD: '$', CHF: 'CHF ', CAD: 'C$', AUD: 'A$', NZD: 'NZ$', HKD: 'HK$', SGD: 'S$', KRW: '₩', INR: '₹', CNY: '¥', ZAR: 'R ', EGP: 'E£', SAR: 'SAR ', AED: 'AED ', QAR: 'QAR ', BRL: 'R$', MXN: 'MX$', ILS: '₪' }[a.cur] || (a.x === 'XETRA' || a.x === 'EURONEXT' ? '€' : a.x === 'LSE' ? '£' : '$'))) + v.toLocaleString('en-US', { minimumFractionDigits: a.c === 'currencies' ? 4 : d, maximumFractionDigits: a.c === 'currencies' ? 4 : d });
   };
@@ -203,6 +204,7 @@
       <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span></button>
     </div></div>`;
   document.body.prepend(hdr);
+  if (window.InvPrefs) InvPrefs.mount(hdr.querySelector('.hdr-tools .search-btn')?.insertAdjacentElement('afterend', Object.assign(document.createElement('span'), { className: 'pf-slot' })));
   // profile (stored on this device until accounts exist)
   const getProfile = () => { try { return JSON.parse(localStorage.getItem('inv-profile') || '{}'); } catch { return {}; } };
   const paintAvatar = () => { const u = window.invUser; if (!u) return; const md = u.user_metadata || {}, av = hdr.querySelector('#hdr-avatar'), nm = md.name || md.full_name || u.email || '', pic = md.avatar || md.avatar_url || md.picture, ini = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();

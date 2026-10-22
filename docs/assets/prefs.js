@@ -1,0 +1,34 @@
+// Display preferences: region, language (number and date format) and currency. Stored on this device only.
+// Prices quoted in US dollars (crypto, commodities, US-listed stocks) are shown in the chosen currency using the FX rates on this site.
+(() => {
+  const KEY = 'inv-prefs';
+  const REG = { US: ['USD', 'en'], GB: ['GBP', 'en'], IE: ['EUR', 'en'], CA: ['CAD', 'en'], AU: ['AUD', 'en'], NZ: ['NZD', 'en'], BE: ['EUR', 'nl'], NL: ['EUR', 'nl'], FR: ['EUR', 'fr'], DE: ['EUR', 'de'], AT: ['EUR', 'de'], ES: ['EUR', 'es'], IT: ['EUR', 'it'], PT: ['EUR', 'pt'], LU: ['EUR', 'fr'], FI: ['EUR', 'en'], GR: ['EUR', 'en'], CH: ['CHF', 'de'], SE: ['SEK', 'en'], NO: ['NOK', 'en'], DK: ['DKK', 'en'], PL: ['PLN', 'en'], CZ: ['CZK', 'en'], HU: ['HUF', 'en'], RO: ['RON', 'en'], TR: ['TRY', 'en'], JP: ['JPY', 'en'], CN: ['CNY', 'en'], HK: ['HKD', 'en'], SG: ['SGD', 'en'], KR: ['KRW', 'en'], IN: ['INR', 'en'], ID: ['IDR', 'en'], TH: ['THB', 'en'], VN: ['VND', 'en'], MY: ['MYR', 'en'], PH: ['PHP', 'en'], AE: ['AED', 'en'], SA: ['SAR', 'en'], IL: ['ILS', 'en'], EG: ['EGP', 'en'], ZA: ['ZAR', 'en'], NG: ['NGN', 'en'], KE: ['KES', 'en'], MA: ['MAD', 'fr'], MX: ['MXN', 'es'], BR: ['BRL', 'pt'], AR: ['ARS', 'es'], CL: ['CLP', 'es'], CO: ['COP', 'es'], PE: ['PEN', 'es'] };
+  const LANGS = { en: 'English', fr: 'Français', nl: 'Nederlands', de: 'Deutsch', es: 'Español', it: 'Italiano', pt: 'Português' };
+  let saved = {}; try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch {}
+  const guess = () => { const l = (navigator.language || 'en-US').split('-'), r = (l[1] || '').toUpperCase(); return { region: REG[r] ? r : 'US', lang: LANGS[l[0]] ? l[0] : 'en' }; };
+  const g = guess(), P = { region: saved.region || g.region, lang: saved.lang || g.lang, cur: saved.cur || '' };
+  const rates = { USD: 1 }, subs = [];
+  const cur = () => P.cur || REG[P.region][0], loc = () => `${P.lang}-${P.region}`;
+  const convertible = a => !a || a.t === 'crypto' || a.t === 'cmd' || (a.t === 'stocks' && a.g !== 'Index' && !/[.^=]/.test(a.s));
+  const num = (v, c) => { const x = Math.abs(v), d = x >= 1 ? 2 : x >= 0.01 ? 4 : 6; try { return v.toLocaleString(loc(), c ? { style: 'currency', currency: c, minimumFractionDigits: d, maximumFractionDigits: d } : { minimumFractionDigits: d, maximumFractionDigits: d }); } catch { return v.toFixed(d); } };
+  const fmt = (v, a) => { if (v == null || !isFinite(v)) return '—'; if (!convertible(a)) return num(v); const c = cur(), r = rates[c]; return r ? num(v * r, c) : num(v, 'USD'); };
+  const names = () => { try { return new Intl.DisplayNames(['en'], { type: 'currency' }); } catch { return { of: x => x }; } };
+  const regionNames = () => { try { return new Intl.DisplayNames(['en'], { type: 'region' }); } catch { return { of: x => x }; } };
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(P)); } catch {} };
+  const emit = () => { paint(); subs.forEach(f => { try { f(); } catch {} }); };
+  fetch('assets/globe/markets.json').then(r => r.json()).then(m => { for (const a of m.assets || []) if (a.t === 'fx') { const s = a.s; if (s.startsWith('USD') && a.g === 'vs US dollar') rates[s.slice(3)] = a.p; else if (s.endsWith('USD') && a.g === 'vs US dollar') rates[s.slice(0, 3)] = 1 / a.p; } emit(); }).catch(() => {});
+  let btn, dd;
+  function paint() { if (btn) btn.innerHTML = `<span>${cur()}</span>`; if (dd && dd.classList.contains('open')) build(); }
+  function build() {
+    const cn = names(), rn = regionNames(), cs = Object.keys(rates).sort(), opt = (v, t, sel) => `<option value="${v}"${sel ? ' selected' : ''}>${t}</option>`;
+    dd.innerHTML = `<div class="pf-h"><b>Region and currency</b><small>Saved on this device only.</small></div>
+      <label>Region<select class="select" data-k="region">${Object.keys(REG).sort((a, b) => rn.of(a).localeCompare(rn.of(b))).map(r => opt(r, rn.of(r), r === P.region)).join('')}</select></label>
+      <label>Language<select class="select" data-k="lang">${Object.entries(LANGS).map(([k, v]) => opt(k, v, k === P.lang)).join('')}</select><small>Sets number and date format. Translated articles are coming.</small></label>
+      <label>Currency<select class="select" data-k="cur">${opt('', 'Automatic (' + REG[P.region][0] + ')', !P.cur)}${cs.map(c => opt(c, `${c} · ${cn.of(c)}`, c === P.cur)).join('')}</select><small>Converts prices quoted in US dollars. Index levels, currency pairs and non-US stocks keep their own units.</small></label>`;
+    dd.querySelectorAll('select').forEach(s => s.onchange = () => { const k = s.dataset.k; P[k] = s.value; if (k === 'region') { P.cur = ''; P.lang = P.lang === g.lang || !saved.lang ? REG[s.value][1] : P.lang; } saved = P; save(); emit(); });
+  }
+  const css = document.createElement('style');
+  css.textContent = '.pf-wrap{position:relative}.pf-btn{font:600 12px/1 var(--mono,ui-monospace,monospace);letter-spacing:.04em;border:1px solid var(--line,rgba(255,255,255,.14));background:transparent;color:inherit;border-radius:999px;height:36px;min-width:52px;padding:0 12px;cursor:pointer}.pf-dd{position:absolute;right:0;top:46px;width:min(320px,calc(100vw - 32px));background:var(--surface,#161618);border:1px solid var(--line,rgba(255,255,255,.14));border-radius:16px;padding:16px;display:none;z-index:80;box-shadow:0 18px 50px rgba(0,0,0,.45)}.pf-dd.open{display:block}@media(max-width:800px){.pf-dd{position:fixed;left:16px;right:16px;top:68px;width:auto}}.pf-h{display:grid;margin-bottom:12px}.pf-h small,.pf-dd label small{opacity:.6;font-size:12px;line-height:1.4;margin-top:4px;display:block}.pf-dd label{display:block;font-size:13px;margin-top:12px}.pf-dd select{display:block;width:100%!important;margin-top:6px;min-height:44px;color:inherit}';
+  document.head.appendChild(css);
+  window.InvPrefs = { fmt, cur, convertible, rates, onChange: f => subs.push(f), mount(host) { if (btn || !host) return; const w = document.createElement('div'); w.className = 'pf-wrap'; btn = document.createElement('button'); btn.type = 'button'; btn.className = 'pf-btn'; btn.setAttribute('aria-label', 'Region, language and currency'); btn.setAttribute('aria-haspopup', 'true'); dd = document.createElement('div'); dd.className = 'pf-dd'; dd.setAttribute('role', 'dialog'); w.append(btn, dd); host.prepend(w); paint(); btn.onclick = e => { e.stopPropagation(); const o = !dd.classList.contains('open'); if (o) build(); dd.classList.toggle('open', o); }; document.addEventListener('click', e => { if (!w.contains(e.target)) dd.classList.remove('open'); }); document.addEventListener('keydown', e => { if (e.key === 'Escape') dd.classList.remove('open'); }); } };
+})();
