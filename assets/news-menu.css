@@ -28,3 +28,19 @@
 .nn-cluster>img:nth-child(1){margin-right:-8px;z-index:1}.nn-cluster>img:nth-child(3){margin-left:-8px;z-index:1}
 .nn-cluster>img:nth-child(2){width:33px!important;height:33px!important;z-index:2;padding:5px!important;box-shadow:0 0 0 2px #0e0e10}
 .nn-cluster>img.nn-fl{padding:0!important;background:none!important;object-fit:cover}
+
+/* Hover menu v2: moving pill, cross-fade panel, in-panel search */
+.nn-categories{position:relative}.nn-pill{position:absolute;left:0;right:14px;top:0;height:44px;border-radius:8px;background:rgba(255,122,26,.10);transform:translateY(calc(var(--i,0) * 48px));transition:transform .22s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.nn-categories button{position:relative;z-index:1;transition:color .18s}.nn-categories button[aria-pressed=true]{background:none!important;color:#ffad73}
+.nn-content{min-height:292px;transition:opacity .11s ease,transform .18s cubic-bezier(.2,.8,.2,1)}.nn-content.nn-out{opacity:0;transform:translateY(6px)}
+.nn-search{position:relative;margin:0 0 10px}.nn-si{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--fg-3);pointer-events:none}.nn-si svg{width:16px;height:16px;display:block}
+.nn-q{width:100%;height:44px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--fg);font:inherit;font-size:14px;padding:0 14px 0 36px;outline:none;transition:border-color .15s,background .15s}
+.nn-q:focus{border-color:rgba(255,122,26,.6);background:rgba(255,255,255,.07)}.nn-q::-webkit-search-cancel-button{display:none}
+.nn-results{display:grid;gap:2px}.nn-res{min-height:48px}.nn-rt{min-width:0}.nn-rt b{display:block;font-weight:550;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nn-rt small{display:block;color:var(--fg-3);font-size:11.5px;margin-top:1px}
+.nn-rt mark{background:none;color:#ffad73}.nn-none{padding:14px 8px;color:var(--fg-3);font-size:13px}
+.nn-lg{overflow:hidden}.nn-lg>img{width:100%;height:100%;object-fit:contain;padding:5px;box-sizing:border-box}.nn-lg>img.nn-fl{padding:0;object-fit:cover}
+.nn-ini{font:700 13px Inter,system-ui,sans-serif;color:var(--fg-2)}.nn-sec svg{width:20px;height:20px}
+.nn-heading{display:none}
+@media(prefers-reduced-motion:reduce){.nn-pill,.nn-content{transition:none}}
+@media(max-width:1140px){.nn-pill{right:8px}.drawer .nn-content{min-height:0}.drawer .nn-q{font-size:16px}}
+.nn-q:focus-visible{outline:2px solid rgba(255,122,26,.45);outline-offset:1px}

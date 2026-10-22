@@ -4,23 +4,7 @@
   const WIN = [['d', 'Today'], ['w', 'Week'], ['m', 'Month']];
   const VIEW = [['sec', 'Sectors'], ['idx', 'Indices'], ['cmd', 'Commodities'], ['cry', 'Crypto & FX']];
   // Sector buckets: keyword rules over impact names, entity names and headline. Fund = the public sector ETF whose price colours the tile.
-  const SECTORS = [
-    ['Technology', 'XLK', /technolog|software|cloud|internet|cyber|saas|\bai\b|artificial intelligence|data cent/i],
-    ['Semiconductors', 'SMH', /semiconductor|chip|nvidia|micron|\bamd\b|asml|tsmc|lam research|wafer/i],
-    ['Energy', 'XLE', /\boil\b|\bgas\b|energy|opec|crude|petrol|lng|refin|pipeline/i],
-    ['Banks & Finance', 'XLF', /\bbank|lender|financ|fed\b|central bank|interest rate|credit|loan|mortgage/i],
-    ['Healthcare', 'XLV', /health|pharma|drug|biotech|medic|hospital|vaccine/i],
-    ['Consumer & Retail', 'XLY', /retail|consumer|luxury|e-?commerce|restaurant|shopping|apparel/i],
-    ['Autos', 'CARZ', /\bauto|\bcar\b|vehicle|\bev\b|tesla|ford\b|general motors|toyota|hyundai/i],
-    ['Industrials', 'XLI', /industrial|manufactur|machinery|logistic|shipping|rail|freight/i],
-    ['Aerospace & Defence', 'ITA', /aerospace|defen[cs]e|spacex|boeing|airbus|rheinmetall|missile|airline/i],
-    ['Materials & Mining', 'XLB', /mining|miner|steel|copper|lithium|gold\b|silver|chemical|materials/i],
-    ['Utilities', 'XLU', /utilit|electric|power|renewable|solar|wind/i],
-    ['Real estate', 'XLRE', /real estate|housing|property|reit|home price|mortgage rate/i],
-    ['Insurance', 'KIE', /insur/i],
-    ['Communication', 'XLC', /media|stream|telecom|social network|netflix|meta platforms|advertis/i],
-    ['Crypto', 'BTC-USD', /crypto|bitcoin|ethereum|stablecoin|blockchain/i]
-  ];
+  const SECTORS = InvSectors.list.map(x => [x.name, x.etf, x.re]);
   const IDX = [['^GSPC', 'S&P 500'], ['^IXIC', 'Nasdaq'], ['^DJI', 'Dow Jones'], ['^FTSE', 'FTSE 100'], ['^GDAXI', 'DAX'], ['^N225', 'Nikkei 225'], ['^HSI', 'Hang Seng'], ['^NSEI', 'Nifty 50']];
   const CMD = ['GC=F', 'SI=F', 'HG=F', 'BZ=F', 'CL=F', 'NG=F', 'ZW=F', 'KC=F'];
   const CRY = ['BTC', 'ETH', 'SOL', 'EURUSD', 'GBPUSD', 'USDJPY'];
@@ -39,7 +23,7 @@
     const cnt = {}; for (const s of recent) for (const n of bucket(s)) cnt[n] = (cnt[n] || 0) + 1;
     const L = SECTORS.map(([n, f]) => ({ n, f, c: cnt[n] || 0, a: S.by[f] })).filter(x => x.a).sort((a, b) => b.c - a.c);
     const max = Math.max(1, ...L.map(x => x.c));
-    $('mh-grid').innerHTML = L.map((x, i) => { const m = move(x.a, S.win), big = x.c >= max * .9 ? ' w2 r2' : x.c >= max * .45 ? ' w2' : ''; return `<button type="button" class="mh-t${big}" data-n="${x.n}" aria-pressed="${S.sel === x.n}" style="background:${tint(m)}"><span><b>${x.n}</b><small>${x.c} ${x.c === 1 ? 'article' : 'articles'}</small></span><span class="mono ${cls(m)}">${fmt(m)}</span></button>`; }).join('');
+    $('mh-grid').innerHTML = L.map((x, i) => { const m = move(x.a, S.win), big = x.c >= max * .9 ? ' w2 r2' : x.c >= max * .45 ? ' w2' : ''; return `<button type="button" class="mh-t${big}" data-n="${x.n}" aria-pressed="${S.sel === x.n}" style="background:${tint(m)}"><span><b><span class="mh-ic">${InvSectors.icon(x.n)}</span>${x.n}</b><small>${x.c} ${x.c === 1 ? 'article' : 'articles'}</small></span><span class="mono ${cls(m)}">${fmt(m)}</span></button>`; }).join('');
   }
   const cards = (list) => { $('mh-grid').className = 'mh-idx'; $('mh-grid').innerHTML = list.map(a => { const m = move(a, S.win); return `<div class="mh-c"><small>${AssetIcons.icon(a)}<span>${a.n}</span></small><span class="mono ${cls(m)}">${fmt(m)}</span>${line(series(a, S.win), col(m))}</div>`; }).join('') || '<div class="nb-none">No data yet.</div>'; };
   function draw() {

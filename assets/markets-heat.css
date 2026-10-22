@@ -12,3 +12,4 @@
 .mh .nf-sh{margin:36px 0 8px}
 @media(max-width:800px){.mh-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:92px}.mh-t.w2,.mh-t.w3{grid-column:span 2}.mh-t.r2{grid-row:span 1}}
 .mv-note{color:var(--fg-2);font-size:12px;line-height:1.5;margin-top:18px;max-width:640px}
+.mh-ic{display:inline-grid;vertical-align:-4px;margin-right:7px;opacity:.85}.mh-ic .sec-ic{width:18px;height:18px}
