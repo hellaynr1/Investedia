@@ -905,6 +905,48 @@
    "credit": "StockSnap",
    "source_url": "https://pixabay.com/photos/bananas-fruits-food-grocery-store-698608/",
    "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-1275480.jpg",
+   "credit": "652234",
+   "source_url": "https://pixabay.com/photos/shopping-carts-grocery-shopping-1275480/",
+   "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-3105631.jpg",
+   "credit": "igorovsyannykov",
+   "source_url": "https://pixabay.com/photos/beverages-bottles-shelf-cans-coke-3105631/",
+   "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-7478891.jpg",
+   "credit": "photim",
+   "source_url": "https://pixabay.com/photos/shopping-carts-shopping-pushcarts-7478891/",
+   "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-6771933.jpg",
+   "credit": "Surprising_Media",
+   "source_url": "https://pixabay.com/photos/fruits-grocery-store-supermarket-6771933/",
+   "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-5956725.jpg",
+   "credit": "tomo_BEGINNER",
+   "source_url": "https://pixabay.com/photos/milk-drinks-supermarket-5956725/",
+   "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-2923690.jpg",
+   "credit": "Sunriseforever",
+   "source_url": "https://pixabay.com/photos/family-shopping-center-purchase-2923690/",
+   "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-879498.jpg",
+   "credit": "stevepb",
+   "source_url": "https://pixabay.com/photos/shopping-spending-till-slip-879498/",
+   "alt": "supermarket groceries"
   }
  ],
  "data center servers": [
@@ -1445,7 +1487,8 @@
   "container port",
   "parliament government building",
   "smartphone",
-  "artificial intelligence robot"
+  "artificial intelligence robot",
+  "supermarket groceries"
  ],
  "airplane airport": [
   {
