@@ -33,6 +33,9 @@
   .na-pill .na-m{font-size:11.5px;color:#8b8b94;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .na-pill .na-view{flex:none;font-size:12.5px;font-weight:550;background:rgba(255,255,255,.1);padding:6px 11px;border-radius:999px}
   .na-pill .na-x{flex:none;width:26px;height:26px}
+  .na-link{display:contents}.na-link:focus-visible::after{content:'';position:absolute;inset:0;outline:3px solid #FF7A1A;outline-offset:3px;border-radius:inherit;pointer-events:none}
+  .na-illustration{position:absolute;left:6px;bottom:4px;font:10px/1.4 system-ui;color:#fff;background:#111e;padding:2px 4px;border-radius:3px}
+  @media(pointer:coarse){.na-pill .na-x{width:44px;height:44px;min-width:44px}.na-pill .na-view{display:none}}
   @media(prefers-reduced-motion:reduce){.news-alert{animation:none}}
   `;
   document.head.append(style);
@@ -44,11 +47,11 @@
     const place = [story.location?.place?.split(',')[0], story.location?.country && story.location.country !== 'United States of America' ? story.location.country : story.location?.country && 'United States'].filter(Boolean).join(', ');
     const more = count > 1 ? `${count} new headlines` : 'New headline';
     if (!current) {
-      current = document.createElement('a');
+      current = document.createElement('div'); current.setAttribute('role','region'); current.setAttribute('aria-live','polite');
       current.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
       document.body.append(current);
     }
-    current.hidden = false; current.href = link;
+    current.hidden = false;
     current.setAttribute('aria-label', more + ': ' + story.headline);
     current.onclick = e => { if (e.target.closest('.na-x')) { e.preventDefault(); close(); } };
     if (phone()) {
@@ -58,9 +61,14 @@
     } else {
       current.className = 'news-alert na-card';
       const photo = story.image?.file ? new URL('globe/' + story.image.file, assetsURL).href : '', lg = logoOf(story);
-      current.innerHTML = `<div class="na-im"${photo ? ` style="background-image:url('${esc(photo)}')"` : ''}>${lg ? `<img class="na-lg" src="${esc(lg)}" alt="" onerror="this.remove()">` : ''}<button type="button" class="na-x" aria-label="Dismiss">×</button></div>
+      current.innerHTML = `<div class="na-im"${photo ? ` style="background-image:url('${esc(photo)}')"` : ''}>${photo ? '<span class="na-illustration">Illustration</span>' : ''}${lg ? `<img class="na-lg" src="${esc(lg)}" alt="" onerror="this.remove()">` : ''}<button type="button" class="na-x" aria-label="Dismiss">×</button></div>
         <div class="na-bd"><div class="na-t">${esc(more)} · ${esc(story.category || 'news')}</div><h3>${esc(story.headline)}</h3><div class="na-m">${esc(place)}${place ? ' · ' : ''}just now</div></div>`;
     }
+    // Keep the dismiss action outside the article link for keyboard/screen-reader access.
+    const dismiss=current.querySelector('.na-x'); dismiss.remove();
+    const article=document.createElement('a');article.className='na-link';article.href=link;article.setAttribute('aria-label',more+': '+story.headline);
+    while(current.firstChild)article.append(current.firstChild);
+    current.append(article,dismiss);
   }
   function observe(stories, hrefFor) {
     if (!seen) { seen = new Set(stories.map(s => s.id)); return; }

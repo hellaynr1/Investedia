@@ -1160,3 +1160,5 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 @media(prefers-reduced-motion:reduce){@view-transition{navigation:none}}
 @media(pointer:coarse){.legal-back,.sp-back{display:inline-flex;align-items:center;min-height:44px}input[type=color]{min-width:44px}}
 .hn-tick a{flex:0 0 auto;display:flex;align-items:center}.hn-tick .hn{overflow-x:auto;scrollbar-width:none}
+
+.owner-placeholder{background:#472400;color:#ffbd8a;border:1px dashed #ff7a1a;padding:2px 4px;border-radius:3px;overflow-wrap:anywhere}
