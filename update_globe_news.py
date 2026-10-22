@@ -130,10 +130,23 @@ FEEDS = [  # official press releases: (url, source name, hint)
     ('https://www.rba.gov.au/rss/rss-cb-media-releases.xml', 'Reserve Bank of Australia', 'Reserve Bank of Australia media release, Sydney, Australia'),
 ]
 
+NEWS_FEEDS = [  # publisher business feeds (headline + link + their own short description; no rate limits, unlike GDELT)
+    ('https://feeds.bbci.co.uk/news/business/rss.xml', 'BBC News'),
+    ('https://www.theguardian.com/business/rss', 'The Guardian'),
+    ('https://rss.nytimes.com/services/xml/rss/nyt/Business.xml', 'The New York Times'),
+    ('https://feeds.content.dowjones.io/public/rss/mw_topstories', 'MarketWatch'),
+    ('https://www.scmp.com/rss/92/feed', 'South China Morning Post'),
+    ('https://www.straitstimes.com/news/business/rss.xml', 'The Straits Times'),
+    ('https://www.abc.net.au/news/feed/51120/rss.xml', 'ABC News Australia'),
+    ('https://www.coindesk.com/arc/outboundfeeds/rss/', 'CoinDesk'),
+    ('https://oilprice.com/rss/main', 'OilPrice.com'),
+    ('https://www.investing.com/rss/news.rss', 'Investing.com'),
+]
+
 
 def rss():
     out = []
-    for url, name, hint in FEEDS:
+    for url, name, hint in FEEDS + [(u, n, '') for u, n in NEWS_FEEDS]:
         try:
             root = ET.fromstring(get(url).encode('utf-8'))
             for it in root.iter('item'):
@@ -144,9 +157,10 @@ def rss():
                 except ValueError:
                     try: ts = datetime.fromisoformat(pd.strip().replace('Z', '+00:00'))
                     except ValueError: ts = NOW
+                if ts.tzinfo is None: ts = ts.replace(tzinfo=timezone.utc)
                 if NOW - ts > timedelta(days=3): continue
                 desc = re.sub(r'<[^>]+>', ' ', html.unescape(it.findtext('description') or '')).strip()
-                out.append({'title': html.unescape(t), 'url': l, 'source': name, 'published': ts.strftime('%Y-%m-%dT%H:%M:%SZ'), 'kind': 'official', 'hint': hint, 'desc': desc[:400]})
+                out.append({'title': html.unescape(t), 'url': l, 'source': name, 'published': ts.strftime('%Y-%m-%dT%H:%M:%SZ'), 'kind': 'official' if hint else 'news', 'hint': hint, 'desc': desc[:400]})
         except Exception as e: err(f'RSS {name}: {e}')
     return out
 
