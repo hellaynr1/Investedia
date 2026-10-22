@@ -104,7 +104,7 @@ Fill the exact keys below with verified facts or counsel-approved review stateme
 
 ## Screenshot set
 
-Desktop 1440×900 and phone 390×844; full-height footer element captures. Real saved articles and local assets, essential services selected. Open tests/screens/index.html.
+Desktop 1440×900 and phone 390×844; full-height desktop footer plus phone top/bottom viewport captures. Real saved articles and local assets, essential services selected. Open tests/screens/index.html.
 
 - [tests/screens/article-1440.png](tests/screens/article-1440.png)
 - [tests/screens/article-390.png](tests/screens/article-390.png)
@@ -116,6 +116,7 @@ Desktop 1440×900 and phone 390×844; full-height footer element captures. Real 
 - [tests/screens/cookies-390.png](tests/screens/cookies-390.png)
 - [tests/screens/footer-1440.png](tests/screens/footer-1440.png)
 - [tests/screens/footer-390.png](tests/screens/footer-390.png)
+- [tests/screens/footer-top-390.png](tests/screens/footer-top-390.png)
 - [tests/screens/globe-1440.png](tests/screens/globe-1440.png)
 - [tests/screens/globe-390.png](tests/screens/globe-390.png)
 - [tests/screens/homepage-1440.png](tests/screens/homepage-1440.png)
