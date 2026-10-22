@@ -1463,6 +1463,48 @@
    "credit": "Leonhard_Niederwimmer",
    "source_url": "https://pixabay.com/photos/building-horizon-city-skyscraper-7092747/",
    "alt": "city skyline business district"
+  },
+  {
+   "file": "photos/city-skyline-business-district-205986.jpg",
+   "credit": "Ichigo121212",
+   "source_url": "https://pixabay.com/photos/buildings-architecture-city-205986/",
+   "alt": "city skyline business district"
+  },
+  {
+   "file": "photos/city-skyline-business-district-1867772.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/buildings-skyline-city-urban-1867772/",
+   "alt": "city skyline business district"
+  },
+  {
+   "file": "photos/city-skyline-business-district-5772121.jpg",
+   "credit": "xegxef",
+   "source_url": "https://pixabay.com/photos/city-buildings-night-city-lights-5772121/",
+   "alt": "city skyline business district"
+  },
+  {
+   "file": "photos/city-skyline-business-district-3459422.jpg",
+   "credit": "Leslin_Liu",
+   "source_url": "https://pixabay.com/photos/shanghai-city-night-landscape-3459422/",
+   "alt": "city skyline business district"
+  },
+  {
+   "file": "photos/city-skyline-business-district-4667143.jpg",
+   "credit": "serbuxarev",
+   "source_url": "https://pixabay.com/photos/city-street-architecture-business-4667143/",
+   "alt": "city skyline business district"
+  },
+  {
+   "file": "photos/city-skyline-business-district-1990959.jpg",
+   "credit": "Walkerssk",
+   "source_url": "https://pixabay.com/photos/singapore-skyscrapers-city-1990959/",
+   "alt": "city skyline business district"
+  },
+  {
+   "file": "photos/city-skyline-business-district-1867726.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/buildings-city-skyline-cityscape-1867726/",
+   "alt": "city skyline business district"
   }
  ],
  "_topup_attempted": [
@@ -1488,7 +1530,8 @@
   "parliament government building",
   "smartphone",
   "artificial intelligence robot",
-  "supermarket groceries"
+  "supermarket groceries",
+  "city skyline business district"
  ],
  "airplane airport": [
   {
@@ -1736,6 +1779,68 @@
    "credit": "garciabilbao1",
    "source_url": "https://pixabay.com/photos/architecture-facade-hotel-tourism-3696461/",
    "alt": "hotel tourism"
+  }
+ ],
+ "factory workers": [
+  {
+   "file": "photos/factory-workers-6322029.jpg",
+   "credit": "Quanlecntt2004",
+   "source_url": "https://pixabay.com/photos/worker-woman-mask-face-mask-6322029/",
+   "alt": "factory workers"
+  },
+  {
+   "file": "photos/factory-workers-5736096.jpg",
+   "credit": "jannonivergall",
+   "source_url": "https://pixabay.com/photos/worker-grinder-factory-workplace-5736096/",
+   "alt": "factory workers"
+  },
+  {
+   "file": "photos/factory-workers-8772016.jpg",
+   "credit": "simonreza09",
+   "source_url": "https://pixabay.com/photos/work-worker-machine-people-engine-8772016/",
+   "alt": "factory workers"
+  },
+  {
+   "file": "photos/factory-workers-4672332.jpg",
+   "credit": "This_is_Engineering",
+   "source_url": "https://pixabay.com/photos/shoes-factory-man-workshop-labor-4672332/",
+   "alt": "factory workers"
+  },
+  {
+   "file": "photos/factory-workers-1838986.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/welding-dark-people-light-masks-1838986/",
+   "alt": "factory workers"
+  },
+  {
+   "file": "photos/factory-workers-5963963.jpg",
+   "credit": "19661338",
+   "source_url": "https://pixabay.com/photos/women-crowd-protest-protesters-5963963/",
+   "alt": "factory workers"
+  },
+  {
+   "file": "photos/factory-workers-6322085.jpg",
+   "credit": "Quanlecntt2004",
+   "source_url": "https://pixabay.com/photos/worker-woman-mask-face-mask-6322085/",
+   "alt": "factory workers"
+  },
+  {
+   "file": "photos/factory-workers-5243951.jpg",
+   "credit": "mostafa_meraji",
+   "source_url": "https://pixabay.com/photos/job-welding-people-life-lifestyle-5243951/",
+   "alt": "factory workers"
+  },
+  {
+   "file": "photos/factory-workers-5763480.jpg",
+   "credit": "msensecomm",
+   "source_url": "https://pixabay.com/photos/man-hard-hat-worker-portrait-5763480/",
+   "alt": "factory workers"
+  },
+  {
+   "file": "photos/factory-workers-6322043.jpg",
+   "credit": "Quanlecntt2004",
+   "source_url": "https://pixabay.com/photos/worker-man-mask-face-mask-6322043/",
+   "alt": "factory workers"
   }
  ]
 }
