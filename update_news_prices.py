@@ -24,6 +24,11 @@ def fetch(sym):
             time.sleep(1 + i)
     return None
 
+# Sector ETFs (public tickers) so the Markets heatmap has a price move per sector.
+SECTORS = {'Technology': 'XLK', 'Semiconductors': 'SMH', 'Energy': 'XLE', 'Banks & Finance': 'XLF', 'Healthcare': 'XLV', 'Consumer & Retail': 'XLY', 'Staples': 'XLP',
+           'Industrials': 'XLI', 'Aerospace & Defence': 'ITA', 'Materials & Mining': 'XLB', 'Utilities': 'XLU', 'Real estate': 'XLRE', 'Insurance': 'KIE', 'Crypto': 'BTC-USD', 'Communication': 'XLC', 'Autos': 'CARZ'}
+
+
 def alias_known(t, known):
     return t in known or t.replace('-USD', '') in known or t.replace('=X', '') in known
 
@@ -35,18 +40,20 @@ def main():
         for i in s.get('impacts') or []:
             t = (i.get('ticker') or '').strip()
             if t and i.get('kind') != 'country' and not alias_known(t, mk): want.setdefault(t, i.get('name') or t)
+    for nm, t in SECTORS.items(): want[t] = nm  # sector ETFs always fetched
     path = os.path.join(G, 'news-prices.json')
     old = {}
     try: old = json.load(open(path, encoding='utf-8')).get('assets', {})
     except Exception: pass
     syms = list(want)
+    sector_syms = set(SECTORS.values())
     with cf.ThreadPoolExecutor(8) as ex: res = list(ex.map(fetch, syms))
     out = {}
     for t, c in zip(syms, res):
         if not c: 
             if t in old: out[t] = old[t]
             continue
-        out[t] = {'s': t, 'n': want[t], 't': 'crypto' if t.endswith(CRYPTO) else 'fx' if t.endswith('=X') else 'stocks',
+        out[t] = {'s': t, 'n': want[t], **({'sector': True} if t in sector_syms else {}), 't': 'crypto' if t.endswith(CRYPTO) else 'fx' if t.endswith('=X') else 'stocks',
                   'p': round(c[-1], 6), 'd': round((c[-1] / c[-2] - 1) * 100, 2), 'w': round((c[-1] / c[-6] - 1) * 100, 2), 'sp': [round(x, 6) for x in c[-22:]]}
     print(f'news prices: {len([t for t in syms if t in out])}/{len(syms)} tickers')
     doc = json.dumps({'asof': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'), 'assets': out}, separators=(',', ':'), ensure_ascii=False)

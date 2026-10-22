@@ -181,6 +181,7 @@
     ['home', 'Home', 'index.html'],
     ['globe', 'Globe', 'assets/globe/news.html'],
     ['news', 'News', 'news.html'],
+    ['markets', 'Markets', 'markets.html'],
     ['education', 'Learn', 'education.html'],
     ['tools', 'Tools', null, ddTools],
     ['about', 'About', 'about.html'],
