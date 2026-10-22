@@ -104,10 +104,10 @@ def gdelt(start=None, end=None):
     out = []
     for i, q in enumerate([BACKFILL_QUERY] if start else GDELT_QUERIES):
         url = 'https://api.gdeltproject.org/api/v2/doc/doc?' + urllib.parse.urlencode({'query': q, 'mode': 'ArtList', 'format': 'json', 'maxrecords': 150 if start else 75, 'sort': 'HybridRel', **({'startdatetime': start.strftime('%Y%m%d%H%M%S'), 'enddatetime': end.strftime('%Y%m%d%H%M%S')} if start else {'timespan': '3h'})})
-        for t in range(4):
-            time.sleep(8 + 12 * t)  # GDELT asks for one request every 5 seconds; back off when it is busy
+        for t in range(1):  # one try per query: GDELT is a bonus source, the RSS feeds carry the run
+            time.sleep(6)  # GDELT asks for one request every 5 seconds
             try:
-                txt = get(url, timeout=60)
+                txt = get(url, timeout=25)
                 if txt.lstrip().startswith('{'):
                     for a in json.loads(txt).get('articles', []):
                         if a.get('language', 'English') != 'English': continue
@@ -116,7 +116,8 @@ def gdelt(start=None, end=None):
                     break
                 log('GDELT busy:', txt[:80])
             except Exception as e:
-                if t == 3: err(f'GDELT query {i}: {e}')
+                err(f'GDELT query {i}: {e}')
+                if '429' in str(e): return out  # rate limited: stop asking, keep what we have
     return out
 
 
