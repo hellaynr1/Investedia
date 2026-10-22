@@ -16,3 +16,15 @@
 .nn-active-filter a{margin-left:16px;color:#ffad73}
 
 @media(max-width:1140px){.drawer>a{display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:14px 4px;border-bottom:1px solid var(--line-soft)}.drawer .nn-foot a{min-height:0;display:inline;padding:0}.drawer .nn-menu{margin-bottom:10px}}
+
+/* Real logos and flags on dark glass, never white tiles */
+.nn-cluster>img{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.14)!important;padding:1px}
+.nn-cluster>img.nn-fl{padding:0;object-fit:cover;background:none!important}
+.nn-icon.nn-cluster{background:rgba(255,255,255,.04)}
+
+/* Three overlapping circles: the middle one sits in front and overlaps both sides */
+.nn-icon.nn-cluster{display:flex;align-items:center;justify-content:center;width:74px;height:38px;flex:none;border:0;border-radius:0;background:none;overflow:visible;padding:0}
+.nn-cluster>img{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;width:26px!important;height:26px!important;border-radius:50%!important;object-fit:cover;padding:4px!important;background:#1b1b1f!important;border:2px solid #0e0e10!important;box-sizing:border-box;flex:none;margin:0}
+.nn-cluster>img:nth-child(1){margin-right:-8px;z-index:1}.nn-cluster>img:nth-child(3){margin-left:-8px;z-index:1}
+.nn-cluster>img:nth-child(2){width:33px!important;height:33px!important;z-index:2;padding:5px!important;box-shadow:0 0 0 2px #0e0e10}
+.nn-cluster>img.nn-fl{padding:0!important;background:none!important;object-fit:cover}
