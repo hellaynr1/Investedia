@@ -19,3 +19,15 @@
 @media(prefers-reduced-motion:reduce){.ap-sk,.ap-st.live i,.ap-p.flash{animation:none}}
 @keyframes mh-pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
 .ap-rail li{color:var(--fg)}
+
+/* Key figures and actions */
+.ap-fig{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.ap-fig>div{padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04)}.ap-fig small{display:block;color:var(--fg-3);font-size:11.5px;margin-bottom:3px}.ap-fig b{font-size:14.5px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}.ap-fig .mh-rg{margin:9px 0 2px}.ap-fig .u{color:#34d399}.ap-fig .d{color:#f87171}
+.ap-act{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}.ap-btn{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:inherit;font:600 13px Inter,system-ui,sans-serif;text-decoration:none;cursor:pointer}.ap-btn.p{background:#fff;color:#000;border-color:#fff}.ap-btn[aria-pressed=true]{border-color:#ff7a1a;color:#ff7a1a}
+.ap-tvn{margin:0 0 12px;color:var(--fg-2);font-size:13px;line-height:1.5}.ap-ch[data-tv]{display:grid;align-content:center;justify-items:start}
+@media(max-width:700px){.ap-fig{grid-template-columns:1fr 1fr}}
+/* Pop-up (embed) layout: compact */
+html.embed .ap{max-width:100%;padding:68px 24px 24px}html.embed .ap-px{margin:14px 0 8px}html.embed .ap-p{font-size:32px!important}html.embed .ap-h h1{font-size:19px}html.embed .ap-ic .ai-t,html.embed .ap-ic .ai-i{width:40px;height:40px;border-radius:12px}
+html.embed .ap-seg button{padding:6px 14px;min-height:34px;font-size:12.5px}html.embed .ap-ch{height:130px;padding:8px 10px;border-radius:18px}html.embed .ap-ch[data-tv]{height:auto}
+html.embed .ap-card{padding:16px;border-radius:20px}html.embed .ap-tx{font-size:14px;margin:8px 0 6px}html.embed .ap-pro{display:none}html.embed .ap-sec{margin-top:20px}html.embed .ap-sec h2{font-size:15px}html.embed .ap-rail b{font-size:13.5px}html.embed .ap-rail p{display:none}html.embed .ap-rail li{padding-bottom:12px}html.embed .mv-note{font-size:11.5px}
+@media(max-width:700px){html.embed .ap{padding:64px 16px 20px}html.embed .ap-p{font-size:30px!important}html.embed .ap-ch{height:110px}}
+html.embed main,html.embed .nb,html.embed .ap-main{padding-top:0!important;margin-top:0!important}html.embed .ap{padding-top:44px!important}

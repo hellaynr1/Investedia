@@ -26,36 +26,40 @@
 
   // ---------- Shared table: price, change, range, volume, chart (same layout for every view) ----------
   function tbl(L, o = {}) {
-    const chg = o.chg || (a => move(a, S.win)), hasV = L.some(a => a.v), dayRg = L.length && L.every(a => a.h && a.l && a.h > a.l), rk = o.rank !== false && o.rank;
+    const chg = o.chg || (a => move(a, S.win)), hasV = L.some(a => a.v) && o.range !== false, noR = o.range === false, dayRg = L.length && L.every(a => a.h && a.l && a.h > a.l), rk = o.rank !== false && o.rank;
     const lab = o.chgLabel || { d: 'Today', w: 'Week', m: 'Month' }[S.win];
     const rng = (a, cur) => { let lo = a.l, hi = a.h; if (!(dayRg)) { const v = a.sp || []; if (v.length < 2) return '—'; lo = Math.min(...v, cur); hi = Math.max(...v, cur); } if (!(hi > lo)) return '—'; return `<span class="mh-dr"><small class="mono">${money(lo, a)}</small><span class="mh-ms"><i style="left:${Math.max(0, Math.min(100, (cur - lo) / (hi - lo) * 100)).toFixed(0)}%"></i></span><small class="mono">${money(hi, a)}</small></span>`; };
-    return `<div class="mh-tbl${hasV ? '' : ' nv'}${rk ? '' : ' nr'}"><div class="mh-th">${rk ? '<span>#</span>' : ''}<span>${o.first || 'Name'}</span><span>Price</span><span>${lab}</span><span class="mh-hide">${dayRg ? 'Day range' : '1-month range'}</span>${hasV ? '<span class="mh-hide">Volume</span>' : ''}<span class="mh-hide">${S.win === 'd' ? 'Week' : lab}</span></div>${L.map((a, i) => { const m = chg(a), cur = S.live[a.s]?.p ?? a.p; return `<div class="mh-tr" data-s="${a.s}">${rk ? `<span class="mh-rk">${i + 1}</span>` : ''}<span class="mh-co">${o.id ? o.id(a) : `<span class="mh-ic2">${icon(a)}</span><b>${a.n}</b><small>${String(a.s).replace(/-USD$|=F$/, '').replace(/^\^/, '')}</small>`}</span><span class="mono" data-k="p">${money(cur, a)}</span><span class="mono ${cls(m)}" data-k="c">${isFinite(m) ? arrow(m) + ' ' + fmt(m) : '—'}</span><span class="mh-hide">${rng(a, cur)}</span>${hasV ? `<span class="mono mh-hide">${a.v ? InvPrefs.compact(a.v, a) : '—'}</span>` : ''}<span class="mh-sp mh-hide">${chart(S.win === 'd' ? (a.sp || []).slice(-6) : series(a, S.win), col(move(a, 'w')))}</span></div>`; }).join('')}</div>`;
+    return `<div class="mh-tbl${hasV ? '' : ' nv'}${rk ? '' : ' nr'}${noR ? ' nrg' : ''}"><div class="mh-th">${rk ? '<span>#</span>' : ''}<span>${o.first || 'Name'}</span><span>Price</span><span>${lab}</span>${noR ? '' : `<span class="mh-hide">${dayRg ? 'Day range' : '1-month range'}</span>`}${hasV ? '<span class="mh-hide">Volume</span>' : ''}<span class="mh-hide">${S.win === 'd' ? 'Week' : lab}</span></div>${L.map((a, i) => { const m = chg(a), cur = S.live[a.s]?.p ?? a.p; return `<div class="mh-tr" data-s="${a.s}">${rk ? `<span class="mh-rk">${i + 1}</span>` : ''}<span class="mh-co">${o.id ? o.id(a) : `<span class="mh-ic2">${icon(a)}</span><b>${a.n}</b><small>${String(a.s).replace(/-USD$|=F$/, '').replace(/^\^/, '')}</small>`}</span><span class="mono" data-k="p">${money(cur, a)}</span><span class="mono ${cls(m)}" data-k="c">${isFinite(m) ? arrow(m) + ' ' + fmt(m) : '—'}</span>${noR ? '' : `<span class="mh-hide">${rng(a, cur)}</span>`}${hasV ? `<span class="mono mh-hide">${a.v ? InvPrefs.compact(a.v, a) : '—'}</span>` : ''}<span class="mh-sp mh-hide">${chart(S.win === 'd' ? (a.sp || []).slice(-6) : series(a, S.win), col(move(a, 'w')))}</span></div>`; }).join('')}</div>`;
   }
   // ---------- Sectors ----------
-  const SGRP = { 'Technology': [['Technology'], null], 'Semiconductors': [['Technology'], /nvidia|amd|intel|tsm|asml|micron|broadcom|qualcomm|semi|lam research|applied materials|arm holdings/i], 'Energy': [['Energy'], null], 'Banks & Finance': [['Finance'], null], 'Healthcare': [['Healthcare'], null], 'Consumer & Retail': [['Consumer'], null], 'Autos': [['Consumer', 'Industrials'], /motor|auto|tesla|ford|toyota|volkswagen|byd|ferrari|stellantis|bmw|mercedes|general motors|hyundai|honda/i], 'Industrials': [['Industrials'], null], 'Aerospace & Defence': [['Industrials'], /boeing|airbus|rheinmetall|lockheed|raytheon|bae|safran|defen|northrop/i], 'Materials & Mining': [['Materials'], null], 'Utilities': [['Utilities'], null], 'Real estate': [['Real Estate'], null], 'Insurance': [['Finance'], /insur|allianz|axa|zurich|aig|chubb|prudential|munich/i], 'Communication': [['Communication'], null] };
+  const SGRP = { 'Technology': [['Technology'], null], 'Semiconductors': [['Technology'], /nvidia|amd|intel|tsm|asml|micron|broadcom|qualcomm|semi|lam research|applied materials|arm holdings/i], 'Energy': [['Energy'], null], 'Banks & Finance': [['Finance'], null], 'Healthcare': [['Healthcare'], null], 'Consumer & Retail': [['Consumer'], null], 'Autos': [['Consumer', 'Industrials'], /motor|auto|tesla|ford|toyota|volkswagen|byd|ferrari|stellantis|bmw|mercedes|general motors|hyundai|honda|porsche|rivian|lucid|nio\b|xpeng|li auto|mercedes|general motors/i], 'Industrials': [['Industrials'], null], 'Aerospace & Defence': [['Industrials'], /boeing|airbus|rheinmetall|lockheed|raytheon|bae|safran|defen|northrop|aerospace|general dynamics|l3harris|huntington|transdigm|thales|\brtx\b/i], 'Materials & Mining': [['Materials'], null], 'Utilities': [['Utilities'], null], 'Real estate': [['Real Estate'], null], 'Insurance': [['Finance'], /insur|allianz|axa|zurich|aig|chubb|prudential|munich|berkshire|progressive|metlife|allstate|travelers|aflac|hartford|american international/i], 'Communication': [['Communication'], null] };
   const known = a => a && isFinite(a.d) && Math.abs(a.d) < 25 && !/[.\d]/.test(String(a.s).replace(/[=^-]/g, '')) ;
   function sectorMovers(name) {
     if (name === 'Crypto') return CRY.map(s => S.by[s]).filter(Boolean);
     const [g, re] = SGRP[name] || [[], null];
-    return Object.values(S.by).filter(a => a.t === 'stocks' && a.g !== 'Index' && a.g !== 'Country ETF' && !a.sector && known(a) && (re ? re.test(a.n) : g.includes(a.g)) && (!re || g.includes(a.g) || /Company/.test(a.g))).sort((x, y) => Math.abs(move(y, S.win)) - Math.abs(move(x, S.win))).slice(0, 6);
+    return Object.values(S.by).filter(a => a.t === 'stocks' && a.g !== 'Index' && a.g !== 'Country ETF' && !a.sector && known(a) && (re ? re.test(a.n) : g.includes(a.g)) && (!re || g.includes(a.g) || /Company/.test(a.g))).sort((x, y) => Math.abs(move(y, S.win)) - Math.abs(move(x, S.win)));
   }
   function sectors() {
     const L = InvSectors.list.map(x => ({ x, a: S.by[x.etf] })).filter(o => o.a);
     const w = o => Math.abs(move(o.a, S.win));
     L.sort((a, b) => w(b) - w(a));
     const max = w(L[0]) || 1;
-    $('mh-body').innerHTML = `<div class="mh-grid">${L.map((o, i) => { const m = move(o.a, S.win), big = i < 2 ? ' w2 r2' : i < 6 ? ' w2' : ''; return `<button type="button" class="mh-t${big}" data-n="${o.x.name}" aria-pressed="${S.sel === o.x.name}" style="background:${tint(m)}"><span><b><span class="mh-ic">${InvSectors.icon(o.x.name)}</span>${o.x.name}</b><small>${o.x.etf.replace('-USD', '')}</small></span><span class="mono ${cls(m)}">${arrow(m)} ${fmt(m)}</span></button>`; }).join('')}</div><div id="mh-panel"></div>`;
-    panel();
+    $('mh-body').innerHTML = `<div class="mh-grid">${L.map((o, i) => { const m = move(o.a, S.win), big = i < 2 ? ' w2 r2' : i < 6 ? ' w2' : ''; return `<button type="button" class="mh-t${big}" data-n="${o.x.name}" aria-pressed="${S.sel === o.x.name}" style="background:${tint(m)}"><span><b><span class="mh-ic">${InvSectors.icon(o.x.name)}</span>${o.x.name}</b><small>${o.x.etf.replace('-USD', '')}</small></span><span class="mono ${cls(m)}">${arrow(m)} ${fmt(m)}</span></button>`; }).join('')}</div>`;
   }
-  function panel() {
-    const el = $('mh-panel'); if (!el) return; if (!S.sel) { el.innerHTML = ''; return; }
-    const x = InvSectors.list.find(s => s.name === S.sel), a = S.by[x.etf], mv = sectorMovers(S.sel);
-    el.innerHTML = `<section class="mh-p"><div class="mh-ph"><span class="mh-ic lg">${InvSectors.icon(x.name)}</span><div><b>${x.name}</b><small>Sector fund ${x.etf.replace('-USD', '')}</small></div><button type="button" class="mh-x" id="mh-x">Close ×</button></div>
+  function sectorHtml(name) {
+    const x = InvSectors.list.find(s => s.name === name), a = S.by[x.etf], all = sectorMovers(name), mv = all.slice(0, 14);
+    return `<section class="mh-p"><div class="mh-ph"><span class="mh-ic lg">${InvSectors.icon(x.name)}</span><div><b>${x.name}</b><small>Sector fund ${x.etf.replace('-USD', '')} · ${all.length} tracked ${all.length === 1 ? 'company' : name === 'Crypto' ? 'coins' : 'companies'}</small></div></div>
       <div class="mh-ps">${['d', 'w', 'm'].map(k => `<div><small>${{ d: 'Today', w: 'Week', m: 'Month' }[k]}</small><span class="mono ${cls(move(a, k))}">${arrow(move(a, k))} ${fmt(move(a, k))}</span></div>`).join('')}<div class="mh-pc">${chart(a.sp, col(move(a, 'm')), 200, 48, true)}</div></div>
-      <div class="mh-lab">Largest movers · ${{ d: 'today', w: 'this week', m: 'this month' }[S.win]}</div>
-      ${mv.length ? tbl(mv, { first: 'Company' }) : '<div class="nb-none">No tracked names for this sector yet.</div>'}
+      <div class="mh-lab">Largest movers · ${{ d: 'today', w: 'this week', m: 'this month' }[S.win]}${all.length > mv.length ? ` · top ${mv.length} of ${all.length}` : ''}</div>
+      ${mv.length ? tbl(mv, { first: 'Company', range: false }) : '<div class="nb-none">No tracked names for this sector yet.</div>'}
       <a class="mh-link" href="news.html?sector=${encodeURIComponent(x.slug)}">See articles on the News page →</a></section>`;
   }
+  function openSector(name) {
+    const x = InvSectors.list.find(s => s.name === name || s.slug === name); if (!x) return;
+    if (window.InvPeek) InvPeek.panel(sectorHtml(x.name), '#s=' + x.slug);
+  }
+  if (window.InvPeek) InvPeek.onSector = (slug, push) => { const x = InvSectors.list.find(s => s.slug === slug); if (x && S.ready) openSector(x.name); };
+  function panel() {}
 
   // ---------- Indices ----------
   const IDX = [['Americas', ['^GSPC', '^IXIC', '^NDX', '^DJI', '^RUT', '^VIX', '^GSPTSE', '^BVSP']], ['Europe', ['^FTSE', '^GDAXI', '^FCHI', '^STOXX50E', '^IBEX', '^AEX', '^SSMI']], ['Asia-Pacific', ['^N225', '^HSI', '000001.SS', '^KS11', '^NSEI', '^BSESN', '^AXJO']]];
@@ -144,7 +148,7 @@
   $('mh-view').innerHTML = VIEW.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="false">${l}</button>`).join('');
   $('mh-win').onclick = e => { const b = e.target.closest('button'); if (b) { S.win = b.dataset.k; draw(); } };
   $('mh-view').onclick = e => { const b = e.target.closest('button'); if (b) { S.view = b.dataset.k; S.sel = null; draw(); } };
-  $('mh-body').addEventListener('click', e => { const card = e.target.closest('[data-s]'); if (card && !e.target.closest('a,button,.mh-t')) { window.InvPeek ? InvPeek.open(card.dataset.s) : (location.href = 'asset.html?s=' + encodeURIComponent(card.dataset.s)); return; } const t = e.target.closest('.mh-t'); if (t) { S.sel = S.sel === t.dataset.n ? null : t.dataset.n; sectors(); if (S.sel) $('mh-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } if (e.target.closest('#mh-x')) { S.sel = null; sectors(); } });
+  $('mh-body').addEventListener('click', e => { const card = e.target.closest('[data-s]'); if (card && !e.target.closest('a,button,.mh-t')) { window.InvPeek ? InvPeek.open(card.dataset.s) : (location.href = 'asset.html?s=' + encodeURIComponent(card.dataset.s)); return; } const t = e.target.closest('.mh-t'); if (t) openSector(t.dataset.n); });
   const params = new URLSearchParams(location.search); if (VIEW.some(v => v[0] === params.get('view'))) S.view = params.get('view');
   draw();
   const refresh = () => Promise.all([AssetIcons.ready, fetch('assets/globe/markets.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/news-prices.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ assets: {} })), fetch('assets/intraday.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ s: {} }))])

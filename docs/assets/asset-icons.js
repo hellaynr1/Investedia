@@ -51,7 +51,7 @@
     if (LOGOS[base]) srcs.push(BASE + 'globe/' + LOGOS[base]);
     if (window.InvConsent?.allows('images') && (a.t === 'crypto' || /-USD$/.test(sym))) srcs.push(`https://cdn.brandfetch.io/crypto/${encodeURIComponent(base)}/w/96/h/96/fallback/404?c=${BFID}`);
     else if (window.InvConsent?.allows('images') && !/[\^=]/.test(sym) && a.t !== 'fx') srcs.push(`https://cdn.brandfetch.io/ticker/${encodeURIComponent(sym)}/w/96/h/96/fallback/404?c=${BFID}`);
-    const flag = a.cc ? `${BASE}globe/flags/${String(a.cc).toLowerCase()}.svg` : '';
+    const flag = a.cc && !(a.t === 'stocks' && a.g !== 'Index' && a.g !== 'Country ETF') ? `${BASE}globe/flags/${String(a.cc).toLowerCase()}.svg` : '';
 
     if (flag) srcs.push(flag);
     if (!srcs.length) return initial(n);

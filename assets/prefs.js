@@ -14,7 +14,14 @@
   const cur = () => P.cur || REG[P.region][0], loc = () => `${P.lang}-${P.region}`;
   const convertible = a => !a || a.t === 'crypto' || a.t === 'cmd' || (a.t === 'stocks' && a.g !== 'Index' && !/[.^=]/.test(a.s));
   const num = (v, c) => { const x = Math.abs(v), d = x >= 1 ? 2 : x >= 0.01 ? 4 : 6; try { return v.toLocaleString(loc(), c ? { style: 'currency', currency: c, minimumFractionDigits: d, maximumFractionDigits: d } : { minimumFractionDigits: d, maximumFractionDigits: d }); } catch { return v.toFixed(d); } };
-  const fmt = (v, a) => { if (v == null || !isFinite(v)) return '—'; if (!convertible(a)) return num(v); const c = cur(), r = rates[c]; return r ? num(v * r, c) : num(v, 'USD'); };
+  const fmt = (v, a) => {
+    if (v == null || !isFinite(v)) return '—';
+    let own = a && a.cur; if (own === 'GBp') { v /= 100; own = 'GBP'; }
+    if (own && own !== 'USD' && a.t === 'stocks' && a.g !== 'Index') { const ro = rates[own]; if (!ro) return num(v, own); v /= ro; }
+    else if (!convertible(a)) return num(v);
+    else if (own && own !== 'USD') return num(v, own);
+    const c = cur(), r = rates[c]; return r ? num(v * r, c) : num(v, 'USD');
+  };
   const compact = (v, a) => { if (v == null || !isFinite(v)) return '—'; const c = convertible(a) ? cur() : 'USD', r = convertible(a) ? (rates[c] || 1) : 1, cc = rates[c] ? c : 'USD'; try { return (v * (rates[c] ? r : 1)).toLocaleString(loc(), { style: 'currency', currency: cc, notation: 'compact', maximumFractionDigits: 2 }); } catch { return String(Math.round(v)); } };
   const names = () => { try { return new Intl.DisplayNames(['en'], { type: 'currency' }); } catch { return { of: x => x }; } };
   const regionNames = () => { try { return new Intl.DisplayNames(['en'], { type: 'region' }); } catch { return { of: x => x }; } };

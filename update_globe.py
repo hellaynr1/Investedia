@@ -9,6 +9,9 @@ from datetime import datetime, timezone
 PAGES = ['assets/globe/index.html', 'docs/assets/globe/index.html']
 UA = {'User-Agent': 'Mozilla/5.0'}
 
+# Listings whose site symbol is not a Yahoo symbol keep the last known price; their currency follows the country of the listing.
+CUR_BY_CC = {'de': 'EUR', 'fr': 'EUR', 'it': 'EUR', 'es': 'EUR', 'nl': 'EUR', 'ie': 'EUR', 'ch': 'CHF', 'gb': 'GBP', 'kr': 'KRW', 'in': 'INR', 'sg': 'SGD', 'au': 'AUD', 'nz': 'NZD', 'za': 'ZAR', 'eg': 'EGP', 'sa': 'SAR', 'qa': 'QAR', 'ae': 'AED', 'pe': 'PEN', 'us': 'USD', 'jp': 'JPY', 'cn': 'CNY', 'hk': 'HKD'}
+
 def ysym(m):
     return m['s'] + '=X' if m['t'] == 'fx' else m['s'] + '-USD' if m['t'] == 'crypto' else m['s']
 
@@ -20,7 +23,7 @@ def fetch(sym):
             c = [x for x in r['indicators']['quote'][0]['close'] if x is not None]
             live = r['meta'].get('regularMarketPrice')
             if live: c[-1] = live
-            if len(c) >= 6 and c[-1]: return c
+            if len(c) >= 6 and c[-1]: return c, r['meta'].get('currency')
         except Exception:
             time.sleep(1 + i)
     return None
@@ -31,11 +34,15 @@ def main():
     with cf.ThreadPoolExecutor(16) as ex:
         res = list(ex.map(lambda m: fetch(ysym(m)), mk))
     ok = 0
-    for m, c in zip(mk, res):
-        if not c: continue
+    for m, rc in zip(mk, res):
+        if not rc: continue
+        c, cur = rc
+        if cur: m['cur'] = cur
         sign = -1 if m.get('inv') else 1
         m['p'] = round(c[-1], 6); m['d'] = round(sign * (c[-1] / c[-2] - 1) * 100, 2); m['w'] = round(sign * (c[-1] / c[-6] - 1) * 100, 2)
         m['sp'] = [round(x, 6) for x in c[-22:]]; ok += 1
+    for m in mk:
+        if m['t'] == 'stocks' and m.get('g') not in ('Index', 'Country ETF') and not m.get('cur') and CUR_BY_CC.get(m.get('cc')): m['cur'] = CUR_BY_CC[m['cc']]
     print(f'globe: {ok}/{len(mk)} assets refreshed')
     if ok < len(mk) * .5: raise SystemExit('Too many failures; keeping the previous data')
     data = json.dumps(mk, separators=(',', ':'), ensure_ascii=False)
