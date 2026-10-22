@@ -81,7 +81,7 @@
   function search(q) {
     const out = []; if (!DATA) return out;
     const ranked = q ? DATA.assets.map(a => [rank(q, a), a]).filter(x => x[0] < 9).sort((a, b) => a[0] - b[0] || (b[1].m || 0) - (a[1].m || 0)).map(x => x[1]) : [];
-    for (const k of ['stocks', 'crypto', 'idx', 'cmd', 'fx']) { const items = ranked.filter(GROUPS[k][1]); if (items.length) out.push({ key: k, title: GROUPS[k][0], items, html: i => row(i) , type: 'asset' }); }
+    for (const k of ['stocks', 'crypto', 'idx', 'cmd', 'fx']) { const items = ranked.filter(GROUPS[k][1]); if (items.length) out.push({ key: k, title: GROUPS[k][0], items, html: (i, c) => row(i, c), type: 'asset' }); }
     const sec = q ? (window.InvSectors ? InvSectors.list : []).filter(x => x.name.toLowerCase().includes(q)) : [];
     if (sec.length) out.push({ key: 'sectors', fk: 'stocks', title: 'Sectors', items: sec, html: x => lnk(ROOT + 'assets/globe/news.html?sector=' + encodeURIComponent(x.slug), InvSectors.icon(x.name), x.name, 'Sector · articles and sector fund move') });
     const cs = q ? DATA.countries.filter(c => c.toLowerCase().includes(q)).sort((a, b) => (a.toLowerCase().startsWith(q) ? 0 : 1) - (b.toLowerCase().startsWith(q) ? 0 : 1)) : [];
@@ -104,7 +104,7 @@
     };
     const paint = () => {
       if (!DATA) return; const q = inp.value.trim().toLowerCase(); let h = '';
-      SEC = q ? search(q) : [{ key: 'popular', title: 'Popular', items: POP.map(s => DATA.assets.find(a => a.s === s)).filter(Boolean), html: a => row(a), type: 'asset' }, ...search('').filter(x => x.key === 'pages')];
+      SEC = q ? search(q) : [{ key: 'popular', title: 'Popular', items: POP.map(s => DATA.assets.find(a => a.s === s)).filter(Boolean), html: (a, c) => row(a, c), type: 'asset' }, ...search('').filter(x => x.key === 'pages')];
       fl.innerHTML = FILTERS.filter(([k]) => !q || k === 'all' || count(k)).map(([k, t]) => `<button type="button" class="pk-f${k === F ? ' on' : ''}" data-f="${k}">${t}${q ? `<em>${count(k)}</em>` : ''}</button>`).join('');
       const shown = SEC.filter(s => F === 'all' || s.key === F || s.fk === F || (F === 'stocks' && s.key === 'sectors'));
       for (const s of shown) { const lim = F === 'all' ? (s.key === 'articles' ? 5 : 4) : 40; h += `<h6>${s.title}${q ? `<em>${s.items.length}</em>` : ''}</h6>` + s.items.slice(0, lim).map((x, i) => s.html(x, i === 0 && s.type === 'asset' && F === 'all' && q ? 'top' : '')).join(''); }
