@@ -47,3 +47,7 @@
 /* Live charts: much larger */
 .mh-tvbox{padding:22px}.mh-tvw{height:max(680px,78vh)!important;margin-top:16px}.mh-tvw.wide{height:92px!important}
 @media(max-width:800px){.mh-tvw{height:max(560px,72vh)!important}.mh-tvbox{padding:14px}}
+
+.mh-tvw:not(.wide){height:max(760px,calc(100vh - 150px))!important}.mh-tvact{display:flex;justify-content:flex-end;margin-top:10px}.mh-tvfs{border:1px solid var(--line);background:rgba(255,255,255,.06);color:inherit;border-radius:999px;font:inherit;font-size:13px;padding:9px 16px;min-height:40px;cursor:pointer}
+.mh-tvw:fullscreen{height:100vh!important;border-radius:0}
+@media(max-width:800px){.mh-tvw:not(.wide){height:max(640px,calc(100vh - 170px))!important}}
