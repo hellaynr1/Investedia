@@ -208,14 +208,14 @@ def dedupe(items, known_titles):
 
 
 # ---------- Gemini ----------
-PROMPT = """You are the news editor of Investedia, a financial news globe for beginner investors. Below are candidate headlines (JSON) with their source and, when available, the article's own short description.
+PROMPT = """You are the news editor of Investedia, a financial news globe for professional investors and finance practitioners. Below are candidate headlines (JSON) with their source and, when available, the article's own short description.
 
 Pick at most {n} stories that are genuinely about business, finance, markets, companies, the economy, commodities, crypto, technology business, or politics/geopolitics WITH a clear economic impact. Skip: sports, celebrity, crime, lifestyle, opinion columns, press-release spam, "stock to buy" tips, price-target listicles, and anything you cannot place.
 Merge candidates that report the same event into one story (list all their indexes in "members").
 
 For each story return:
 - "members": candidate indexes (numbers) of the same event, most important source first
-- "headline": a neutral, factual headline in plain English, max 90 characters, no clickbait, no exclamation marks
+- "headline": a neutral, precise, factual headline in the register of a financial newsroom (Reuters/Bloomberg style), max 90 characters, no clickbait, no exclamation marks
 - "summary": 1-2 short sentences (max 45 words) using ONLY facts present in the candidates' titles/descriptions. Never invent numbers, names, quotes or reasons.
 - "why": 1-2 sentences of general, well-established background explaining why this matters for investors (e.g. what the company or institution is). No claims about the event itself beyond the input.
 - "category": one of {cats}

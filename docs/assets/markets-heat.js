@@ -1,4 +1,4 @@
-// Markets page: sector heatmap (tile size = stories in 7 days, colour = price move of the sector fund), plus indices, commodities, crypto.
+// Markets page: sector heatmap (tile size = articles in 7 days, colour = price move of the sector fund), plus indices, commodities, crypto.
 (() => {
   const $ = id => document.getElementById(id);
   const WIN = [['d', 'Today'], ['w', 'Week'], ['m', 'Month']];
@@ -39,7 +39,7 @@
     const cnt = {}; for (const s of recent) for (const n of bucket(s)) cnt[n] = (cnt[n] || 0) + 1;
     const L = SECTORS.map(([n, f]) => ({ n, f, c: cnt[n] || 0, a: S.by[f] })).filter(x => x.a).sort((a, b) => b.c - a.c);
     const max = Math.max(1, ...L.map(x => x.c));
-    $('mh-grid').innerHTML = L.map((x, i) => { const m = move(x.a, S.win), big = x.c >= max * .9 ? ' w2 r2' : x.c >= max * .45 ? ' w2' : ''; return `<button type="button" class="mh-t${big}" data-n="${x.n}" aria-pressed="${S.sel === x.n}" style="background:${tint(m)}"><span><b>${x.n}</b><small>${x.c} ${x.c === 1 ? 'story' : 'stories'}</small></span><span class="mono ${cls(m)}">${fmt(m)}</span></button>`; }).join('');
+    $('mh-grid').innerHTML = L.map((x, i) => { const m = move(x.a, S.win), big = x.c >= max * .9 ? ' w2 r2' : x.c >= max * .45 ? ' w2' : ''; return `<button type="button" class="mh-t${big}" data-n="${x.n}" aria-pressed="${S.sel === x.n}" style="background:${tint(m)}"><span><b>${x.n}</b><small>${x.c} ${x.c === 1 ? 'article' : 'articles'}</small></span><span class="mono ${cls(m)}">${fmt(m)}</span></button>`; }).join('');
   }
   const cards = (list) => { $('mh-grid').className = 'mh-idx'; $('mh-grid').innerHTML = list.map(a => { const m = move(a, S.win); return `<div class="mh-c"><small>${AssetIcons.icon(a)}<span>${a.n}</span></small><span class="mono ${cls(m)}">${fmt(m)}</span>${line(series(a, S.win), col(m))}</div>`; }).join('') || '<div class="nb-none">No data yet.</div>'; };
   function draw() {
@@ -54,9 +54,9 @@
   }
   function list() {
     const sel = S.view === 'sec' && S.sel, el = $('mh-ls'); $('mh-sh').hidden = !sel; if (!sel) { el.innerHTML = ''; return; }
-    $('mh-t').textContent = 'Stories in ' + sel;
+    $('mh-t').textContent = 'Articles in ' + sel;
     const cut = Date.now() - 7 * 864e5, L = S.stories.filter(s => Date.parse(s.published_at) >= cut && bucket(s).includes(sel)).sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at)).slice(0, 10);
-    el.innerHTML = L.map(s => `<a class="nb-li" href="story.html?id=${encodeURIComponent(s.id)}"><span class="th">${s.image ? `<img src="assets/globe/${esc(s.image.file)}" alt="" loading="lazy">` : ''}</span><span><span class="nb-eb">${esc(s.location?.place?.split(',')[0] || '')}</span><h3>${esc(s.headline)}</h3><span class="m">${ago(s.published_at)} · ${esc(s.source?.name || '')}</span></span></a>`).join('') || '<div class="nb-none">No stories for this sector this week.</div>';
+    el.innerHTML = L.map(s => `<a class="nb-li" href="story.html?id=${encodeURIComponent(s.id)}"><span class="th">${s.image ? `<img src="assets/globe/${esc(s.image.file)}" alt="" loading="lazy">` : ''}</span><span><span class="nb-eb">${esc(s.location?.place?.split(',')[0] || '')}</span><h3>${esc(s.headline)}</h3><span class="m">${ago(s.published_at)} · ${esc(s.source?.name || '')}</span></span></a>`).join('') || '<div class="nb-none">No articles for this sector this week.</div>';
   }
   $('mh-win').innerHTML = WIN.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="false">${l}</button>`).join('');
   $('mh-view').innerHTML = VIEW.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="false">${l}</button>`).join('');

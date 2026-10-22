@@ -46,7 +46,7 @@ const why = (s, i) => `<a class="hn-why" href="${url(s)}"><span class="hn-n">0${
   ${(s.entities || []).length ? `<div class="hn-ents">${s.entities.map(e => `<span class="hn-ent">${entityImage(e, s.location.country)}<span>${esc(e.name)}</span>${e.ticker ? `<code>${esc(e.ticker)}</code>` : ''}</span>`).join('')}</div>` : ''}</a>`;
 function countries(list) {
   const c = {}; for (const s of list) c[s.location.country] = (c[s.location.country] || 0) + 1;
-  return Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, n]) => `<a class="hn-cty" href="assets/globe/news.html?country=${encodeURIComponent(k)}">${flagSrc(k) ? `<img src="${flagSrc(k)}" alt="">` : ''}<span><b>${esc(nm(k))}</b><small>${n} ${n === 1 ? 'story' : 'stories'}</small></span></a>`).join('');
+  return Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, n]) => `<a class="hn-cty" href="assets/globe/news.html?country=${encodeURIComponent(k)}">${flagSrc(k) ? `<img src="${flagSrc(k)}" alt="">` : ''}<span><b>${esc(nm(k))}</b><small>${n} ${n === 1 ? 'article' : 'articles'}</small></span></a>`).join('');
 }
 // rank: importance, then sources, then recency
 const rank = (a, b) => (b.importance - a.importance) || ((b.sources?.length || 1) - (a.sources?.length || 1)) || (Date.parse(b.published_at) - Date.parse(a.published_at));

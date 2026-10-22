@@ -1,5 +1,5 @@
-// Price reaction block for a story: chart with numbered pins + story rail with the gain or loss around each story.
-// Used by the story page. Needs home-news.js (esc, ago, BF) and asset-icons.js (AssetIcons).
+// Price reaction block for an article: chart with numbered pins + article rail with the gain or loss around each article.
+// Used by the article page. Needs home-news.js (esc, ago, BF) and asset-icons.js (AssetIcons).
 (() => {
   const DAY = 864e5, WIN = [['d', '24h', 1], ['w', 'Week', 7], ['m', 'Month', 30]];
   const pc = (a, b) => b ? (a / b - 1) * 100 : 0;
@@ -26,7 +26,7 @@
     const pins = st.map(z => `<span class="pr-pin ${cls(z.m)}${z.st.id === cur ? ' me' : ''}" style="left:${(z.x * 100).toFixed(1)}%;top:${((1 - (v[Math.round(z.x * (v.length - 1))] - lo) / r) * 88 + 6).toFixed(1)}%">${z.n}</span>`).join('');
     return `<div class="pr-tot"><span class="m ${cls(m)}">${fmt(m)}</span><div class="pr-seg">${WIN.map(([kk, l]) => `<button type="button" data-k="${kk}" aria-pressed="${kk === k}">${l}</button>`).join('')}</div></div>
       <div class="pr-ch">${line(v, col(m))}${pins}</div>
-      <ol class="pr-rail">${st.length ? st.map(z => `<li class="${cls(z.m)}${z.st.id === cur ? ' me' : ''}"><span class="pr-dot">${z.n}</span><div><span class="pr-eb">${new Date(z.st.published_at).toLocaleString('en-GB', { weekday: 'short', hour: '2-digit', minute: '2-digit' })}${z.st.id === cur ? ' · this story' : ''}</span>${z.st.id === cur ? `<b>${esc(z.st.headline)}</b>` : `<a href="story.html?id=${encodeURIComponent(z.st.id)}"><b>${esc(z.st.headline)}</b></a>`}<div class="pr-bar"><i style="width:${Math.max(4, Math.abs(z.m) / mx * 100).toFixed(0)}%"></i><span class="m ${cls(z.m)}">${fmt(z.m)}<small> ${z.unit}</small></span></div></div></li>`).join('') : '<li class="pr-none">No story in our feed names this asset in this window.</li>'}</ol>`;
+      <ol class="pr-rail">${st.length ? st.map(z => `<li class="${cls(z.m)}${z.st.id === cur ? ' me' : ''}"><span class="pr-dot">${z.n}</span><div><span class="pr-eb">${new Date(z.st.published_at).toLocaleString('en-GB', { weekday: 'short', hour: '2-digit', minute: '2-digit' })}${z.st.id === cur ? ' · this article' : ''}</span>${z.st.id === cur ? `<b>${esc(z.st.headline)}</b>` : `<a href="story.html?id=${encodeURIComponent(z.st.id)}"><b>${esc(z.st.headline)}</b></a>`}<div class="pr-bar"><i style="width:${Math.max(4, Math.abs(z.m) / mx * 100).toFixed(0)}%"></i><span class="m ${cls(z.m)}">${fmt(z.m)}<small> ${z.unit}</small></span></div></div></li>`).join('') : '<li class="pr-none">No article in our feed names this asset in this window.</li>'}</ol>`;
   }
   async function mount(el, story) {
     if (!el) return;
@@ -36,7 +36,7 @@
     const seen = new Set(), list = []; for (const x of story.impacts || []) { const a = find(x.ticker); if (a && !seen.has(a.s)) { seen.add(a.s); list.push({ a, x }); } }
     if (!list.length) { el.hidden = true; return; }
     let cur = 0, k = 'w';
-    const paint = () => { const { a } = list[cur]; el.innerHTML = `<h2>Price reaction</h2><p>What the price did around this story, step by step.</p><div class="pr">${list.length > 1 ? `<div class="pr-tabs">${list.map((z, n) => `<button type="button" data-n="${n}" aria-pressed="${n === cur}"><span class="pr-ic">${AssetIcons.icon(z.a)}</span>${esc(z.a.n)}</button>`).join('')}</div>` : `<div class="pr-hd"><span class="pr-ic">${AssetIcons.icon(a)}</span><b>${esc(a.n)}</b></div>`}${body(a, k, story.id)}<p class="pr-note">Moves show the price change on the day of each story (or since it, for 24h). They show the news around a move, not proof it caused it. Not investment advice.</p></div>`; };
+    const paint = () => { const { a } = list[cur]; el.innerHTML = `<h2>Price reaction</h2><p>What the price did around this article, step by step.</p><div class="pr">${list.length > 1 ? `<div class="pr-tabs">${list.map((z, n) => `<button type="button" data-n="${n}" aria-pressed="${n === cur}"><span class="pr-ic">${AssetIcons.icon(z.a)}</span>${esc(z.a.n)}</button>`).join('')}</div>` : `<div class="pr-hd"><span class="pr-ic">${AssetIcons.icon(a)}</span><b>${esc(a.n)}</b></div>`}${body(a, k, story.id)}<p class="pr-note">Moves show the price change on the day of each article (or since it, for 24h). They show the news around a move, not proof it caused it. Not investment advice.</p></div>`; };
     el.addEventListener('click', e => { const t = e.target.closest('.pr-tabs button'); if (t) { cur = +t.dataset.n; paint(); } const w = e.target.closest('.pr-seg button'); if (w) { k = w.dataset.k; paint(); } });
     if (window.AssetIcons) await AssetIcons.ready; el.hidden = false; paint();
   }
