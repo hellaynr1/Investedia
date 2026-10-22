@@ -169,12 +169,6 @@
       ['calc', 'Investment Returns', 'Annualised return', 'calculator.html#returns'],
       ['funds', 'Dividend Calculator', 'Income and reinvesting', 'calculator.html#dividend'],
     ]],
-    ['Real estate', [
-      ['building', 'Mortgage Calculator', 'Monthly payments and interest', 'real-estate.html#mortgage'],
-      ['home', 'Rent vs. Buy', 'Which comes out ahead', 'real-estate.html#rentbuy'],
-      ['pin', 'Rental Yield', 'What a rental would earn', 'real-estate.html#yield'],
-      ['book', 'Real Estate Guides', 'Mortgages, REITs, leverage', 'real-estate.html#learn'],
-    ]],
   ];
   const tools = TOOL_GROUPS.flatMap(g => g[1]);
   const ddTools = `<div class="dd dd-tools" id="dd-tools" role="menu">${TOOL_GROUPS.map(([h, items]) => `<div class="tools-col"><h6>${h}</h6>${items.map(([i, t, d, u]) => `<a class="dd-item" role="menuitem" href="${u}"><span class="dd-ic">${icon(i)}</span><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>`).join('')}</div>`;
@@ -400,7 +394,7 @@
   const ftr = document.createElement('footer');
   ftr.className = 'ftr';
   ftr.innerHTML = `<div class="wrap"><div class="ftr-top">
-    <div>${brand}<p class="muted" style="margin:14px 0 0;max-width:34ch">Investing media for everyone: the world's financial news, explained.</p>
+    <div>${brand}<p class="muted" style="margin:14px 0 0;max-width:34ch">Financial news and market intelligence for investors.</p>
       <div class="socials"><a class="icon-btn" href="https://www.instagram.com/investedia/" aria-label="Instagram">${icon('ig')}</a></div></div>
     <div><h6>News</h6><ul><li><a href="index.html">Home</a></li><li><a href="assets/globe/news.html">Globe</a></li><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li></ul></div>
     <div><h6>Learn</h6><ul><li><a href="education.html">Education</a></li></ul></div>
@@ -566,7 +560,7 @@
     <div class="pop-art">${mark}</div>
     <span class="eyebrow">The Investedia Brief</span>
     <h2 id="pop-t" style="margin:10px 0 6px;font-size:24px">Markets in five minutes, every morning.</h2>
-    <p class="muted" style="margin:0 0 18px">Join the list for the daily brief: the news that moved markets, explained. Free, unsubscribe anytime.</p>
+    <p class="muted" style="margin:0 0 18px">Join the list for the daily brief: the news that moved markets, in context. Free, unsubscribe anytime.</p>
     <form class="subscribe" id="pop-f"><input class="input" type="email" id="pop-email" placeholder="you@email.com" aria-label="Email address" required><button class="btn btn-primary" type="submit">Join free</button></form>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${['Daily brief', 'Weekly charts', 'Crypto', 'Product updates'].map((t, i) => `<button type="button" class="chip ${i < 2 ? 'on' : ''}" onclick="this.classList.toggle('on')">${t}</button>`).join('')}</div>
     <p class="pop-ok up" hidden style="margin:14px 0 0;font-weight:550">You’re on the list. Check your inbox to confirm.</p>

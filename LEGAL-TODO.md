@@ -38,7 +38,7 @@ These documents are a strong draft and **must be reviewed by a Belgian lawyer be
 - [ ] Record controller contact, enterprise/KBO/BCE and VAT status as required by Belgian law.
 - [ ] Verify GitHub, Inc. hosting address/service details; Supabase region; all provider DPAs, subprocessors and international-transfer mechanisms. Do not assume DPF certification.
 - [ ] Configure and document actual retention/deletion for account closure, watchlists, Supabase events, messages, provider logs, email delivery records and backups. No fixed deletion SLA is asserted by these drafts.
-- [ ] Review the pre-existing Supabase events feature: it is now gated by Analytics consent. The switch is visible because the code already contains analytics; no new analytics provider was introduced.
+- [ ] Review the pre-existing Supabase events feature: it is now gated by Analytics consent. The category is disclosed because the code already contains analytics; no new analytics provider was introduced. The owner requested the two actions Accept all and Accept essential; review the grouping of optional purposes before publication.
 - [ ] Third-party images & services is the safer opt-in option implemented for Brandfetch, Google Fonts and Coinbase. Verify other deployments do not inject trackers or remote media outside this repository.
 - [ ] Increment the consent policy VERSION in assets/consent.js when consent purposes or categories materially change.
 - [ ] Verify authentication and provider-managed session storage settings and update the cookie inventory if they change.

@@ -41,28 +41,37 @@
     if (panel || new URLSearchParams(location.search).get('embed') === '1') return;
     panel = document.createElement('section'); panel.id = 'inv-consent-panel'; panel.className = 'consent-card'; panel.hidden = true;
     panel.setAttribute('aria-labelledby','consent-title');
-    panel.innerHTML = `<div class="consent-summary"><h2 id="consent-title">Your privacy choices</h2><p>Necessary storage keeps the site working. Optional preferences, third-party images and usage statistics stay off until you choose.</p><a href="${new URL('cookies.html',root)}">Read our cookie policy</a></div><div id="consent-options" hidden><label class="consent-option"><span><b>Necessary</b><small>Consent choice, sign-in and features you request.</small></span><input type="checkbox" checked disabled aria-label="Necessary, always on"></label><label class="consent-option"><span><b>Preferences</b><small>Remember theme, chart settings and learning progress.</small></span><input id="consent-preferences" type="checkbox"></label><label class="consent-option"><span><b>Third-party images & services</b><small>Brandfetch logos, Google Fonts and live Coinbase rates. Local fallbacks work without them.</small></span><input id="consent-images" type="checkbox"></label><label class="consent-option"><span><b>Analytics</b><small>Allow existing first-party usage events, stored with Supabase. No advertising trackers.</small></span><input id="consent-analytics" type="checkbox"></label><p class="consent-hint">You can change your choices at any time in Cookie settings.</p></div><div class="consent-actions"><button type="button" data-consent="accept">Accept all</button><button type="button" data-consent="reject">Reject non-essential</button><button type="button" data-consent="settings" aria-expanded="false" aria-controls="consent-options">Settings</button><button type="button" data-consent="save" hidden>Save choices</button><button type="button" data-consent="cancel" hidden>Cancel</button></div><p class="consent-message" role="status"></p>`;
+    panel.innerHTML = `<div class="consent-summary"><h2 id="consent-title">Your privacy choices</h2><p>Accept all optional services, or accept only the storage needed for the site and features you request.</p><a href="${new URL('cookies.html',root)}">Read our cookie policy</a></div><details id="consent-options"><summary>What’s included</summary><div class="consent-option"><span><b>Essential</b><small>Consent choice, sign-in and features you request.</small></span><span class="consent-status" data-category="necessary">Always on</span></div><div class="consent-option"><span><b>Preferences</b><small>Theme, chart settings and learning progress.</small></span><span class="consent-status" data-category="preferences"></span></div><div class="consent-option"><span><b>Third-party images & services</b><small>Brandfetch logos, Google Fonts and live Coinbase rates. Local fallbacks work without them.</small></span><span class="consent-status" data-category="images"></span></div><div class="consent-option"><span><b>Analytics</b><small>Existing first-party usage events stored with Supabase. No advertising trackers.</small></span><span class="consent-status" data-category="analytics"></span></div></details><p class="consent-current"></p><div class="consent-actions"><button type="button" data-consent="accept">Accept all</button><button type="button" data-consent="essential">Accept essential</button></div><p class="consent-hint">You can change your choice at any time in Cookie settings.</p>`;
     document.body.append(panel);
     panel.addEventListener('click', e => {
       const action = e.target.closest('[data-consent]')?.dataset.consent;
-      if (action === 'accept' || action === 'reject') return save({preferences:action==='accept',images:action==='accept',analytics:action==='accept'});
-      if (action === 'settings') return show(true);
-      if (action === 'save') return save(Object.fromEntries(['preferences','images','analytics'].map(k=>[k,panel.querySelector('#consent-'+k).checked])));
-      if (action === 'cancel') { if (choice) { panel.hidden=true; returnFocus?.focus(); } else show(false); }
+      if (action === 'accept' || action === 'essential') save({preferences:action==='accept',images:action==='accept',analytics:action==='accept'});
     });
-    panel.addEventListener('keydown', e => { if (e.key === 'Escape') { if (choice) { panel.hidden=true; returnFocus?.focus(); } else show(false); } });
+    panel.addEventListener('keydown', e => { if (e.key === 'Escape') { if (choice) { panel.hidden=true; returnFocus?.focus(); } else panel.querySelector('#consent-options').open=false; } });
     if (!choice) show(false);
   }
   function show(settings = false) {
     mount(); if (!panel) return;
     if (panel.hidden) returnFocus = document.activeElement;
     panel.hidden = false;
-    panel.querySelector('#consent-options').hidden = !settings;
-    panel.querySelector('[data-consent=settings]').hidden = settings;
-    panel.querySelector('[data-consent=settings]').setAttribute('aria-expanded',String(settings));
-    for(const key of ['save','cancel']) panel.querySelector('[data-consent='+key+']').hidden = !settings;
-    for(const k of ['preferences','images','analytics']) panel.querySelector('#consent-'+k).checked = allows(k);
-    if(settings) panel.querySelector('#consent-preferences').focus({preventScroll:true});
+    panel.querySelector('#consent-options').open = settings;
+    const all = !!choice && ['preferences','images','analytics'].every(k => allows(k));
+    const essential = !!choice && ['preferences','images','analytics'].every(k => !allows(k));
+    for(const [action,current] of [['accept',all],['essential',essential]]) {
+      const button = panel.querySelector('[data-consent='+action+']');
+      button.setAttribute('aria-pressed',String(current));
+      button.classList.toggle('is-current',current);
+    }
+    const current = panel.querySelector('.consent-current');
+    current.hidden = !choice;
+    current.textContent = choice ? 'Current choice: ' + (all ? 'Accept all' : essential ? 'Accept essential' : 'Custom preferences') : '';
+    panel.querySelectorAll('[data-category]').forEach(status => {
+      const category = status.dataset.category, on = allows(category);
+      status.dataset.on = String(on);
+      status.textContent = category === 'necessary' ? 'Always on' : on ? 'On' : 'Off';
+    });
+    if(settings) panel.querySelector('[data-consent='+ (essential ? 'essential' : 'accept') +']').focus({preventScroll:true});
+
   }
   window.InvConsent = { allows, mount, open:()=>show(true), version:VERSION, choice:()=>choice&&({...choice}) };
   document.addEventListener('click',e=>{if(e.target.closest('[data-cookie-settings]')){e.preventDefault();show(true);}});

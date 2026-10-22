@@ -1,4 +1,4 @@
-// Live News front page. Homepage helpers provide the feed, ranking and story URLs.
+// Live News front page. Homepage helpers provide the feed, ranking and article URLs.
 (() => {
   const $ = id => document.getElementById(id);
   const state = { category: 'all', region: 'all', shown: 12, stories: [] };
@@ -27,10 +27,10 @@
     return `<div class="np-media">${fallback}${visual}${credit}</div>`;
   }
 
-  const details = story => `<div class="np-details"><span class="np-category">${esc(CAT[story.category] || 'News')}</span><span>${esc(nm(story.location?.country || 'Global'))}</span></div>`;
-  const attribution = story => `<div class="np-attribution"><span class="np-source">${esc(story.source?.name || story.sources?.[0]?.name || 'Original reporting')}</span><time datetime="${esc(story.published_at)}" title="${esc(new Date(story.published_at).toLocaleString())}">${esc(ago(story.published_at))}</time></div>`;
+  const details = article => `<div class="np-details"><span class="np-category">${esc(CAT[story.category] || 'News')}</span><span>${esc(nm(story.location?.country || 'Global'))}</span></div>`;
+  const attribution = article => `<div class="np-attribution"><span class="np-source">${esc(story.source?.name || story.sources?.[0]?.name || 'Original reporting')}</span><time datetime="${esc(story.published_at)}" title="${esc(new Date(story.published_at).toLocaleString())}">${esc(ago(story.published_at))}</time></div>`;
   function storyCard(story, featured = false) {
-    const copy = `<${featured ? 'h2' : 'h3'}>${esc(story.headline)}</${featured ? 'h2' : 'h3'}>${details(story)}<p>${esc(story.summary)}</p>${attribution(story)}${featured ? '<span class="np-read">Read the story <span aria-hidden="true">→</span></span>' : ''}`;
+    const copy = `<${featured ? 'h2' : 'h3'}>${esc(story.headline)}</${featured ? 'h2' : 'h3'}>${details(story)}<p>${esc(story.summary)}</p>${attribution(story)}${featured ? '<span class="np-read">Read the article <span aria-hidden="true">→</span></span>' : ''}`;
     return `<a class="np-story ${featured ? 'np-lead' : 'np-card'}" href="${url(story)}" data-story="${esc(story.id)}">${media(story, featured)}${featured ? `<div class="np-lead-copy">${copy}</div>` : copy}</a>`;
   }
 
@@ -57,8 +57,8 @@
     else grid.innerHTML = remaining.slice(0, state.shown).map(s => storyCard(s)).join('');
     more.hidden = state.shown >= remaining.length;
     const total = remaining.length + 1;
-    $('np-showing').textContent = `Showing ${Math.min(state.shown, remaining.length) + 1} of ${total} stories`;
-    $('np-count').textContent = `${remaining.length} ${remaining.length === 1 ? 'story' : 'stories'}`;
+    $('np-showing').textContent = `Showing ${Math.min(state.shown, remaining.length) + 1} of ${total} articles`;
+    $('np-count').textContent = `${remaining.length} ${remaining.length === 1 ? 'article' : 'articles'}`;
   }
 
   function render() {
@@ -70,10 +70,10 @@
     grid.innerHTML = '';
     latest.hidden = true;
     more.hidden = true;
-    status.textContent = `${matches.length} ${matches.length === 1 ? 'story' : 'stories'} found.`;
+    status.textContent = `${matches.length} ${matches.length === 1 ? 'article' : 'articles'} found.`;
     status.classList.add('sr-only');
     if (!matches.length) {
-      showMessage('No stories here yet', 'There are no stories matching this category and region in the current feed.', 'Clear filters', () => {
+      showMessage('No articles here yet', 'There are no articles matching this category and region in the current feed.', 'Clear filters', () => {
         state.category = 'all'; state.region = 'all'; region.value = 'all'; render();
         categories.querySelector('button').focus();
       });
@@ -107,7 +107,7 @@
     categories.querySelectorAll('button').forEach(b => { b.disabled = true; });
     region.disabled = true;
     status.classList.remove('sr-only');
-    status.textContent = 'Loading stories…';
+    status.textContent = 'Loading articles…';
     try {
       const data = await loadNews();
       state.stories = data.stories.filter(s => s.id && s.headline && s.summary && s.location && Number.isFinite(Date.parse(s.published_at)));
@@ -117,7 +117,7 @@
     } catch {
       $('np-updated').textContent = 'Feed unavailable';
       status.textContent = '';
-      showMessage('News couldn’t load', 'Please try again to fetch the latest stories.', 'Try again', load);
+      showMessage('News couldn’t load', 'Please try again to fetch the latest articles.', 'Try again', load);
     } finally {
       content.setAttribute('aria-busy', 'false');
       categories.querySelectorAll('button').forEach(b => { b.disabled = false; });

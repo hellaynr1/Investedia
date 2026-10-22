@@ -1,5 +1,5 @@
 // Quiet in-page "new headline" alerts. No browser notification permission, no provider calls.
-// Phone: slim pill under the menu (design A). PC: story card with image or logo (design B).
+// Phone: slim pill under the menu (design A). PC: article card with image or logo (design B).
 (() => {
   const assetsURL = new URL('.', document.currentScript.src);
   const BF = '1idNJqyfpKbma454ae4';

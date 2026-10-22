@@ -82,7 +82,7 @@ kbd{font-family:var(--mono);font-size:11px;color:var(--fg-3);border:1px solid va
 .mega-pop{background:var(--card);border:1px solid var(--line-soft);border-radius:10px;padding:14px 10px;align-self:start}
 .mega-pop h6{padding:0 6px}
 .mega-panel .dd-foot{grid-column:1/-1;margin:0 -20px;padding:12px 20px}
-.dd-tools{width:min(860px,calc(100vw - 32px));display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:12px}
+.dd-tools{width:min(620px,calc(100vw - 32px));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:12px}
 .dd-item{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:10px;transition:background .12s}
 .dd-item:hover,.dd-item:focus-visible{background:var(--card)}
 .dd-ic{flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);color:var(--fg-2)}

@@ -55,3 +55,5 @@ The owner's weekly routine (research, content, small site tasks, review) and the
 - Small, focused changes; one commit per change with a clear message.
 - Show screenshots (Playwright works: `npx playwright screenshot`), not descriptions.
 - Explain what the owner must do themselves (Supabase, Google, Resend, DNS) as numbered click-by-click steps.
+
+**Voice and wording (owner rule):** the audience is professional and educated investors who will pay for the product. Say **article(s)**, never "story/stories" in visible text (URL parameters and code identifiers such as `story.html` and `?story=` stay as they are for compatibility). Use precise financial vocabulary (basis points, yield, spread, guidance, drawdown, volatility, positioning), a newsroom register like Reuters/Bloomberg, no "for beginners", no "explained simply", no cutesy copy. Keep "Not investment advice".

@@ -104,10 +104,10 @@ def gdelt(start=None, end=None):
     out = []
     for i, q in enumerate([BACKFILL_QUERY] if start else GDELT_QUERIES):
         url = 'https://api.gdeltproject.org/api/v2/doc/doc?' + urllib.parse.urlencode({'query': q, 'mode': 'ArtList', 'format': 'json', 'maxrecords': 150 if start else 75, 'sort': 'HybridRel', **({'startdatetime': start.strftime('%Y%m%d%H%M%S'), 'enddatetime': end.strftime('%Y%m%d%H%M%S')} if start else {'timespan': '3h'})})
-        for t in range(4):
-            time.sleep(8 + 12 * t)  # GDELT asks for one request every 5 seconds; back off when it is busy
+        for t in range(1):  # one try per query: GDELT is a bonus source, the RSS feeds carry the run
+            time.sleep(6)  # GDELT asks for one request every 5 seconds
             try:
-                txt = get(url, timeout=60)
+                txt = get(url, timeout=25)
                 if txt.lstrip().startswith('{'):
                     for a in json.loads(txt).get('articles', []):
                         if a.get('language', 'English') != 'English': continue
@@ -116,7 +116,8 @@ def gdelt(start=None, end=None):
                     break
                 log('GDELT busy:', txt[:80])
             except Exception as e:
-                if t == 3: err(f'GDELT query {i}: {e}')
+                err(f'GDELT query {i}: {e}')
+                if '429' in str(e): return out  # rate limited: stop asking, keep what we have
     return out
 
 
@@ -207,14 +208,14 @@ def dedupe(items, known_titles):
 
 
 # ---------- Gemini ----------
-PROMPT = """You are the news editor of Investedia, a financial news globe for beginner investors. Below are candidate headlines (JSON) with their source and, when available, the article's own short description.
+PROMPT = """You are the news editor of Investedia, a financial news globe for professional investors and finance practitioners. Below are candidate headlines (JSON) with their source and, when available, the article's own short description.
 
 Pick at most {n} stories that are genuinely about business, finance, markets, companies, the economy, commodities, crypto, technology business, or politics/geopolitics WITH a clear economic impact. Skip: sports, celebrity, crime, lifestyle, opinion columns, press-release spam, "stock to buy" tips, price-target listicles, and anything you cannot place.
 Merge candidates that report the same event into one story (list all their indexes in "members").
 
 For each story return:
 - "members": candidate indexes (numbers) of the same event, most important source first
-- "headline": a neutral, factual headline in plain English, max 90 characters, no clickbait, no exclamation marks
+- "headline": a neutral, precise, factual headline in the register of a financial newsroom (Reuters/Bloomberg style), max 90 characters, no clickbait, no exclamation marks
 - "summary": 1-2 short sentences (max 45 words) using ONLY facts present in the candidates' titles/descriptions. Never invent numbers, names, quotes or reasons.
 - "why": 1-2 sentences of general, well-established background explaining why this matters for investors (e.g. what the company or institution is). No claims about the event itself beyond the input.
 - "category": one of {cats}
