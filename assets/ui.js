@@ -2,6 +2,13 @@
 (function () {
   const M = window.MOCK;
   const page = document.body.dataset.page || '';
+  const isLegalPage = ['legal','terms','privacy','cookies','disclaimer','ai-disclosure','sources','copyright','editorial-policy','corrections','affiliate-disclosure','accessibility','contact'].includes(page);
+  document.addEventListener('DOMContentLoaded', () => {
+ const skip=document.querySelector('.skip-link');if(skip)document.body.prepend(skip);
+ window.InvConsent?.mount();
+ const labelScroll = root => root.querySelectorAll('.tbl-wrap,.legal-table,#sessions').forEach(e=>{e.tabIndex=0;e.setAttribute('role','region');e.setAttribute('aria-label','Scrollable data table');});
+ labelScroll(document);new MutationObserver(()=>labelScroll(document)).observe(document.body,{childList:true,subtree:true});
+ });
 
   // ---------- icons (24px stroke set) ----------
   const P = {
@@ -53,7 +60,7 @@
     [...h.classList].filter(k => k.startsWith('st-')).forEach(k => h.classList.remove(k));
     h.style.setProperty('--accent', cfg.accent); h.style.setProperty('--accent-hi', `color-mix(in srgb, ${cfg.accent} 82%, #fff)`);
     ['corners', 'size', 'font', 'icons', 'motion', 'cards', 'numbers', 'dropdown'].forEach(k => cfg[k] !== STUDIO_DEF[k] && h.classList.add(`st-${k}-${cfg[k]}`));
-    if (cfg.font === 'geist' && !document.getElementById('st-geist')) document.head.insertAdjacentHTML('beforeend', '<link id="st-geist" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">');
+    if (window.InvConsent?.allows('images') && cfg.font === 'geist' && !document.getElementById('st-geist')) document.head.insertAdjacentHTML('beforeend', '<link id="st-geist" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">');
   }
   let studio = null; try { studio = JSON.parse(localStorage.getItem('inv-studio') || 'null'); } catch {}
   if (studio && studio.apply) applyStudio(studio);
@@ -91,8 +98,8 @@
     if (a.c === 'currencies' && CCY[s.slice(0, 3)] && CCY[s.slice(3)]) return `<span class="logo ${size} logo-fx">${img(`assets/logos/flags/${CCY[s.slice(0, 3)]}.svg`)}${img(`assets/logos/flags/${CCY[s.slice(3)]}.svg`)}</span>`;
     if (GLYPH.has(s)) return `<span class="logo ${size} logo-tile">${img(`assets/logos/${s}.svg`)}</span>`;
     if (ICON.has(icon)) return `<span class="logo ${size} logo-tile">${img(`assets/logos/${icon}.png`)}</span>`;
-    if (CMD_OF[s]) return `<span class="logo ${size}" style="background:${a.logo}"><svg class="logo-cmd" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${CMD[CMD_OF[s]]}</svg></span>`;
-    const t = s.length > 4 ? s.slice(0, 3) : s; return `<span class="logo ${size} ${t.length === 4 && !size ? 'l4' : ''}" style="background:${a.logo}">${t}</span>`;
+    if (CMD_OF[s]) return `<span class="logo ${size}" style="background:#29292d"><svg class="logo-cmd" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${CMD[CMD_OF[s]]}</svg></span>`;
+    const t = s.length > 4 ? s.slice(0, 3) : s; return `<span class="logo ${size} ${t.length === 4 && !size ? 'l4' : ''}" style="background:#29292d">${t}</span>`;
   };
   const href = a => `asset.html?s=${a.s}`;
   // Real headlines open the publisher's article in a new tab; our own stories open on the site
@@ -114,16 +121,16 @@
       ['Markets and events', [['United States', 'stocks.html#region-us'], ['Americas', 'stocks.html#region-americas'], ['Europe', 'stocks.html#region-europe'], ['Pre-Market', 'stocks.html#premarket'], ['After Hours', 'stocks.html#afterhours'], ['Earnings Calendar', 'calendar.html#earnings'], ['World ADRs', 'stocks.html#adrs']]],
     ], pop: ['AAPL', 'TSLA', 'META', 'AMZN', 'MSFT', 'NVDA', 'NFLX', 'AMD', 'BA', 'GME'] },
     indices: { cols: [
-      ['Indices', [['Major Indices', 'indices.html#major'], ['Real-Time Indices', 'indices.html#realtime'], ['World Indices', 'indices.html#world'], ['Global Indices', 'indices.html#global']]],
-      ['Futures', [['Indices Futures', 'indices.html#futures'], ['Dow Jones Futures', 'asset.html?s=YM1'], ['S&P 500 Futures', 'asset.html?s=ES1'], ['Nasdaq Futures', 'asset.html?s=NQ1']]],
+      ['Indices', [['Major Indices', 'markets.html'], ['Real-Time Indices', 'markets.html'], ['World Indices', 'markets.html'], ['Global Indices', 'markets.html']]],
+      ['Futures', [['Indices Futures', 'markets.html'], ['Dow Jones Futures', 'asset.html?s=YM1'], ['S&P 500 Futures', 'asset.html?s=ES1'], ['Nasdaq Futures', 'asset.html?s=NQ1']]],
     ], pop: ['SPX', 'DJI', 'NDX', 'DAX', 'UKX', 'SX5E', 'NKY'] },
     crypto: { cols: [
-      ['Explore', [['Crypto Overview', 'crypto.html'], ['Trending Crypto', 'crypto.html#trending'], ['Crypto Screener', 'crypto.html#all'], ['Top Gainers', 'crypto.html#gainers'], ['Top Losers', 'crypto.html#losers']]],
-      ['Market data', [['Most Active', 'crypto.html#active'], ['Crypto Market Cap', 'crypto.html#marketcap'], ['Bitcoin Dominance', 'crypto.html#dominance'], ['DeFi', 'crypto.html#defi'], ['Stablecoins', 'crypto.html#stablecoins']]],
+      ['Explore', [['Crypto Overview', 'markets.html'], ['Trending Crypto', 'markets.html'], ['Crypto Screener', 'markets.html'], ['Top Gainers', 'markets.html'], ['Top Losers', 'markets.html']]],
+      ['Market data', [['Most Active', 'markets.html'], ['Crypto Market Cap', 'markets.html'], ['Bitcoin Dominance', 'markets.html'], ['DeFi', 'markets.html'], ['Stablecoins', 'markets.html']]],
     ], pop: ['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE'] },
     currencies: { cols: [
-      ['Pairs', [['Major Pairs', 'currencies.html#major'], ['Minor Pairs', 'currencies.html#minor'], ['Exotic Pairs', 'currencies.html#exotic'], ['Currency Converter', 'converter.html']]],
-      ['Analytics', [['Currency Heatmap', 'currencies.html#heatmap'], ['Currency Strength', 'currencies.html#strength'], ['Forex Volatility', 'currencies.html#volatility'], ['Economic Events', 'calendar.html']]],
+      ['Pairs', [['Major Pairs', 'markets.html'], ['Minor Pairs', 'markets.html'], ['Exotic Pairs', 'markets.html'], ['Currency Converter', 'converter.html']]],
+      ['Analytics', [['Currency Heatmap', 'markets.html'], ['Currency Strength', 'markets.html'], ['Forex Volatility', 'markets.html'], ['Economic Events', 'calendar.html']]],
     ], pop: ['EURUSD', 'GBPUSD', 'USDJPY', 'EURGBP', 'AUDUSD'] },
     commodities: { cols: [
       ['Energy', [['Crude Oil', 'asset.html?s=WTI'], ['Brent Oil', 'asset.html?s=BRENT'], ['Natural Gas', 'asset.html?s=NG']]],
@@ -131,12 +138,12 @@
       ['Agriculture', [['Wheat', 'asset.html?s=ZW'], ['Corn', 'asset.html?s=ZC'], ['Coffee', 'asset.html?s=KC'], ['Soybeans', 'asset.html?s=ZS']]],
     ], pop: ['XAU', 'WTI', 'XAG', 'NG', 'HG'] },
     bonds: { cols: [
-      ['Government', [['Government Bonds', 'bonds.html#government'], ['US Treasuries', 'bonds.html#treasuries'], ['European Bonds', 'bonds.html#europe'], ['UK Gilts', 'bonds.html#gilts']]],
-      ['Corporate & yields', [['Corporate Bonds', 'bonds.html#corporate'], ['High-Yield Bonds', 'asset.html?s=USHY'], ['US 10-Year Yield', 'asset.html?s=US10Y'], ['US 2-Year Yield', 'asset.html?s=US02Y'], ['Yield Curve', 'bonds.html#curve']]],
+      ['Government', [['Government Bonds', 'markets.html'], ['US Treasuries', 'markets.html'], ['European Bonds', 'markets.html'], ['UK Gilts', 'markets.html']]],
+      ['Corporate & yields', [['Corporate Bonds', 'markets.html'], ['High-Yield Bonds', 'asset.html?s=USHY'], ['US 10-Year Yield', 'asset.html?s=US10Y'], ['US 2-Year Yield', 'asset.html?s=US02Y'], ['Yield Curve', 'markets.html']]],
     ], pop: ['US10Y', 'US02Y', 'US30Y', 'DE10Y', 'UK10Y'] },
     funds: { cols: [
-      ['Fund types', [['ETFs', 'funds.html#etfs'], ['Mutual Funds', 'funds.html#mutual'], ['Index Funds', 'funds.html#index'], ['Dividend ETFs', 'funds.html#dividend']]],
-      ['Discover', [['Top ETFs', 'funds.html#top'], ['Trending ETFs', 'funds.html#trending'], ['ETF Screener', 'funds.html#all'], ['Fund Comparison', 'compare.html?type=funds'], ['Fund Flows', 'funds.html#flows']]],
+      ['Fund types', [['ETFs', 'markets.html'], ['Mutual Funds', 'markets.html'], ['Index Funds', 'markets.html'], ['Dividend ETFs', 'markets.html']]],
+      ['Discover', [['Top ETFs', 'markets.html'], ['Trending ETFs', 'markets.html'], ['ETF Screener', 'markets.html'], ['Fund Comparison', 'compare.html?type=funds'], ['Fund Flows', 'markets.html']]],
     ], pop: ['SPY', 'VOO', 'QQQ', 'VTI', 'SCHD', 'IBIT'] },
   };
   const megaPanel = k => {
@@ -166,12 +173,6 @@
       ['compound', 'Compound Interest', 'Project long-term growth', 'calculator.html#compound'],
       ['calc', 'Investment Returns', 'Annualised return', 'calculator.html#returns'],
       ['funds', 'Dividend Calculator', 'Income and reinvesting', 'calculator.html#dividend'],
-    ]],
-    ['Real estate', [
-      ['building', 'Mortgage Calculator', 'Monthly payments and interest', 'real-estate.html#mortgage'],
-      ['home', 'Rent vs. Buy', 'Which comes out ahead', 'real-estate.html#rentbuy'],
-      ['pin', 'Rental Yield', 'What a rental would earn', 'real-estate.html#yield'],
-      ['book', 'Real Estate Guides', 'Mortgages, REITs, leverage', 'real-estate.html#learn'],
     ]],
   ];
   const tools = TOOL_GROUPS.flatMap(g => g[1]);
@@ -236,7 +237,7 @@
   const setTheme = t => { document.documentElement.dataset.theme = t; document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'light' ? '#FFFFFF' : '#0A0A0B'); tb.innerHTML = t === 'light' ? moon : sun; try { localStorage.setItem('inv-theme', t); } catch {} };
   let th = 'dark'; try { th = localStorage.getItem('inv-theme') || 'dark'; } catch {}
   setTheme(th); window.setInvTheme = setTheme; tb.onclick = () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
-  const skip = document.createElement('a'); skip.className = 'skip'; skip.href = '#main'; skip.textContent = 'Skip to content'; document.body.prepend(skip);
+
   const onScrollHdr = () => hdr.classList.toggle('scrolled', scrollY > 8); addEventListener('scroll', onScrollHdr, { passive: true }); onScrollHdr();
   document.addEventListener('DOMContentLoaded', () => { const m = document.querySelector('main'); if (m) { m.id = m.id || 'main'; if (!('onpagereveal' in window)) m.classList.add('enter'); } });
   // Prefetch internal pages on hover or touch so clicks open instantly
@@ -277,7 +278,7 @@
   const pick = k => { rail.forEach(r => r.toggleAttribute('aria-current', r.dataset.cat === k)); hdr.querySelectorAll('.mega-panel').forEach(p => p.hidden = p.dataset.panel !== k); };
   rail.forEach(r => { r.addEventListener('mouseenter', () => pick(r.dataset.cat)); r.addEventListener('focus', () => pick(r.dataset.cat)); });
   document.addEventListener('click', e => { if (!e.target.closest('.nav>li')) closeAll(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAll(); closePalette(); closeDrawer(); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { const trigger=[...hdr.querySelectorAll('[data-dd]')].find(b=>b.getAttribute('aria-expanded')==='true'); closeAll(); trigger?.focus(); closePalette(); closeDrawer(); } });
 
   // mobile drawer
   const drawer = document.createElement('div');
@@ -289,13 +290,13 @@
     <div class="drawer-acct member-only"><a class="owner-only" href="admin.html">Analytics dashboard</a><a href="profile.html">Profile &amp; notifications</a><button class="btn btn-ghost" type="button" data-logout>Log out</button></div>`;
   hdr.after(drawer);
   const mt = hdr.querySelector('.menu-toggle');
-  function closeDrawer() { drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.classList.remove('is-open'); document.body.style.overflow = ''; }
-  mt.onclick = () => { const o = !drawer.classList.contains('open'); drawer.classList.toggle('open', o); mt.setAttribute('aria-expanded', o); mt.classList.toggle('is-open', o); mt.setAttribute('aria-label', o ? 'Close menu' : 'Open menu'); document.body.style.overflow = o ? 'hidden' : ''; };
+  function closeDrawer() { if(drawer.classList.contains('open')) modalClose(drawer); drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.classList.remove('is-open'); document.body.style.overflow = ''; }
+  mt.onclick = () => { const o = !drawer.classList.contains('open'); if(o)modalOpen(drawer);else modalClose(drawer); drawer.classList.toggle('open', o); mt.setAttribute('aria-expanded', o); mt.classList.toggle('is-open', o); mt.setAttribute('aria-label', o ? 'Close menu' : 'Open menu'); document.body.style.overflow = o ? 'hidden' : ''; if(o)drawer.querySelector('a').focus(); };
 
   // ---------- search palette (UI only, searches sample data) ----------
   const pal = document.createElement('div');
   pal.className = 'palette'; pal.hidden = true;
-  pal.innerHTML = `<div class="palette-box" role="dialog" aria-label="Search"><div class="palette-in">${icon('search')}<input id="pal-q" placeholder="Search stocks, crypto, indices, news…" autocomplete="off"><kbd>Esc</kbd></div><div class="palette-list" id="pal-list"></div></div>`;
+  pal.innerHTML = `<div class="palette-box" role="dialog" aria-label="Search"><div class="palette-in">${icon('search')}<input id="pal-q" aria-label="Search markets and news" placeholder="Search stocks, crypto, indices, news…" autocomplete="off"><button type="button" class="palette-close" aria-label="Close search">Esc</button></div><div class="palette-list" id="pal-list"></div></div>`;
   document.body.append(pal);
   const q = pal.querySelector('#pal-q'), list = pal.querySelector('#pal-list');
   function renderPal() {
@@ -323,7 +324,7 @@
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (!its.length) return; const n = (cur + (e.key === 'ArrowDown' ? 1 : -1) + its.length) % its.length; its.forEach((a, i) => a.setAttribute('aria-selected', i === n)); its[n].scrollIntoView({ block: 'nearest' }); }
     if (e.key === 'Enter') { const a = its[cur] || its[0]; if (a) location.href = a.href; }
   };
-  pal.querySelector('kbd').onclick = closePalette; pal.querySelector('kbd').style.cursor = 'pointer';
+  pal.querySelector('.palette-close').onclick = closePalette; pal.querySelector('.palette-close').style.cursor = 'pointer';
   pal.onclick = e => { if (e.target === pal) closePalette(); };
   document.querySelectorAll('[data-search]').forEach(b => b.onclick = openPalette);
   document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openPalette(); } });
@@ -349,7 +350,7 @@
   const whenVisible = (fn, ms) => { let t = 0; const run = () => { clearTimeout(t); if (!document.hidden) fn(); t = setTimeout(run, ms); }; document.addEventListener('visibilitychange', () => { if (!document.hidden) run(); }); setTimeout(run, 4000); };
 
   // Live currencies: Coinbase's free exchange-rate feed, every 30 seconds while the page is open
-  whenVisible(() => fetch('https://api.coinbase.com/v2/exchange-rates?currency=USD', { cache: 'no-store' }).then(r => r.json()).then(j => {
+  whenVisible(() => window.InvConsent?.allows('images') && fetch('https://api.coinbase.com/v2/exchange-rates?currency=USD', { cache: 'no-store' }).then(r => r.json()).then(j => {
     const R = j.data.rates; R.USD = '1';
     M.assets.filter(a => a.c === 'currencies' && a.s.length === 6).forEach(a => { const b = +R[a.s.slice(0, 3)], q = +R[a.s.slice(3)]; if (b && q) { a.live = true; setPrice(a.s, +(q / b).toFixed(a.p > 20 ? 3 : 5)); } });
     document.dispatchEvent(new CustomEvent('inv:tick'));
@@ -404,9 +405,10 @@
     <div><h6>News</h6><ul><li><a href="index.html">Home</a></li><li><a href="assets/globe/news.html">Globe</a></li><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li></ul></div>
     <div><h6>Learn</h6><ul><li><a href="education.html">Education</a></li></ul></div>
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our story</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="about.html#contact">Contact</a></li><li><a href="about.html#terms">Terms & privacy</a></li><li><a href="privacy.html">Privacy policy</a></li></ul></div>
+    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our background</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="ftr-legal"><h6>Legal</h6><ul><li><a href="legal.html">Legal hub</a></li><li><a href="terms.html">Terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="cookies.html">Cookies</a></li><li><a href="disclaimer.html">Disclaimer</a></li><li><a href="ai-disclosure.html">AI use</a></li><li><a href="sources.html">Sources</a></li><li><a href="copyright.html">Copyright & takedown</a></li><li><a href="editorial-policy.html">Editorial policy</a></li><li><a href="corrections.html">Corrections</a></li><li><a href="affiliate-disclosure.html">Advertising & affiliates</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="contact.html">Contact</a></li><li><button type="button" data-cookie-settings>Cookie settings</button></li></ul></div>
   </div>
-  <div class="ftr-bottom"><span>© 2026 Investedia. For information and education only, not investment advice.</span><span class="preview-flag"><i></i>Market data from Yahoo Finance, FRED and Coinbase. Prices may be delayed up to 30 minutes; crypto is live. This product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of St. Louis. <a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener">FRED terms</a>.</span></div></div>`;
+  <div class="ftr-bottom"><span>© ${new Date().getFullYear()} Investedia · ${window.InvLegal?.legal_name ? String(window.InvLegal.legal_name).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;") : '<mark class="owner-placeholder">[OWNER: legal name]</mark>'}. <a href="disclaimer.html">Not investment advice.</a></span><span>Data: Yahoo Finance, FRED & Coinbase. <a href="sources.html">Sources & attributions</a>.</span></div></div>`;
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
 
   // ---------- charts ----------
@@ -495,6 +497,7 @@
   // Tabs helper: buttons with data-tab inside a .tabs; calls fn(key)
   function tabs(el, fn) {
     el.setAttribute('role', 'tablist');
+    el.setAttribute('role','tablist'); el.setAttribute('aria-label',el.id || 'View');
     el.querySelectorAll('.tab').forEach(b => { b.setAttribute('role', 'tab'); b.onclick = () => { el.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', x === b)); fn(b.dataset.tab); }; });
   }
 
@@ -523,10 +526,10 @@
     el.innerHTML = [['news', 'Latest news', 'news.html'], ['analysis', 'Analysis', 'analysis.html'], ['ai', 'AI brief', 'ai-insights.html']].map(([key, t, h]) => `<a href="${h}" ${key === k ? 'aria-current="page"' : ''}>${key === 'ai' ? icon('sparkle') : ''}${t}</a>`).join('');
   }
   // Treemap-style heatmap from [asset, colSpan, rowSpan]
-  const heatColor = d => { const t = Math.min(1, Math.abs(d) / 4); return d >= 0 ? `rgba(34,197,94,${.16 + t * .64})` : `rgba(240,68,68,${.16 + t * .64})`; };
+  const heatColor = d => { const t = Math.min(1, Math.abs(d) / 4); return d >= 0 ? `rgba(34,197,94,${.12 + t * .30})` : `rgba(240,68,68,${.12 + t * .30})`; };
   function heatmap(el, items) { el.innerHTML = items.map(([a, w, h]) => `<a href="${a.n && M.bySym[a.s] ? href(a) : 'screener.html'}" style="grid-column:span ${w};grid-row:span ${h};background:${heatColor(a.d)}" title="${a.n || a.s}: ${fmtC(a.d)}"><b style="font-size:${Math.min(22, 10 + w * 2)}px">${a.label || a.s}</b><span>${fmtC(a.d)}</span></a>`).join(''); }
   // ---------- modern heatmap: smooth colours, period switch, hover/tap detail card ----------
-  const heatVar = (d, scale = 4) => { const t = Math.max(-1, Math.min(1, d / scale)); return t >= 0 ? `color-mix(in srgb, var(--up) ${18 + t * 62}%, var(--card))` : `color-mix(in srgb, var(--down) ${18 - t * 62}%, var(--card))`; };
+  const heatVar = (d, scale = 4) => { const t = Math.max(-1, Math.min(1, d / scale)); return t >= 0 ? `color-mix(in srgb, var(--up) ${12 + t * 28}%, var(--card))` : `color-mix(in srgb, var(--down) ${12 - t * 28}%, var(--card))`; };
   let tipEl = null;
   function heatTip(html, r) {
     if (!tipEl) { tipEl = document.createElement('div'); tipEl.className = 'hm-tip'; tipEl.setAttribute('role', 'status'); document.body.append(tipEl); }
@@ -579,7 +582,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(pop);
     document.querySelectorAll('[data-subscribe]').forEach(b => b.onclick = openPop);
-    if (!store('inv-pop') && !store('inv-sub') && store('inv-auth-seen')) {
+    if (!isLegalPage && !store('inv-pop') && !store('inv-sub') && store('inv-auth-seen')) {
       const t = setTimeout(openPop, 12000);
       const onScroll = () => { if (scrollY > (document.body.scrollHeight - innerHeight) * .6) { clearTimeout(t); removeEventListener('scroll', onScroll); if (!store('inv-pop')) openPop(); } };
       addEventListener('scroll', onScroll, { passive: true });
@@ -591,9 +594,10 @@
   let sb = null;
   const sbLoad = () => sb ? Promise.resolve(sb) : new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'; s.onload = () => ok(sb = window.supabase.createClient(SB_URL, SB_KEY)); s.onerror = no; document.head.append(s); });
   window.invSB = sbLoad;
-  // ---------- analytics: no cookies, no IDs, nothing personal; only the owner's account can read them (Supabase row-level security) ----------
+  // ---------- optional first-party usage events, gated by analytics consent ----------
   const OWNERS = ['adonaykabeya10@gmail.com', 'info@investedia.com'];
   const track = (type, detail) => { try {
+    if (!window.InvConsent?.allows('analytics')) return;
     if (navigator.webdriver || /bot|crawl|spider|headless|lighthouse/i.test(navigator.userAgent) || !/investedia\.com$/.test(location.hostname) || store('inv-owner') === '1') return;
     const rh = document.referrer ? new URL(document.referrer).hostname : '', own = rh === location.hostname;
     const body = { type, path: (location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/').slice(0, 200), ref: rh && !own ? rh.replace(/^www\./, '').slice(0, 200) : null, entry: !own,
@@ -619,7 +623,7 @@
       <p class="auth-msg" role="status" hidden></p>
       <button class="btn btn-primary auth-go" type="submit">Create free account</button>
     </form>
-    <p class="auth-legal dim" data-only="up">By continuing you agree to our <a href="about.html#terms">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+    <p class="auth-legal dim" data-only="up">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</p>
     <p class="auth-switch"><span data-only="up">Have an account? <button type="button" data-m="in">Log in</button></span><span data-only="in">New here? <button type="button" data-m="up">Create an account</button></span></p>
     <button class="auth-guest" type="button">Continue as guest</button>
   </div>`;
@@ -693,7 +697,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(au);
     if (gated) { const g = document.createElement('section'); g.className = 'gate';
-      g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your ${page === 'watchlist' ? 'watchlist' : 'profile'}</h1><p class="muted">Your profile, watchlist and alerts are saved to your account, so they follow you on every device.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
+      g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your ${page === 'watchlist' ? 'watchlist' : 'profile'}</h1><p class="muted">Your profile and watchlist can be saved to your account. Country and article follows are stored on this device; email alerts are not activated by following.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
       document.querySelector('main').prepend(g); }
     document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); document.querySelector('.drawer.open') && document.querySelector('.menu-toggle').click(); openAuth(b.dataset.auth || 'up'); });
     document.addEventListener('click', e => { const b = e.target.closest('[data-logout]'); if (!b) return; e.preventDefault(); b.disabled = true; try { localStorage.removeItem('inv-owner'); } catch {} sbLoad().then(c => c.auth.signOut()).catch(() => {}).finally(() => location.href = 'index.html'); });
@@ -705,7 +709,7 @@
     // members who come back logged out: a quiet "Welcome back" once per visit
     else if (store('inv-had-account') && !ss('inv-wb')) setTimeout(() => { ss('inv-wb', '1'); if (pop.hidden && au.hidden && hdr.querySelector('#hdr-login') && !hdr.querySelector('#hdr-login').hidden) openAuth('in'); }, 2500);
   });
-  function standaloneAuthSkip() { return /[?&]noauth/.test(location.search); }
+  function standaloneAuthSkip() { return isLegalPage || /[?&]noauth/.test(location.search); }
   // ---------- home-screen app ----------
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   if (standalone) document.documentElement.classList.add('is-app');

@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="assets/consent.css?v=1444e28fbb">
+<script src="assets/consent.js?v=1444e28fbb"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Markets — Investedia</title>
 <meta name="description" content="The market in one glance: sectors, indices, commodities and crypto, sized by news and coloured by price move.">
@@ -12,10 +14,7 @@
 <meta property="og:image" content="assets/logo.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=ca56fa37e8">
+<link rel="stylesheet" href="assets/app.css?v=1444e28fbb">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -35,15 +34,17 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="assets/app/splash-640x1136.png">
 </head>
 <body data-page="markets">
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=ca56fa37e8"></script>
-<script src="assets/ui.js?v=ca56fa37e8"></script>
-<script src="assets/news-alerts.js?v=ca56fa37e8" defer></script>
-<script src="assets/home-news.js?v=ca56fa37e8"></script>
-<main class="wrap">
+<script src="assets/mock.js?v=1444e28fbb"></script>
+<script src="assets/legal-owner.js?v=1444e28fbb"></script>
+<script src="assets/ui.js?v=1444e28fbb"></script>
+<script src="assets/news-alerts.js?v=1444e28fbb" defer></script>
+<script src="assets/home-news.js?v=1444e28fbb"></script>
+<main class="wrap" id="main-content" tabindex="-1">
 <link rel="stylesheet" href="assets/news-board.css"><link rel="stylesheet" href="assets/markets-heat.css">
-<main class="nb mh">
+<div class="nb mh">
   <span class="nb-eb">Markets · <span id="mh-up">Loading</span></span>
   <h1>The market, <span>in one glance.</span></h1>
   <p class="nb-lead">Sectors sized by how much news they have and coloured by how their price moved. Tap a sector for its articles.</p>
@@ -52,7 +53,7 @@
   <div class="nf-sh" id="mh-sh" hidden><h2 id="mh-t"></h2><button type="button" class="mh-x" id="mh-x">Clear ×</button></div>
   <div id="mh-ls"></div>
   <p class="mv-note">Sector prices are tracked through public sector funds (ETFs) and may be delayed; they show how a sector moved, not a recommendation. Tile size counts articles from the last 7 days. Not investment advice.</p>
-</main>
+</div>
 <script src="assets/asset-icons.js"></script>
 <script src="assets/markets-heat.js"></script>
 </main>

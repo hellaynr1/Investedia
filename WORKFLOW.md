@@ -48,3 +48,6 @@ Every piece: a hook in the first line, plain language, a reason to send it to a 
 - Don't post buy/sell recommendations, "guaranteed" returns or paid promotions without a clear label (Belgian/EU finfluencer rules).
 - Don't publish AI text unedited: add your own voice and check it once.
 - Don't run many agents at once: free models allow ~20 requests per minute.
+
+## Release gate
+Never publish with `python3 build.py --release` failing. Complete legal-config.json with verified owner facts, then follow RELEASE-CHECKLIST.md. A passing build is not legal approval. Preview builds use `python3 build.py` and retain highlighted owner markers. Run `python3 -m unittest discover -s tests -p "test_*.py"` and the browser suites before release.

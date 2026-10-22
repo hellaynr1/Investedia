@@ -8,7 +8,7 @@
   const move = (a, k) => k === 'd' ? a.d : k === 'w' ? a.w : (a.sp && a.sp.length > 1 ? pc(a.sp[a.sp.length - 1], a.sp[0]) : 0);
   const fmt = v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(Math.abs(v) >= 10 ? 1 : 2) + '%';
   const cls = v => v > 0.005 ? 'u' : v < -0.005 ? 'd' : 'o';
-  const logo = a => a.t === 'crypto' ? `https://cdn.brandfetch.io/crypto/${encodeURIComponent(a.s.split('-')[0])}/w/96/h/96/fallback/404?c=${BF}` : a.t === 'stocks' && !/[\^=]/.test(a.s) ? `https://cdn.brandfetch.io/ticker/${encodeURIComponent(a.s)}/w/96/h/96/fallback/404?c=${BF}` : '';
+  const logo = a => !window.InvConsent?.allows('images') ? '' : a.t === 'crypto' ? `https://cdn.brandfetch.io/crypto/${encodeURIComponent(a.s.split('-')[0])}/w/96/h/96/fallback/404?c=${BF}` : a.t === 'stocks' && !/[\^=]/.test(a.s) ? `https://cdn.brandfetch.io/ticker/${encodeURIComponent(a.s)}/w/96/h/96/fallback/404?c=${BF}` : '';
   const icon = a => { const l = logo(a), ini = `<b class="mv-ini">${esc(a.n)[0]}</b>`; return l ? `<img class="nb-lg" src="${l}" alt="" onerror="this.outerHTML=this.dataset.f" data-f="${esc(ini)}">` : a.cc ? `<img class="nb-fl" src="assets/globe/flags/${a.cc}.svg" alt="" onerror="this.remove()">` : ini; };
   const storiesFor = (a, days) => S.stories.filter(s => Date.now() - Date.parse(s.published_at) <= days * 864e5 && (s.impacts || []).some(i => i.ticker === a.s));
   const series = (a, k) => k === 'd' ? (S.intra[a.s]?.d1?.c || (a.sp || []).slice(-2)) : k === 'w' ? (a.sp || []).slice(-6) : (a.sp || []);

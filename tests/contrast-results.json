@@ -1,0 +1,74 @@
+[
+  {
+    "pair": "orange button dark text",
+    "foreground": "#111113",
+    "background": "#FF7A1A",
+    "ratio": 7.23,
+    "target": 4.5,
+    "passes": true,
+    "used": true
+  },
+  {
+    "pair": "orange button white text (avoid)",
+    "foreground": "#FFFFFF",
+    "background": "#FF7A1A",
+    "ratio": 2.61,
+    "target": 4.5,
+    "passes": false,
+    "used": false
+  },
+  {
+    "pair": "secondary on card",
+    "foreground": "#A1A1AA",
+    "background": "#171719",
+    "ratio": 6.99,
+    "target": 4.5,
+    "passes": true,
+    "used": true
+  },
+  {
+    "pair": "gain on dark",
+    "foreground": "#22C55E",
+    "background": "#0A0A0B",
+    "ratio": 8.69,
+    "target": 4.5,
+    "passes": true,
+    "used": true
+  },
+  {
+    "pair": "loss on dark",
+    "foreground": "#FF7373",
+    "background": "#0A0A0B",
+    "ratio": 7.49,
+    "target": 4.5,
+    "passes": true,
+    "used": true
+  },
+  {
+    "pair": "gain on tinted tile",
+    "foreground": "#79E9AA",
+    "background": "#1A4938",
+    "ratio": 6.84,
+    "target": 4.5,
+    "passes": true,
+    "used": true
+  },
+  {
+    "pair": "loss on tinted tile",
+    "foreground": "#FFB0B0",
+    "background": "#612F2F",
+    "ratio": 6.18,
+    "target": 4.5,
+    "passes": true,
+    "used": true
+  },
+  {
+    "pair": "focus on card",
+    "foreground": "#FF7A1A",
+    "background": "#171719",
+    "ratio": 6.86,
+    "target": 3,
+    "passes": true,
+    "used": true
+  }
+]

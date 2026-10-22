@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="../consent.css">
+<script src="../consent.js"></script>
+<script>document.addEventListener("DOMContentLoaded",()=>window.InvConsent?.mount());</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia Globe News (concept)</title>
 <meta name="robots" content="noindex">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Geist+Mono:wght@400;500&display=swap">
 <style>
 /* Globe News concept: the globe fills the screen; filters on top, timeline at the bottom, one glass panel on the right (bottom sheet on phones). */
 :root{
@@ -125,6 +126,7 @@ h1 span{color:var(--fg-3)}
 
 /* Panel */
 .panel{position:fixed;top:16px;right:16px;bottom:16px;width:var(--pw);border-radius:20px;z-index:4;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.globe-privacy{font-size:11px;color:var(--fg-2);padding:4px;border-radius:4px}.globe-privacy:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .grab,.sheet-actions{display:none}
 .pbody{flex:1;overflow-y:auto;padding:22px 22px 28px;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#333 transparent}
 .pbody h2{margin:6px 0 4px;font-size:22px;line-height:1.15;font-weight:600;letter-spacing:-.03em}
@@ -346,15 +348,22 @@ h1 span{color:var(--fg-3)}
 .mv-row .mono{font-family:'Geist Mono',monospace;font-weight:600;font-size:13px;text-align:right}.mv-row .u{color:#34d399}.mv-row .d{color:#f87171}
 .mv-row .ai-t,.mv-row .ai-i{width:30px;height:30px;border-radius:9px}
 @media(max-width:760px){.chip{height:36px;padding:0 14px}}
+
+:focus-visible{outline:3px solid #FF7A1A!important;outline-offset:3px!important}.globe-skip{position:fixed;top:8px;left:8px;z-index:30000;transform:translateY(-200%);padding:12px;background:#FF7A1A;color:#111113}.globe-skip:focus{transform:none}@media(pointer:coarse){button,.chip,.regions button,.panel a{min-height:44px}.zoom button,.sheet-actions button{min-width:44px}.chips,.regions,.panel-tabs{gap:8px}}
+
+@media(pointer:coarse){a,button{min-width:44px;min-height:44px}.wm{display:inline-flex;align-items:center}.timeline{overflow-x:auto;max-width:calc(100vw - 24px)}.timeline button{flex-shrink:0}.grab{height:44px}.panel a:not([class]){display:inline-flex;align-items:center}}
+
+@media(pointer:coarse){.timeline .win{min-width:44px}}
 </style>
 </head>
 <body>
-<canvas id="cv" aria-label="3D globe of financial and business news. Use the article list in the panel to browse by keyboard."></canvas>
+<a class="globe-skip" href="#pbody">Skip to article panel</a><canvas id="cv" aria-label="3D globe of financial and business news. Use the article list in the panel to browse by keyboard."></canvas>
 
 <div class="top">
   <div class="brand">
     <a class="wm" href="/">Invested<span class="i">i</span>a</a>
     <span class="prod">Globe · News</span>
+    <button type="button" class="globe-privacy" data-cookie-settings>Privacy</button>
     <span class="demo" id="badge" title="Concept preview: every article is demo content written to show the design. Not real news.">Concept · demo articles</span>
   </div>
   <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search a country, company or article" autocomplete="off" aria-label="Search the globe" aria-controls="res"><kbd>/</kbd>
@@ -376,7 +385,7 @@ h1 span{color:var(--fg-3)}
 <aside class="panel glass" id="panel" aria-label="News panel">
   <button class="grab" id="grab" aria-label="Change news panel height" aria-controls="pbody"></button>
   <div class="sheet-actions"><button id="sheet-expand" aria-label="Expand news panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button id="sheet-close" class="sheet-close" aria-label="Close news panel">×</button></div>
-  <div class="pbody" id="pbody"></div>
+  <div class="pbody" id="pbody" tabindex="-1"></div>
 </aside>
 
 <script>if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');</script>
@@ -419,7 +428,7 @@ const quoteOf = s => { for (const e of s.entities) { const q = e.sym && QD.q[e.s
 // and our logo files are the fallback if Brandfetch has no logo for that ticker.
 const BRANDFETCH_ID = '1idNJqyfpKbma454ae4'; // public client ID from brandfetch.com/developers (not a secret: it is part of every logo URL)
 function bfURL(e, px) {
-  if (!BRANDFETCH_ID || !e.ticker) return null; const t = e.ticker;
+  if (!window.InvConsent?.allows('images') || !BRANDFETCH_ID || !e.ticker) return null; const t = e.ticker;
   if (/-USD$/.test(t)) return `https://cdn.brandfetch.io/crypto/${encodeURIComponent(t.split('-')[0])}/w/${px}/h/${px}/fallback/404?c=${BRANDFETCH_ID}`;
   if (/[\^=]/.test(t)) return null; // indices, currencies, futures have no company logo
   return `https://cdn.brandfetch.io/ticker/${encodeURIComponent(t)}/w/${px}/h/${px}/fallback/404?c=${BRANDFETCH_ID}`;
@@ -428,6 +437,7 @@ function logoFor(e) { const local = LOGOS[e.sym] || LOGOS[e.ticker], remote = !(
 const logoOf = s => { for (const e of s.entities) { const l = logoFor(e); if (l) return l; } return null; };
 const limg = (lg, alt = '') => `<img src="${esc(lg.l)}" alt="${esc(alt)}"${lg.l.startsWith('https://cdn.brandfetch.io') ? ' class="bf"' : ''} data-logo${lg.fb ? ` data-fb="${esc(lg.fb)}"` : ''} loading="lazy" referrerpolicy="strict-origin-when-cross-origin">`;
 addEventListener('error', ev => { const t = ev.target; if (t.tagName !== 'IMG' || !t.hasAttribute('data-logo')) return; if (t.dataset.fb) { t.src = t.dataset.fb; t.removeAttribute('data-fb'); } else (t.closest('.plogo') || t).remove(); }, true);
+addEventListener('inv-consent-change', () => { if (!window.InvConsent.allows('images')) document.querySelectorAll('img.bf').forEach(i => { if(i.dataset.fb){ i.src=i.dataset.fb; delete i.dataset.fb; } else i.remove(); }); });
 const fmtP = (v, sym) => v.toLocaleString('en-US', { maximumFractionDigits: YLD.test(sym) ? 2 : v >= 1000 ? 0 : v >= 10 ? 2 : 4, minimumFractionDigits: YLD.test(sym) ? 2 : 0 });
 const outlineCache = {};
 function outline(name, lat, lon) {

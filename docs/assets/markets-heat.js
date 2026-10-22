@@ -29,7 +29,7 @@
   const cls = v => v > 0.005 ? 'u' : v < -0.005 ? 'd' : '';
   const col = v => v > 0.005 ? '#34d399' : v < -0.005 ? '#f87171' : '#8b8b94';
   const move = (a, k) => k === 'd' ? a.d : k === 'w' ? a.w : (a.sp && a.sp.length > 1 ? (a.sp[a.sp.length - 1] / a.sp[0] - 1) * 100 : 0);
-  const tint = v => v > 0.005 ? `rgba(52,211,153,${Math.min(.62, .13 + Math.abs(v) * .09).toFixed(2)})` : v < -0.005 ? `rgba(248,113,113,${Math.min(.62, .13 + Math.abs(v) * .09).toFixed(2)})` : 'rgba(255,255,255,.08)';
+  const tint = v => v > 0.005 ? `rgba(52,211,153,${Math.min(.38, .13 + Math.abs(v) * .09).toFixed(2)})` : v < -0.005 ? `rgba(248,113,113,${Math.min(.38, .13 + Math.abs(v) * .09).toFixed(2)})` : 'rgba(255,255,255,.08)';
   const line = (v, c) => { if (!v || v.length < 2) return ''; const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1; return `<svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d="${v.map((y, i) => (i ? 'L' : 'M') + (i / (v.length - 1) * 100).toFixed(1) + ' ' + (27 - (y - lo) / r * 24).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`; };
   const series = (a, k) => k === 'd' ? (S.intra[a.s]?.d1?.c || (a.sp || []).slice(-2)) : k === 'w' ? (a.sp || []).slice(-6) : (a.sp || []);
   const text = s => [s.headline, ...(s.impacts || []).map(i => i.name), ...(s.entities || []).map(e => e.name)].join(' ');

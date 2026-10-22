@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="assets/consent.css?v=1444e28fbb">
+<script src="assets/consent.js?v=1444e28fbb"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Analytics — Investedia</title>
 <meta name="description" content="Private site analytics for the owner.">
@@ -12,10 +14,7 @@
 <meta property="og:image" content="assets/logo.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=ca56fa37e8">
+<link rel="stylesheet" href="assets/app.css?v=1444e28fbb">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -35,14 +34,16 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="assets/app/splash-640x1136.png">
 </head>
 <body data-page="admin">
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=ca56fa37e8"></script>
-<script src="assets/ui.js?v=ca56fa37e8"></script>
-<script src="assets/news-alerts.js?v=ca56fa37e8" defer></script>
-<main class="wrap">
+<script src="assets/mock.js?v=1444e28fbb"></script>
+<script src="assets/legal-owner.js?v=1444e28fbb"></script>
+<script src="assets/ui.js?v=1444e28fbb"></script>
+<script src="assets/news-alerts.js?v=1444e28fbb" defer></script>
+<main class="wrap" id="main-content" tabindex="-1">
 <div class="an-head">
-  <div><span class="eyebrow">Owner · private</span><h1>Analytics</h1><p class="muted">How people find and use investedia.com. No cookies, nothing personal.</p></div>
+  <div><span class="eyebrow">Owner · private</span><h1>Analytics</h1><p class="muted">How people find and use investedia.com. Optional usage events; access restricted to the owner.</p></div>
   <div class="an-ctrl"><span class="an-live" id="live"><i></i>Live</span><div class="tabs an-range" id="range"><button class="tab" data-tab="1">Today</button><button class="tab" data-tab="7" aria-selected="true">7 days</button><button class="tab" data-tab="30">30 days</button></div></div>
 </div>
 
@@ -183,7 +184,8 @@ function geo(visits) {
   svg.addEventListener('pointerleave', () => { tip.hidden = true; svg.querySelectorAll('.on').forEach(x => x.classList.remove('on')); });
   document.getElementById('countries').innerHTML = by.length ? '<ol class="an-rank">' + by.slice(0, 8).map(([k, v]) => { const p = tot ? v / tot * 100 : 0; return `<li><span class="an-rl">${k !== '??' ? `<img class="an-flag" src="assets/logos/flags/${k.toLowerCase()}.svg" alt="" onerror="this.remove()">` : ''}${esc(name(k))}</span><span class="an-rv">${fmt(v)}<small>${p.toFixed(0)}%</small></span><i style="--w:${Math.max(1.5, p)}"></i></li>`; }).join('') + '</ol>' : '<p class="an-none">No visits in this period.</p>';
 }
-load();
+const hasSession = (() => { try { return Object.keys(localStorage).some(k=>/^sb-.*-auth-token$/.test(k)); } catch { return false; } })();
+if (hasSession) load(); else msg('Log in to see your analytics', 'This page is only for the owner of Investedia.', '<button class="btn btn-primary" type="button" onclick="openAuth(\'in\')">Log in</button>');
 </script>
 </main>
 </body>

@@ -1,0 +1,44 @@
+[
+  {
+    "url": "index.html",
+    "width": 1440,
+    "pass": true,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "url": "news.html",
+    "width": 1440,
+    "pass": true,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "url": "assets/globe/news.html",
+    "width": 1440,
+    "pass": true,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "url": "index.html",
+    "width": 390,
+    "pass": true,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "url": "news.html",
+    "width": 390,
+    "pass": true,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "url": "assets/globe/news.html",
+    "width": 390,
+    "pass": true,
+    "errors": [],
+    "axe": []
+  }
+]

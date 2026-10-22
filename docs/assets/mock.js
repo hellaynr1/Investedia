@@ -354,12 +354,12 @@ window.MOCK = (function () {
 
   const categories = [
     { k: 'stocks', t: 'Stocks', d: 'US, European and global equities', page: 'stocks.html' },
-    { k: 'indices', t: 'Indices', d: 'S&P 500, Nasdaq, DAX and futures', page: 'indices.html' },
-    { k: 'crypto', t: 'Cryptocurrencies', d: 'Bitcoin, Ethereum, DeFi, stablecoins', page: 'crypto.html' },
-    { k: 'currencies', t: 'Currencies', d: 'Major, minor and exotic pairs', page: 'currencies.html' },
-    { k: 'commodities', t: 'Commodities', d: 'Energy, metals and agriculture', page: 'commodities.html' },
-    { k: 'bonds', t: 'Bonds', d: 'Government yields, gilts, corporates', page: 'bonds.html' },
-    { k: 'funds', t: 'Funds', d: 'ETFs, index and mutual funds', page: 'funds.html' },
+    { k: 'indices', t: 'Indices', d: 'S&P 500, Nasdaq, DAX and futures', page: 'markets.html' },
+    { k: 'crypto', t: 'Cryptocurrencies', d: 'Bitcoin, Ethereum, DeFi, stablecoins', page: 'markets.html' },
+    { k: 'currencies', t: 'Currencies', d: 'Major, minor and exotic pairs', page: 'markets.html' },
+    { k: 'commodities', t: 'Commodities', d: 'Energy, metals and agriculture', page: 'markets.html' },
+    { k: 'bonds', t: 'Bonds', d: 'Government yields, gilts, corporates', page: 'markets.html' },
+    { k: 'funds', t: 'Funds', d: 'ETFs, index and mutual funds', page: 'markets.html' },
   ];
 
   const news = [

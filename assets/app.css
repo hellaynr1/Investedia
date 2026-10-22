@@ -1,9 +1,9 @@
 /* Investedia UI — dark terminal-grade layout: dense data tables, hairline borders, one orange accent */
 :root{
   --bg:#0A0A0B;--bg-2:#111113;--card:#171719;--card-hi:#1d1d20;--line:#29292D;--line-soft:#1f1f23;
-  --fg:#FFFFFF;--fg-2:#A1A1AA;--fg-3:#71717A;
+  --fg:#FFFFFF;--fg-2:#A1A1AA;--fg-3:#a1a1aa;
   --accent:#FF7A1A;--accent-hi:#FF9147;--accent-soft:color-mix(in srgb,var(--accent) 12%,transparent);
-  --up:#22C55E;--down:#F04444;--up-soft:rgba(34,197,94,.12);--down-soft:rgba(240,68,68,.12);
+  --up:#22C55E;--down:#ff7373;--up-soft:rgba(34,197,94,.12);--down-soft:rgba(240,68,68,.12);
   --sans:"Inter","Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
   --r:10px;--r-sm:6px;--head:64px;
@@ -82,7 +82,7 @@ kbd{font-family:var(--mono);font-size:11px;color:var(--fg-3);border:1px solid va
 .mega-pop{background:var(--card);border:1px solid var(--line-soft);border-radius:10px;padding:14px 10px;align-self:start}
 .mega-pop h6{padding:0 6px}
 .mega-panel .dd-foot{grid-column:1/-1;margin:0 -20px;padding:12px 20px}
-.dd-tools{width:min(860px,calc(100vw - 32px));display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:12px}
+.dd-tools{width:min(620px,calc(100vw - 32px));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:12px}
 .dd-item{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:10px;transition:background .12s}
 .dd-item:hover,.dd-item:focus-visible{background:var(--card)}
 .dd-ic{flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);color:var(--fg-2)}
@@ -1141,3 +1141,24 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .is-owner .acct-dd .owner-only{display:flex!important}
 /* iPhone zooms the page into any field smaller than 16px: keep fields at 16px on phones */
 @media (max-width:760px){input,select,textarea{font-size:16px!important}}
+
+/* Legal navigation follows the shared footer's existing visual language. */
+.ftr-top{grid-template-columns:1.5fr repeat(4,.85fr) 1.5fr;gap:22px}.ftr-top>div{min-width:0}.ftr-legal a,.ftr-legal button{line-height:1.55}.ftr-legal button{padding:0;background:none;border:0;color:inherit;font:inherit;cursor:pointer;text-align:left}.ftr a:focus-visible,.ftr button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}.ftr-bottom{color:var(--fg-2)}.ftr-bottom span{max-width:65ch}
+@media(max-width:1000px){.ftr-top{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:600px){.ftr-top{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 20px}.ftr-top>div:first-child,.ftr-legal{grid-column:1/-1}.ftr-legal ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}.ftr-bottom{display:grid;line-height:1.6}}
+
+/* Prelaunch accessibility: shared controls, keyboard access and reduced motion. */
+:focus-visible{outline:3px solid #FF7A1A!important;outline-offset:3px!important}
+.skip-link{position:fixed;top:8px;left:12px;z-index:30000;transform:translateY(-180%);background:#FF7A1A;color:#111113;padding:12px 18px;border-radius:8px}
+.skip-link:focus{transform:translateY(0)}
+#main-content{scroll-margin-top:80px}
+@media(pointer:coarse){button,input,select,summary,.icon-btn,.nav-link,.subnav a,.ftr a,.ftr button{min-height:44px}.icon-btn{min-width:44px}.subnav{gap:8px}.ftr li{margin-bottom:8px}.ftr a,.ftr button{display:inline-flex;align-items:center}.drawer a{min-height:44px;display:flex;align-items:center}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+@media(pointer:coarse){a,button,summary,[role=button]{min-height:44px;min-width:44px}a:not([class]){display:inline-flex;align-items:center;max-width:100%}.hdr .brand,.hdr .search-btn{min-height:44px}.studio-panel{position:relative;max-height:none;left:auto;right:auto;bottom:auto}.nf-pin{width:44px;height:44px}.nf-wtabs,.nb-seg,.tabs{gap:8px}}
+.st-tabs .tab[aria-pressed=true],#pv-tabs .tab[aria-pressed=true]{color:var(--fg);background:var(--card-hi)}
+
+@media(prefers-reduced-motion:reduce){@view-transition{navigation:none}}
+@media(pointer:coarse){.legal-back,.sp-back{display:inline-flex;align-items:center;min-height:44px}input[type=color]{min-width:44px}}
+.hn-tick a{flex:0 0 auto;display:flex;align-items:center}.hn-tick .hn{overflow-x:auto;scrollbar-width:none}
+
+.owner-placeholder{background:#472400;color:#ffbd8a;border:1px dashed #ff7a1a;padding:2px 4px;border-radius:3px;overflow-wrap:anywhere}

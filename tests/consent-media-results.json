@@ -1,0 +1,96 @@
+[
+  {
+    "url": "index.html",
+    "width": 1440,
+    "pass": true,
+    "hosts": [
+      "fonts.googleapis.com",
+      "cdn.brandfetch.io"
+    ],
+    "errors": []
+  },
+  {
+    "url": "news.html",
+    "width": 1440,
+    "pass": true,
+    "hosts": [
+      "fonts.googleapis.com",
+      "cdn.brandfetch.io"
+    ],
+    "errors": []
+  },
+  {
+    "url": "story.html?id=n14daff13a1",
+    "width": 1440,
+    "pass": true,
+    "hosts": [
+      "fonts.googleapis.com"
+    ],
+    "errors": []
+  },
+  {
+    "url": "assets/globe/news.html",
+    "width": 1440,
+    "pass": true,
+    "hosts": [
+      "fonts.googleapis.com"
+    ],
+    "errors": []
+  },
+  {
+    "url": "assets/globe/index.html",
+    "width": 1440,
+    "pass": true,
+    "hosts": [
+      "fonts.googleapis.com"
+    ],
+    "errors": []
+  },
+  {
+    "url": "index.html",
+    "width": 390,
+    "pass": true,
+    "hosts": [
+      "fonts.googleapis.com",
+      "cdn.brandfetch.io"
+    ],
+    "errors": []
+  },
+  {
+    "url": "news.html",
+    "width": 390,
+    "pass": true,
+    "hosts": [
+      "fonts.googleapis.com",
+      "cdn.brandfetch.io"
+    ],
+    "errors": []
+  },
+  {
+    "url": "story.html?id=n14daff13a1",
+    "width": 390,
+    "pass": true,
+    "hosts": [
+      "fonts.googleapis.com"
+    ],
+    "errors": []
+  },
+  {
+    "url": "assets/globe/news.html",
+    "width": 390,
+    "pass": true,
+    "hosts": [
+      "fonts.googleapis.com"
+    ],
+    "errors": []
+  },
+  {
+    "url": "assets/globe/index.html",
+    "width": 390,
+    "pass": true,
+    "hosts": [
+      "fonts.googleapis.com"
+    ],
+    "errors": []
+  }
+]

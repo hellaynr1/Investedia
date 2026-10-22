@@ -1,0 +1,98 @@
+[
+  {
+    "page": "real-estate.html",
+    "width": 1440,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "indices.html",
+    "width": 1440,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "currencies.html",
+    "width": 1440,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "commodities.html",
+    "width": 1440,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "crypto.html",
+    "width": 1440,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "bonds.html",
+    "width": 1440,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "funds.html",
+    "width": 1440,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "home-v2.html",
+    "width": 1440,
+    "destination": "index.html",
+    "errors": []
+  },
+  {
+    "page": "real-estate.html",
+    "width": 390,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "indices.html",
+    "width": 390,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "currencies.html",
+    "width": 390,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "commodities.html",
+    "width": 390,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "crypto.html",
+    "width": 390,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "bonds.html",
+    "width": 390,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "funds.html",
+    "width": 390,
+    "destination": "markets.html",
+    "errors": []
+  },
+  {
+    "page": "home-v2.html",
+    "width": 390,
+    "destination": "index.html",
+    "errors": []
+  }
+]

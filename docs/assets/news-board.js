@@ -6,7 +6,7 @@
   const CN = { US: 'United States', GB: 'United Kingdom', DE: 'Germany', CN: 'China', JP: 'Japan', IN: 'India', FR: 'France', AU: 'Australia', CA: 'Canada', BR: 'Brazil', SA: 'Saudi Arabia', AE: 'United Arab Emirates', RU: 'Russia', KR: 'South Korea', MX: 'Mexico', IT: 'Italy', NL: 'Netherlands', CH: 'Switzerland', TR: 'Turkey', NG: 'Nigeria', ZA: 'South Africa', ES: 'Spain', ID: 'Indonesia', TW: 'Taiwan', SG: 'Singapore', IL: 'Israel', IE: 'Ireland', SE: 'Sweden', NO: 'Norway', BE: 'Belgium', EG: 'Egypt', AR: 'Argentina', CL: 'Chile', PL: 'Poland', EU: 'Euro area' };
   const S = { mode: 'vol', cat: 'all', region: 'all', days: 7, dir: 'any', stories: [], shown: 12, q: null };
   const nbFlag = c => c ? `<img class="nb-fl" src="assets/globe/flags/${c.toLowerCase()}.svg" alt="" onerror="this.remove()">` : '';
-  const nbLogo = t => t && !/[\^=]/.test(t) ? `<img class="nb-lg" src="https://cdn.brandfetch.io/${/-USD$/.test(t) ? 'crypto/' + encodeURIComponent(t.split('-')[0]) : 'ticker/' + encodeURIComponent(t)}/w/96/h/96/fallback/404?c=${BF}" alt="" onerror="this.remove()">` : '';
+  const nbLogo = t => window.InvConsent?.allows('images') && t && !/[\^=]/.test(t) ? `<img class="nb-lg" src="https://cdn.brandfetch.io/${/-USD$/.test(t) ? 'crypto/' + encodeURIComponent(t.split('-')[0]) : 'ticker/' + encodeURIComponent(t)}/w/96/h/96/fallback/404?c=${BF}" alt="" onerror="this.remove()">` : '';
   const ico = i => i.kind === 'country' || !i.ticker ? nbFlag(i.country) : nbLogo(i.ticker) || nbFlag(i.country);
   const arr = d => `<span class="nb-dir ${d}">${d === 'up' ? '↑' : d === 'down' ? '↓' : d === 'mixed' ? '↔' : '–'}</span>`;
   const net = e => e.u > e.d * 1.5 ? 'up' : e.d > e.u * 1.5 ? 'down' : 'mixed';

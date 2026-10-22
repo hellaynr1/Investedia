@@ -1,0 +1,722 @@
+[
+  {
+    "page": "404.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "about.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "admin.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "ai-insights.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "analysis-article.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "analysis.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "article.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "asset.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "calculator.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "calendar.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "compare.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "converter.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "dashboard.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "education.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "globe.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "lesson.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "markets.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "profile.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "screener.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "stocks.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "watchlist.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "404.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "about.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "admin.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "ai-insights.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "analysis-article.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "analysis.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "article.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "asset.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "calculator.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "calendar.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "compare.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "converter.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "dashboard.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "education.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "globe.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "lesson.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "markets.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "profile.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "screener.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "stocks.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "watchlist.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "accessibility.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "affiliate-disclosure.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "ai-disclosure.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "contact.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "cookies.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "copyright.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "corrections.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "disclaimer.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "editorial-policy.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "index.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "legal.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "movers.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "news.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "privacy.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "sources.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "story.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "studio.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "terms.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "assets/globe/news.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "accessibility.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "affiliate-disclosure.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "ai-disclosure.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "contact.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "cookies.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "copyright.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "corrections.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "disclaimer.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "editorial-policy.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "index.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "legal.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "movers.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "news.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "privacy.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "sources.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "story.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "studio.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "terms.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "assets/globe/news.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  }
+]
