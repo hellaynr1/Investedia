@@ -73,3 +73,11 @@
 @media(max-width:800px){.mh-tbl.nr .mh-th,.mh-tbl.nr .mh-tr{grid-template-columns:minmax(0,1fr) 92px 72px!important;gap:6px}.mh-tbl:not(.nr) .mh-th,.mh-tbl:not(.nr) .mh-tr{grid-template-columns:22px minmax(0,1fr) 92px 72px!important;gap:6px}}
 .mh-ic2 svg,.mh-ic2 img{width:100%;height:100%;display:block;object-fit:cover}.mh-ic2{flex:none}
 .mh-co .mh-ic2{width:32px;height:32px;border-radius:50%;overflow:hidden;display:inline-grid;place-items:center;flex:none}.mh-co .mh-ic2 svg,.mh-co .mh-ic2 img{width:100%;height:100%}
+
+/* Commodities: compact tiles */
+.mh-tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.mh-tl{border:1px solid var(--line);border-radius:26px;background:rgba(255,255,255,.04);padding:16px 18px;cursor:pointer;transition:transform .18s ease,background .18s}.mh-tl:hover{transform:translateY(-3px);background:rgba(255,255,255,.08)}
+.mh-tlh{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--fg-2);min-width:0}.mh-tlh b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mh-tlh .mh-ic2{width:26px;height:26px;border-radius:50%;overflow:hidden;display:inline-grid;flex:none}
+.mh-tlp{font-size:26px;font-weight:700;letter-spacing:-.035em;margin:10px 0 8px}
+.mh-tl .mh-chip{font-size:13px!important;padding:5px 11px!important}.mh-tl .mh-ch svg{width:100%;height:40px;margin-top:8px}
+@media(max-width:800px){.mh-tg{grid-template-columns:repeat(2,1fr);gap:10px}.mh-tl{padding:14px;border-radius:22px}.mh-tlp{font-size:21px}}

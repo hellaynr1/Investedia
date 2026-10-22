@@ -66,7 +66,7 @@
   // ---------- Commodities ----------
   const CMD = ['GC=F', 'SI=F', 'HG=F', 'PL=F', 'BZ=F', 'CL=F', 'NG=F', 'HO=F', 'RB=F', 'ZW=F', 'ZC=F', 'ZS=F', 'KC=F', 'SB=F', 'CC=F', 'CT=F'];
   function commodities() {
-    $('mh-body').innerHTML = tbl(CMD.map(s => S.by[s]).filter(Boolean), { first: 'Commodity' });
+    $('mh-body').innerHTML = `<div class="mh-tg">${CMD.map(s => S.by[s]).filter(Boolean).map(a => { const m = move(a, S.win), cur = S.live[a.s]?.p ?? a.p; return `<article class="mh-tl" data-s="${a.s}"><div class="mh-tlh"><span class="mh-ic2">${icon(a)}</span><b>${a.n}</b></div><div class="mh-tlp mono" data-k="p">${money(cur, a)}</div><span class="mh-chip ${cls(m)}" data-k="c">${arrow(m)} ${fmt(m)}</span><div class="mh-ch">${chart(series(a, S.win), col(m), 160, 40, true)}</div></article>`; }).join('')}</div>`;
   }
   // ---------- Crypto ----------
   const CRY = ['BTC-USD', 'ETH-USD', 'SOL-USD', 'XRP-USD', 'BNB-USD', 'DOGE-USD', 'ADA-USD', 'TRX-USD', 'AVAX-USD', 'LINK-USD', 'DOT-USD', 'LTC-USD'];
