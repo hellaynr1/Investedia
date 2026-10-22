@@ -429,6 +429,48 @@
    "credit": "652234",
    "source_url": "https://pixabay.com/photos/radio-tower-wireless-antenna-1270871/",
    "alt": "telecom tower 5g"
+  },
+  {
+   "file": "photos/telecom-tower-5g-605307.jpg",
+   "credit": "markusspiske",
+   "source_url": "https://pixabay.com/photos/antenna-mast-antenna-monitoring-nsa-605307/",
+   "alt": "telecom tower 5g"
+  },
+  {
+   "file": "photos/telecom-tower-5g-5053730.jpg",
+   "credit": "AhmadArdity",
+   "source_url": "https://pixabay.com/photos/telecommunication-antenna-5053730/",
+   "alt": "telecom tower 5g"
+  },
+  {
+   "file": "photos/telecom-tower-5g-1880873.jpg",
+   "credit": "albertoadan",
+   "source_url": "https://pixabay.com/photos/aerial-communication-connection-1880873/",
+   "alt": "telecom tower 5g"
+  },
+  {
+   "file": "photos/telecom-tower-5g-6004505.jpg",
+   "credit": "dalshad",
+   "source_url": "https://pixabay.com/photos/telecommunications-tower-lights-time-6004505/",
+   "alt": "telecom tower 5g"
+  },
+  {
+   "file": "photos/telecom-tower-5g-5050339.jpg",
+   "credit": "pelegraphy",
+   "source_url": "https://pixabay.com/photos/communication-tower-radio-5050339/",
+   "alt": "telecom tower 5g"
+  },
+  {
+   "file": "photos/telecom-tower-5g-1880864.jpg",
+   "credit": "albertoadan",
+   "source_url": "https://pixabay.com/photos/aerial-communication-connection-1880864/",
+   "alt": "telecom tower 5g"
+  },
+  {
+   "file": "photos/telecom-tower-5g-1283140.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/kuala-lumpur-twin-tower-city-lights-1283140/",
+   "alt": "telecom tower 5g"
   }
  ],
  "cargo trucks highway": [
@@ -1187,7 +1229,8 @@
   "data center servers",
   "car factory",
   "cargo trucks highway",
-  "bank building"
+  "bank building",
+  "telecom tower 5g"
  ],
  "airplane airport": [
   {
