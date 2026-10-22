@@ -37,7 +37,7 @@
   function sectorMovers(name) {
     if (name === 'Crypto') return CRY.map(s => S.by[s]).filter(Boolean);
     const [g, re] = SGRP[name] || [[], null];
-    return Object.values(S.by).filter(a => a.t === 'stocks' && a.g !== 'Index' && a.g !== 'Country ETF' && !a.sector && known(a) && (re ? re.test(a.n) : g.includes(a.g)) && (!re || g.includes(a.g) || /Company/.test(a.g))).sort((x, y) => Math.abs(move(y, S.win)) - Math.abs(move(x, S.win)));
+    return Object.values(S.by).filter(a => a.t === 'stocks' && a.g !== 'Index' && a.g !== 'Country ETF' && !a.sector && known(a) && (re ? re.test(a.n) : g.includes(a.g)) && (!re || g.includes(a.g) || /Company/.test(a.g))).filter((a, i, arr) => arr.findIndex(b => b.n === a.n) === i || /-/.test(a.s) === false && false).sort((x, y) => Math.abs(move(y, S.win)) - Math.abs(move(x, S.win)));
   }
   function sectors() {
     const L = InvSectors.list.map(x => ({ x, a: S.by[x.etf] })).filter(o => o.a);
