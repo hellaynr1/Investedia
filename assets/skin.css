@@ -20,7 +20,7 @@ html:not([data-theme=light]) :is(.mh-bt,.mh-tbl,.mh-ic3,.mh-p,.ap-card,.ap-ch){b
 .pk-sheet,.pk-sb{background:rgba(14,14,17,.82)!important;-webkit-backdrop-filter:blur(40px) saturate(1.6);backdrop-filter:blur(40px) saturate(1.6);border-color:rgba(255,255,255,.16)!important}
 .pk-sheet{border-radius:32px!important}
 /* Commodity colour tiles: squircle, glyph with breathing room */
-.ai-c{border-radius:28%!important}.ai-c svg{width:64%!important;height:64%!important}
+.ai-c{border-radius:28%!important}.ai-c svg{width:100%!important;height:100%!important;display:block}
 .ic:has(.ai-c),.mh-ic2:has(.ai-c),.pv-h .ic:has(.ai-c){border-radius:28%!important;background:none!important}
 /* Smaller change pills */
 .mh-chip,.ap-chip{font-size:12.5px!important;padding:3px 9px!important;font-weight:650!important;box-shadow:none!important}
