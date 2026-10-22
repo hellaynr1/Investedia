@@ -127,6 +127,12 @@ FEEDS = [  # official press releases: (url, source name, hint)
     ('https://www.sec.gov/news/pressreleases.rss', 'US Securities and Exchange Commission', 'SEC press release, Washington DC, United States'),
     ('https://www.boj.or.jp/en/rss/whatsnew.xml', 'Bank of Japan', 'Bank of Japan news, Tokyo, Japan'),
     ('https://www.bankofcanada.ca/content_type/press-releases/feed/', 'Bank of Canada', 'Bank of Canada press release, Ottawa, Canada'),
+    ('https://www.federalreserve.gov/feeds/speeches.xml', 'Federal Reserve', 'US Federal Reserve speech, Washington DC, United States'),
+    ('https://www.federalreserve.gov/feeds/press_monetary.xml', 'Federal Reserve', 'US Federal Reserve monetary policy release, Washington DC, United States'),
+    ('https://www.bea.gov/rss/rss.xml', 'US Bureau of Economic Analysis', 'US Bureau of Economic Analysis data release, Washington DC, United States'),
+    ('https://www.eia.gov/rss/todayinenergy.xml', 'US Energy Information Administration', 'US Energy Information Administration, Washington DC, United States'),
+    ('https://www.bok.or.kr/eng/bbs/E0000634/news.rss', 'Bank of Korea', 'Bank of Korea news, Seoul, South Korea'),
+    ('https://www.riksbank.se/en-gb/rss/press-releases/', 'Sveriges Riksbank', 'Riksbank press release, Stockholm, Sweden'),
     ('https://www.rba.gov.au/rss/rss-cb-media-releases.xml', 'Reserve Bank of Australia', 'Reserve Bank of Australia media release, Sydney, Australia'),
 ]
 
