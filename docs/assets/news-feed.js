@@ -4,6 +4,16 @@
   const WIN = [['d', 'Today', 1], ['w', 'Week', 7], ['m', 'Month', 30]];
   const SORT = [['new', 'Newest'], ['big', 'Biggest reaction']];
   const CATN = { markets: 'Markets', companies: 'Companies', economy: 'Economy', technology: 'Technology', crypto: 'Crypto', commodities: 'Commodities', geopolitics: 'Geopolitics' };
+  const navigation = new URLSearchParams(location.search);
+  function showNavigationFilter() {
+    const filter = [...navigation].find(([key]) => ['category', 'region', 'asset', 'sector'].includes(key));
+    if (!filter) return;
+    const names = { companies: 'Companies', technology: 'Technology', crypto: 'Crypto', economy: 'Economy', commodities: 'Commodities', geopolitics: 'Geopolitics', stocks: 'Stocks', indices: 'Indices', energy: 'Oil & energy', bonds: 'Bonds', currencies: 'Currencies', financials: 'Financials', healthcare: 'Healthcare', consumer: 'Consumer', industrials: 'Industrials' };
+    const bar = document.createElement('div');
+    bar.className = 'nf-x nn-active-filter';
+    bar.innerHTML = `<span>News · ${esc(names[filter[1]] || filter[1])}</span><a href="news.html">Clear filter ×</a>`;
+    $('nf-hero').before(bar);
+  }
   const S = { win: 'w', sort: 'new', q: '', shown: 10, stories: [], by: {}, intra: {}, mk: [] };
   const pc = (a, b) => b ? (a / b - 1) * 100 : 0;
   const move = (a, k) => k === 'd' ? a.d : k === 'w' ? a.w : (a.sp && a.sp.length > 1 ? pc(a.sp[a.sp.length - 1], a.sp[0]) : 0);
@@ -106,6 +116,6 @@
   $('nf-list').addEventListener('click', e => { const r = e.target.closest('.nf-rx[data-s]'); if (r) openSheet(r.dataset.s); });
   document.addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); $('nf-q').focus(); } });
   Promise.all([AssetIcons.ready, fetch('assets/globe/news-archive.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Promise.reject()).catch(() => loadNews()), fetch('assets/globe/markets.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ assets: [] })), fetch('assets/globe/news-prices.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ assets: {} })), fetch('assets/intraday.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({ s: {} }))])
-    .then(([, n, m, np, i]) => { S.stories = n.stories || []; S.mk = m.assets || []; S.by = Object.fromEntries(S.mk.map(a => [a.s, a])); for (const [k, a] of Object.entries(np.assets || {})) S.by[k] = a; S.intra = i.s || {}; $('nf-up').textContent = 'Updated ' + new Date(n.updated || n.updated_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); hero(); strip(); draw(); { const mv = new URLSearchParams(location.search).get('mover'); if (mv && S.by[mv]) openSheet(mv, 'w'); } })
+    .then(([, n, m, np, i]) => { S.mk = m.assets || []; S.stories = (n.stories || []).filter(st => InvNewsMenu.matches(st, navigation, S.mk)); S.by = Object.fromEntries(S.mk.map(a => [a.s, a])); for (const [k, a] of Object.entries(np.assets || {})) S.by[k] = a; S.intra = i.s || {}; $('nf-up').textContent = 'Updated ' + new Date(n.updated || n.updated_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); showNavigationFilter(); hero(); strip(); draw(); { const mv = new URLSearchParams(location.search).get('mover'); if (mv && S.by[mv]) openSheet(mv, 'w'); } })
     .catch(e => { console.error('news', e); $('nf-list').innerHTML = '<div class="nf-none">News could not load. Please refresh.</div>'; });
 })();

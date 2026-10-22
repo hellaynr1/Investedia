@@ -181,8 +181,8 @@
   const nav = [
     ['home', 'Home', 'index.html'],
     ['globe', 'Globe', 'assets/globe/news.html'],
-    ['news', 'News', 'news.html'],
-    ['markets', 'Markets', 'markets.html'],
+    ['news', 'News', 'news.html', `<div class="dd dd-news" id="dd-news">${InvNewsMenu.html('nn-desktop')}</div>`],
+    ['markets', 'Markets', 'markets.html', `<div class="dd dd-news" id="dd-markets">${InvNewsMenu.html('nn-markets', 'Sectors')}</div>`],
     ['education', 'Learn', 'education.html'],
     ['tools', 'Tools', null, ddTools],
     ['about', 'About', 'about.html'],
@@ -269,9 +269,10 @@
   hdr.querySelectorAll('[data-dd]').forEach(btn => {
     const dd = document.getElementById(btn.dataset.dd), li = btn.parentElement;
     const open = v => { if (v) closeAll(btn); btn.setAttribute('aria-expanded', v); dd.classList.toggle('open', v); };
-    btn.addEventListener('click', () => open(btn.getAttribute('aria-expanded') !== 'true'));
+    let openedByHover = false;
+    btn.addEventListener('click', e => { const keepOpen = openedByHover && e.detail > 0; openedByHover = false; open(keepOpen || btn.getAttribute('aria-expanded') !== 'true'); });
     let t;
-    li.addEventListener('mouseenter', () => { if (matchMedia('(hover:hover)').matches) { clearTimeout(t); open(true); } });
+    li.addEventListener('mouseenter', () => { if (matchMedia('(hover:hover)').matches) { clearTimeout(t); openedByHover = dd.classList.contains('dd-news') && btn.getAttribute('aria-expanded') !== 'true'; open(true); } });
     li.addEventListener('mouseleave', () => { if (matchMedia('(hover:hover)').matches) t = setTimeout(() => open(false), 120); });
   });
   const rail = hdr.querySelectorAll('.mega-cat');
@@ -284,7 +285,7 @@
   const drawer = document.createElement('div');
   drawer.className = 'drawer';
   drawer.innerHTML = `<a class="search-btn" href="assets/globe/news.html">${icon('search')}<span>Search news, countries…</span></a>
-    <a href="index.html">Home</a><a href="assets/globe/news.html">Globe</a><a href="news.html">News</a><a href="education.html">Learn</a>
+    <a href="index.html">Home</a><a href="assets/globe/news.html">Globe</a><details class="nn-drawer-news"><summary>News ${icon('chev')}</summary>${InvNewsMenu.html('nn-mobile')}</details><a href="education.html">Learn</a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details><a href="about.html">About</a>
     <div class="drawer-acct guest-only"><p>Save your watchlist and alerts on every device.</p><button class="btn btn-primary" type="button" data-auth="up">Create free account</button><button class="btn btn-ghost" type="button" data-auth="in">Log in</button></div>
     <div class="drawer-acct member-only"><a class="owner-only" href="admin.html">Analytics dashboard</a><a href="profile.html">Profile &amp; notifications</a><button class="btn btn-ghost" type="button" data-logout>Log out</button></div>`;

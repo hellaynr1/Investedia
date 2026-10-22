@@ -45,6 +45,8 @@ HEAD = """<!doctype html>
 <script src="assets/news.js"></script>
 <script src="assets/mock.js?v={ver}"></script>
 <script src="assets/legal-owner.js?v={ver}"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v={ver}">
+<script src="assets/news-menu.js?v={ver}"></script>
 <script src="assets/ui.js?v={ver}"></script>
 <script src="assets/news-alerts.js?v={ver}" defer></script>
 {extra}<main class="wrap" id="main-content" tabindex="-1">
