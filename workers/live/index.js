@@ -27,6 +27,13 @@ export default {
   async fetch(req, env, ctx) {
     const h = cors(req), url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
+    if (req.method === 'GET' && url.pathname === '/probe') { // temporary check: can this Worker read Yahoo's free chart feed? Fixed symbols only.
+      const out = {};
+      for (const sym of ['^GSPC', 'AAPL', 'EURUSD=X']) {
+        try { const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?range=1d&interval=5m`, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Investedia/1.0; +https://investedia.com)' } }); const j = r.ok ? await r.json() : null; out[sym] = { status: r.status, price: j?.chart?.result?.[0]?.meta?.regularMarketPrice ?? null }; } catch (e) { out[sym] = { error: String(e) }; }
+      }
+      return new Response(JSON.stringify(out), { headers: { ...h, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+    }
     if (req.method !== 'GET' || url.pathname !== '/ticker') return new Response('Not found', { status: 404, headers: h });
     const cache = caches.default, key = new Request(url.origin + '/__ticker', { method: 'GET' });
     let res = await cache.match(key);
