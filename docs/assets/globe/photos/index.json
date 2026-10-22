@@ -2257,5 +2257,67 @@
    "source_url": "https://pixabay.com/photos/locomotive-railroad-transport-train-8568473/",
    "alt": "freight train"
   }
+ ],
+ "wind turbines": [
+  {
+   "file": "photos/wind-turbines-6928590.jpg",
+   "credit": "ELG21",
+   "source_url": "https://pixabay.com/photos/wind-mills-energy-clouds-power-6928590/",
+   "alt": "wind turbines"
+  },
+  {
+   "file": "photos/wind-turbines-6535595.jpg",
+   "credit": "distelAPPArath",
+   "source_url": "https://pixabay.com/photos/pinwheels-energy-electricity-6535595/",
+   "alt": "wind turbines"
+  },
+  {
+   "file": "photos/wind-turbines-9762992.jpg",
+   "credit": "Sinousxl",
+   "source_url": "https://pixabay.com/photos/wind-energy-offshore-wind-farm-9762992/",
+   "alt": "wind turbines"
+  },
+  {
+   "file": "photos/wind-turbines-1048981.jpg",
+   "credit": "Oimheidi",
+   "source_url": "https://pixabay.com/photos/windmills-clouds-fog-wind-power-1048981/",
+   "alt": "wind turbines"
+  },
+  {
+   "file": "photos/wind-turbines-5239642.jpg",
+   "credit": "mrganso",
+   "source_url": "https://pixabay.com/photos/wind-power-plant-windmill-wind-power-5239642/",
+   "alt": "wind turbines"
+  },
+  {
+   "file": "photos/wind-turbines-7342177.jpg",
+   "credit": "EdWhiteImages",
+   "source_url": "https://pixabay.com/photos/wind-energy-wind-farm-wind-turbines-7342177/",
+   "alt": "wind turbines"
+  },
+  {
+   "file": "photos/wind-turbines-5643293.jpg",
+   "credit": "EdWhiteImages",
+   "source_url": "https://pixabay.com/photos/windmills-rainbow-fields-5643293/",
+   "alt": "wind turbines"
+  },
+  {
+   "file": "photos/wind-turbines-4550711.jpg",
+   "credit": "Al3xanderD",
+   "source_url": "https://pixabay.com/photos/windmill-field-grain-wind-energy-4550711/",
+   "alt": "wind turbines"
+  },
+  {
+   "file": "photos/wind-turbines-50512.jpg",
+   "credit": "PeterDargatz",
+   "source_url": "https://pixabay.com/photos/windmill-sky-moon-turbine-50512/",
+   "alt": "wind turbines"
+  },
+  {
+   "file": "photos/wind-turbines-7001940.jpg",
+   "credit": "EdWhiteImages",
+   "source_url": "https://pixabay.com/photos/windmills-wind-turbines-wind-farm-7001940/",
+   "alt": "wind turbines"
+  }
  ]
 }
