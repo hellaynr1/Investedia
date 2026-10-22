@@ -1,5 +1,5 @@
 // Quiet in-page "new headline" alerts. No browser notification permission, no provider calls.
-// Phone: slim pill under the menu (design A). PC: story card with image or logo (design B).
+// Phone: slim pill under the menu (design A). PC: article card with image or logo (design B).
 (() => {
   const assetsURL = new URL('.', document.currentScript.src);
   const BF = '1idNJqyfpKbma454ae4';
@@ -37,7 +37,7 @@
   `;
   document.head.append(style);
   function close() { if (current) current.hidden = true; clearTimeout(timer); }
-  const logoOf = story => { const e = (story.entities || []).find(x => x.ticker && !/[\^=]/.test(x.ticker)); return e ? `https://cdn.brandfetch.io/${/-USD$/.test(e.ticker) ? 'crypto/' + encodeURIComponent(e.ticker.split('-')[0]) : 'ticker/' + encodeURIComponent(e.ticker)}/w/128/h/128/fallback/404?c=${BF}` : ''; };
+  const logoOf = article => { const e = (story.entities || []).find(x => x.ticker && !/[\^=]/.test(x.ticker)); return e ? `https://cdn.brandfetch.io/${/-USD$/.test(e.ticker) ? 'crypto/' + encodeURIComponent(e.ticker.split('-')[0]) : 'ticker/' + encodeURIComponent(e.ticker)}/w/128/h/128/fallback/404?c=${BF}` : ''; };
   function show(story, count = 1, href) {
     close();
     const link = href || new URL('assets/globe/news.html?story=' + encodeURIComponent(story.id), location.origin + '/').href;
