@@ -11,11 +11,11 @@ window.InvNewsMenu = (() => {
   };
   const svg = key => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[key] || paths.economy}</svg>`;
   const groups = {
-    companies:['AAPL.svg','TSLA.svg','AMZN.png'], technology:['GOOGL.svg','MSFT.svg','NVDA.svg'],
-    crypto:['BTC.svg','ETH.svg','SOL.svg'], stocks:['AAPL.svg','AMZN.png','TSLA.svg'], energy:['ENB.png','CVX.png','SHEL.svg'],
-    indices:['AAPL.svg','MSFT.svg','NVDA.svg'], bonds:['flag:us','flag:de','flag:jp'], currencies:['flag:us','flag:eu','flag:gb'],
-    europe:['flag:de','flag:fr','flag:gb'], northamerica:['flag:us','flag:ca','flag:mx'], asia:['flag:jp','flag:au','flag:in'],
-    middleeast:['flag:sa','flag:ae','flag:il'], africa:['flag:za','flag:ng','flag:eg'], latinamerica:['flag:br','flag:mx','flag:ar']
+    companies:['TSLA.svg','AAPL.svg','AMZN.png'], technology:['MSFT.svg','GOOGL.svg','NVDA.svg'],
+    crypto:['ETH.svg','BTC.svg','SOL.svg'], stocks:['TSLA.svg','AAPL.svg','AMZN.png'], energy:['ENB.png','SHEL.svg','CVX.png'],
+    indices:['MSFT.svg','AAPL.svg','NVDA.svg'], bonds:['flag:de','flag:us','flag:jp'], currencies:['flag:gb','flag:us','flag:eu'],
+    europe:['flag:fr','flag:de','flag:gb'], northamerica:['flag:ca','flag:us','flag:mx'], asia:['flag:au','flag:jp','flag:in'],
+    middleeast:['flag:ae','flag:sa','flag:il'], africa:['flag:ng','flag:za','flag:eg'], latinamerica:['flag:mx','flag:br','flag:ar']
   };
   function mark(key){
     const members=groups[key];
