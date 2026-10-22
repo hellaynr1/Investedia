@@ -182,7 +182,7 @@
     ['home', 'Home', 'index.html'],
     ['globe', 'Globe', 'assets/globe/news.html'],
     ['news', 'News', 'news.html', `<div class="dd dd-news" id="dd-news">${InvNewsMenu.html('nn-desktop')}</div>`],
-    ['markets', 'Markets', 'markets.html', `<div class="dd dd-news" id="dd-markets">${InvNewsMenu.html('nn-markets', 'Sectors')}</div>`],
+    ['markets', 'Markets', 'markets.html'],
     ['education', 'Learn', 'education.html'],
     ['tools', 'Tools', null, ddTools],
     ['about', 'About', 'about.html'],
@@ -285,7 +285,7 @@
   const drawer = document.createElement('div');
   drawer.className = 'drawer';
   drawer.innerHTML = `<a class="search-btn" href="assets/globe/news.html">${icon('search')}<span>Search news, countries…</span></a>
-    <a href="index.html">Home</a><a href="assets/globe/news.html">Globe</a><details class="nn-drawer-news"><summary>News ${icon('chev')}</summary>${InvNewsMenu.html('nn-mobile')}</details><a href="education.html">Learn</a>
+    <a href="index.html">Home</a><a href="assets/globe/news.html">Globe</a><details class="nn-drawer-news"><summary>News ${icon('chev')}</summary>${InvNewsMenu.html('nn-mobile')}</details><a href="markets.html">Markets</a><a href="education.html">Learn</a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details><a href="about.html">About</a>
     <div class="drawer-acct guest-only"><p>Save your watchlist and alerts on every device.</p><button class="btn btn-primary" type="button" data-auth="up">Create free account</button><button class="btn btn-ghost" type="button" data-auth="in">Log in</button></div>
     <div class="drawer-acct member-only"><a class="owner-only" href="admin.html">Analytics dashboard</a><a href="profile.html">Profile &amp; notifications</a><button class="btn btn-ghost" type="button" data-logout>Log out</button></div>`;
