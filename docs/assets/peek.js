@@ -38,6 +38,8 @@
   .pk-sb,.pk-sheet{background:rgba(12,12,15,.46)!important;-webkit-backdrop-filter:blur(24px) saturate(1.5)!important;backdrop-filter:blur(24px) saturate(1.5)!important;border-color:rgba(255,255,255,.14)!important}
   .pk-in{border-bottom-color:rgba(255,255,255,.08)!important}.pk-s.v3 .pk-pv{background:rgba(255,255,255,.04)!important}
   @media(max-width:800px){.pk-s{padding:0}.pk-s .pk-sb{border-radius:0 0 26px 26px;border-top:0;height:auto}.pk-sheet{background:rgba(12,12,15,.62)!important}}
+  .pk-s .pk-r.popular,.pk-s.v3 .pk-r.popular{max-height:min(38vh,292px);overflow-y:auto;-webkit-mask-image:linear-gradient(#000 calc(100% - 28px),transparent);mask-image:linear-gradient(#000 calc(100% - 28px),transparent);padding-bottom:22px}
+  @media(min-width:801px){.pk-s .pk-r.popular,.pk-s.v3 .pk-r.popular{max-height:min(62vh,560px);-webkit-mask-image:none;mask-image:none;padding-bottom:8px}}
   @media(prefers-reduced-motion:reduce){.pk,.pk-sheet,.pk-sb{transition:none}}`;
   document.head.appendChild(css);
   if (EMBED) { document.documentElement.classList.add('embed'); const b = document.createElement('base'); b.target = '_top'; document.head.prepend(b); return; }
@@ -87,7 +89,7 @@
   const PAGES = [['Markets', 'markets.html', 'Prices, sectors, crypto, currencies'], ['Crypto', 'markets.html?view=cry', 'Top coins with live prices'], ['Indices', 'markets.html?view=idx', 'World stock indices'], ['Commodities', 'markets.html?view=cmd', 'Oil, gold, metals, agriculture'], ['Currencies', 'markets.html?view=fx', 'Major pairs and cross rates'], ['Live charts', 'markets.html?view=tv', 'TradingView charts'], ['News', 'assets/globe/news.html', 'All articles'], ['Globe', 'globe.html', 'News on the world map'], ['Economic calendar', 'calendar.html', 'Releases and earnings'], ['Stock screener', 'screener.html', 'Filter companies'], ['Compare', 'compare.html', 'Compare assets side by side'], ['Calculator', 'calculator.html', 'Investment calculators'], ['Currency converter', 'converter.html', 'Convert between currencies'], ['Watchlist', 'watchlist.html', 'Your saved assets'], ['Learn', 'education.html', 'Lessons and guides'], ['About', 'about.html', 'Who we are'], ['Contact', 'contact.html', 'Get in touch'], ['Sources and methodology', 'sources.html', 'Where our data comes from'], ['Editorial policy', 'editorial-policy.html', 'How we publish'], ['Corrections', 'corrections.html', 'Fixes and updates'], ['Privacy', 'privacy.html', 'Privacy policy'], ['Cookies', 'cookies.html', 'Cookie policy'], ['Terms', 'terms.html', 'Terms of use']];
   const FILTERS = [['all', 'All'], ['stocks', 'Companies'], ['crypto', 'Crypto'], ['idx', 'Indices'], ['cmd', 'Commodities'], ['fx', 'Currencies'], ['countries', 'Countries'], ['articles', 'Articles']];
   const GROUPS = { stocks: ['Companies', a => a.t === 'stocks' && a.g !== 'Index'], idx: ['Indices', a => a.t === 'stocks' && a.g === 'Index'], crypto: ['Crypto', a => a.t === 'crypto'], cmd: ['Commodities', a => a.t === 'cmd'], fx: ['Currencies', a => a.t === 'fx'] };
-  const POP = ['BTC-USD', 'ETH-USD', '^GSPC', 'NVDA', 'GC=F', 'EURUSD'];
+  const POP = ['BTC-USD', 'ETH-USD', '^GSPC', 'NVDA', 'TSLA', 'AAPL', 'META', 'MSFT', '^IXIC', 'GC=F', 'CL=F', 'SOL-USD', 'EURUSD'];
   const fmtP = d => isFinite(d) ? `<i class="pc ${d > 0.005 ? 'u' : d < -0.005 ? 'd' : 'o'}">${d > 0.005 ? '↑' : d < -0.005 ? '↓' : '↔'} ${Math.abs(d).toFixed(2)}%</i>` : '';
   const kind = a => ({ stocks: a.g === 'Index' ? 'Index' : a.g === 'Country ETF' ? 'ETF' : 'Company', crypto: 'Crypto', cmd: 'Commodity', fx: 'Currency pair' })[a.t] || '';
   const spark = (v, w = 260, h = 70) => { v = (v || []).filter(isFinite); if (v.length < 2) return ''; const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1, up = v[v.length - 1] >= v[0], c = up ? '#34d399' : '#f87171', pts = v.map((y, i) => `${(i / (v.length - 1) * w).toFixed(1)},${(h - 4 - (y - lo) / r * (h - 8)).toFixed(1)}`).join(' L'); return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="M${pts}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>`; };
@@ -120,7 +122,8 @@
       SEC = q ? search(q) : [{ key: 'popular', title: 'Popular', items: POP.map(s => DATA.assets.find(a => a.s === s)).filter(Boolean), html: (a, c) => row(a, c), type: 'asset' }];
       fl.innerHTML = FILTERS.filter(([k]) => !q || k === 'all' || count(k)).map(([k, t]) => `<button type="button" class="pk-f${k === F ? ' on' : ''}" data-f="${k}">${t}${q ? `<em>${count(k)}</em>` : ''}</button>`).join('');
       const shown = SEC.filter(s => F === 'all' || s.key === F || s.fk === F || (F === 'stocks' && s.key === 'sectors'));
-      for (const s of shown) { const lim = F === 'all' ? (s.key === 'articles' ? 5 : 4) : 40; h += `<h6>${s.title}${q ? `<em>${s.items.length}</em>` : ''}</h6>` + s.items.slice(0, lim).map((x, i) => s.html(x, i === 0 && s.type === 'asset' && F === 'all' && q ? 'top' : '')).join(''); }
+      for (const s of shown) { const lim = s.key === 'popular' ? 20 : F === 'all' ? (s.key === 'articles' ? 5 : 4) : 40; h += `<h6>${s.title}${q ? `<em>${s.items.length}</em>` : ''}</h6>` + s.items.slice(0, lim).map((x, i) => s.html(x, i === 0 && s.type === 'asset' && F === 'all' && q ? 'top' : '')).join(''); }
+      res.classList.toggle('popular', !q); res.scrollTop = 0;
       res.innerHTML = h || `<div class="pk-none">No result for “${esc(inp.value)}”.</div>`; sel = 0; mark();
     };
     load().then(paint); inp.addEventListener('input', () => { F = 'all'; paint(); });
