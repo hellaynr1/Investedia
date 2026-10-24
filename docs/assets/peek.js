@@ -183,7 +183,7 @@
     const s = e.target.closest('.search-btn, [data-search], .hn-search, .gsearch, #sbox'); if (s) { e.preventDefault(); e.stopImmediatePropagation(); searchUI(); return; }
     const a = e.target.closest('a[href*="asset.html?s="]'); if (a && !a.closest('.pk')) { const m = /asset\.html\?s=([^&#]+)/.exec(a.getAttribute('href')); if (m) { e.preventDefault(); open(decodeURIComponent(m[1])); } }
   }, true);
-  document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); e.stopImmediatePropagation(); searchUI(); } }, true);
+  document.addEventListener('keydown', e => { if (((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') || (e.key === '/' && !e.altKey && !e.metaKey && !e.ctrlKey && !e.target.closest('input,textarea,[contenteditable=true]'))) { e.preventDefault(); e.stopImmediatePropagation(); searchUI(); } }, true);
   window.InvPeek = { open, search: searchUI, close, panel };
   const m0 = /^#a=(.+)/.exec(location.hash); if (m0) document.addEventListener('DOMContentLoaded', () => open(decodeURIComponent(m0[1]), false));
   const n0 = /^#s=(.+)/.exec(location.hash); if (n0) window.addEventListener('load', () => setTimeout(() => window.InvPeek?.onSector?.(decodeURIComponent(n0[1]), false), 600));

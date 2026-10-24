@@ -4,13 +4,14 @@ import {launch,base,viewport,widths} from './browser-support.mjs';
 const browser=await launch();
 for(const width of widths){
  const context=await browser.newContext({viewport:viewport(width),serviceWorkers:'block'}), page=await context.newPage();
+ await context.addInitScript(()=>{for(const k of ['inv-auth-seen','inv-pop','inv-app-x'])localStorage.setItem(k,'1');});
  await page.goto(base+'/index.html');await page.getByRole('button',{name:'Accept essential',exact:true}).click();
  await page.waitForTimeout(600);
  assert.equal(await page.locator('.hn-search:visible').count(),1,'one home search');
  assert.equal(await page.getByText('Which markets are open',{exact:false}).count(),0);
  assert.equal(await page.locator('.hn-ent code').count(),0);
  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'home overflow');
- await page.evaluate(()=>InvPeek.search());await page.waitForTimeout(900);
+ await page.keyboard.press('/');await page.waitForTimeout(900);
  assert.equal(await page.locator('.pk-in input').getAttribute('placeholder'),'Search assets, countries & articles');
  assert.equal(await page.getByRole('button',{name:'Pages',exact:true}).count(),0);
  for(const filter of ['stocks','crypto','idx','cmd','fx','countries','articles']){await page.locator(`[data-f=${filter}]`).click();assert(await page.locator('.pk-r .pk-i').count()>=10,filter);assert(!/No result/.test(await page.locator('.pk-r').innerText()));}
