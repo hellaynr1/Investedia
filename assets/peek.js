@@ -51,7 +51,7 @@
   .pv-vol{display:block!important;margin:0 0 16px!important}.pv-vol .pv-rl{font-size:12px}.pv-vb{display:flex;align-items:flex-end;gap:5px;height:34px;margin-top:8px}.pv-vb i{flex:1;border-radius:3px;background:rgba(255,255,255,.26)}
   @media(prefers-reduced-motion:reduce){.pk,.pk-sheet,.pk-sb{transition:none}}`;
   css.textContent += `
-  .pk-i .ic,.pv-h .ic{background:#202024}.pk-i .ic img,.pv-h .ic img{object-fit:contain;box-sizing:border-box;padding:14%;background:#fff}.pk-i .ic .ai-c,.pk-i .ic:has(.ai-c){border-radius:50%!important}.pk-i .ic .ai-c{overflow:hidden}.pk-f{min-height:44px}.pk-i[data-nav^="story:"] b{white-space:normal;line-height:1.4}.pv-go{display:flex;align-items:center;justify-content:center;text-decoration:none}.pk-in input{font-family:Inter,sans-serif!important}
+  .pk-i .ic,.pv-h .ic{background:#202024}.pk-i .ic img,.pv-h .ic img{object-fit:contain;box-sizing:border-box;padding:14%;background:transparent}.pk-i .ic .ai-c,.pk-i .ic:has(.ai-c){border-radius:50%!important}.pk-i .ic .ai-c{overflow:hidden}.pk-f{min-height:44px}.pk-i[data-nav^="story:"] b{white-space:normal;line-height:1.4}.pv-go{display:flex;align-items:center;justify-content:center;text-decoration:none}.pk-in input{font-family:Inter,sans-serif!important}
   @media(max-width:800px){.pk{backdrop-filter:blur(14px) saturate(1.4)!important}.pk-sb,.pk-sheet{background:rgba(10,10,12,.35)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.pk-x,.pk-full{backdrop-filter:none!important}.pk-in kbd{display:none}.pk-in{padding:0 12px}.pk-in input{font-size:16px!important}.pk-s .pk-r{max-height:calc(100dvh - 140px)}.pk-s.v3 .pk-f{min-height:44px}.pk-i .ic{width:36px!important;height:36px!important}}
   `;
   document.head.appendChild(css);
@@ -62,7 +62,7 @@
   function mount(cls, html) {
     close(true); prevFocus = document.activeElement; layer = document.createElement('div'); layer.className = 'pk ' + cls; layer.innerHTML = html; document.body.appendChild(layer); document.documentElement.style.overflow = 'hidden';
     layer.addEventListener('mousedown', e => { if (e.target === layer) close(); });
-    onKey = e => { if (e.key === 'Escape') { e.preventDefault(); close(); } }; document.addEventListener('keydown', onKey);
+    onKey = e => { if(e.key==='Tab'){const nodes=[...layer.querySelectorAll('button,input,a[href],iframe,[tabindex]')].filter(n=>!n.disabled && n.tabIndex>=0 && n.getClientRects().length);const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}} if (e.key === 'Escape') { e.preventDefault(); close(); } }; document.addEventListener('keydown', onKey);
     requestAnimationFrame(() => layer.classList.add('on')); return layer;
   }
   function close(silent) { if (!layer) return; const l = layer; layer = null; document.removeEventListener('keydown', onKey); document.documentElement.style.overflow = ''; l.classList.remove('on'); setTimeout(() => l.remove(), 200); if (!silent && /^#a=/.test(location.hash)) history.back(); try { prevFocus?.focus?.(); } catch {} }
@@ -90,13 +90,13 @@
     jf('assets/globe/iso.json').catch(() => ({})),
     jf('assets/globe/news-live.json').catch(() => ({ stories: [] })),
     jf('assets/globe/news-archive.json').catch(() => ({ stories: [] })),
-    window.INV_LIVE_URL ? fetch(window.INV_LIVE_URL, { cache: 'no-store' }).then(r => r.json()).catch(() => null) : Promise.resolve(null)
+    window.INV_LIVE_URL && window.InvConsent?.allows('live') ? fetch(window.INV_LIVE_URL, { cache: 'no-store' }).then(r => r.json()).catch(() => null) : Promise.resolve(null)
   ]).then(([importance, m, iso, n, arc, live]) => {
     const by = new Map((m.assets || []).map(a => [a.s, a]));
     // Metadata only from the shared catalogue; prices must exist in the saved real feed.
     for (const meta of window.MOCK?.assets || []) {
       const q = window.QUOTES?.q?.[meta.s]; if (!q || meta.c !== 'crypto') continue;
-      const sym=meta.s+'-USD'; by.set(sym,{s:sym,n:meta.n,t:'crypto',p:q.p,d:q.d,w:q.w,sp:q.sp,h:q.hi,l:q.lo,v:q.v,cur:q.cur});
+      const sym=meta.s+'-USD'; by.delete(meta.s); by.set(sym,{s:sym,n:meta.n,t:'crypto',p:q.p,d:q.d,w:q.w,sp:q.sp,h:q.hi,l:q.lo,v:q.v,cur:q.cur});
     }
     if (live?.p) for (const [id, v] of Object.entries(live.p)) { const a = by.get(id); if (a) { a.p = v.p; a.d = v.pc; a.h = v.h; a.l = v.l; a.v = v.v; } else by.set(id, { s: id, n: v.n, t: 'crypto', p: v.p, d: v.pc, h: v.h, l: v.l, v: v.v }); }
     for(const a of by.values()){const q=window.QUOTES?.q?.[a.s.replace(/-USD$/, '')];if(q){a.h=q.hi;a.l=q.lo;a.v=q.v;}}
@@ -109,7 +109,7 @@
   const FILTERS = [['all', 'All'], ['stocks', 'Companies'], ['crypto', 'Crypto'], ['idx', 'Indices'], ['cmd', 'Commodities'], ['fx', 'Currencies'], ['countries', 'Countries'], ['articles', 'Articles']];
   const GROUPS = { stocks: ['Companies', a => a.t === 'stocks' && !['Index','Country ETF'].includes(a.g)], idx: ['Indices', a => a.t === 'stocks' && a.g === 'Index'], crypto: ['Crypto', a => a.t === 'crypto'], cmd: ['Commodities', a => a.t === 'cmd'], fx: ['Currencies', a => a.t === 'fx'] };
   
-  const fmtP = d => isFinite(d) ? `<i class="pc ${d > 0.005 ? 'u' : d < -0.005 ? 'd' : 'o'}">${d > 0.005 ? '↑' : d < -0.005 ? '↓' : '↔'} ${Math.abs(d).toFixed(2)}%</i>` : '';
+  const fmtP = d => isFinite(d) ? `<i class="pc ${d > 0.005 ? 'u' : d < -0.005 ? 'd' : 'o'}"><span class="direction-arrow">${d > 0.005 ? '↑' : d < -0.005 ? '↓' : '↔'}</span> ${Math.abs(d).toFixed(2)}%</i>` : '';
   const kind = a => ({ stocks: a.g === 'Index' ? 'Index' : a.g === 'Country ETF' ? 'ETF' : 'Company', crypto: 'Crypto', cmd: 'Commodity', fx: 'Currency pair' })[a.t] || '';
   const spark = (v, w = 260, h = 70) => { v = (v || []).filter(isFinite); if (v.length < 2) return ''; const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1, up = v[v.length - 1] >= v[0], c = up ? '#34d399' : '#f87171', pts = v.map((y, i) => `${(i / (v.length - 1) * w).toFixed(1)},${(h - 4 - (y - lo) / r * (h - 8)).toFixed(1)}`).join(' L'); return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="M${pts}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>`; };
   const row = (a, cls = '') => `<button class="pk-i ${cls}" type="button" data-a="${esc(a.s)}"><span class="ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><span><b>${esc(a.n)}</b><small>${esc(label(a))} · ${kind(a)}</small></span>${cls ? `<span class="sp">${spark(a.sp, 120, 40)}</span>` : ''}<span class="pv"><span class="px">${money(a.p, a)}</span>${fmtP(a.d)}</span></button>`;
@@ -117,7 +117,7 @@
   function search(q) {
     const out = []; if (!DATA) return out;
     const ranked = q ? DATA.assets.map(a => [rank(q, a), a]).filter(x => x[0] < 9).sort((a, b) => a[0] - b[0] || (b[1].m || 0) - (a[1].m || 0)).map(x => x[1]) : [...DATA.assets].sort((a,b) => (DATA.importance[a.s] || 10000) - (DATA.importance[b.s] || 10000) || (b.v || b.m || 0) - (a.v || a.m || 0));
-    for (const k of ['stocks', 'crypto', 'idx', 'cmd', 'fx']) { const items = ranked.filter(GROUPS[k][1]); if (items.length) out.push({ key: k, title: GROUPS[k][0], items, html: (i, c) => row(i, c), type: 'asset' }); }
+    for (const k of ['stocks', 'crypto', 'idx', 'cmd', 'fx']) { const items = ranked.filter(GROUPS[k][1]); if(k === 'idx') {const major=['^GSPC','^IXIC','^DJI','^FTSE','^GDAXI','^FCHI','^N225','^HSI','000001.SS','^BSESN','^NSEI','^AXJO'];items.sort((a,b)=>(major.includes(a.s)?major.indexOf(a.s):100)-(major.includes(b.s)?major.indexOf(b.s):100));} if (items.length) out.push({ key: k, title: GROUPS[k][0], items, html: (i, c) => row(i, c), type: 'asset' }); }
     const sec = q ? (window.InvSectors ? InvSectors.list : []).filter(x => x.name.toLowerCase().includes(q)) : [];
     if (sec.length) out.push({ key: 'sectors', fk: 'stocks', title: 'Sectors', items: sec, html: x => lnk(ROOT + 'assets/globe/news.html?sector=' + encodeURIComponent(x.slug), InvSectors.icon(x.name), x.name, 'Sector · articles and sector fund move') });
     const articleCount = c => DATA.stories.filter(s => s.location?.country === c).length;
@@ -146,7 +146,7 @@
           pv.innerHTML = `<div class="pv-h"><span class="ic"><img src="${ROOT}assets/globe/flags/${DATA.iso[key]?.toLowerCase()}.svg" alt=""></span><b>${esc(key)}</b></div><p>${arts.length} articles</p><div class="pv-n">${arts.slice(0,3).map(s=>`<a href="${ROOT}assets/globe/news.html?story=${encodeURIComponent(s.id)}"><b>${esc(s.headline)}</b><small>${esc(s.source?.name)}</small></a>`).join('')}</div><h4>Markets</h4>${DATA.assets.filter(a => a.k === key && a.g === 'Index').slice(0,5).map(a=>row(a)).join('')}<a class="pv-go" href="${e.href}">Open ${esc(key)}</a>`;
         } else if (nav.startsWith('story:')) {
           const s = DATA.stories.find(s=>s.id === key);
-          pv.innerHTML = s ? `<h3>${esc(s.headline)}</h3><small>${esc(s.source?.name)} · ${new Date(s.published_at).toLocaleString()}</small><p>${esc(s.summary)}</p><h4>Affected assets</h4>${(s.impacts || []).map(i=>`<p>${i.direction === 'up' ? '↑' : i.direction === 'down' ? '↓' : '↔'} ${esc(i.name)}</p>`).join('')}<a class="pv-go" href="${e.href}">Open article</a>` : '';
+          pv.innerHTML = s ? `<h3>${esc(s.headline)}</h3><small>${esc(s.source?.name)} · ${new Date(s.published_at).toLocaleString()}</small><p>${esc(s.summary)}</p><h4>Affected assets</h4>${(s.impacts || []).map(i=>`<p><span class="direction-arrow">${i.direction === 'up' ? '↑' : i.direction === 'down' ? '↓' : '↔'}</span> ${esc(i.name)}</p>`).join('')}<a class="pv-go" href="${e.href}">Open article</a>` : '';
         } else pv.innerHTML = '<div class="pk-none">Select a result to preview it.</div>'; return;
       }
       const arts = newsFor(a), w = a.w, base = () => `<div class="pv-h"><span class="ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><div><b>${esc(a.n)}</b><small>${esc(label(a))} · ${kind(a)}</small></div></div><div class="pv-px"><span class="pv-p">${money(a.p, a)}</span>${fmtP(a.d)}</div>`;

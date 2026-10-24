@@ -17,7 +17,8 @@
   {
     "width": 1440,
     "check": "Search palette trap, Escape and return",
-    "pass": true
+    "pass": false,
+    "error": "The expression evaluated to a falsy value:\n\n  assert(await input.isHidden())\n"
   },
   {
     "width": 1440,
@@ -32,7 +33,8 @@
   {
     "width": 1440,
     "check": "Globe search, zoom and panel tabs",
-    "pass": true
+    "pass": false,
+    "error": "locator.fill: Error: strict mode violation: locator('.pk-in input') resolved to 2 elements:\n    1) <input type=\"search\" autocomplete=\"off\" spellcheck=\"false\" aria-label=\"Search\" placeholder=\"Search assets, countries & articles\"/> aka getByRole('searchbox', { name: 'Search' }).nth(1)\n    2) <input type=\"search\" autocomplete=\"off\" spellcheck=\"false\" aria-label=\"Search\" placeholder=\"Search assets, countries & articles\"/> aka getByRole('searchbox', { name: 'Search' }).nth(2)\n\nCall log:\n\u001b[2m  - waiting for locator('.pk-in input')\u001b[22m\n"
   },
   {
     "width": 390,
@@ -52,7 +54,8 @@
   {
     "width": 390,
     "check": "Search palette trap, Escape and return",
-    "pass": true
+    "pass": false,
+    "error": "The expression evaluated to a falsy value:\n\n  assert(await input.isHidden())\n"
   },
   {
     "width": 390,
@@ -67,6 +70,7 @@
   {
     "width": 390,
     "check": "Globe search, zoom and panel tabs",
-    "pass": true
+    "pass": false,
+    "error": "locator.fill: Error: strict mode violation: locator('.pk-in input') resolved to 2 elements:\n    1) <input type=\"search\" autocomplete=\"off\" spellcheck=\"false\" aria-label=\"Search\" placeholder=\"Search assets, countries & articles\"/> aka getByRole('searchbox', { name: 'Search' }).nth(1)\n    2) <input type=\"search\" autocomplete=\"off\" spellcheck=\"false\" aria-label=\"Search\" placeholder=\"Search assets, countries & articles\"/> aka getByRole('searchbox', { name: 'Search' }).nth(2)\n\nCall log:\n\u001b[2m  - waiting for locator('.pk-in input')\u001b[22m\n"
   }
 ]

@@ -355,6 +355,7 @@ h1 span{color:var(--fg-3)}
 @media(pointer:coarse){a,button{min-width:44px;min-height:44px}.wm{display:inline-flex;align-items:center}.timeline{overflow-x:auto;max-width:calc(100vw - 24px)}.timeline button{flex-shrink:0}.grab{height:44px}.panel a:not([class]){display:inline-flex;align-items:center}}
 
 @media(pointer:coarse){.timeline .win{min-width:44px}}
+.impact-dir{font-weight:900!important;font-size:18px!important;-webkit-text-stroke:.45px currentColor}
 </style>
 </head>
 <body>
@@ -994,6 +995,7 @@ $('play').onclick = () => { F.win = '7d'; press($('wins'), '7d'); play = { start
 function vec(phi, lam) { return [Math.cos(phi) * Math.cos(lam), Math.cos(phi) * Math.sin(lam), Math.sin(phi)]; }
 function arcPts(a, b, n = 56) {
   const A = vec(a.phi, a.lam), B = vec(b.phi, b.lam), dot = Math.max(-1, Math.min(1, A[0] * B[0] + A[1] * B[1] + A[2] * B[2])), om = Math.acos(dot), so = Math.sin(om) || 1, out = [];
+  if (om < .00001) { const p=proj(a.phi,a.lam,1); return [[p[0],p[1],p[2]>0],[p[0],p[1],p[2]>0]]; }
   for (let i = 0; i <= n; i++) {
     const k = i / n, f1 = Math.sin((1 - k) * om) / so, f2 = Math.sin(k * om) / so, v = [A[0] * f1 + B[0] * f2, A[1] * f1 + B[1] * f2, A[2] * f1 + B[2] * f2];
     const h = 1 + Math.sin(Math.PI * k) * Math.min(.22, .08 + om * .12), p = proj(Math.asin(v[2]), Math.atan2(v[1], v[0]), h);
@@ -1083,7 +1085,7 @@ function frame(t) {
     const q=points[Math.round((reduce ? .5 : (t/3800+i*.17)%1)*(points.length-1))];
     if(q[2]){ctx.fillStyle=`rgba(${col},${active?.95:.35})`;ctx.beginPath();ctx.arc(q[0],q[1],active?2.5:1.5,0,7);ctx.fill();}
     const end=points[points.length-1];
-    if(active && !EMBED && end[2]){const text=`${IMPACT_ARROW[impact.direction]} ${asset.n}`, width=Math.min(180,ctx.measureText(text).width+20);ctx.fillStyle='#151519';ctx.beginPath();ctx.roundRect(end[0]-width/2,end[1]-12,width,24,12);ctx.fill();ctx.fillStyle=`rgb(${col})`;ctx.font='500 11px Inter,sans-serif';ctx.textAlign='center';ctx.fillText(text,end[0],end[1]+4,width-12);ctx.textAlign='left';}
+    if(active && !EMBED && end[2]){const text=`${IMPACT_ARROW[impact.direction]} ${asset.n}`, width=Math.min(180,ctx.measureText(text).width+20);ctx.fillStyle='#151519';ctx.beginPath();ctx.roundRect(end[0]-width/2,end[1]-12,width,24,12);ctx.fill();ctx.fillStyle=`rgb(${col})`;ctx.font='700 12px Inter,sans-serif';ctx.textAlign='center';ctx.fillText(text,end[0],end[1]+4,width-12);ctx.textAlign='left';}
     if(!EMBED)arcHits.push({...edge,points});
   }
   cv.dataset.arcCount=String(visibleArcs);
