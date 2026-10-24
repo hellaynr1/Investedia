@@ -196,7 +196,7 @@
       : `<li><a class="nav-link" href="${h}" ${page === k || (k === 'news' && ['analysis', 'article'].includes(page)) || (k === 'dashboard' && page === 'ai') || (k === 'education' && page === 'lesson') ? 'aria-current="page"' : ''}>${t}${isNew ? '<span class="badge-new">NEW</span>' : ''}</a></li>`).join('')}</ul>
     <div class="hdr-tools">
       ${page === 'home' ? '' : `<a class="search-btn" href="assets/globe/news.html" aria-label="Search assets, countries and articles">${icon('search')}<span>Search assets, countries &amp; articles</span></a>`}
-      <div class="notif-wrap hide-sm"><button class="icon-btn" type="button" id="notif-btn" aria-label="Notifications" aria-expanded="false" aria-haspopup="true" title="Notifications">${icon('bell')}<span class="dot" id="notif-dot"></span></button>
+      <div class="notif-wrap"><button class="icon-btn" type="button" id="notif-btn" aria-label="Notifications" aria-expanded="false" aria-haspopup="true" title="Notifications">${icon('bell')}<span class="dot" id="notif-dot"></span></button>
         <div class="dd notif-dd" id="notif-dd" role="dialog" aria-label="Notifications"></div></div>
       <a class="icon-btn hide-sm owner-only" href="admin.html" aria-label="Analytics dashboard" title="Analytics dashboard">${icon('heat')}</a>
       <div class="notif-wrap acct-wrap hide-sm"><button class="avatar" type="button" id="hdr-avatar" aria-label="Your account" aria-haspopup="true" aria-expanded="false" title="Your account">AK</button><div class="dd acct-dd" id="acct-dd" role="menu" aria-label="Your account"></div></div>
@@ -217,21 +217,27 @@
     ab.addEventListener('click', e => { e.stopPropagation(); if (!window.invUser) { location.href = 'profile.html'; return; } const o = !ad.classList.contains('open'); ad.classList.toggle('open', o); ab.setAttribute('aria-expanded', String(o)); });
     document.addEventListener('click', e => { if (!e.target.closest('#acct-dd')) close(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); }); }
-  // notifications panel (sample items; settings live on the profile page)
-  const NOTIFS = [['news', 'Breaking', 'Fed officials signal no rush to cut rates after hot inflation data', '4 min ago', 'article.html'], ['watch', 'Watchlist', 'NVDA fell 1.84% today. Profit-taking after a 9% two-week run', '1 h ago', 'asset.html?s=NVDA'], ['earn', 'Earnings', 'Tesla reports on Wed 22 Oct after the close', '3 h ago', 'calendar.html#earnings'], ['event', 'Economic event', 'US Retail Sales at 08:30 ET tomorrow. Forecast 0.4%', '5 h ago', 'calendar.html'], ['price', 'Price alert', 'Gold moved more than 2% in a day', 'Yesterday', 'asset.html?s=XAU']];
-  const nIcon = { news: 'news', watch: 'star', earn: 'earnings', event: 'calendar', price: 'bell' };
-  let readN = 0; try { readN = +localStorage.getItem('inv-notif-read') || 0; } catch {}
+  // Real article notifications. IDs stay read across feed refreshes.
+  let NOTIFS = [], notifFilter = 'all', readIds = new Set();
+  try { readIds = new Set(JSON.parse(localStorage.getItem('inv-notif-ids') || '[]')); } catch {}
   const nb = hdr.querySelector('#notif-btn'), nd = hdr.querySelector('#notif-dd');
+  const ne = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const relative = t => { const minutes = Math.round((Date.parse(t)-Date.now())/60000), r = new Intl.RelativeTimeFormat(undefined,{numeric:'auto'}); return Math.abs(minutes)<60 ? r.format(minutes,'minute') : Math.abs(minutes)<1440 ? r.format(Math.round(minutes/60),'hour') : r.format(Math.round(minutes/1440),'day'); };
+  const mine = s => (s.impacts || []).some(i => window.INVWATCH?.all().some(a => a.kind === 'asset' && a.s === i.ticker || a.kind === 'country' && a.k === s.location?.country));
   const paintNotif = () => {
-    const unread = Math.max(0, NOTIFS.length - readN);
+    const unread = NOTIFS.filter(s=>!readIds.has(s.id)).length;
     hdr.querySelector('#notif-dot').hidden = !unread;
-    nd.innerHTML = `<div class="notif-head"><b>Notifications</b>${unread ? `<span class="tag acc">${unread} new</span>` : ''}<button type="button" class="link" id="notif-read" style="background:none;border:0;margin-left:auto">Mark all read</button></div>
-      <div class="notif-list">${NOTIFS.map(([k, t, m, time, h], i) => `<a class="notif-item ${i < unread ? 'unread' : ''}" href="${h}"><span class="dd-ic">${icon(nIcon[k])}</span><span><small class="accent">${t}</small><span class="notif-msg">${m}</span><small class="dim">${time}</small></span></a>`).join('')}</div>
-      <a class="notif-foot member-only" href="profile.html#notifications">${icon('heat')}Notification settings</a>`;
-    nd.querySelector('#notif-read').onclick = e => { e.stopPropagation(); readN = NOTIFS.length; try { localStorage.setItem('inv-notif-read', readN); } catch {} paintNotif(); };
+    const list = NOTIFS.filter(s=>notifFilter === 'high' ? s.importance === 3 : notifFilter === 'mine' ? mine(s) : true);
+    nd.innerHTML = `<div class="notif-head"><b>Notifications</b><button type="button" class="link" id="notif-read">Mark all read</button></div><nav class="notif-filters" aria-label="Notification filters">${[['all','All'],['high','High impact'],['mine','My assets']].map(([k,n])=>`<button type="button" data-nf="${k}" aria-pressed="${notifFilter===k}">${n}</button>`).join('')}</nav><div class="notif-list">${list.slice(0,20).map(s=>`<a class="notif-item ${readIds.has(s.id)?'':'unread'}" data-nid="${ne(s.id)}" href="story.html?id=${encodeURIComponent(s.id)}"><span class="notif-source">${ne((s.source?.name || 'N').slice(0,2).toUpperCase())}</span><span><span class="notif-msg">${ne(s.headline)}</span><span class="notif-assets">${(s.impacts || []).slice(0,3).map(i=>`<span title="${ne(i.ticker || '')}">${ne(i.name)} <i class="${i.direction==='up'?'up':i.direction==='down'?'down':''}">${i.direction==='up'?'↑':i.direction==='down'?'↓':'↔'}</i></span>`).join('')}</span><small class="dim">${ne(s.source?.name)} · ${relative(s.published_at)}</small></span></a>`).join('') || '<p class="notif-empty">No articles match this filter.</p>'}</div>`;
+    nd.querySelector('#notif-read').onclick = e => { e.stopPropagation(); NOTIFS.forEach(s=>readIds.add(s.id)); saveRead(); paintNotif(); };
+    nd.querySelectorAll('[data-nf]').forEach(b=>b.onclick=e=>{e.stopPropagation();notifFilter=b.dataset.nf;paintNotif();});
+    nd.querySelectorAll('[data-nid]').forEach(a=>a.addEventListener('click',()=>{readIds.add(a.dataset.nid);saveRead();}));
   };
+  const saveRead = () => { try { localStorage.setItem('inv-notif-ids',JSON.stringify([...readIds].slice(-1000))); } catch {} };
   paintNotif();
-  nb.onclick = e => { e.stopPropagation(); const o = !nd.classList.contains('open'); closeAll(); nd.classList.toggle('open', o); nb.setAttribute('aria-expanded', o); };
+  fetch('assets/globe/news-live.json').then(r=>r.json()).then(n=>{NOTIFS=(n.stories || []).sort((a,b)=>Date.parse(b.published_at)-Date.parse(a.published_at));paintNotif();}).catch(()=>{});
+  window.addEventListener('inv-user',paintNotif);
+  nb.onclick = e => { e.stopPropagation(); const o = !nd.classList.contains('open'); closeAll(); paintNotif(); nd.classList.toggle('open', o); nb.setAttribute('aria-expanded', o); };
   document.addEventListener('click', e => { if (!e.target.closest('.notif-wrap')) { nd.classList.remove('open'); nb.setAttribute('aria-expanded', 'false'); } });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && nd.classList.contains('open')) { nd.classList.remove('open'); nb.setAttribute('aria-expanded', 'false'); nb.focus(); } });
   const tb = hdr.querySelector('#theme-btn');

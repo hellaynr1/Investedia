@@ -122,6 +122,7 @@ def mirror_docs():
     def ignore_copies(directory, names):
         return [name for name in names if re.search(r' \d+(?:\.|$)',name)]
     shutil.copytree(ROOT / "assets", docs / "assets", dirs_exist_ok=True, ignore=ignore_copies)
+    shutil.copytree(ROOT / "data", docs / "data", dirs_exist_ok=True, ignore=ignore_copies)
     shutil.copytree(ROOT / ".well-known", docs / ".well-known", dirs_exist_ok=True, ignore=ignore_copies)
 
 if __name__ == "__main__":

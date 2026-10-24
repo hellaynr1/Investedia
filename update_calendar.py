@@ -27,7 +27,7 @@ if os.path.exists(OUT[0]):
 out = {'updated_at': NOW.strftime('%Y-%m-%dT%H:%M:%SZ'), 'events': prev.get('events', []), 'earnings': prev.get('earnings', []),
        'sources': {'events': 'ForexFactory calendar', 'earnings': 'Nasdaq earnings calendar'}}
 
-# economic events: this week + next week, medium/high impact, still to come
+# Economic releases: both weeks, all impacts, retain released values for 30 days.
 try:
     ev = []
     for f in ('ff_calendar_thisweek.json', 'ff_calendar_nextweek.json'):
@@ -37,11 +37,22 @@ try:
     for e in ev:
         try: d = datetime.fromisoformat(e['date'])
         except Exception: continue
-        if d.astimezone(timezone.utc) < NOW - timedelta(hours=1) or e.get('impact') not in ('High', 'Medium'): continue
+        if d.astimezone(timezone.utc) < NOW - timedelta(days=30) or e.get('impact') not in ('High', 'Medium', 'Low'): continue
         keep.append({'t': e['title'], 'c': e['country'], 'at': d.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-                     'imp': 3 if e['impact'] == 'High' else 2, 'fc': e.get('forecast') or '', 'prev': e.get('previous') or ''})
-    keep.sort(key=lambda e: e['at'])
-    if keep: out['events'] = keep[:40]
+                     'imp': {'High': 3, 'Medium': 2, 'Low': 1}[e['impact']], 'type': 'economic',
+                     'country': {'USD':'US','EUR':'EU','GBP':'GB','JPY':'JP','CNY':'CN','CHF':'CH','CAD':'CA','AUD':'AU','NZD':'NZ'}.get(e['country'], ''),
+                     'actual': e.get('actual') or '', 'fc': e.get('forecast') or '', 'prev': e.get('previous') or ''})
+    # Merge by release identity; a later empty feed field must not erase an actual.
+    merged = {}
+    for e in prev.get('events', []):
+        try:
+            if datetime.fromisoformat(e['at'].replace('Z', '+00:00')) >= NOW - timedelta(days=30): merged[(e['at'], e['c'], e['t'])] = e
+        except (ValueError, KeyError): pass
+    for e in keep:
+        key = (e['at'], e['c'], e['t'])
+        if not e['actual']: e['actual'] = merged.get(key, {}).get('actual', '')
+        merged[key] = e
+    out['events'] = sorted(merged.values(), key=lambda e: e['at'])
 except Exception as e: print('events failed:', e)
 
 # earnings: next 10 days, the largest companies each day
@@ -56,7 +67,7 @@ try:
             except Exception: return 0
         for r in sorted(rows, key=cap, reverse=True)[:6]:
             if cap(r) < 20e9: continue
-            ern.append({'s': r['symbol'], 'n': r['name'].replace(' (The)', '').replace(', Inc.', '').replace(' Inc.', '').replace(' Corporation', '').replace(' Company', '').replace(' Inc', '').replace(' SE', '').replace(' plc', '').strip(),
+            ern.append({'type': 'earnings', 'c': 'USD', 's': r['symbol'], 'n': r['name'].replace(' (The)', '').replace(', Inc.', '').replace(' Inc.', '').replace(' Corporation', '').replace(' Company', '').replace(' Inc', '').replace(' SE', '').replace(' plc', '').strip(),
                         'date': day.isoformat(), 'when': {'time-pre-market': 'Before open', 'time-after-hours': 'After close'}.get(r.get('time'), ''),
                         'eps': r.get('epsForecast') or '', 'cap': cap(r)})
         time.sleep(1)
