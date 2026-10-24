@@ -40,6 +40,12 @@
   @media(max-width:800px){.pk-s{padding:0}.pk-s .pk-sb{border-radius:0 0 26px 26px;border-top:0;height:auto}.pk-sheet{background:rgba(12,12,15,.62)!important}}
   .pk-s .pk-r.popular,.pk-s.v3 .pk-r.popular{max-height:min(38vh,292px);overflow-y:auto;-webkit-mask-image:linear-gradient(#000 calc(100% - 28px),transparent);mask-image:linear-gradient(#000 calc(100% - 28px),transparent);padding-bottom:22px}
   @media(min-width:801px){.pk-s .pk-r.popular,.pk-s.v3 .pk-r.popular{max-height:min(62vh,560px);-webkit-mask-image:none;mask-image:none;padding-bottom:8px}}
+  .pk-s.v3 .pk-pv{overflow:auto;max-height:min(62vh,560px)}.pv-px{display:flex;align-items:baseline;gap:10px;margin:14px 0 4px}.pv-px .pv-p{margin:0!important;font-size:30px!important}.pv-c svg{height:64px!important;margin:12px 0!important}
+  .pv-perf{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:2px 0 14px}.pv-perf>div{padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.05)}.pv-perf small{display:block;color:var(--fg3);font-size:11px;margin-bottom:3px}.pv-perf .pc{font-size:12px!important;padding:2px 7px!important}
+  .pv-rg{margin:0 0 12px}.pv-rl{display:flex;justify-content:space-between;gap:8px;font-size:12px}.pv-rl span{color:var(--fg3)}.pv-rl b{font-weight:600;font-variant-numeric:tabular-nums}.pv-bar{position:relative;height:4px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:7px}.pv-bar i{position:absolute;top:50%;width:9px;height:9px;border-radius:50%;background:#fff;transform:translate(-50%,-50%)}
+  .pv-vol{display:flex;justify-content:space-between;font-size:12px;margin:0 0 14px}.pv-vol span{color:var(--fg3)}
+  .pv-n{margin:6px 0 12px;display:grid;gap:8px}.pv-n a{display:block;text-decoration:none;color:inherit;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05)}.pv-n a b{display:block;font-size:12.5px;line-height:1.35;font-weight:600}.pv-n a small{color:var(--fg3);font-size:11px}
+  .pk-s .pv-go{position:sticky;bottom:0;box-shadow:0 -14px 18px rgba(12,12,15,.9)}
   @media(prefers-reduced-motion:reduce){.pk,.pk-sheet,.pk-sb{transition:none}}`;
   document.head.appendChild(css);
   if (EMBED) { document.documentElement.classList.add('embed'); const b = document.createElement('base'); b.target = '_top'; document.head.prepend(b); return; }
@@ -79,7 +85,7 @@
     window.INV_LIVE_URL ? fetch(window.INV_LIVE_URL, { cache: 'no-store' }).then(r => r.json()).catch(() => null) : Promise.resolve(null)
   ]).then(([m, iso, n, arc, live]) => {
     const by = new Map((m.assets || []).map(a => [a.s, a]));
-    if (live?.p) for (const [id, v] of Object.entries(live.p)) { const a = by.get(id); if (a) { a.p = v.p; a.d = v.pc; } else by.set(id, { s: id, n: v.n, t: 'crypto', p: v.p, d: v.pc }); }
+    if (live?.p) for (const [id, v] of Object.entries(live.p)) { const a = by.get(id); if (a) { a.p = v.p; a.d = v.pc; a.h = v.h; a.l = v.l; a.v = v.v; } else by.set(id, { s: id, n: v.n, t: 'crypto', p: v.p, d: v.pc, h: v.h, l: v.l, v: v.v }); }
     const seen = new Set(), stories = []; for (const x of [...(n.stories || []), ...(arc.stories || [])]) if (x.id && !seen.has(x.id)) { seen.add(x.id); stories.push(x); }
     DATA = { assets: [...by.values()], iso, countries: Object.keys(iso).filter(c => !/\bIs\.$/.test(c)), stories };
   }));
@@ -113,9 +119,23 @@
     const inp = l.querySelector('input'), res = l.querySelector('.pk-r'), fl = l.querySelector('.pk-fl'), pv = l.querySelector('.pk-pv'); inp.focus(); let sel = 0, F = 'all', SEC = [];
     const items = () => [...res.querySelectorAll('.pk-i')], mark = () => { items().forEach((e, i) => e.setAttribute('aria-selected', i === sel ? 'true' : 'false')); preview(); };
     const count = k => k === 'all' ? SEC.reduce((n, s) => n + s.items.length, 0) : SEC.filter(s => s.key === k || s.fk === k).reduce((n, s) => n + s.items.length, 0);
+    const HC = {}; const histFor = a => HC[a.s] || (HC[a.s] = fetch(ROOT + 'assets/hist/' + encodeURIComponent(a.s.replace(/-USD$|=F$|^\^/g, '')) + '.json').then(r => r.ok ? r.json() : null).catch(() => null));
+    const newsFor = a => { const base = a.s.replace(/-USD$|=F$/, '').toUpperCase(), nm = (a.n || '').toLowerCase(); return DATA.stories.filter(s => (s.impacts || []).some(i => { const t = String(i.ticker || '').toUpperCase(); return t === a.s.toUpperCase() || t === base || (nm.length > 3 && String(i.name || '').toLowerCase() === nm); }) || (s.entities || []).some(en => nm.length > 3 && String(en.name || '').toLowerCase() === nm)).sort((x, y) => Date.parse(y.published_at) - Date.parse(x.published_at)); };
+    const cell = (l, v) => `<div><small>${l}</small><b>${v}</b></div>`;
+    const rg = (l, lo, hi, cur, a) => isFinite(lo) && isFinite(hi) && hi > lo ? `<div class="pv-rg"><div class="pv-rl"><span>${l}</span><b>${money(lo, a)} – ${money(hi, a)}</b></div><div class="pv-bar"><i style="left:${Math.max(0, Math.min(100, (cur - lo) / (hi - lo) * 100)).toFixed(0)}%"></i></div></div>` : '';
     const preview = () => {
       const e = items()[sel], a = e && DATA?.assets.find(x => x.s === e.dataset.a);
-      pv.innerHTML = a ? `<div class="pv-h"><span class="ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><div><b>${esc(a.n)}</b><small>${esc(label(a))} · ${kind(a)}</small></div></div><div class="pv-p">${money(a.p, a)}</div>${fmtP(a.d)}<div class="pv-c">${spark(a.sp)}</div>${(a.sp || []).length > 1 ? `<div class="pv-r"><span>1-month low</span><b>${money(Math.min(...a.sp), a)}</b><span>1-month high</span><b>${money(Math.max(...a.sp), a)}</b></div>` : ''}<button type="button" class="pv-go" data-a="${esc(a.s)}">Open ${esc(label(a))}</button>` : '<div class="pk-none">Select a result to preview it.</div>';
+      if (!a) { pv.innerHTML = '<div class="pk-none">Select a result to preview it.</div>'; return; }
+      const arts = newsFor(a), w = a.w, base = () => `<div class="pv-h"><span class="ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><div><b>${esc(a.n)}</b><small>${esc(label(a))} · ${kind(a)}</small></div></div><div class="pv-px"><span class="pv-p">${money(a.p, a)}</span>${fmtP(a.d)}</div>`;
+      const draw = (H) => {
+        const d = H?.daily || [], closes = d.slice(-30).map(r => r[4]).filter(isFinite), sp = (a.sp && a.sp.length > 1 ? a.sp : closes), m30 = sp.length > 1 ? (sp[sp.length - 1] / sp[0] - 1) * 100 : null, last = d[d.length - 1], vol = a.v ? (window.InvPrefs ? InvPrefs.compact(a.v, { t: 'crypto' }) : null) : (last && last[5] ? new Intl.NumberFormat(undefined, { notation: 'compact', maximumFractionDigits: 1 }).format(last[5]) : null);
+        pv.innerHTML = base() + `<div class="pv-c">${spark(sp)}</div><div class="pv-perf">${cell('Today', fmtP(a.d) || '—')}${cell('Week', isFinite(w) ? fmtP(w) : sp.length > 5 ? fmtP((sp[sp.length - 1] / sp[sp.length - 6] - 1) * 100) : '—')}${cell('Month', m30 != null ? fmtP(m30) : '—')}</div>`
+          + rg('Day range', a.l, a.h, a.p, a) + rg('52-week range', H?.lo52, H?.hi52, a.p, a) + (sp.length > 1 ? rg('1-month range', Math.min(...sp), Math.max(...sp), a.p, a) : '')
+          + (vol ? `<div class="pv-vol"><span>Volume</span><b>${vol}</b></div>` : '')
+          + `<div class="pv-n"><div class="ttl">${arts.length ? arts.length + (arts.length === 1 ? ' article' : ' articles') + ' naming ' + esc(a.n) : 'No article naming ' + esc(a.n) + ' yet'}</div>${arts.slice(0, 2).map(s => `<a href="${ROOT}assets/globe/news.html?story=${encodeURIComponent(s.id)}" data-nav="story:${esc(s.id)}"><b>${esc(s.headline)}</b><small>${esc(s.source?.name || '')} · ${new Date(s.published_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}</small></a>`).join('')}</div>`
+          + `<button type="button" class="pv-go" data-a="${esc(a.s)}">Open ${esc(a.n)}</button>`;
+      };
+      draw(null); histFor(a).then(H => { if (H && items()[sel] === e) draw(H); });
     };
     const paint = () => {
       if (!DATA) return; const q = inp.value.trim().toLowerCase(); let h = '';
