@@ -65,7 +65,7 @@
     onKey = e => { if(e.key==='Tab'){const nodes=[...layer.querySelectorAll('button,input,a[href],iframe,[tabindex]')].filter(n=>!n.disabled && n.tabIndex>=0 && n.getClientRects().length);const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}} if (e.key === 'Escape') { e.preventDefault(); close(); } }; document.addEventListener('keydown', onKey);
     requestAnimationFrame(() => layer.classList.add('on')); return layer;
   }
-  function close(silent) { if (!layer) return; const l = layer; layer = null; document.removeEventListener('keydown', onKey); document.documentElement.style.overflow = ''; l.classList.remove('on'); setTimeout(() => l.remove(), 200); if (!silent && /^#a=/.test(location.hash)) history.back(); try { prevFocus?.focus?.(); } catch {} }
+  function close(silent) { if (!layer) return; const l = layer; layer = null; document.removeEventListener('keydown', onKey); document.documentElement.style.overflow = ''; l.classList.remove('on'); setTimeout(() => l.remove(), 200); if (!silent && /^#a=/.test(location.hash)) history.back(); if(!silent) try { const target=prevFocus?.closest?.('#sbox');if(target){target.tabIndex=-1;target.focus();}else prevFocus?.focus?.(); } catch {} }
   function open(sym, push = true) {
     const url = ROOT + 'asset.html?s=' + encodeURIComponent(sym);
     const l = mount('', `<div class="pk-sheet" role="dialog" aria-modal="true" aria-label="Asset details"><a class="pk-full" href="${url}">Open full page</a><button class="pk-x" type="button" aria-label="Close">${X}</button><iframe title="Asset details" src="${url}&embed=1"></iframe></div>`);
