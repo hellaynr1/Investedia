@@ -11,9 +11,4 @@
 | TikTok / X | 200 but unverified content | Pages are JS-rendered; likely need a headless browser (Playwright/Chromium is installed) or an API |
 | WebFetch tool | Partial | Refused investopedia.com |
 | Commit to GitHub | Works | Push access to this repo |
-| Nightly runs | **Not active yet** | Needs workflow + `ANTHROPIC_API_KEY` secret (below) |
-
-## To enable nightly research
-1. Repo → Settings → Secrets and variables → Actions → add `ANTHROPIC_API_KEY`.
-2. Install the Claude GitHub app on the repo (https://github.com/apps/claude).
-3. Merge the workflow; run it once via "Run workflow" to confirm.
+| Nightly runs | **Removed** | Workflow deleted by request. Research runs only when a session is started manually |
