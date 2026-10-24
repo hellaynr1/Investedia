@@ -195,7 +195,7 @@
       ? `<li><button class="nav-link" type="button" aria-expanded="false" aria-haspopup="true" data-dd="dd-${k}" ${page === k || (k === 'tools' && ['screener', 'calendar', 'calc', 'compare', 'converter', 'realestate'].includes(page)) || (k === 'education' && page === 'lesson') ? 'aria-current="page"' : ''}>${t}${icon('chev', 'chev')}</button>${dd}</li>`
       : `<li><a class="nav-link" href="${h}" ${page === k || (k === 'news' && ['analysis', 'article'].includes(page)) || (k === 'dashboard' && page === 'ai') || (k === 'education' && page === 'lesson') ? 'aria-current="page"' : ''}>${t}${isNew ? '<span class="badge-new">NEW</span>' : ''}</a></li>`).join('')}</ul>
     <div class="hdr-tools">
-      <a class="search-btn" href="assets/globe/news.html" aria-label="Search news, countries and companies">${icon('search')}<span>Search news, countries…</span></a>
+      ${page === 'home' ? '' : `<a class="search-btn" href="assets/globe/news.html" aria-label="Search assets, countries and articles">${icon('search')}<span>Search assets, countries &amp; articles</span></a>`}
       <div class="notif-wrap hide-sm"><button class="icon-btn" type="button" id="notif-btn" aria-label="Notifications" aria-expanded="false" aria-haspopup="true" title="Notifications">${icon('bell')}<span class="dot" id="notif-dot"></span></button>
         <div class="dd notif-dd" id="notif-dd" role="dialog" aria-label="Notifications"></div></div>
       <a class="icon-btn hide-sm owner-only" href="admin.html" aria-label="Analytics dashboard" title="Analytics dashboard">${icon('heat')}</a>
@@ -204,7 +204,7 @@
       <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span></button>
     </div></div>`;
   document.body.prepend(hdr);
-  if (window.InvPrefs) InvPrefs.mount(hdr.querySelector('.hdr-tools .search-btn')?.insertAdjacentElement('afterend', Object.assign(document.createElement('span'), { className: 'pf-slot' })));
+  if (window.InvPrefs) InvPrefs.mount((hdr.querySelector('.hdr-tools .search-btn') || hdr.querySelector('.hdr-tools')?.firstElementChild)?.insertAdjacentElement(hdr.querySelector('.hdr-tools .search-btn') ? 'afterend' : 'beforebegin', Object.assign(document.createElement('span'), { className: 'pf-slot' })));
   // profile (stored on this device until accounts exist)
   const getProfile = () => { try { return JSON.parse(localStorage.getItem('inv-profile') || '{}'); } catch { return {}; } };
   const paintAvatar = () => { const u = window.invUser; if (!u) return; const md = u.user_metadata || {}, av = hdr.querySelector('#hdr-avatar'), nm = md.name || md.full_name || u.email || '', pic = md.avatar || md.avatar_url || md.picture, ini = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
@@ -286,7 +286,7 @@
   // mobile drawer
   const drawer = document.createElement('div');
   drawer.className = 'drawer';
-  drawer.innerHTML = `<a class="search-btn" href="assets/globe/news.html">${icon('search')}<span>Search news, countries…</span></a>
+  drawer.innerHTML = `${page === 'home' ? '' : `<a class="search-btn" href="assets/globe/news.html">${icon('search')}<span>Search assets, countries &amp; articles</span></a>`}
     <a href="index.html">Home</a><a href="assets/globe/news.html">Globe</a><details class="nn-drawer-news"><summary>News ${icon('chev')}</summary>${InvNewsMenu.html('nn-mobile')}</details><a href="markets.html">Markets</a><a href="education.html">Learn</a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details><a href="about.html">About</a>
     <div class="drawer-acct guest-only"><p>Save your watchlist and alerts on every device.</p><button class="btn btn-primary" type="button" data-auth="up">Create free account</button><button class="btn btn-ghost" type="button" data-auth="in">Log in</button></div>

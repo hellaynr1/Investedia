@@ -367,7 +367,7 @@ h1 span{color:var(--fg-3)}
     <button type="button" class="globe-privacy" data-cookie-settings>Privacy</button>
     <span class="demo" id="badge" title="Concept preview: every article is demo content written to show the design. Not real news.">Concept · demo articles</span>
   </div>
-  <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search a country, company or article" autocomplete="off" aria-label="Search the globe" aria-controls="res"><kbd>/</kbd>
+  <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search assets, countries &amp; articles" autocomplete="off" aria-label="Search assets, countries and articles" aria-controls="res"><kbd>/</kbd>
     <div class="res" id="res" role="listbox" hidden></div></div>
   <div class="chips" id="cats" role="group" aria-label="Category"></div>
   <div class="regions" id="regions" role="group" aria-label="Region"></div>
@@ -488,7 +488,7 @@ function entityChip(e, country) {
   const asset = /[\^=]/.test(e.ticker || '') || ['index', 'currency', 'future'].includes(e.type);
   const lg = asset ? null : logoFor(e);
   const image = asset ? flag(country, 'ent-flag') : lg ? limg(lg) : '';
-  return `<span class="ent">${image}<span>${esc(e.name)}</span>${e.ticker ? `<code>${esc(e.ticker)}</code>` : ''}</span>`;
+  return `<span class="ent"${e.ticker ? ` title="${esc(e.ticker)}"` : ''}>${image}<span>${esc(e.name)}</span></span>`;
 }
 
 let MKT = { by: {}, intra: {}, list: [] };

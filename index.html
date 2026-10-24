@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=2fc242b256">
-<script src="assets/consent.js?v=2fc242b256"></script>
+<link rel="stylesheet" href="assets/consent.css?v=3478c37ed5">
+<script src="assets/consent.js?v=3478c37ed5"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia — Invest with clarity</title>
 <meta name="description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
@@ -14,8 +14,8 @@
 <meta property="og:image" content="assets/logo.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=2fc242b256">
-<link rel="stylesheet" href="assets/skin.css?v=2fc242b256">
+<link rel="stylesheet" href="assets/app.css?v=3478c37ed5">
+<link rel="stylesheet" href="assets/skin.css?v=3478c37ed5">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,17 +38,17 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=2fc242b256"></script>
-<script src="assets/legal-owner.js?v=2fc242b256"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=2fc242b256">
-<script src="assets/live-config.js?v=2fc242b256"></script>
-<script src="assets/prefs.js?v=2fc242b256"></script>
-<script src="assets/peek.js?v=2fc242b256"></script>
-<script src="assets/sectors.js?v=2fc242b256"></script>
-<script src="assets/news-menu.js?v=2fc242b256"></script>
-<script src="assets/ui.js?v=2fc242b256"></script>
-<script src="assets/news-alerts.js?v=2fc242b256" defer></script>
-<script src="assets/home-news.js?v=2fc242b256"></script>
+<script src="assets/mock.js?v=3478c37ed5"></script>
+<script src="assets/legal-owner.js?v=3478c37ed5"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=3478c37ed5">
+<script src="assets/live-config.js?v=3478c37ed5"></script>
+<script src="assets/prefs.js?v=3478c37ed5"></script>
+<script src="assets/peek.js?v=3478c37ed5"></script>
+<script src="assets/sectors.js?v=3478c37ed5"></script>
+<script src="assets/news-menu.js?v=3478c37ed5"></script>
+<script src="assets/ui.js?v=3478c37ed5"></script>
+<script src="assets/news-alerts.js?v=3478c37ed5" defer></script>
+<script src="assets/home-news.js?v=3478c37ed5"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -117,8 +117,6 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Top articles</span><h2>What matters right now</h2></div><a href="assets/globe/news.html">All news →</a></div><div class="grid3" id="hnTop"></div></section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Why it moved</span><h2>The articles moving markets</h2></div></div><div class="whys" id="hnWhy"></div></section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Countries</span><h2>Explore by country</h2></div><a href="assets/globe/news.html">Open the globe →</a></div><div class="hn-ctys" id="hnCty"></div></section>
-  <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Markets right now</span><h2>Which markets are open</h2></div><span class="hn-meta" id="hnClock"></span></div><div class="hn-mk" id="hnMk"></div>
-    <p class="hn-disc" style="margin-top:12px">Regular trading hours in local time. Public holidays and lunch breaks are not shown.</p></section>
   <section class="hn-sec"><div class="hn-cal">
     <div class="hn-box"><div class="hn-bh"><h3>Upcoming economic events</h3><a href="calendar.html">Full calendar →</a></div><div id="hnEv"></div></div>
     <div class="hn-box"><div class="hn-bh"><h3>Upcoming earnings</h3><a href="calendar.html#earnings">All earnings →</a></div><div id="hnEa"></div></div>
@@ -143,22 +141,6 @@ loadNews().then(d => {
   hnCty.innerHTML = countries(d.stories);
   hnTick.innerHTML = d.latest.slice(0, 6).map(s => '<a href="' + url(s) + '"><b>' + ago(s.published_at) + '</b>' + esc(s.headline) + '</a>').join('');
 }).catch(() => { hnTop.innerHTML = '<p class="hn-meta">News is loading. Please refresh in a moment.</p>'; });
-// Markets open right now: regular local trading hours (no holidays)
-const EX = [['New York', 'us', 'America/New_York', 570, 960], ['Toronto', 'ca', 'America/Toronto', 570, 960], ['São Paulo', 'br', 'America/Sao_Paulo', 600, 1020], ['London', 'gb', 'Europe/London', 480, 990],
-  ['Frankfurt', 'de', 'Europe/Berlin', 540, 1050], ['Paris', 'fr', 'Europe/Paris', 540, 1050], ['Johannesburg', 'za', 'Africa/Johannesburg', 540, 1020], ['Riyadh', 'sa', 'Asia/Riyadh', 600, 900, [0, 1, 2, 3, 4]],
-  ['Mumbai', 'in', 'Asia/Kolkata', 555, 930], ['Shanghai', 'cn', 'Asia/Shanghai', 570, 900], ['Hong Kong', 'hk', 'Asia/Hong_Kong', 570, 960], ['Tokyo', 'jp', 'Asia/Tokyo', 540, 930], ['Sydney', 'au', 'Australia/Sydney', 600, 960]];
-const hm = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
-function markets() {
-  const now = new Date();
-  hnMk.innerHTML = EX.map(([n, f, tz, o, c, days = [1, 2, 3, 4, 5]]) => {
-    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(now).map(x => [x.type, x.value]));
-    const wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(p.weekday), m = +p.hour * 60 + +p.minute, open = days.includes(wd) && m >= o && m < c;
-    const txt = open ? 'Open until ' + hm(c) : days.includes(wd) && m < o ? 'Opens ' + hm(o) : 'Closed';
-    return `<div class="hn-m${open ? ' on' : ''}"><img src="assets/globe/flags/${f}.svg" alt=""><span><b>${n}</b><small><i></i>${txt}</small></span></div>`; }).join('')
-    + `<div class="hn-m on"><img src="assets/logos/BTC.svg" alt="" style="border-radius:50%;width:20px;height:20px"><span><b>Crypto</b><small><i></i>Open 24/7</small></span></div>`;
-  hnClock.textContent = 'Your time ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-markets(); setInterval(markets, 30000);
 // Upcoming economic events + earnings (real, refreshed by update_calendar.py)
 const CC = { USD: 'us', EUR: 'eu', GBP: 'gb', JPY: 'jp', CNY: 'cn', CAD: 'ca', AUD: 'au', NZD: 'nz', CHF: 'ch' };
 const dfmt = d => new Date(d).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });

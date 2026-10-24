@@ -33,6 +33,11 @@
   .ai-c{border-radius:28%!important}.ai-c svg{width:100%!important;height:100%!important;display:block}.pk-i .ic:has(.ai-c),.pv-h .ic:has(.ai-c){border-radius:28%!important;background:none!important}
   .ai-c{width:100%!important;height:100%!important}
   .pk-sector{width:min(780px,100%)!important;height:auto!important;max-height:88vh}.pk-pbody{max-height:88vh;overflow:auto;padding:26px 26px 22px}.pk-sector .mh-p{background:none!important;border:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;padding:0!important;border-radius:0!important}.pk-sector .mh-ph{padding-right:52px}
+  /* glass: the page (globe, map, lists) stays visible, blurred, behind the panels */
+  .pk{background:rgba(6,6,8,.28)!important;-webkit-backdrop-filter:blur(14px) saturate(1.2)!important;backdrop-filter:blur(14px) saturate(1.2)!important}
+  .pk-sb,.pk-sheet{background:rgba(12,12,15,.46)!important;-webkit-backdrop-filter:blur(24px) saturate(1.5)!important;backdrop-filter:blur(24px) saturate(1.5)!important;border-color:rgba(255,255,255,.14)!important}
+  .pk-in{border-bottom-color:rgba(255,255,255,.08)!important}.pk-s.v3 .pk-pv{background:rgba(255,255,255,.04)!important}
+  @media(max-width:800px){.pk-s{padding:0}.pk-s .pk-sb{border-radius:0 0 26px 26px;border-top:0;height:auto}.pk-sheet{background:rgba(12,12,15,.62)!important}}
   @media(prefers-reduced-motion:reduce){.pk,.pk-sheet,.pk-sb{transition:none}}`;
   document.head.appendChild(css);
   if (EMBED) { document.documentElement.classList.add('embed'); const b = document.createElement('base'); b.target = '_top'; document.head.prepend(b); return; }
@@ -104,13 +109,13 @@
   }
   function searchUI() {
     const V = (new URLSearchParams(location.search).get('sv') || (() => { try { return localStorage.getItem('inv-sv'); } catch { return null; } })() || '23');
-    const l = mount('pk-s ' + [...V].map(c => 'v' + c).join(' '), `<div class="pk-sb" role="dialog" aria-modal="true" aria-label="Search"><div class="pk-in">${SEARCH}<input type="search" autocomplete="off" spellcheck="false" placeholder="Search companies, crypto, countries, articles" aria-label="Search"><kbd>esc</kbd></div><div class="pk-body"><nav class="pk-fl" aria-label="Filters"></nav><div class="pk-r"><div class="pk-none">Loading…</div></div><aside class="pk-pv" aria-live="polite"></aside></div></div>`);
+    const l = mount('pk-s ' + [...V].map(c => 'v' + c).join(' '), `<div class="pk-sb" role="dialog" aria-modal="true" aria-label="Search"><div class="pk-in">${SEARCH}<input type="search" autocomplete="off" spellcheck="false" placeholder="Search assets, countries &amp; articles" aria-label="Search"><kbd>esc</kbd></div><div class="pk-body"><nav class="pk-fl" aria-label="Filters"></nav><div class="pk-r"><div class="pk-none">Loading…</div></div><aside class="pk-pv" aria-live="polite"></aside></div></div>`);
     const inp = l.querySelector('input'), res = l.querySelector('.pk-r'), fl = l.querySelector('.pk-fl'), pv = l.querySelector('.pk-pv'); inp.focus(); let sel = 0, F = 'all', SEC = [];
     const items = () => [...res.querySelectorAll('.pk-i')], mark = () => { items().forEach((e, i) => e.setAttribute('aria-selected', i === sel ? 'true' : 'false')); preview(); };
     const count = k => k === 'all' ? SEC.reduce((n, s) => n + s.items.length, 0) : SEC.filter(s => s.key === k || s.fk === k).reduce((n, s) => n + s.items.length, 0);
     const preview = () => {
       const e = items()[sel], a = e && DATA?.assets.find(x => x.s === e.dataset.a);
-      pv.innerHTML = a ? `<div class="pv-h"><span class="ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><div><b>${esc(a.n)}</b><small>${esc(label(a))} · ${kind(a)}</small></div></div><div class="pv-p">${money(a.p, a)}</div>${fmtP(a.d)}<div class="pv-c">${spark(a.sp)}</div><div class="pv-r"><span>1-month low</span><b>${money(Math.min(...(a.sp || [a.p])), a)}</b><span>1-month high</span><b>${money(Math.max(...(a.sp || [a.p])), a)}</b></div><button type="button" class="pv-go" data-a="${esc(a.s)}">Open ${esc(label(a))}</button>` : '<div class="pk-none">Select a result to preview it.</div>';
+      pv.innerHTML = a ? `<div class="pv-h"><span class="ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><div><b>${esc(a.n)}</b><small>${esc(label(a))} · ${kind(a)}</small></div></div><div class="pv-p">${money(a.p, a)}</div>${fmtP(a.d)}<div class="pv-c">${spark(a.sp)}</div>${(a.sp || []).length > 1 ? `<div class="pv-r"><span>1-month low</span><b>${money(Math.min(...a.sp), a)}</b><span>1-month high</span><b>${money(Math.max(...a.sp), a)}</b></div>` : ''}<button type="button" class="pv-go" data-a="${esc(a.s)}">Open ${esc(label(a))}</button>` : '<div class="pk-none">Select a result to preview it.</div>';
     };
     const paint = () => {
       if (!DATA) return; const q = inp.value.trim().toLowerCase(); let h = '';
