@@ -58,3 +58,4 @@
 .nf-mv{text-align:right;white-space:nowrap}.nf-mv small{display:block;color:var(--fg-3);font:500 10px Inter,system-ui,sans-serif;margin-top:1px}
 
 .nf-photo-credit{position:absolute;left:12px;top:12px;max-width:calc(100% - 24px);border-radius:5px;background:#111d;color:#eee;padding:4px 7px;font:11px/1.4 system-ui}
+.nf-source-circle{display:grid;place-items:center;width:36px;height:36px;background:#222226;color:#ddd;border-radius:50%;font-size:11px;margin-bottom:12px}.nf-ev h3{white-space:normal;overflow:visible;-webkit-line-clamp:unset}

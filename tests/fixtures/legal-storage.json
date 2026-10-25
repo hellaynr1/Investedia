@@ -82,5 +82,11 @@
     "purpose": "Optional page/interaction statistics sent to Supabase",
     "type": "Analytics; opt-in",
     "duration": "[OWNER: configure event retention]"
+  },
+  {
+    "name": "inv-notif-ids, inv-calendar-filters",
+    "purpose": "Read article IDs and requested calendar filters",
+    "type": "Necessary for requested feature",
+    "duration": "Until cleared; read IDs capped at 1000"
   }
 ]

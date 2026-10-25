@@ -44,6 +44,11 @@
   // sym: site symbol, name, type, cc (country code) -> HTML (26px tile; size set by CSS .ai-t / .ai-i)
   function icon(a) {
     const sym = a.s || a.ticker || '', n = a.n || a.name || '', c = COMM[sym];
+    if (a.t === 'fx') {
+      const cc={USD:'us',EUR:'eu',GBP:'gb',JPY:'jp',CNY:'cn',CHF:'ch',CAD:'ca',AUD:'au',NZD:'nz',INR:'in',BRL:'br',ZAR:'za',KRW:'kr',MXN:'mx'};
+      const pair=sym.replace('=X','').match(/[A-Z]{3}/g) || [], codes=pair.map(c=>cc[c]).filter(Boolean);
+      if(codes.length===2)return `<span class="ai-pair">${codes.map(c=>`<img src="${BASE}globe/flags/${c}.svg" alt="">`).join('')}</span>`;
+    }
     if (CB[sym]) return cIcon(sym);
     if (c) return tile(G[c], 'color:#c8c8cf');
     const base = sym.replace(/-USD$/, '');

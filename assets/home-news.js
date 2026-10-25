@@ -6,7 +6,7 @@ const nm = c => NAME[c] || c;
 const CAT = { markets: 'Markets', companies: 'Companies', economy: 'Economy', technology: 'Technology', crypto: 'Crypto', commodities: 'Commodities', geopolitics: 'Geopolitics' };
 const FLAG = { breaking: 'Breaking', trending: 'Trending', moving: 'Market moving' };
 let ISO = {}, ENTITY_LOGOS = {};
-function ago(t) { const m = Math.max(1, Math.round((Date.now() - Date.parse(t)) / 60000)); return m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; }
+function ago(t) { const m = Math.round((Date.parse(t)-Date.now())/60000), r = new Intl.RelativeTimeFormat(undefined,{numeric:'auto'}); return Math.abs(m)<60 ? r.format(m,'minute') : Math.abs(m)<1440 ? r.format(Math.round(m/60),'hour') : r.format(Math.round(m/1440),'day'); }
 const flagSrc = c => ISO[c] ? `assets/globe/flags/${ISO[c].toLowerCase()}.svg` : '';
 const company = e => e.ticker && !/[\^=]/.test(e.ticker) && !/-USD$/.test(e.ticker);
 const localLogo = e => ENTITY_LOGOS[e.sym] || ENTITY_LOGOS[e.ticker] || 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="8" fill="#f4f4f5"/><text x="32" y="39" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#18181b">' + esc((e.name || e.ticker || 'I').slice(0,2).toUpperCase()) + '</text></svg>');
@@ -37,10 +37,10 @@ function thumb(s) {
   const e = (s.entities || []).find(company), f = flagSrc(s.location.country);
   return s.image ? `<img src="assets/globe/${esc(s.image.file)}" alt="${esc(s.image.alt || 'Topic photograph')}"><span class="hn-thumb-label">Illustration</span>` : e ? `<img class="hn-lgo" src="${logoSrc(e)}" alt="" ${hideBad}>` : f ? `<img class="hn-flg" src="${f}" alt="">` : '';
 }
-const row = s => `<a class="hn-row" href="${url(s)}"><span class="hn-th">${thumb(s)}</span><span><span>${tags(s)}</span><h4>${esc(s.headline)}</h4><span class="hn-meta">${ago(s.published_at)} · ${esc(nm(s.location.country))}</span></span></a>`;
+const row = s => `<a class="hn-row hn-news-card" href="${url(s)}"><span class="hn-source">${esc((s.source?.name || 'N').slice(0,2).toUpperCase())}</span><span><h4>${esc(s.headline)}</h4>${impactChips(s)}<span class="hn-meta">${esc(s.source?.name || '')} · ${ago(s.published_at)}</span></span></a>`;
 function impactChips(s) {
   const rows = (Array.isArray(s.impacts) ? s.impacts : []).filter(i => i && typeof i.name === 'string' && ['up', 'down', 'mixed', 'unclear'].includes(i.direction) && Object.values(ISO).includes(i.country)).slice(0, 2);
-  const arrow = { up: '↑', down: '↓', mixed: '↔', unclear: '→' };
+  const arrow = { up: '↑', down: '↓', mixed: '↔', unclear: '↔' };
   return rows.length ? `<div class="hn-ents hn-impacts" aria-label="AI-assisted analysis">${rows.map(i => `<span class="hn-ent"><img src="assets/globe/flags/${i.country.toLowerCase()}.svg" alt="" ${hideBad}><span class="hn-impact-${i.direction}">${arrow[i.direction]}</span>${esc(i.name)}</span>`).join('')}</div>` : '';
 }
 const why = (s, i) => `<a class="hn-why" href="${url(s)}"><span class="hn-n">0${i + 1}</span><div>${tags(s)}</div><h3>${esc(s.headline)}</h3><div class="hn-wl">What happened</div><p>${esc(s.summary)}</p><div class="hn-wl">Why it matters</div><p>${esc(s.why)}</p>${impactChips(s)}

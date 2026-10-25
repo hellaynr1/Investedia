@@ -3,84 +3,170 @@
     "name": "homepage",
     "width": 1440,
     "url": "index.html",
-    "consoleErrors": []
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
+    ]
   },
   {
     "name": "news",
     "width": 1440,
     "url": "news.html",
-    "consoleErrors": []
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
+    ]
   },
   {
     "name": "article",
     "width": 1440,
-    "url": "story.html?id=n14daff13a1",
-    "consoleErrors": []
+    "url": "story.html?id=n78fa6d6cd2",
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
+    ]
   },
   {
     "name": "markets",
     "width": 1440,
     "url": "markets.html",
-    "consoleErrors": []
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+    ]
   },
   {
     "name": "globe",
     "width": 1440,
-    "url": "assets/globe/news.html?story=n14daff13a1",
-    "consoleErrors": []
+    "url": "assets/globe/news.html?story=n78fa6d6cd2",
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+    ]
   },
   {
     "name": "legal",
     "width": 1440,
     "url": "legal.html",
-    "consoleErrors": []
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
+    ]
   },
   {
     "name": "cookies",
     "width": 1440,
     "url": "cookies.html",
-    "consoleErrors": []
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
+    ]
   },
   {
     "name": "homepage",
     "width": 390,
     "url": "index.html",
-    "consoleErrors": []
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
+    ]
   },
   {
     "name": "news",
     "width": 390,
     "url": "news.html",
-    "consoleErrors": []
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
+    ]
   },
   {
     "name": "article",
     "width": 390,
-    "url": "story.html?id=n14daff13a1",
-    "consoleErrors": []
+    "url": "story.html?id=n78fa6d6cd2",
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
+    ]
   },
   {
     "name": "markets",
     "width": 390,
     "url": "markets.html",
-    "consoleErrors": []
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+    ]
   },
   {
     "name": "globe",
     "width": 390,
-    "url": "assets/globe/news.html?story=n14daff13a1",
-    "consoleErrors": []
+    "url": "assets/globe/news.html?story=n78fa6d6cd2",
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+    ]
   },
   {
     "name": "legal",
     "width": 390,
     "url": "legal.html",
-    "consoleErrors": []
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
+    ]
   },
   {
     "name": "cookies",
     "width": 390,
     "url": "cookies.html",
-    "consoleErrors": []
+    "consoleErrors": [
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
+      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
+    ]
   }
 ]
