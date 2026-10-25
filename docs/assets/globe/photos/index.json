@@ -2319,5 +2319,25 @@
    "source_url": "https://pixabay.com/photos/windmills-wind-turbines-wind-farm-7001940/",
    "alt": "wind turbines"
   }
+ ],
+ "beer brewery": [
+  {
+   "file": "photos/beer-brewery-5002660.jpg",
+   "credit": "DesignDrawArtes",
+   "source_url": "https://pixabay.com/photos/barrel-wine-wood-wine-house-5002660/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-3749664.jpg",
+   "credit": "RitaE",
+   "source_url": "https://pixabay.com/photos/beer-measure-beer-beer-mug-3749664/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-2370783.jpg",
+   "credit": "PeterKraayvanger",
+   "source_url": "https://pixabay.com/photos/beer-varieties-different-sorts-2370783/",
+   "alt": "beer brewery"
+  }
  ]
 }
