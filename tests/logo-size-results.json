@@ -1,0 +1,152 @@
+[
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on index.html",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on news.html",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on movers.html",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on markets.html",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on asset.html?s=NG=F",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on asset.html?s=CL=F",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on asset.html?s=BTC",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on asset.html?s=AAPL",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on calendar.html",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on watchlist.html",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on screener.html",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L1 no tile larger than 64px on assets/globe/news.html",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L2 commodity tiles in the movers cards are 22px",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L3 commodity, crypto and company tiles keep their fixed size in every news container",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L4 search overlay commodity, crypto and company rows keep small logos",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on index.html",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on news.html",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on movers.html",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on markets.html",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on asset.html?s=NG=F",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on asset.html?s=CL=F",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on asset.html?s=BTC",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on asset.html?s=AAPL",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on calendar.html",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on watchlist.html",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on screener.html",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 no tile larger than 64px on assets/globe/news.html",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L2 commodity tiles in the movers cards are 22px",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L3 commodity, crypto and company tiles keep their fixed size in every news container",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L4 search overlay commodity, crypto and company rows keep small logos",
+  "pass": true
+ }
+]
