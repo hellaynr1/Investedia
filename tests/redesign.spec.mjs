@@ -42,7 +42,7 @@ for(const w of widths){
   if(w===1440){
    await check(w,'G2 hovering the pill opens the impact card with name, ticker, price, % today, 7-day %, implies line, sparkline',async()=>{const r=await p.evaluate(()=>{const q=pillRects[0];return {x:q.x+q.w/2,y:q.y+q.h/2};});await p.mouse.move(r.x,r.y);await p.waitForTimeout(500);const t=await p.locator('#hover').innerText(),tl=t.toLowerCase();assert.equal(await p.locator('#hover.on').count(),1);for(const x of ['affected assets','7 days','article implies','price today'])assert(tl.includes(x),x);assert(t.includes(pctText(a.d)),'% in card');assert.equal(await p.locator('#hover .hv-spark').count()>=1,true);});
    await check(w,'G3 the card does not cover the pill',async()=>{const o=await p.evaluate(()=>{const q=pillRects[0],h=document.getElementById('hover').getBoundingClientRect();const c=document.getElementById('cv').getBoundingClientRect();return !(h.left>=q.x+q.w+c.left-1||h.right<=q.x+c.left||h.top>=q.y+q.h+c.top||h.bottom<=q.y+c.top);});assert.equal(o,false);});
-   await check(w,'G4 the article panel also lists the % next to each affected asset',async()=>assert(await p.locator('.impact-list .pct').count()>=1));
+   await check(w,'G4 the article panel also lists the % next to each affected asset',async()=>{await p.waitForSelector('.impact-list .pct',{state:'attached',timeout:5000});assert(await p.locator('.impact-list .pct').count()>=1);});
   }
  } else results.push({width:w,id:'G* skipped: no story with a priced asset in saved news',pass:false});
  await ctx.close();

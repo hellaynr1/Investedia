@@ -1,0 +1,97 @@
+[
+ {
+  "width": 1440,
+  "id": "I1 only the chosen region is shown (one table), not every continent stacked",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "I2 wide: \"Region: Europe ▾\" button with ‹ › arrows and an \"n indices · average\" summary",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "I3 wide: the menu lists each region with its average move plus \"All regions\"",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "I4 wide: choosing a region changes the table; ‹ › step and wrap; All shows three tables",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "I5 ?region=Asia opens that region",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "C1 wide: three group cards Energy, Metals, Agriculture, each with an average pill",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "C2 wide: the biggest mover of each group is the real largest move (markets.json)",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "C3 wide: the rest of each group is listed as small rows with a sparkline and %",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "C4 wide: a row opens the asset pop-up",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "X1 no horizontal overflow on indices and commodities",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "I1 only the chosen region is shown (one table), not every continent stacked",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "I2 phone: region tabs Americas | Europe | Asia | All, Europe pressed; no wide-screen button",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "I3 phone: tapping Asia shows the Asia-Pacific table, All shows three",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "I3b phone: region tab targets are at least 44px tall",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "I5 ?region=Asia opens that region",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "C1 phone: chips All | Energy | Metals | Agri, no wide scoreboard",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "C2 phone: Energy chip shows only the 5 energy markets with price, sparkline and %",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "C3 phone: All shows 16 markets under group headings; chip targets >=44px",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "X1 no horizontal overflow on indices and commodities",
+  "pass": true
+ }
+]
