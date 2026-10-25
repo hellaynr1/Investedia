@@ -25,6 +25,7 @@ YAHOO = {
     "BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", "XRP": "XRP-USD", "BNB": "BNB-USD", "DOGE": "DOGE-USD",
     "ADA": "ADA-USD", "AVAX": "AVAX-USD", "LINK": "LINK-USD", "UNI": "UNI7083-USD", "AAVE": "AAVE-USD",
     "USDT": "USDT-USD", "USDC": "USDC-USD",
+    "TRX": "TRX-USD", "ZEC": "ZEC-USD", "HYPE": "HYPE32196-USD", "XMR": "XMR-USD", "LEO": "LEO-USD", "XLM": "XLM-USD", "NEAR": "NEAR-USD", "BCH": "BCH-USD", "DAI": "DAI-USD", "LTC": "LTC-USD", "SUI": "SUI20947-USD", "HBAR": "HBAR-USD", "PYUSD": "PYUSD-USD", "SHIB": "SHIB-USD", "CRO": "CRO-USD", "QNT": "QNT-USD", "ENA": "ENA-USD", "RLUSD": "RLUSD-USD",
     # currencies
     "DXY": "DX-Y.NYB",
     # commodities (front-month futures)

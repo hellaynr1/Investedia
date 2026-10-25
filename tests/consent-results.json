@@ -7,15 +7,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "about.html",
@@ -25,15 +17,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "accessibility.html",
@@ -43,15 +27,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "admin.html",
@@ -61,15 +37,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "affiliate-disclosure.html",
@@ -79,15 +47,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "ai-disclosure.html",
@@ -97,15 +57,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "ai-insights.html",
@@ -115,15 +67,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "analysis-article.html",
@@ -133,15 +77,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "analysis.html",
@@ -151,15 +87,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "article.html",
@@ -169,15 +97,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "asset.html",
@@ -187,15 +107,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "calculator.html",
@@ -205,15 +117,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "calendar.html",
@@ -223,15 +127,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "compare.html",
@@ -241,15 +137,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "contact.html",
@@ -259,15 +147,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "converter.html",
@@ -277,15 +157,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "cookies.html",
@@ -295,15 +167,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "copyright.html",
@@ -313,15 +177,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "corrections.html",
@@ -331,15 +187,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "dashboard.html",
@@ -349,15 +197,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "disclaimer.html",
@@ -367,15 +207,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "editorial-policy.html",
@@ -385,15 +217,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "education.html",
@@ -403,15 +227,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "globe.html",
@@ -421,15 +237,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "index.html",
@@ -439,15 +247,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "legal.html",
@@ -457,15 +257,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "lesson.html",
@@ -475,29 +267,17 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "markets.html",
     "width": 1440,
-    "first": "—",
-    "essential": "—",
-    "all": "—",
-    "withdraw": "—",
-    "reprompt": "—",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'https://investedia-live.adonaykabeya10.workers.dev/ticker'\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
-    ]
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
   },
   {
     "page": "movers.html",
@@ -507,16 +287,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "news.html",
@@ -526,15 +297,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "privacy.html",
@@ -544,15 +307,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "profile.html",
@@ -562,15 +317,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "screener.html",
@@ -580,15 +327,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "sources.html",
@@ -598,15 +337,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "stocks.html",
@@ -616,15 +347,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "story.html",
@@ -634,15 +357,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "studio.html",
@@ -652,15 +367,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "terms.html",
@@ -670,15 +377,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "watchlist.html",
@@ -688,15 +387,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "assets/globe/news.html",
@@ -726,15 +417,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "about.html",
@@ -744,15 +427,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "accessibility.html",
@@ -762,15 +437,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "admin.html",
@@ -780,15 +447,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "affiliate-disclosure.html",
@@ -798,15 +457,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "ai-disclosure.html",
@@ -816,15 +467,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "ai-insights.html",
@@ -834,15 +477,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "analysis-article.html",
@@ -852,15 +487,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "analysis.html",
@@ -870,15 +497,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "article.html",
@@ -888,15 +507,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "asset.html",
@@ -906,15 +517,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "calculator.html",
@@ -924,15 +527,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "calendar.html",
@@ -942,15 +537,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "compare.html",
@@ -960,15 +547,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "contact.html",
@@ -978,15 +557,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "converter.html",
@@ -996,15 +567,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "cookies.html",
@@ -1014,15 +577,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "copyright.html",
@@ -1032,15 +587,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "corrections.html",
@@ -1050,15 +597,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "dashboard.html",
@@ -1068,15 +607,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "disclaimer.html",
@@ -1086,15 +617,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "editorial-policy.html",
@@ -1104,15 +627,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "education.html",
@@ -1122,15 +637,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "globe.html",
@@ -1140,15 +647,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "index.html",
@@ -1158,15 +657,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "legal.html",
@@ -1176,15 +667,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "lesson.html",
@@ -1194,29 +677,17 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "markets.html",
     "width": 390,
-    "first": "—",
-    "essential": "—",
-    "all": "—",
-    "withdraw": "—",
-    "reprompt": "—",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'https://investedia-live.adonaykabeya10.workers.dev/ticker'\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
-    ]
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
   },
   {
     "page": "movers.html",
@@ -1226,16 +697,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "news.html",
@@ -1245,15 +707,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "privacy.html",
@@ -1263,15 +717,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "profile.html",
@@ -1281,15 +727,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "screener.html",
@@ -1299,15 +737,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "sources.html",
@@ -1317,15 +747,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "stocks.html",
@@ -1335,15 +757,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "story.html",
@@ -1353,15 +767,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "studio.html",
@@ -1371,15 +777,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "terms.html",
@@ -1389,15 +787,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "watchlist.html",
@@ -1407,15 +797,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\",\n+   \"WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.\"\n+ ]\n- []\n",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed.",
-      "WebSocket connection to 'wss://ws-feed.exchange.coinbase.com/' failed: Establishing a tunnel via proxy server failed."
-    ]
+    "errors": []
   },
   {
     "page": "assets/globe/news.html",

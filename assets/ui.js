@@ -77,9 +77,10 @@
   const cap = b => b == null ? '—' : b >= 1000 ? `$${(b / 1000).toFixed(2)}T` : `$${b}B`;
   // Asset logos, all round and self-hosted in assets/logos: coin logos (CC0 set), brand marks (simple-icons CC0, svgl MIT), company icons
   // and round flags (circle-flags, MIT) for indices, bonds and currencies. Anything else gets a coloured ticker tile.
-  const COIN = new Set(['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX', 'LINK', 'UNI', 'AAVE', 'USDT', 'USDC']);
+  const COIN = new Set(['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX', 'LINK', 'UNI', 'AAVE', 'USDT', 'USDC', 'TRX', 'ZEC', 'XMR', 'LEO', 'XLM', 'BCH', 'DAI', 'LTC', 'QNT', 'HYPE', 'NEAR', 'HBAR', 'PYUSD', 'SHIB', 'CRO', 'ENA', 'RLUSD']);
+  const COIN_PNG = new Set(['HYPE', 'NEAR', 'HBAR', 'PYUSD', 'SHIB', 'CRO', 'ENA', 'RLUSD']);
   const GLYPH = new Set(['NVDA', 'AAPL', 'GOOGL', 'META', 'TSLA', 'AVGO', 'V', 'DELL', 'INTC', 'NFLX', 'AMD', 'BA', 'SAP', 'KO', 'BAC', 'HSBA', 'SHEL', 'TM', 'BABA', 'SHOP', 'NU', 'MSFT', 'ADBE', 'CRM', 'MELI', 'ULVR', 'SIE', 'AIR', 'RACE', 'SMSN', 'HYMTF', 'SONY', 'XIACY', 'INFY', 'HDB']);
-  const ICON = new Set(['ALV', 'AMZN', 'ARKK', 'ARMCO', 'ASML', 'AZN', 'BHP', 'BNP', 'CBA', 'CHKP', 'COMI', 'COST', 'CRWV', 'CVX', 'DBS', 'EMAAR', 'ENB', 'ENBD', 'ENEL', 'ENPH', 'FMX', 'FXAIX', 'GLD', 'GS', 'ITUB', 'ITX', 'JNJ', 'JPM', 'LLY', 'MEL', 'MQG', 'MTN', 'MUFG', 'NAB', 'NESN', 'NTDOY', 'NVO', 'OR', 'ORCL', 'PBR', 'PEP', 'PFE', 'QNBK', 'QQQ', 'RIO', 'RJHI', 'ROG', 'RY', 'SAN', 'SBK', 'SCHD', 'SHP', 'STC', 'TCEHY', 'TD', 'TEVA', 'TSM', 'VALE', 'VTI', 'WFC', 'WMT', 'WULF', 'XOM']), ICON_ALIAS = { VOO: 'VTI', VFIAX: 'VTI', VWCE: 'VTI', VGK: 'VTI' };
+  const ICON = new Set(['ALV', 'AMZN', 'ARKK', 'ARMCO', 'ASML', 'AZN', 'BHP', 'BNP', 'CBA', 'CHKP', 'COMI', 'COST', 'CRWV', 'CVX', 'DBS', 'EMAAR', 'ENB', 'ENBD', 'ENEL', 'ENPH', 'FMX', 'FXAIX', 'GLD', 'GS', 'ITUB', 'ITX', 'JNJ', 'JPM', 'LLY', 'MEL', 'MQG', 'MTN', 'MUFG', 'NAB', 'NESN', 'NTDOY', 'NVO', 'OR', 'ORCL', 'PBR', 'PEP', 'PFE', 'QNBK', 'QQQ', 'RIO', 'RJHI', 'ROG', 'RY', 'SAN', 'SBK', 'SCHD', 'SHP', 'STC', 'TCEHY', 'TD', 'TEVA', 'TSM', 'VALE', 'VTI', 'WFC', 'WMT', 'WULF', 'XOM', 'UNH', 'RHM', 'RELI', 'FMG', 'BYDDY', 'CNQ']), ICON_ALIAS = { VOO: 'VTI', VFIAX: 'VTI', VWCE: 'VTI', VGK: 'VTI' };
   const FLAG = { SPX: 'us', NDX: 'us', DJI: 'us', RUT: 'us', ES1: 'us', YM1: 'us', NQ1: 'us', DAX: 'de', CAC: 'fr', UKX: 'gb', NKY: 'jp', SX5E: 'eu', HSI: 'hk', TSX: 'ca', IBOV: 'br', MXX: 'mx', XJO: 'au', NZ50: 'nz', J203: 'za', EGX30: 'eg', NGSE: 'ng', SENSEX: 'in', KOSPI: 'kr', SSEC: 'cn',
     US02Y: 'us', US10Y: 'us', US30Y: 'us', USIG: 'us', USHY: 'us', DE10Y: 'de', FR10Y: 'fr', JP10Y: 'jp', UK10Y: 'gb', IT10Y: 'it', DXY: 'us' };
   const CCY = { EUR: 'eu', USD: 'us', GBP: 'gb', JPY: 'jp', CHF: 'ch', AUD: 'au', TRY: 'tr', MXN: 'mx', ZAR: 'za', CAD: 'ca', CNY: 'cn', BRL: 'br', INR: 'in', KRW: 'kr', NZD: 'nz', ILS: 'il', EGP: 'eg' };
@@ -93,7 +94,7 @@
   const img = (src, cls) => `<img src="${src}" alt="" width="48" height="48" decoding="async"${cls ? ` class="${cls}"` : ''}>`;
   const logo = (a, size = '') => {
     const s = a.s, icon = ICON_ALIAS[s] || s;
-    if (COIN.has(s)) return `<span class="logo ${size} logo-img">${img(`assets/logos/${s}.svg`)}</span>`;
+    if (COIN.has(s)) return `<span class="logo ${size} logo-img">${img(`assets/logos/${s}.${COIN_PNG.has(s) ? 'png' : 'svg'}`)}</span>`;
     const fc = FLAG[s] || ((a.c === 'indices' || a.c === 'bonds') && a.place && a.place !== 'Global' ? (a.place === 'UK' ? 'gb' : a.place.toLowerCase()) : null);
     if (fc) return `<span class="logo ${size} logo-img">${img(`assets/logos/flags/${fc}.svg`)}</span>`;
     if (a.c === 'currencies' && CCY[s.slice(0, 3)] && CCY[s.slice(3)]) return `<span class="logo ${size} logo-fx">${img(`assets/logos/flags/${CCY[s.slice(0, 3)]}.svg`)}${img(`assets/logos/flags/${CCY[s.slice(3)]}.svg`)}</span>`;

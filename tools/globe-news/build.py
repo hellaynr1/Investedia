@@ -67,8 +67,9 @@ page = open(os.path.join(G, 'page.html'), encoding='utf-8').read()
 page = page.replace('__DOTS__', open(os.path.join('/'.join([SITE, 'tools/globe']), 'dots.json')).read()).replace('__COUNTRIES__', json.dumps(C, separators=(',', ':')))
 # logo index for the image cards: symbol -> path (site logos by Investedia symbol, company logos by exchange ticker)
 LG = os.path.join(SITE, 'assets/logos')
-logos = {f.rsplit('.', 1)[0]: '../logos/' + f for f in sorted(os.listdir(LG)) if '.' in f}
-logos.update({f.rsplit('.', 1)[0]: '../logos/co/' + f for f in sorted(os.listdir(os.path.join(LG, 'co')))})
+logos = {f.rsplit('.', 1)[0]: '../logos/co/' + f for f in sorted(os.listdir(os.path.join(LG, 'co')))}
+# site logos win over the exchange-ticker set when both exist (BYDDY, CNQ now have higher-resolution top-level files)
+logos.update({f.rsplit('.', 1)[0]: '../logos/' + f for f in sorted(os.listdir(LG)) if '.' in f})
 page = page.replace('__LOGOS__', json.dumps(logos, separators=(',', ':')))
 # Share the same local fallback paths with the homepage entity chips.
 open(os.path.join(SITE, 'assets/globe/logos.json'), 'w').write(json.dumps(logos, separators=(',', ':')))

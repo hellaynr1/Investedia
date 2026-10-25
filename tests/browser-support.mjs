@@ -16,6 +16,7 @@ export async function fixtureExternal(context){await context.route('https://**/*
  if(u.hostname==='fonts.googleapis.com')return route.fulfill({contentType:'text/css',body:''});
  if(u.hostname==='cdn.brandfetch.io')return route.fulfill({contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect width="96" height="96" fill="white"/></svg>'});
  if(u.hostname.endsWith('.supabase.co')&&u.pathname==='/rest/v1/events')return route.fulfill({status:201,contentType:'application/json',body:'[]',headers:{'access-control-allow-origin':'*'}});
+ if(u.hostname==='investedia-live.adonaykabeya10.workers.dev')return route.fulfill({contentType:'application/json',body:'{"p":{}}',headers:{'access-control-allow-origin':'*'}});
  if(u.hostname==='api.coinbase.com')return route.fulfill({contentType:'application/json',body:'{"data":{"rates":{"EUR":"0.92"}}}'});
  return route.continue();});}
 export const widths=[1440,390];

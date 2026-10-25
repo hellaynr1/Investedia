@@ -92,3 +92,5 @@ html:not([data-theme=light]) .pk-sector .mh-p,html:not([data-theme=light]) .pk-s
 .mh-tbl.nr.nv.nrg .mh-th,.mh-tbl.nr.nv.nrg .mh-tr,.mh-tbl.nr.nrg .mh-th,.mh-tbl.nr.nrg .mh-tr{grid-template-columns:minmax(0,1fr) 120px 100px 100px}
 .pk-sector .mh-co b{white-space:nowrap}
 @media(max-width:800px){.mh-tbl.nr.nv.nrg .mh-th,.mh-tbl.nr.nv.nrg .mh-tr{grid-template-columns:minmax(0,1fr) 92px 72px!important}}
+/* Red-tinted sector tiles: lighter red keeps WCAG AA contrast (4.5:1) on the tinted background */
+button[data-n] .d{color:#fecaca}
