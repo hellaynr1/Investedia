@@ -8,7 +8,7 @@ from datetime import datetime, timezone, timedelta
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT)
-import calendar_official
+import calendar_fred, calendar_official
 OUT = [os.path.join(ROOT, 'assets/calendar-live.json'), os.path.join(ROOT, 'docs/assets/calendar-live.json')]
 UA = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36', 'Accept': 'application/json, text/plain, */*', 'Accept-Language': 'en-US,en;q=0.9'}
 NOW = datetime.now(timezone.utc)
@@ -55,6 +55,12 @@ try:
         key = o.pop('ff', '').lower()
         if key and any(key in t for t in ff_by_day.get((o['at'][:10], o['c']), [])): continue
         keep.append(o)
+    # Optional FRED enrichment (only when the FRED_API_KEY secret exists): fills Actual after BLS/BEA releases and adds date-only releases.
+    fred_new, fred_failed, fred_note = calendar_fred.enrich(keep, NOW)
+    print(fred_note)
+    for msg in fred_failed: print('FRED failed:', msg)
+    keep.extend(fred_new)
+    if fred_note.startswith('FRED:'): out['sources']['events'] += '; FRED (St. Louis Fed)'
     # Merge by release identity; a later empty feed field must not erase an actual.
     merged = {}
     for e in prev.get('events', []):
