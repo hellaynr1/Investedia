@@ -17,6 +17,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Refresh while releases are due (or manual)
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: |
           python3 - <<'PY'
           import json, os, subprocess

@@ -34,6 +34,8 @@ jobs:
         run: python3 update_globe_news.py
         timeout-minutes: 60
       - name: Fetch economic calendar and earnings
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python3 update_calendar.py || echo "Calendar update failed; keeping the previous data"
       - name: Publish
         if: always()
