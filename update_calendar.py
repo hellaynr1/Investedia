@@ -1,11 +1,14 @@
 """Upcoming economic events + company earnings for the homepage -> assets/calendar-live.json
-Sources (free, no key): ForexFactory weekly calendar feed (faireconomy.media) and the Nasdaq earnings calendar.
+Sources (free, no key): official US schedules (BLS, BEA, Federal Reserve; see calendar_official.py), the ForexFactory weekly calendar feed
+(faireconomy.media, adds forecasts/actuals and non-US events) and the Nasdaq earnings calendar.
 Runs with the globe-news workflow. If a source fails, the previous data stays.
 Note: both are public feeds without a formal licence; check their terms before using them in a paid product."""
-import json, os, time, urllib.request
+import json, os, sys, time, urllib.request
 from datetime import datetime, timezone, timedelta
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, ROOT)
+import calendar_official
 OUT = [os.path.join(ROOT, 'assets/calendar-live.json'), os.path.join(ROOT, 'docs/assets/calendar-live.json')]
 UA = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36', 'Accept': 'application/json, text/plain, */*', 'Accept-Language': 'en-US,en;q=0.9'}
 NOW = datetime.now(timezone.utc)
@@ -25,7 +28,7 @@ if os.path.exists(OUT[0]):
     try: prev = json.load(open(OUT[0]))
     except Exception: pass
 out = {'updated_at': NOW.strftime('%Y-%m-%dT%H:%M:%SZ'), 'events': prev.get('events', []), 'earnings': prev.get('earnings', []),
-       'sources': {'events': 'ForexFactory calendar', 'earnings': 'Nasdaq earnings calendar'}}
+       'sources': {'events': 'US BLS, BEA and Federal Reserve schedules; ForexFactory calendar', 'earnings': 'Nasdaq earnings calendar'}}
 
 # Economic releases: both weeks, all impacts, retain released values for 30 days.
 try:
@@ -42,6 +45,16 @@ try:
                      'imp': {'High': 3, 'Medium': 2, 'Low': 1}[e['impact']], 'type': 'economic',
                      'country': {'USD':'US','EUR':'EU','GBP':'GB','JPY':'JP','CNY':'CN','CHF':'CH','CAD':'CA','AUD':'AU','NZD':'NZ'}.get(e['country'], ''),
                      'actual': e.get('actual') or '', 'fc': e.get('forecast') or '', 'prev': e.get('previous') or ''})
+    # Official US schedules fill the weeks ahead (the weekly feed only covers this and next week). Where the feed already lists
+    # the same release on the same day, keep the feed row because it carries forecast and actual values.
+    official, failed = calendar_official.all_official(NOW)
+    for msg in failed: print('official schedule failed:', msg)
+    ff_by_day = {}
+    for e in keep: ff_by_day.setdefault((e['at'][:10], e['c']), []).append(e['t'].lower())
+    for o in official:
+        key = o.pop('ff', '').lower()
+        if key and any(key in t for t in ff_by_day.get((o['at'][:10], o['c']), [])): continue
+        keep.append(o)
     # Merge by release identity; a later empty feed field must not erase an actual.
     merged = {}
     for e in prev.get('events', []):

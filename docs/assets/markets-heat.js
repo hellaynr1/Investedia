@@ -117,7 +117,7 @@
     document.querySelectorAll('#mh-view button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === S.view));
     if (!S.ready) return skeleton();
     ({ sec: sectors, idx: indices, cmd: commodities, cry: crypto, fx, tv: liveCharts })[S.view]();
-    $('mh-live-note').hidden = !(S.view === 'cry' && !S.liveOn && !window.INV_LIVE_URL);
+    $('mh-live-note').hidden = !(S.view === 'cry' && !S.liveOn);
     status();
   }
   function status() { const el = $('mh-status'); el.className = 'mh-status' + (S.view === 'cry' && S.liveOn ? ' live' : ''); el.lastChild.textContent = S.view === 'cry' && S.liveOn ? 'Live' : 'Delayed'; }
@@ -132,15 +132,16 @@
     tick(); poll = setInterval(() => { if (!document.hidden) tick(); }, 3000);
   }
   function connect() {
+    if (!(window.InvConsent && InvConsent.allows('live'))) return;
     if (window.INV_LIVE_URL) { if (!poll) relay(); return; }
-    if (ws || !(window.InvConsent && InvConsent.allows('live'))) return;
+    if (ws) return;
     try { ws = new WebSocket('wss://ws-feed.exchange.coinbase.com'); } catch { return; }
     ws.onopen = () => { retry = 0; S.liveOn = true; ws.send(JSON.stringify({ type: 'subscribe', product_ids: PROD, channels: ['ticker'] })); if (S.ready) draw(); };
     ws.onmessage = e => { let m; try { m = JSON.parse(e.data); } catch { return; } if (m.type !== 'ticker' || !m.price) return; const p = +m.price, prev = S.live[m.product_id]?.p; S.live[m.product_id] = { p, o: +m.open_24h || S.live[m.product_id]?.o }; pend[m.product_id] = { ...S.live[m.product_id], dir: prev == null ? 0 : p - prev }; if (!raf) raf = requestAnimationFrame(flush); };
     ws.onclose = () => { ws = null; S.liveOn = false; if (S.ready) status(); if (window.InvConsent && InvConsent.allows('live')) { clearTimeout(rt); rt = setTimeout(connect, Math.min(30000, 1500 * 2 ** retry++)); } };
     ws.onerror = () => { try { ws.close(); } catch {} };
   }
-  function disconnect() { if (window.INV_LIVE_URL) return; clearTimeout(rt); if (ws) { ws.onclose = null; try { ws.close(); } catch {} ws = null; } S.liveOn = false; S.live = {}; if (S.ready) draw(); }
+  function disconnect() { if (window.INV_LIVE_URL) { clearInterval(poll); poll = null; S.liveOn = false; S.live = {}; S.relay = {}; if (S.ready) draw(); return; } clearTimeout(rt); if (ws) { ws.onclose = null; try { ws.close(); } catch {} ws = null; } S.liveOn = false; S.live = {}; if (S.ready) draw(); }
   window.addEventListener('inv-consent-change', () => (window.InvConsent && InvConsent.allows('live')) ? connect() : disconnect());
   $('mh-live-on').onclick = () => window.InvConsent && InvConsent.open();
   // ---------- Events ----------

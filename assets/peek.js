@@ -87,11 +87,12 @@
   const load = () => loading || (loading = Promise.all([
     jf('data/asset-importance.json').catch(() => ({ranks:{}})),
     jf('assets/globe/markets.json').catch(() => ({ assets: [] })),
+    jf('data/crypto-top30.json').catch(() => ({ coins: [] })),
     jf('assets/globe/iso.json').catch(() => ({})),
     jf('assets/globe/news-live.json').catch(() => ({ stories: [] })),
     jf('assets/globe/news-archive.json').catch(() => ({ stories: [] })),
     window.INV_LIVE_URL && window.InvConsent?.allows('live') ? fetch(window.INV_LIVE_URL, { cache: 'no-store' }).then(r => r.json()).catch(() => null) : Promise.resolve(null)
-  ]).then(([importance, m, iso, n, arc, live]) => {
+  ]).then(([importance, m, top30, iso, n, arc, live]) => {
     const by = new Map((m.assets || []).map(a => [a.s, a]));
     // Metadata only from the shared catalogue; prices must exist in the saved real feed.
     for (const meta of window.MOCK?.assets || []) {
@@ -101,13 +102,13 @@
     if (live?.p) for (const [id, v] of Object.entries(live.p)) { const a = by.get(id); if (a) { a.p = v.p; a.d = v.pc; a.h = v.h; a.l = v.l; a.v = v.v; } else by.set(id, { s: id, n: v.n, t: 'crypto', p: v.p, d: v.pc, h: v.h, l: v.l, v: v.v }); }
     for(const a of by.values()){const q=window.QUOTES?.q?.[a.s.replace(/-USD$/, '')];if(q){a.h=q.hi;a.l=q.lo;a.v=q.v;}}
     const seen = new Set(), stories = []; for (const x of [...(n.stories || []), ...(arc.stories || [])]) if (x.id && !seen.has(x.id)) { seen.add(x.id); stories.push(x); }
-    DATA = { importance: importance.ranks, assets: [...by.values()], iso, countries: Object.keys(iso).filter(c => !/\bIs\.$/.test(c)), stories };
+    DATA = { importance: importance.ranks, cryptoRank: Object.fromEntries((top30.coins || []).map(c => [c.s, c.rank])), assets: [...by.values()], iso, countries: Object.keys(iso).filter(c => !/\bIs\.$/.test(c)), stories };
   }));
   const label = a => a.s.replace(/-USD$/, '').replace(/=F$/, '').replace(/^\^/, '');
   const money = (v, a) => window.InvPrefs ? InvPrefs.fmt(v, a) : v?.toLocaleString('en-US', { maximumFractionDigits: 2 });
   const rank = (q, a) => { const s = label(a).toLowerCase(), n = (a.n || '').toLowerCase(); if (s === q) return 0; if (n === q) return 1; if (s.startsWith(q)) return 2; if (n.startsWith(q)) return 3; if (n.split(/[\s.-]+/).some(w => w.startsWith(q))) return 4; if (n.includes(q) || s.includes(q)) return 5; return 9; };
   const FILTERS = [['all', 'All'], ['stocks', 'Companies'], ['crypto', 'Crypto'], ['idx', 'Indices'], ['cmd', 'Commodities'], ['fx', 'Currencies'], ['countries', 'Countries'], ['articles', 'Articles']];
-  const GROUPS = { stocks: ['Companies', a => a.t === 'stocks' && !['Index','Country ETF'].includes(a.g)], idx: ['Indices', a => a.t === 'stocks' && a.g === 'Index'], crypto: ['Crypto', a => a.t === 'crypto'], cmd: ['Commodities', a => a.t === 'cmd'], fx: ['Currencies', a => a.t === 'fx'] };
+  const GROUPS = { stocks: ['Companies', a => a.t === 'stocks' && !['Index','Country ETF'].includes(a.g)], idx: ['Indices', a => a.t === 'stocks' && a.g === 'Index'], crypto: ['Crypto', a => a.t === 'crypto' && DATA.cryptoRank[label(a)] != null], cmd: ['Commodities', a => a.t === 'cmd'], fx: ['Currencies', a => a.t === 'fx'] };
   
   const fmtP = d => isFinite(d) ? `<i class="pc ${d > 0.005 ? 'u' : d < -0.005 ? 'd' : 'o'}"><span class="direction-arrow">${d > 0.005 ? '↑' : d < -0.005 ? '↓' : '↔'}</span> ${Math.abs(d).toFixed(2)}%</i>` : '';
   const kind = a => ({ stocks: a.g === 'Index' ? 'Index' : a.g === 'Country ETF' ? 'ETF' : 'Company', crypto: 'Crypto', cmd: 'Commodity', fx: 'Currency pair' })[a.t] || '';
@@ -117,7 +118,8 @@
   function search(q) {
     const out = []; if (!DATA) return out;
     const ranked = q ? DATA.assets.map(a => [rank(q, a), a]).filter(x => x[0] < 9).sort((a, b) => a[0] - b[0] || (b[1].m || 0) - (a[1].m || 0)).map(x => x[1]) : [...DATA.assets].sort((a,b) => (DATA.importance[a.s] || 10000) - (DATA.importance[b.s] || 10000) || (b.v || b.m || 0) - (a.v || a.m || 0));
-    for (const k of ['stocks', 'crypto', 'idx', 'cmd', 'fx']) { const items = ranked.filter(GROUPS[k][1]); if(k === 'idx') {const major=['^GSPC','^IXIC','^DJI','^FTSE','^GDAXI','^FCHI','^N225','^HSI','000001.SS','^BSESN','^NSEI','^AXJO'];items.sort((a,b)=>(major.includes(a.s)?major.indexOf(a.s):100)-(major.includes(b.s)?major.indexOf(b.s):100));} if (items.length) out.push({ key: k, title: GROUPS[k][0], items, html: (i, c) => row(i, c), type: 'asset' }); }
+    for (const k of ['stocks', 'crypto', 'idx', 'cmd', 'fx']) { const items = ranked.filter(GROUPS[k][1]); if(k === 'idx') {const major=['^GSPC','^IXIC','^DJI','^FTSE','^GDAXI','^FCHI','^N225','^HSI','000001.SS','^BSESN','^NSEI','^AXJO'];items.sort((a,b)=>(major.includes(a.s)?major.indexOf(a.s):100)-(major.includes(b.s)?major.indexOf(b.s):100));} if (k === 'crypto' && !q) items.sort((a, b) => DATA.cryptoRank[label(a)] - DATA.cryptoRank[label(b)]);
+      if (items.length) out.push({ key: k, title: GROUPS[k][0], items, html: (i, c) => row(i, c), type: 'asset' }); }
     const sec = q ? (window.InvSectors ? InvSectors.list : []).filter(x => x.name.toLowerCase().includes(q)) : [];
     if (sec.length) out.push({ key: 'sectors', fk: 'stocks', title: 'Sectors', items: sec, html: x => lnk(ROOT + 'assets/globe/news.html?sector=' + encodeURIComponent(x.slug), InvSectors.icon(x.name), x.name, 'Sector · articles and sector fund move') });
     const articleCount = c => DATA.stories.filter(s => s.location?.country === c).length;

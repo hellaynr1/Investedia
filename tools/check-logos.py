@@ -23,6 +23,9 @@ for symbol in sorted(ranks, key=ranks.get):
             with Image.open(path) as im:
                 if min(im.size) < 96: failures.append(f'{symbol}: {im.width}×{im.height}, minimum 96 px on both axes')
     except Exception as exc: failures.append(f'{symbol}: invalid logo ({exc})')
-print(f'Checked {len(ranks)} company logos (SVG vectors or raster ≥96 px).')
+coins = json.loads((ROOT/'data/crypto-top30.json').read_text())['coins']
+for coin in coins:
+    if not (ROOT/'assets/logos'/f"{coin['s']}.svg").is_file(): failures.append(f"{coin['s']} ({coin['n']}): missing coin logo")
+print(f'Checked {len(ranks)} company logos and {len(coins)} coin logos (SVG vectors or raster ≥96 px).')
 print('\n'.join(failures) if failures else 'All logos pass.')
 sys.exit(bool(failures))
