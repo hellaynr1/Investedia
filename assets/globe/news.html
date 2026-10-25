@@ -117,6 +117,10 @@ h1 span{color:var(--fg-3)}
 .hover .art span{display:none}
 .hover h3{margin:3px 0 6px;font-size:13.5px;line-height:1.3;font-weight:600;letter-spacing:-.01em}
 .hover.solo{grid-template-columns:1fr}
+.hover.hv-b{width:340px;padding:16px;display:block}.hv-b h3{margin:5px 0 3px;font-size:14.5px}.hv-b .hv-row{padding:11px 0 6px;border-top:1px solid rgba(255,255,255,.09);margin-top:8px}.hv-top{display:flex;align-items:center;gap:10px}.hv-top img{width:28px;height:28px;object-fit:contain;background:rgba(255,255,255,.07);padding:3px;border-radius:50%;flex:none}.hv-name{min-width:0;flex:1}.hv-name b{display:block;font-size:14px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hv-name span{font-size:12px;color:var(--fg-3)}.hv-pct{text-align:right;flex:none}.hv-pct small{display:block;margin-top:3px;font-size:12px;color:var(--fg-2)}
+.hv-impl{font-size:12px;color:var(--fg-2);margin:6px 0 4px}.hv-impl b.up{color:#5df08a}.hv-impl b.down{color:#ff8a82}.hv-impl b.flat{color:#c4c4cc}.hv-why{margin:8px 0 0;font-size:12px;line-height:1.45;color:var(--fg-2)}.hv-spark{display:block;width:100%;height:44px}
+.pct{display:inline-flex;font:700 12px Inter,system-ui,sans-serif;padding:3px 9px;border-radius:999px;white-space:nowrap}.pct.up{background:rgba(48,209,88,.16);color:#5df08a}.pct.down{background:rgba(255,69,58,.16);color:#ff8a82}.pct.flat{background:rgba(255,255,255,.08);color:#c4c4cc}
+.impact-head .pct{margin-left:auto}.impact-head .pct+.impact-dir{margin-left:0}
 .meta{font-size:11.5px;color:var(--fg-3);line-height:1.45}
 .meta b{color:var(--fg-2);font-weight:500}
 .eyebrow{font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3)}
@@ -573,12 +577,28 @@ function impactVisual(i) {
 function impactHTML(s) {
   const rows = impactsOf(s), moved = s.market_moving && typeof s.why_moved === 'string' ? s.why_moved : '';
   if (!rows.length && !moved) return '';
-  return `<section class="impact-section" aria-label="Affected assets">${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">Affected assets</div><div class="impact-list">${rows.map(i => `<div><div class="impact-head" ${assetForImpact(i) ? `data-asset="${esc(assetForImpact(i).s)}" role="button" tabindex="0"` : ''}>${impactVisual(i)}<span>${esc(i.name)}</span><span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p></div>`).join('')}</div></section>`;
+  return `<section class="impact-section" aria-label="Affected assets">${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">Affected assets</div><div class="impact-list">${rows.map(i => `<div><div class="impact-head" ${assetForImpact(i) ? `data-asset="${esc(assetForImpact(i).s)}" role="button" tabindex="0"` : ''}>${impactVisual(i)}<span>${esc(i.name)}</span>${assetForImpact(i) && Number.isFinite(assetForImpact(i).d) ? pctPill(assetForImpact(i).d) : ''}<span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p></div>`).join('')}</div></section>`;
 }
 function assetForImpact(i) {
   if (!i.ticker) return null;
   const ticker = i.ticker.toUpperCase();
   return MKT.by[ticker] || MKT.by[ticker+'-USD'] || MKT.by[ticker.replace(/=X$/, '')] || null;
+}
+const pctPill = v => `<span class="pct ${v > 0 ? 'up' : v < 0 ? 'down' : 'flat'}">${v > 0 ? '↑' : v < 0 ? '↓' : '↔'} ${Math.abs(v).toFixed(2)}%</span>`;
+const dirWord = v => v > 0 ? 'up' : v < 0 ? 'down' : 'flat';
+function money(a) { try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: a.cur || 'USD', maximumFractionDigits: a.p < 10 ? 3 : 2 }).format(a.p); } catch { return String(a.p); } }
+function sparkSvg(sp, col) {
+  if (!Array.isArray(sp) || sp.length < 2) return '';
+  const mn = Math.min(...sp), mx = Math.max(...sp), X = k => k / (sp.length - 1) * 300, Y = v => 40 - (v - mn) / ((mx - mn) || 1) * 34 - 3;
+  const d = sp.map((v, k) => `${k ? 'L' : 'M'}${X(k).toFixed(1)} ${Y(v).toFixed(1)}`).join('');
+  return `<svg class="hv-spark" viewBox="0 0 300 44" preserveAspectRatio="none" aria-hidden="true"><path d="${d}L300 44L0 44Z" fill="${col}" opacity=".12"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
+}
+// Hover card for a connection: every affected asset with its real price move next to what the article implies.
+function hoverCardHTML(edge) {
+  const rows = impactsOf(edge.article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && Number.isFinite(x.a.d)).sort((a, b) => (b.i === edge.impact) - (a.i === edge.impact)).slice(0, 3);
+  return `<div class="eyebrow">Affected assets · ${rows.length}</div><h3>${esc(edge.article.headline)}</h3><div class="meta">${esc(edge.article.source?.name || '')}${edge.article.location?.place ? ' · ' + esc(edge.article.location.place.split(',')[0]) : ''} · ${ago(edge.article.t)}</div>`
+    + rows.map(({ i, a }) => `<div class="hv-row"><div class="hv-top">${impactVisual(i)}<div class="hv-name"><b>${esc(a.n)}</b><span>${esc(a.s.replace(/-USD$/, ''))} · ${esc(money(a))}</span></div><div class="hv-pct">${pctPill(a.d)}<small>7 days ${a.w > 0 ? '+' : ''}${Number(a.w).toFixed(2)}%</small></div></div><div class="hv-impl">Article implies <b class="${i.direction === 'up' ? 'up' : i.direction === 'down' ? 'down' : 'flat'}">${IMPACT_ARROW[i.direction]} ${i.direction === 'mixed' || i.direction === 'unclear' ? i.direction : i.direction}</b> · price today <b class="${dirWord(a.d)}">${a.d > 0 ? '↑ up' : a.d < 0 ? '↓ down' : '↔ flat'}</b></div>${sparkSvg(a.sp, a.d >= 0 ? '#34d399' : '#f87171')}`).join('')
+    + `<p class="hv-why">${esc(edge.impact.why.slice(0, 170))}</p>`;
 }
 function assetTarget(a) {
   let la=a.la, lo=a.lo;
@@ -587,7 +607,7 @@ function assetTarget(a) {
   if (a.t === 'crypto') [la,lo] = [0,-30];
   return Number.isFinite(la) && Number.isFinite(lo) ? {phi:la*rad,lam:lo*rad} : null;
 }
-let network = [], arcHits = [], arcHover = null;
+let network = [], arcHits = [], arcHover = null, pillRects = [];
 function updateNetwork() {
   network = [...shown].sort(sortTop).flatMap(article => impactsOf(article).flatMap(impact => {
     const asset=assetForImpact(impact), target=asset && assetTarget(asset);
@@ -595,7 +615,7 @@ function updateNetwork() {
   })).slice(0,EMBED ? 10 : 40);
   const count=$('connection-count');if(count) count.textContent=`${network.length} connections in ${WLABEL[F.win]}`;
 }
-function arcPick(x,y) { return arcHits.find(h=>h.points.some(p=>p[2] && Math.hypot(p[0]-x,p[1]-y)<10)); }
+function arcPick(x,y) { const pr=pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h); if(pr) return pr.edge; return arcHits.find(h=>h.points.some(p=>p[2] && Math.hypot(p[0]-x,p[1]-y)<10)); }
 function impactTargets(s) { return impactsOf(s).map(i => ({ impact: i, country: impactCountry(i) })).filter(x => x.country); }
 
 // Story chains: a → b → c through "links"
@@ -738,7 +758,7 @@ addEventListener('wheel', () => { clearTimeout(cTimer); hideHover(); }, { passiv
 function pick(x, y, r) { let best = null, bd = r * r; for (const d of drawn) { const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < bd) { bd = q; best = d; } } return best; }
 function hoverAt(x, y) {
   const edge=arcPick(x,y); arcHover=edge || null;
-  if(edge){const hv=$('hover');hv.className='hover glass solo on';hv.innerHTML=`<div><div class="eyebrow">Affected assets</div><h3>${esc(edge.article.headline)}</h3><div class="meta">${esc(edge.article.source?.name)} · ${ago(edge.article.t)}</div><p>${IMPACT_ARROW[edge.impact.direction]} ${esc(edge.asset.n)} · ${esc(edge.impact.why)}</p></div>`;placeHover(x,y);cv.style.cursor='pointer';return;}
+  if(edge){const hv=$('hover');hv.className='hover glass solo hv-b on';hv.innerHTML=hoverCardHTML(edge);edge.pill?placeHover(edge.pill.x+edge.pill.w+4,edge.pill.y+edge.pill.h/2):placeHover(x,y);cv.style.cursor='pointer';return;}
 
   const d = pick(x, y, 16);
   if (d) { hoverCountry = null; if (hoverC !== d.key) { hoverC = d.key; showHover(d); } placeHover(d.x, d.y); cv.style.cursor = 'pointer'; return; }
@@ -1073,7 +1093,7 @@ function frame(t) {
   }
 
   // Option C: a calm network; the selected article reveals its complete asset links.
-  arcHits = []; let visibleArcs=0;
+  arcHits = []; pillRects = []; let visibleArcs=0;
   for (const [i, edge] of network.entries()) {
     const {article,impact,asset,target}=edge, active=focus?.id === article.id;
     if (focus && !active) continue;
@@ -1084,8 +1104,8 @@ function frame(t) {
     if(points.some(p=>p[2]))visibleArcs++;
     const q=points[Math.round((reduce ? .5 : (t/3800+i*.17)%1)*(points.length-1))];
     if(q[2]){ctx.fillStyle=`rgba(${col},${active?.95:.35})`;ctx.beginPath();ctx.arc(q[0],q[1],active?2.5:1.5,0,7);ctx.fill();}
-    const end=points[points.length-1];
-    if(active && !EMBED && end[2]){const text=`${IMPACT_ARROW[impact.direction]} ${asset.n}`, width=Math.min(180,ctx.measureText(text).width+20);ctx.fillStyle='#151519';ctx.beginPath();ctx.roundRect(end[0]-width/2,end[1]-12,width,24,12);ctx.fill();ctx.fillStyle=`rgb(${col})`;ctx.font='700 12px Inter,sans-serif';ctx.textAlign='center';ctx.fillText(text,end[0],end[1]+4,width-12);ctx.textAlign='left';}
+    if(active && !EMBED){const seen=points.filter(p=>p[2]&&p[0]>globeBox.left+34&&p[0]<globeBox.right-34&&p[1]>globeBox.top+30&&p[1]<globeBox.bottom-30);if(seen.length>2){const m=seen[Math.floor(seen.length/2)],d=asset.d,nm=asset.n.length>17?asset.n.slice(0,16)+'…':asset.n,pt=Number.isFinite(d)?`${d>0?'↑':d<0?'↓':'↔'} ${Math.abs(d).toFixed(2)}%`:IMPACT_ARROW[impact.direction];ctx.font='650 12px Inter,sans-serif';const w1=ctx.measureText(nm).width,w2=ctx.measureText(pt).width,W=w1+w2+32,H=26;let x=m[0]-W/2,y=m[1]-H/2;for(let n=0;n<8&&pillRects.some(r=>x<r.x+r.w+4&&x+W+4>r.x&&y<r.y+r.h+4&&y+H+4>r.y);n++)y+=H+4;
+      pillRects.push({x,y,w:W,h:H,nm,pt,w1,d,edge:{...edge,points,pill:{x,y,w:W,h:H}}});}}
     if(!EMBED)arcHits.push({...edge,points});
   }
   cv.dataset.arcCount=String(visibleArcs);
@@ -1126,6 +1146,9 @@ function frame(t) {
       ctx.font = '500 11.5px Inter,sans-serif'; ctx.fillStyle = `rgba(255,255,255,${.92 * al})`; ctx.fillText(s.location.place.split(',')[0], lx, d.y + 7);
     }
   }
+  // connection pills (asset + real % move) are drawn last so map markers never cover them
+  ctx.textBaseline='alphabetic';
+  for(const {x,y,w:W,h:H,nm,pt,w1,d} of pillRects){ctx.fillStyle='rgba(16,16,19,.94)';ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x,y,W,H,13);ctx.fill();ctx.stroke();ctx.textAlign='left';ctx.font='650 12px Inter,sans-serif';ctx.fillStyle='#fff';ctx.fillText(nm,x+12,y+17);ctx.fillStyle=!Number.isFinite(d)||d===0?'#c4c4cc':d>0?'#5df08a':'#ff8a82';ctx.font='700 12px Inter,sans-serif';ctx.fillText(pt,x+12+w1+8,y+17);}
   ctx.restore();
   requestAnimationFrame(frame);
 }

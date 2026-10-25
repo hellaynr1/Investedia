@@ -23,7 +23,7 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .grid3{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:28px}
 .grid3 .hn-card:first-child{grid-row:span 2}
 .grid3 .hn-card:first-child h3{font-size:26px}
-.whys{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.whys{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
 @media (max-width:900px){.hn-hero{height:auto;min-height:0;display:flex;flex-direction:column}.hn-copy{position:relative;top:0;padding-top:28px}.hn-hero iframe{order:2;position:relative;inset:auto;height:min(96vw,460px);margin-top:8px;will-change:transform}.hn-tick{order:3}.hn-hero::after{background:linear-gradient(180deg,transparent 70%,var(--bg))}.hn-lead{font-size:16px;margin:14px 0 18px}.hn-tick{position:relative}
   .grid3,.whys{grid-template-columns:1fr}.grid3 .hn-card:first-child{grid-row:auto}.grid3 .hn-card:first-child h3{font-size:21px}}
 .hn-mk{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:10px}
@@ -86,7 +86,7 @@ fitTitle(); addEventListener('resize', fitTitle); document.fonts && document.fon
 loadNews().then(d => {
   hnLive.innerHTML = '<i></i>' + updatedText(d.updated);
   hnTop.innerHTML = d.top.slice(0, 5).map((s, i) => card(s, i === 0)).join('');
-  hnWhy.innerHTML = d.moved.slice(0, 3).map(why).join('');
+  hnWhy.innerHTML = whySection(d.moved.slice(0, 3), d.asof);
   hnCty.innerHTML = countries(d.stories);
   hnTick.innerHTML = d.latest.slice(0, 6).map(s => '<a href="' + url(s) + '"><b>' + ago(s.published_at) + '</b>' + esc(s.headline) + '</a>').join('');
 }).catch(() => { hnTop.innerHTML = '<p class="hn-meta">News is loading. Please refresh in a moment.</p>'; });

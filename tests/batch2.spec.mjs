@@ -20,7 +20,7 @@ for(const width of widths){
  await page.keyboard.press('Escape');await page.waitForTimeout(250);await page.locator('#notif-btn').click();assert(await page.locator('.notif-source').count()>0);await page.locator('#notif-read').click();assert.equal(await page.locator('.notif-item.unread').count(),0);
  const data=JSON.parse(fs.readFileSync('assets/calendar-live.json'));
  await page.goto(base+'/calendar.html?date=custom&from=2026-01-01&to=2026-12-31&type=economic&impact=2&region=USD');await page.waitForTimeout(500);
- const expected=data.events.filter(e=>e.imp===2&&e.c==='USD'&&e.at.startsWith('2026')).length;assert.equal(await page.locator('tr[data-impact]').count(),expected);
+ const expected=data.events.filter(e=>e.imp===2&&e.c==='USD'&&e.at.startsWith('2026')).length;assert.equal(await page.locator('.cal-row[data-impact]').count(),expected);
  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'calendar overflow');
  await page.goto(base+'/assets/globe/news.html');await page.waitForTimeout(1600);assert(Number(await page.locator('#cv').getAttribute('data-arc-count'))>0);
  await context.close();console.log(`${width}: batch 2 checks passed`);

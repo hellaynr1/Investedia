@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=31b6e9eadf">
-<script src="assets/consent.js?v=31b6e9eadf"></script>
+<link rel="stylesheet" href="assets/consent.css?v=dafc96f639">
+<script src="assets/consent.js?v=dafc96f639"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia — Invest with clarity</title>
 <meta name="description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
@@ -14,8 +14,8 @@
 <meta property="og:image" content="assets/logo.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=31b6e9eadf">
-<link rel="stylesheet" href="assets/skin.css?v=31b6e9eadf">
+<link rel="stylesheet" href="assets/app.css?v=dafc96f639">
+<link rel="stylesheet" href="assets/skin.css?v=dafc96f639">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,17 +38,17 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=31b6e9eadf"></script>
-<script src="assets/legal-owner.js?v=31b6e9eadf"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=31b6e9eadf">
-<script src="assets/live-config.js?v=31b6e9eadf"></script>
-<script src="assets/prefs.js?v=31b6e9eadf"></script>
-<script src="assets/peek.js?v=31b6e9eadf"></script>
-<script src="assets/sectors.js?v=31b6e9eadf"></script>
-<script src="assets/news-menu.js?v=31b6e9eadf"></script>
-<script src="assets/ui.js?v=31b6e9eadf"></script>
-<script src="assets/news-alerts.js?v=31b6e9eadf" defer></script>
-<script src="assets/home-news.js?v=31b6e9eadf"></script>
+<script src="assets/mock.js?v=dafc96f639"></script>
+<script src="assets/legal-owner.js?v=dafc96f639"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=dafc96f639">
+<script src="assets/live-config.js?v=dafc96f639"></script>
+<script src="assets/prefs.js?v=dafc96f639"></script>
+<script src="assets/peek.js?v=dafc96f639"></script>
+<script src="assets/sectors.js?v=dafc96f639"></script>
+<script src="assets/news-menu.js?v=dafc96f639"></script>
+<script src="assets/ui.js?v=dafc96f639"></script>
+<script src="assets/news-alerts.js?v=dafc96f639" defer></script>
+<script src="assets/home-news.js?v=dafc96f639"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -74,7 +74,7 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .grid3{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:28px}
 .grid3 .hn-card:first-child{grid-row:span 2}
 .grid3 .hn-card:first-child h3{font-size:26px}
-.whys{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.whys{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
 @media (max-width:900px){.hn-hero{height:auto;min-height:0;display:flex;flex-direction:column}.hn-copy{position:relative;top:0;padding-top:28px}.hn-hero iframe{order:2;position:relative;inset:auto;height:min(96vw,460px);margin-top:8px;will-change:transform}.hn-tick{order:3}.hn-hero::after{background:linear-gradient(180deg,transparent 70%,var(--bg))}.hn-lead{font-size:16px;margin:14px 0 18px}.hn-tick{position:relative}
   .grid3,.whys{grid-template-columns:1fr}.grid3 .hn-card:first-child{grid-row:auto}.grid3 .hn-card:first-child h3{font-size:21px}}
 .hn-mk{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:10px}
@@ -137,7 +137,7 @@ fitTitle(); addEventListener('resize', fitTitle); document.fonts && document.fon
 loadNews().then(d => {
   hnLive.innerHTML = '<i></i>' + updatedText(d.updated);
   hnTop.innerHTML = d.top.slice(0, 5).map((s, i) => card(s, i === 0)).join('');
-  hnWhy.innerHTML = d.moved.slice(0, 3).map(why).join('');
+  hnWhy.innerHTML = whySection(d.moved.slice(0, 3), d.asof);
   hnCty.innerHTML = countries(d.stories);
   hnTick.innerHTML = d.latest.slice(0, 6).map(s => '<a href="' + url(s) + '"><b>' + ago(s.published_at) + '</b>' + esc(s.headline) + '</a>').join('');
 }).catch(() => { hnTop.innerHTML = '<p class="hn-meta">News is loading. Please refresh in a moment.</p>'; });
