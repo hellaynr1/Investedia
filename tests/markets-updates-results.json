@@ -1,0 +1,62 @@
+[
+ {
+  "width": 1440,
+  "id": "M1 crypto shows Bitcoin in one big card and a second square with the movers",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M2 labels read \"Top gainers · top 3\" and \"Top losers · top 3\" with 3 rows each",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M3 gainers are sorted best first, losers worst first, and no gainer is below any loser",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M4 the old gainers and losers block below the table is gone",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M5 no horizontal overflow",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M6 globe category bar has no Crypto chip but keeps Commodities",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M1 crypto shows Bitcoin in one big card and a second square with the movers",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M2 labels read \"Top gainers · top 3\" and \"Top losers · top 3\" with 3 rows each",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M3 gainers are sorted best first, losers worst first, and no gainer is below any loser",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M4 the old gainers and losers block below the table is gone",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M5 no horizontal overflow",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M6 globe category bar has no Crypto chip but keeps Commodities",
+  "pass": true
+ }
+]
