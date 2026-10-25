@@ -102,6 +102,11 @@ class ReleaseDates(Base):
         p = cf._get.calls[0][1]
         self.assertEqual((p['realtime_start'], p['realtime_end'], p['include_release_dates_with_no_data']), ('2026-11-10', '2027-03-10', 'true'))
 
+    def test_one_date_per_release_per_month(self):
+        rows = [{'release_name': 'New Residential Construction', 'date': d} for d in ('2026-11-18', '2026-11-25', '2026-12-17')]
+        cf._get = FakeFred({('releases/dates', '2026-11-10'): {'release_dates': rows}})
+        self.assertEqual([e['at'][:10] for e in cf.release_events(NOW, KEY, [])], ['2026-11-18', '2026-12-17'])
+
     def test_releases_already_listed_by_another_source_are_not_duplicated(self):
         cf._get = FakeFred({('releases/dates', '2026-11-10'): self.PAYLOAD})
         existing = [{'t': 'Retail Sales m/m', 'c': 'USD', 'at': '2026-11-17T13:30:00Z'}]

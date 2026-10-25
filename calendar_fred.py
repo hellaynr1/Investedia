@@ -65,7 +65,11 @@ def release_events(now, key, existing):
         if not hit or len(day) != 10 or covered(hit[3], day, existing + out): continue
         out.append({'t': hit[1], 'c': 'USD', 'at': day + 'T12:00:00Z', 'imp': hit[2], 'type': 'economic', 'country': 'US', 'actual': '', 'fc': '', 'prev': '',
                     'src': 'FRED', 'dateOnly': True, 'when': 'Time not published'})
-    return out
+    # FRED can list several dates for one release in a month (catch-up or revision dates). Keep the earliest per title and month
+    # rather than show dates we cannot confirm against the agency's own schedule.
+    first = {}
+    for e in sorted(out, key=lambda e: e['at']): first.setdefault((e['t'], e['at'][:7]), e)
+    return sorted(first.values(), key=lambda e: e['at'])
 
 
 def _obs(series, as_of, key):
