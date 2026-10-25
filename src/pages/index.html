@@ -17,8 +17,8 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .hn-lead{font-size:18px;line-height:1.55;color:var(--fg-2);max-width:500px;margin:18px 0 26px}
 .hn-search{display:flex;align-items:center;gap:10px;width:min(480px,100%);height:52px;padding:0 16px;border-radius:14px;border:1px solid var(--line-2,rgba(255,255,255,.15));background:rgba(18,18,20,.8);backdrop-filter:blur(10px);color:var(--fg-3);font-size:15px;text-decoration:none}
 .hn-search svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-.hn-tick{position:absolute;z-index:2;left:0;right:0;bottom:0;border-top:1px solid var(--line);background:rgba(10,10,11,.7);backdrop-filter:blur(10px)}
-.hn-tick .hn{display:flex;gap:28px;height:54px;align-items:center;overflow:hidden;white-space:nowrap;font-size:13.5px}
+.hn-tick{position:absolute;z-index:2;left:0;right:0;bottom:0;padding-bottom:24px}
+.hn-tick .hn{font-size:13.5px}
 .hn-tick a{color:var(--fg);text-decoration:none}.hn-tick b{color:#FF7A1A;font:500 12px var(--mono,monospace);margin-right:8px}
 .grid3{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:28px}
 .grid3 .hn-card:first-child{grid-row:span 2}
@@ -55,7 +55,7 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
     <p class="hn-lead">Financial news and market intelligence: what happened, where, and what it means for markets and portfolios.</p>
     <a class="hn-search" href="assets/globe/news.html"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search assets, countries &amp; articles</a>
   </div></div>
-  <div class="hn-tick"><div class="hn" id="hnTick"></div></div>
+  <div class="hn-tick"><div class="hn"><section id="hnTick"></section></div></div>
 </section>
 <div class="hn">
   <section class="sec resources" aria-label="Recommended resources" style="margin-top:40px">
@@ -88,7 +88,7 @@ loadNews().then(d => {
   hnTop.innerHTML = d.top.slice(0, 5).map((s, i) => card(s, i === 0)).join('');
   hnWhy.innerHTML = whySection(d.moved.slice(0, 3), d.asof);
   hnCty.innerHTML = countries(d.stories);
-  hnTick.innerHTML = d.latest.slice(0, 6).map(s => '<a href="' + url(s) + '"><b>' + ago(s.published_at) + '</b>' + esc(s.headline) + '</a>').join('');
+  headlineBar(hnTick, d.latest);
 }).catch(() => { hnTop.innerHTML = '<p class="hn-meta">News is loading. Please refresh in a moment.</p>'; });
 // Upcoming economic events + earnings (real, refreshed by update_calendar.py)
 const CC = { USD: 'us', EUR: 'eu', GBP: 'gb', JPY: 'jp', CNY: 'cn', CAD: 'ca', AUD: 'au', NZD: 'nz', CHF: 'ch' };

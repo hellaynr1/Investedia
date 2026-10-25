@@ -1,0 +1,83 @@
+[
+ {
+  "width": 1440,
+  "id": "H1 labelled region with a tag, flag, headline link, source and time",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "H2 starts with the newest article",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "H3 six dots, the active one follows the article",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "H4 the bar sits under the globe copy and search box, inside the hero, without overflow",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "H5 arrows step through articles and wrap; dots follow",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "H6 changes by itself after about 6 seconds",
+  "pass": false,
+  "error": "Expected \"actual\" to be strictly unequal to:"
+ },
+ {
+  "width": 1440,
+  "id": "H7 Pause stops it (aria-pressed) and Play restarts it; the change is announced when paused",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "H8 hovering the bar pauses it",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "H1 labelled region with a tag, flag, headline link, source and time",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "H2 starts with the newest article",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "H3 six dots, the active one follows the article",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "H4 the bar sits under the globe copy and search box, inside the hero, without overflow",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "H5 phone: arrows are hidden, pause button is at least 44px",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "H6 phone: swiping left shows the next article, right goes back",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "H9 reduced motion: starts paused and stays on the same article",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "H9 reduced motion: starts paused and stays on the same article",
+  "pass": true
+ }
+]

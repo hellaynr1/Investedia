@@ -63,6 +63,35 @@ const whyFeatured = (s, asof) => { const m = primary(s), t = s.why_moved || s.su
   return `<a class="hn-wf" href="${url(s)}"><div class="hn-wtop">${tags(s)}${m ? implies(m.i) : ''}</div><h3>${esc(s.headline)}</h3><p>${esc(t)}</p>${body}${impactChips(s)}</a>`; };
 const whySmall = s => { const m = primary(s); return `<a class="hn-wc" href="${url(s)}"><div class="hn-wtop">${tags(s)}</div><h4>${esc(s.headline)}</h4>${m ? `<div class="hn-wasset"><b>${esc(m.a.n)}</b>${pctPill(m.a.d)}${implies(m.i)}</div>` : impactChips(s)}</a>`; };
 const whySection = (list, asof) => list.length ? whyFeatured(list[0], asof) + `<div class="hn-wside">${list.slice(1, 3).map(whySmall).join('')}</div>` : '';
+// Headline bar under the globe: one article at a time (Breaking/Latest tag, flag, headline, source and time).
+// Auto-advances every 6 s; pauses on hover, focus and when hidden; a Pause button, arrows (wide) and swipe (phone) let people control it.
+function headlineBar(el, list) {
+  const items = list.slice(0, 6); if (!items.length) { el.innerHTML = ''; return; }
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let i = 0, timer = 0, paused = reduce, hover = false;
+  el.setAttribute('role', 'region'); el.setAttribute('aria-roledescription', 'carousel'); el.setAttribute('aria-label', 'Latest articles');
+  el.innerHTML = '<div class="hn-hbc"><span class="hn-hbtag"></span><img class="hn-hbf" alt="" hidden><a class="hn-hbh"></a><span class="hn-hbs"></span><span class="hn-hbn"><button type="button" class="hn-hbb" data-hb="-1" aria-label="Previous article">‹</button><button type="button" class="hn-hbb" data-hb="1" aria-label="Next article">›</button></span><span class="hn-hbd" aria-hidden="true"></span><button type="button" class="hn-hbp" aria-label="Pause automatic changes"></button></div><span class="hn-hbl" aria-live="off"></span>';
+  const q = c => el.querySelector(c), live = q('.hn-hbl'), pbtn = q('.hn-hbp'), body = q('.hn-hbc');
+  const show = (k, announce) => {
+    i = (k + items.length) % items.length; const s = items[i], f = flagSrc(s.location.country), tag = FLAG[s.flag] || 'Latest';
+    q('.hn-hbtag').textContent = tag; q('.hn-hbtag').dataset.t = s.flag || 'latest';
+    const img = q('.hn-hbf'); img.hidden = !f; if (f) img.src = f;
+    const h = q('.hn-hbh'); h.href = url(s); h.textContent = s.headline;
+    q('.hn-hbs').textContent = (s.source?.name || '') + ' · ' + ago(s.published_at);
+    q('.hn-hbd').innerHTML = items.map((_, n) => `<i class="${n === i ? 'on' : ''}"></i>`).join('');
+    el.dataset.index = i; if (announce) live.textContent = `${tag}: ${s.headline}`;
+  };
+  const tick = () => { clearTimeout(timer); if (!paused && !hover && !document.hidden) timer = setTimeout(() => { show(i + 1); tick(); }, 6000); };
+  const setPaused = v => { paused = v; pbtn.textContent = v ? '▶' : '❚❚'; pbtn.setAttribute('aria-label', v ? 'Play automatic changes' : 'Pause automatic changes'); pbtn.setAttribute('aria-pressed', String(v)); live.setAttribute('aria-live', v ? 'polite' : 'off'); tick(); };
+  el.addEventListener('click', e => { const b = e.target.closest('[data-hb]'); if (b) { show(i + Number(b.dataset.hb), true); tick(); } });
+  pbtn.onclick = () => setPaused(!paused);
+  body.addEventListener('mouseenter', () => { hover = true; clearTimeout(timer); }); body.addEventListener('mouseleave', () => { hover = false; tick(); });
+  el.addEventListener('focusin', () => { hover = true; clearTimeout(timer); }); el.addEventListener('focusout', () => { hover = false; tick(); });
+  document.addEventListener('visibilitychange', tick);
+  let x0 = null; body.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  body.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 40) { show(i + (dx < 0 ? 1 : -1), true); tick(); } }, { passive: true });
+  show(0); setPaused(reduce);
+}
 function countries(list) {
   const c = {}; for (const s of list) c[s.location.country] = (c[s.location.country] || 0) + 1;
   return Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, n]) => `<a class="hn-cty" href="assets/globe/news.html?country=${encodeURIComponent(k)}">${flagSrc(k) ? `<img src="${flagSrc(k)}" alt="">` : ''}<span><b>${esc(nm(k))}</b><small>${n} ${n === 1 ? 'article' : 'articles'}</small></span></a>`).join('');
