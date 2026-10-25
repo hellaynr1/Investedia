@@ -413,7 +413,7 @@ document.documentElement.dataset.panel = PANEL_TEMPLATE;
 let panelTab = 'top', panelExpanded = false, panelInitialized = false;
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const CATS = [['all', 'All'], ['markets', 'Markets'], ['companies', 'Companies'], ['economy', 'Economy'], ['technology', 'Technology'], ['crypto', 'Crypto'], ['commodities', 'Commodities'], ['geopolitics', 'Geopolitics']];
+const CATS = [['all', 'All'], ['markets', 'Markets'], ['companies', 'Companies'], ['economy', 'Economy'], ['technology', 'Technology'], ['commodities', 'Commodities'], ['geopolitics', 'Geopolitics']];
 const CAT = Object.fromEntries(CATS);
 const REGIONS = [['global', 'Global', -15, 24, 1], ['na', 'North America', -97, 40, 2], ['eu', 'Europe', 10, 50, 2.6], ['asia', 'Asia', 108, 28, 1.8], ['me', 'Middle East', 46, 26, 2.8], ['af', 'Africa', 20, 3, 1.8], ['latam', 'Latin America', -62, -16, 1.8], ['oc', 'Oceania', 140, -26, 2]];
 const WINS = [['now', 'Now', 15], ['1h', '1H', 60], ['6h', '6H', 360], ['24h', '24H', 1440], ['7d', '7D', 10080], ['30d', '30D', 43200]];

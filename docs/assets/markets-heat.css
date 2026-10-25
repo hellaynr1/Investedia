@@ -94,3 +94,5 @@ html:not([data-theme=light]) .pk-sector .mh-p,html:not([data-theme=light]) .pk-s
 @media(max-width:800px){.mh-tbl.nr.nv.nrg .mh-th,.mh-tbl.nr.nv.nrg .mh-tr{grid-template-columns:minmax(0,1fr) 92px 72px!important}}
 /* Red-tinted sector tiles: lighter red keeps WCAG AA contrast (4.5:1) on the tinted background */
 button[data-n] .d{color:#fecaca}
+/* crypto: the second big square lists the top 4 gainers and losers */
+.mh-gl2{display:flex;flex-direction:column;justify-content:center;gap:22px;padding:24px}.mh-gl2 .mh-lab{margin:0 0 4px;font-size:11px}.mh-gl2 .mh-mini{padding:12px 0;font-size:16px;border-top:1px solid var(--line)}.mh-gl2 .mh-mini:first-of-type{border-top:0}
