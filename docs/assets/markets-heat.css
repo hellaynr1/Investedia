@@ -96,3 +96,26 @@ html:not([data-theme=light]) .pk-sector .mh-p,html:not([data-theme=light]) .pk-s
 button[data-n] .d{color:#fecaca}
 /* crypto: the second big square lists the top 4 gainers and losers */
 .mh-gl2{display:flex;flex-direction:column;justify-content:center;gap:22px;padding:24px}.mh-gl2 .mh-lab{margin:0 0 4px;font-size:11px}.mh-gl2 .mh-mini{padding:12px 0;font-size:16px;border-top:1px solid var(--line)}.mh-gl2 .mh-mini:first-of-type{border-top:0}
+/* indices: region switch (button + arrows on wide screens, tabs on phones) */
+.mh-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mh-rgc{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px}.mh-rsum{color:var(--fg-2);font-size:13px;display:inline-flex;align-items:center;gap:8px;margin-left:6px}
+.mh-rstep,.mh-rbtn{min-height:44px;min-width:44px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.05);color:#f5f5f7;font:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:0 16px}.mh-rbtn{background:#f5f5f7;color:#111}
+.mh-rstep:hover{border-color:#5a5a63}.mh-menu{position:relative}#mh-rmenu{position:absolute;z-index:40;top:52px;left:0;min-width:300px;padding:8px;border:1px solid var(--line);border-radius:18px;background:#141418;box-shadow:0 24px 70px #000b}#mh-rmenu[hidden]{display:none}
+#mh-rmenu button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:48px;padding:0 12px;border:0;border-radius:12px;background:none;color:#f5f5f7;font:inherit;font-size:14px;cursor:pointer;text-align:left}#mh-rmenu button:hover,#mh-rmenu button[aria-current=true]{background:rgba(255,255,255,.1)}
+.mh-rm{display:inline-flex;align-items:center;gap:10px}.mh-rm svg{width:50px;height:18px}
+.mh-rtabs{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);margin:0 0 14px}.mh-rtabs button{flex:1;min-height:44px;padding:0 10px;border:0;border-radius:999px;background:none;color:#c4c4cc;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap}.mh-rtabs button[aria-pressed=true]{background:#f5f5f7;color:#111}
+.mh-rg-ph{display:none}
+/* commodities: scoreboard (wide) and grouped list (phone) */
+.mh-cm-ph{display:none}.mh-cs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.mh-cg{padding:18px;border:1px solid var(--line);border-radius:22px;background:rgba(255,255,255,.04)}.mh-cgh{display:flex;align-items:center;justify-content:space-between;gap:10px}.mh-cgh b{font-size:18px;letter-spacing:-.02em}.mh-cgs{display:block;color:var(--fg-2);font-size:12.5px;margin:2px 0 12px}
+.mh-cbig{padding:13px 14px;border-radius:16px;background:rgba(255,255,255,.07);margin-bottom:6px;cursor:pointer}.mh-cbig .mh-lab{margin:0 0 6px;display:block}.mh-cbig>div{display:flex;align-items:center;justify-content:space-between;gap:10px}.mh-cbig b{font-size:15px}.mh-cbig strong{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.mh-cr{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:0 6px;border-top:1px solid var(--line);font-size:14px;cursor:pointer;border-radius:10px}.mh-cr:hover,.mh-cl:hover,.mh-cbig:hover{background:rgba(255,255,255,.07)}.mh-crs{display:inline-flex;align-items:center;gap:10px}.mh-crs svg{width:46px;height:16px}.mh-crs .mono{min-width:64px;text-align:right;font-weight:650;font-size:13px}
+.mh-cbig strong.u,.mh-crs .u{color:#5df08a}.mh-cbig strong.d,.mh-crs .d{color:#ff8a82}.mh-cbig strong.o,.mh-crs .o{color:#c4c4cc}
+.mh-cl{display:grid;grid-template-columns:minmax(0,1fr) 52px auto;align-items:center;gap:12px;min-height:56px;padding:6px 4px;border-top:1px solid var(--line);cursor:pointer}.mh-cl b{display:block;font-size:14px}.mh-cl small{color:var(--fg-2);font-size:12px}.mh-cl svg{width:52px;height:22px}
+.mh-cll .mh-lab{margin:14px 0 2px}
+.mh-cr:focus-visible,.mh-cl:focus-visible,.mh-cbig:focus-visible{outline:3px solid #FF7A1A;outline-offset:2px}
+@media(max-width:900px){.mh-cs{grid-template-columns:1fr}}
+@media(max-width:700px){.mh-rg-pc{display:none}.mh-rg-ph{display:flex}.mh-cm-pc{display:none}.mh-cm-ph{display:block}}
+/* contrast (WCAG AA): lighter table header text and red pills inside the highlighted menu row */
+.mh-tbl .mh-th{opacity:1}.mh-tbl .mh-th,.mh-tbl .mh-th span{color:#a8a8b2}
+#mh-rmenu .mh-chip.d{color:#ffa39b!important}
