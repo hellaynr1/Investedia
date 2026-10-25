@@ -13,3 +13,4 @@
 .pr-bar{display:flex;align-items:center;gap:10px}.pr-bar i{display:block;height:8px;border-radius:5px;background:#a1a1aa;max-width:58%}.pr-rail li.u .pr-bar i{background:#34d399}.pr-rail li.d .pr-bar i{background:#f87171}.pr-bar .m{font-size:13px;white-space:nowrap}.pr-bar small{color:var(--fg-3);font:500 10.5px Inter,system-ui,sans-serif}
 .pr-none,.pr-note{color:var(--fg-2);font-size:12.5px;line-height:1.5}.pr-note{margin:10px 0 0}.pr-sec[hidden]{display:none}
 .pr-rail li{color:var(--fg)}
+.pr-ic .ai-c{width:34px!important;height:34px!important}
