@@ -4,9 +4,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {launch,base,viewport,widths,fixtureExternal} from './browser-support.mjs';
 const markets=JSON.parse(fs.readFileSync('assets/globe/markets.json')).assets, news=JSON.parse(fs.readFileSync('assets/globe/news-live.json')).stories;
-const mk=t=>markets.find(a=>a.s===t||a.site===t);
+const iso=Object.values(JSON.parse(fs.readFileSync('assets/globe/iso.json')));
+// same resolution rules as the globe page (assetForImpact / impactsOf)
+const mk=t=>{if(!t)return null;const u=t.toUpperCase();return markets.find(a=>a.s===u||a.s===u+'-USD'||a.s===u.replace(/=X$/,''))||null;};
+const usable=i=>i&&['country','company','asset','sector'].includes(i.kind)&&typeof i.name==='string'&&typeof i.why==='string'&&iso.includes(i.country);
 const pctText=d=>`${d>0?'↑':d<0?'↓':'↔'} ${Math.abs(d).toFixed(2)}%`;
-const priced=news.find(s=>(s.impacts||[]).some(i=>i.ticker&&mk(i.ticker)&&Number.isFinite(mk(i.ticker).d)&&['country','company','asset','sector'].includes(i.kind)));
+const priced=news.find(s=>(s.impacts||[]).slice(0,4).some(i=>usable(i)&&mk(i.ticker)&&Number.isFinite(mk(i.ticker).d)));
 const b=await launch(), results=[];
 const check=async(width,id,fn)=>{try{await fn();results.push({width,id,pass:true});}catch(e){results.push({width,id,pass:false,error:e.message.split('\n')[0]});}};
 for(const w of widths){
@@ -34,7 +37,7 @@ for(const w of widths){
  // ---- Globe hover B ----
  if(priced){
   await p.goto(base+'/assets/globe/news.html?story='+encodeURIComponent(priced.id));try{await p.getByRole('button',{name:'Accept essential',exact:true}).click({timeout:2500});}catch{}await p.waitForTimeout(3000);
-  const imp=priced.impacts.find(i=>i.ticker&&mk(i.ticker)&&Number.isFinite(mk(i.ticker).d)),a=mk(imp.ticker);
+  const imp=priced.impacts.slice(0,4).find(i=>usable(i)&&mk(i.ticker)&&Number.isFinite(mk(i.ticker).d)),a=mk(imp.ticker);
   await check(w,'G1 a pill with the asset name and its real % sits on the line',async()=>{const pill=await p.evaluate(()=>pillRects.map(r=>({nm:r.nm,pt:r.pt,x:r.x,y:r.y,w:r.w,h:r.h})));assert(pill.length>=1,'pill drawn');const m=pill.find(r=>a.n.startsWith(r.nm.replace('…','')));assert(m,'pill for '+a.n);assert.equal(m.pt,pctText(a.d));assert(m.x>0&&m.x+m.w<await p.evaluate(()=>innerWidth),'pill is on screen');});
   if(w===1440){
    await check(w,'G2 hovering the pill opens the impact card with name, ticker, price, % today, 7-day %, implies line, sparkline',async()=>{const r=await p.evaluate(()=>{const q=pillRects[0];return {x:q.x+q.w/2,y:q.y+q.h/2};});await p.mouse.move(r.x,r.y);await p.waitForTimeout(500);const t=await p.locator('#hover').innerText(),tl=t.toLowerCase();assert.equal(await p.locator('#hover.on').count(),1);for(const x of ['affected assets','7 days','article implies','price today'])assert(tl.includes(x),x);assert(t.includes(pctText(a.d)),'% in card');assert.equal(await p.locator('#hover .hv-spark').count()>=1,true);});

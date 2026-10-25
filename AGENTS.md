@@ -16,6 +16,7 @@ investedia.com: **investing media for everyone**. A news-first website: the worl
 6. **Secrets:** never commit `.env`, API keys, the Supabase service_role key, the Google client secret or the Resend key. Only the Supabase *publishable* key may be in the code (it is in `assets/ui.js`).
 7. Never delete files, data, accounts or keys without asking.
 8. **Label every option on the image itself.** Whenever you show design options, put a clear label (A, B, C or 1, 2, 3, plus a 2-3 word name) printed on each screenshot or mock-up image, big enough to read at a glance, and use the same labels in the message. The owner receives many screenshots and must be able to decide from the image alone. Also label before/after images ("Now" / "New") and PC / phone.
+9. **A chosen design is finished only when every visible element of the chosen mockup exists in the build** (including numbers such as % changes). Follow `design/CODEX-ACCEPTANCE-PROTOCOL.md` for every task and PR: numbered acceptance criteria, a data map, one test per criterion, and a built-vs-mockup screenshot table. Missing data means stop and report, never ship a different design.
 
 ## How the site is built
 - Pages live in `src/pages/*.html` (first line is JSON: title, desc, key, optional scripts). `python3 build.py` wraps them with the shared head and writes the root `*.html` files **and** mirrors everything to `docs/`. GitHub Pages serves `docs/`.
