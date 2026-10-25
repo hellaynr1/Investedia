@@ -20,11 +20,12 @@
     "errors": []
   },
   {
-    "url": "story.html?id=n71b321bd5c",
+    "url": "story.html?id=na0cbc7e5a8",
     "width": 1440,
     "pass": true,
     "hosts": [
-      "fonts.googleapis.com"
+      "fonts.googleapis.com",
+      "cdn.brandfetch.io"
     ],
     "errors": []
   },
@@ -67,11 +68,12 @@
     "errors": []
   },
   {
-    "url": "story.html?id=n71b321bd5c",
+    "url": "story.html?id=na0cbc7e5a8",
     "width": 390,
     "pass": true,
     "hosts": [
-      "fonts.googleapis.com"
+      "fonts.googleapis.com",
+      "cdn.brandfetch.io"
     ],
     "errors": []
   },

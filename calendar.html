@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=db0ac6e9c9">
-<script src="assets/consent.js?v=db0ac6e9c9"></script>
+<link rel="stylesheet" href="assets/consent.css?v=d244d0ebbc">
+<script src="assets/consent.js?v=d244d0ebbc"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Economic calendar — Investedia</title>
-<meta name="description" content="Real economic releases and earnings, filtered by impact, currency and date.">
+<meta name="description" content="Real economic releases and earnings by day, with forecast, previous, actual and the markets they move.">
 <meta property="og:title" content="Economic calendar — Investedia">
-<meta property="og:description" content="Real economic releases and earnings, filtered by impact, currency and date.">
+<meta property="og:description" content="Real economic releases and earnings by day, with forecast, previous, actual and the markets they move.">
 <meta name="theme-color" content="#0A0A0B">
 <meta property="og:type" content="website">
 <meta property="og:image" content="assets/logo.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=db0ac6e9c9">
-<link rel="stylesheet" href="assets/skin.css?v=db0ac6e9c9">
+<link rel="stylesheet" href="assets/app.css?v=d244d0ebbc">
+<link rel="stylesheet" href="assets/skin.css?v=d244d0ebbc">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,28 +38,32 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=db0ac6e9c9"></script>
-<script src="assets/legal-owner.js?v=db0ac6e9c9"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=db0ac6e9c9">
-<script src="assets/live-config.js?v=db0ac6e9c9"></script>
-<script src="assets/prefs.js?v=db0ac6e9c9"></script>
-<script src="assets/peek.js?v=db0ac6e9c9"></script>
-<script src="assets/sectors.js?v=db0ac6e9c9"></script>
-<script src="assets/news-menu.js?v=db0ac6e9c9"></script>
-<script src="assets/ui.js?v=db0ac6e9c9"></script>
-<script src="assets/news-alerts.js?v=db0ac6e9c9" defer></script>
+<script src="assets/mock.js?v=d244d0ebbc"></script>
+<script src="assets/legal-owner.js?v=d244d0ebbc"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=d244d0ebbc">
+<script src="assets/live-config.js?v=d244d0ebbc"></script>
+<script src="assets/prefs.js?v=d244d0ebbc"></script>
+<script src="assets/peek.js?v=d244d0ebbc"></script>
+<script src="assets/sectors.js?v=d244d0ebbc"></script>
+<script src="assets/news-menu.js?v=d244d0ebbc"></script>
+<script src="assets/ui.js?v=d244d0ebbc"></script>
+<script src="assets/news-alerts.js?v=d244d0ebbc" defer></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <link rel="stylesheet" href="assets/calendar.css">
-<div class="page-head"><div class="crumbs"><a href="index.html">Home</a><span>/</span><span>Calendar</span></div><h1>Economic calendar</h1><p class="lede">Economic releases and company earnings. Plan around the events that move markets.</p><p id="cal-zone"></p><p id="cal-next" aria-live="polite"></p></div>
-<button class="btn cal-mobile" id="cal-filter-open" type="button">Filters</button>
-<section id="cal-filters" aria-label="Calendar filters"><div class="cal-sheet-head"><b>Filters</b><button type="button" id="cal-filter-close" class="btn">Done</button></div>
-<div class="cal-filter-row" id="cal-dates" aria-label="Date"></div>
-<div class="cal-filter-row"><span>Impact</span><div id="cal-impact"></div></div>
-<div class="cal-filter-row"><span>Region</span><div id="cal-regions"></div></div>
-<div class="cal-filter-row"><span>Type</span><div id="cal-types"></div><input type="search" id="cal-search" placeholder="Search events" aria-label="Search events"><label id="cal-mine-label" hidden><input type="checkbox" id="cal-mine"> Only my watchlist currencies</label></div>
-<div class="cal-filter-row" id="cal-custom" hidden><label>From <input type="date" id="cal-from"></label><label>To <input type="date" id="cal-to"></label></div>
-<button type="button" id="cal-reset" class="btn">Reset filters</button></section>
-<p id="cal-count" role="status"></p><div id="cal-results"></div><p class="muted" id="cal-source"></p>
+<div class="page-head"><div class="crumbs"><a href="index.html">Home</a><span>/</span><span>Calendar</span></div><h1>Economic calendar</h1><p id="cal-next" aria-live="polite"></p><p id="cal-zone"></p></div>
+<div class="cal-bar" role="group" aria-label="Calendar filters">
+<div class="cal-dates" id="cal-dates" role="group" aria-label="Date"></div>
+<button type="button" class="cal-chip" id="cal-high" aria-pressed="true"><i class="cal-dot"></i>High impact only</button>
+<button type="button" class="cal-chip" id="cal-earn" aria-pressed="false">Earnings</button>
+<div class="cal-menu"><button type="button" class="cal-chip" id="cal-region-btn" aria-haspopup="true" aria-expanded="false" aria-controls="cal-regions">Region <span aria-hidden="true">▾</span></button><div id="cal-regions" role="group" aria-label="Region" hidden></div></div>
+<input type="search" id="cal-search" placeholder="Search events" aria-label="Search events">
+<label id="cal-mine-label" hidden><input type="checkbox" id="cal-mine"> Only my watchlist currencies</label>
+<button type="button" id="cal-reset" class="cal-chip cal-reset">Reset</button>
+</div>
+<div class="cal-custom" id="cal-custom" hidden><label>From <input type="date" id="cal-from"></label><label>To <input type="date" id="cal-to"></label></div>
+<p id="cal-count" role="status"></p>
+<div class="cal-layout"><div id="cal-results"></div><aside id="cal-detail" class="cal-detail" aria-label="Event details"></aside></div>
+<p class="muted" id="cal-source"></p>
 <script src="assets/calendar.js"></script>
 </main>
 </body>

@@ -1,0 +1,152 @@
+[
+ {
+  "width": 1440,
+  "id": "C1 header shows \"Next high impact\" line",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "C2 filter bar has date chips, High impact only, Earnings, Region and search",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "C3 agenda groups by day with a high-impact count and rows with time, event, impact bars, forecast/previous",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "C4 a row is preselected and the detail panel shows Forecast, Previous, Actual",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "C5 detail panel lists watch-markets chips with real % moves from markets.json",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "C7 no horizontal overflow",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "W1 no 01/02/03 numbering",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "W2 featured story shows the asset real % today and 7-day change",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "W3 featured story has a price chart with an \"article published\" marker",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "W4 the two side cards show asset, % pill and \"Article implies\"",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "W5 featured: expected direction is shown next to the real move",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "W6 no horizontal overflow",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "G1 a pill with the asset name and its real % sits on the line",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "G2 hovering the pill opens the impact card with name, ticker, price, % today, 7-day %, implies line, sparkline",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "G3 the card does not cover the pill",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "G4 the article panel also lists the % next to each affected asset",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "C1 header shows \"Next high impact\" line",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "C2 filter bar has date chips, High impact only, Earnings, Region and search",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "C3 agenda groups by day with a high-impact count and rows with time, event, impact bars, forecast/previous",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "C4 a row is preselected and the detail panel shows Forecast, Previous, Actual",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "C5 detail panel lists watch-markets chips with real % moves from markets.json",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "C6 phone: row tap opens a bottom sheet and Close dismisses it",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "C7 no horizontal overflow",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "W1 no 01/02/03 numbering",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "W2 featured story shows the asset real % today and 7-day change",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "W3 featured story has a price chart with an \"article published\" marker",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "W4 the two side cards show asset, % pill and \"Article implies\"",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "W5 featured: expected direction is shown next to the real move",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "W6 no horizontal overflow",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "G1 a pill with the asset name and its real % sits on the line",
+  "pass": true
+ }
+]

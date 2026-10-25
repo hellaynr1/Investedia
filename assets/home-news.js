@@ -43,8 +43,26 @@ function impactChips(s) {
   const arrow = { up: '↑', down: '↓', mixed: '↔', unclear: '↔' };
   return rows.length ? `<div class="hn-ents hn-impacts" aria-label="AI-assisted analysis">${rows.map(i => `<span class="hn-ent"><img src="assets/globe/flags/${i.country.toLowerCase()}.svg" alt="" ${hideBad}><span class="hn-impact-${i.direction}">${arrow[i.direction]}</span>${esc(i.name)}</span>`).join('')}</div>` : '';
 }
-const why = (s, i) => `<a class="hn-why" href="${url(s)}"><span class="hn-n">0${i + 1}</span><div>${tags(s)}</div><h3>${esc(s.headline)}</h3><div class="hn-wl">What happened</div><p>${esc(s.summary)}</p><div class="hn-wl">Why it matters</div><p>${esc(s.why)}</p>${impactChips(s)}
-  ${(s.entities || []).length ? `<div class="hn-ents">${s.entities.map(e => `<span class="hn-ent"${e.ticker ? ` title="${esc(e.ticker)}"` : ''}>${entityImage(e, s.location.country)}<span>${esc(e.name)}</span></span>`).join('')}</div>` : ''}</a>`;
+// "Why it moved": real price moves next to what the article implies. Numbers come from assets/globe/markets.json only.
+let MARKETS = [];
+const mkOf = i => i && MARKETS.find(a => a.s === i.ticker || a.site === i.ticker);
+const primary = s => { for (const i of Array.isArray(s.impacts) ? s.impacts : []) { const a = mkOf(i); if (a && Number.isFinite(a.d)) return { a, i }; } return null; };
+const pctPill = v => `<span class="hn-pct ${v > 0 ? 'up' : v < 0 ? 'down' : 'flat'}">${v > 0 ? '↑' : v < 0 ? '↓' : '↔'} ${Math.abs(v).toFixed(2)}%</span>`;
+const IMPLIES = { up: '↑ up', down: '↓ down', mixed: '↔ mixed', unclear: 'unclear' };
+const implies = i => `<span class="hn-impl">Article implies ${IMPLIES[i.direction] || 'unclear'}</span>`;
+const sign = v => (v > 0 ? '+' : '') + v.toFixed(2) + '%';
+function spark(a, mark, up) {
+  const sp = a.sp || []; if (sp.length < 2) return '';
+  const mn = Math.min(...sp), mx = Math.max(...sp), X = k => k / (sp.length - 1) * 420, Y = v => 92 - (v - mn) / ((mx - mn) || 1) * 84;
+  const d = sp.map((v, k) => `${k ? 'L' : 'M'}${X(k).toFixed(1)} ${Y(v).toFixed(1)}`).join(''), c = up ? '#34d399' : '#f87171';
+  return `<div class="hn-chart" aria-hidden="true"><svg viewBox="0 0 420 96" preserveAspectRatio="none"><path d="${d}L420 96L0 96Z" fill="${c}" opacity=".12"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg><i class="hn-mark" style="left:${(X(mark) / 4.2).toFixed(1)}%"></i><b class="hn-dot" style="left:${(X(mark) / 4.2).toFixed(1)}%;top:${(Y(sp[mark]) / 96 * 100).toFixed(1)}%"></b></div>`;
+}
+const markIndex = (s, a, asof) => { const days = Math.max(0, (Date.parse(asof) - Date.parse(s.published_at)) / 864e5); return Math.max(0, Math.min(a.sp.length - 1, a.sp.length - 1 - Math.round(days * 5 / 7))); };
+const whyFeatured = (s, asof) => { const m = primary(s), t = s.why_moved || s.summary;
+  const body = m ? `<div class="hn-wrow"><div class="hn-wbig"><span class="hn-wl">${esc(m.a.n)} · today</span><strong class="${m.a.d > 0 ? 'up' : m.a.d < 0 ? 'down' : 'flat'}">${m.a.d > 0 ? '↑' : m.a.d < 0 ? '↓' : '↔'} ${Math.abs(m.a.d).toFixed(2)}%</strong><span class="hn-wl">7 days ${sign(m.a.w)}</span></div><div class="hn-wchart">${spark(m.a, markIndex(s, m.a, asof), m.a.w >= 0)}<div class="hn-wcap"><span>22 sessions ago</span><span class="hn-wmk">● article published</span><span>now</span></div></div></div>` : '';
+  return `<a class="hn-wf" href="${url(s)}"><div class="hn-wtop">${tags(s)}${m ? implies(m.i) : ''}</div><h3>${esc(s.headline)}</h3><p>${esc(t)}</p>${body}${impactChips(s)}</a>`; };
+const whySmall = s => { const m = primary(s); return `<a class="hn-wc" href="${url(s)}"><div class="hn-wtop">${tags(s)}</div><h4>${esc(s.headline)}</h4>${m ? `<div class="hn-wasset"><b>${esc(m.a.n)}</b>${pctPill(m.a.d)}${implies(m.i)}</div>` : impactChips(s)}</a>`; };
+const whySection = (list, asof) => list.length ? whyFeatured(list[0], asof) + `<div class="hn-wside">${list.slice(1, 3).map(whySmall).join('')}</div>` : '';
 function countries(list) {
   const c = {}; for (const s of list) c[s.location.country] = (c[s.location.country] || 0) + 1;
   return Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, n]) => `<a class="hn-cty" href="assets/globe/news.html?country=${encodeURIComponent(k)}">${flagSrc(k) ? `<img src="${flagSrc(k)}" alt="">` : ''}<span><b>${esc(nm(k))}</b><small>${n} ${n === 1 ? 'article' : 'articles'}</small></span></a>`).join('');
@@ -52,9 +70,10 @@ function countries(list) {
 // rank: importance, then sources, then recency
 const rank = (a, b) => (b.importance - a.importance) || ((b.sources?.length || 1) - (a.sources?.length || 1)) || (Date.parse(b.published_at) - Date.parse(a.published_at));
 async function loadNews() {
-  const [n, iso, logos] = await Promise.all([fetch('assets/globe/news-live.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/iso.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/logos.json').then(r => r.json()).catch(() => ({}))]);
+  const [n, iso, logos, mk] = await Promise.all([fetch('assets/globe/news-live.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/iso.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/logos.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] }))]);
+  MARKETS = mk.assets || [];
   ISO = iso; ENTITY_LOGOS = Object.fromEntries(Object.entries(logos).map(([k, v]) => [k, v.replace('../logos/', 'assets/logos/')])); const stories = n.stories || [];
   return { stories, top: [...stories].sort(rank), latest: [...stories].sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at)), updated: n.updated_at,
-    moved: [...stories].filter(s => s.market_moving || s.importance === 3).sort(rank) };
+    moved: (() => { const all = [...stories].filter(s => s.market_moving || s.importance === 3).sort(rank), seen = new Set(), out = []; for (const s of all) { const m = primary(s); if (m && !seen.has(m.a.s)) { seen.add(m.a.s); out.push(s); } } for (const s of all) if (!out.includes(s) && !primary(s)) out.push(s); return out; })(), asof: mk.asof };
 }
 const updatedText = t => 'Live · updated ' + new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
