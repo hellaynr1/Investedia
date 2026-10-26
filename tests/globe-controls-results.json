@@ -1,7 +1,7 @@
 [
  {
   "width": 1440,
-  "id": "LA1 the legend line is replaced by a Layers button that starts with Connections on and Market hours off",
+  "id": "LA1 the Layers card is already open when the globe opens, with Connections on and Market hours off",
   "pass": true
  },
  {
@@ -21,7 +21,12 @@
  },
  {
   "width": 1440,
-  "id": "LA5 Escape and a click outside close the menu and focus returns to the Layers button",
+  "id": "LA5 the card stays open when the globe is dragged or clicked; the button and Escape hide it and bring it back",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "LA7 every time the globe opens, Connections is on and Market hours is off (nothing is remembered)",
   "pass": true
  },
  {
@@ -61,7 +66,7 @@
  },
  {
   "width": 390,
-  "id": "LA1 the legend line is replaced by a Layers button that starts with Connections on and Market hours off",
+  "id": "LA1 the Layers card is already open when the globe opens, with Connections on and Market hours off",
   "pass": true
  },
  {
@@ -77,6 +82,11 @@
  {
   "width": 390,
   "id": "LA4 switching Market hours on shows the night shade and exchange dots and the count becomes 2; off removes them",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "LA7 every time the globe opens, Connections is on and Market hours is off (nothing is remembered)",
   "pass": true
  },
  {
