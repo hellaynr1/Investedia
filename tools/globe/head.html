@@ -13,6 +13,8 @@
   color-scheme:dark;
 }
 html,body{height:100%}
+html,body,#cv{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea{-webkit-user-select:text;user-select:text}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased}
 .app{display:grid;grid-template-columns:minmax(0,1fr) 340px;grid-template-rows:auto auto auto;gap:0;padding-block:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));box-sizing:border-box;max-width:1360px;margin:0 auto}
