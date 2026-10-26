@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=9cf11fb68c">
-<script src="assets/consent.js?v=9cf11fb68c"></script>
+<link rel="stylesheet" href="assets/consent.css?v=a2223a366d">
+<script src="assets/consent.js?v=a2223a366d"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia — Invest with clarity</title>
 <meta name="description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
@@ -14,8 +14,8 @@
 <meta property="og:image" content="assets/logo.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=9cf11fb68c">
-<link rel="stylesheet" href="assets/skin.css?v=9cf11fb68c">
+<link rel="stylesheet" href="assets/app.css?v=a2223a366d">
+<link rel="stylesheet" href="assets/skin.css?v=a2223a366d">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,18 +38,17 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=9cf11fb68c"></script>
-<script src="assets/legal-owner.js?v=9cf11fb68c"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=9cf11fb68c">
-<script src="assets/live-config.js?v=9cf11fb68c"></script>
-<script src="assets/prefs.js?v=9cf11fb68c"></script>
-<script src="assets/peek.js?v=9cf11fb68c"></script>
-<script src="assets/sectors.js?v=9cf11fb68c"></script>
-<script src="assets/news-menu.js?v=9cf11fb68c"></script>
-<script src="assets/ui.js?v=9cf11fb68c"></script>
-<script src="assets/news-alerts.js?v=9cf11fb68c" defer></script>
-<script src="assets/since-news.js?v=9cf11fb68c"></script>
-<script src="assets/home-news.js?v=9cf11fb68c"></script>
+<script src="assets/mock.js?v=a2223a366d"></script>
+<script src="assets/legal-owner.js?v=a2223a366d"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=a2223a366d">
+<script src="assets/live-config.js?v=a2223a366d"></script>
+<script src="assets/prefs.js?v=a2223a366d"></script>
+<script src="assets/peek.js?v=a2223a366d"></script>
+<script src="assets/sectors.js?v=a2223a366d"></script>
+<script src="assets/news-menu.js?v=a2223a366d"></script>
+<script src="assets/ui.js?v=a2223a366d"></script>
+<script src="assets/news-alerts.js?v=a2223a366d" defer></script>
+<script src="assets/home-news.js?v=a2223a366d"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -64,21 +63,21 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .hn-tick{display:none}
 .hn-pill{display:block;position:absolute;z-index:3;left:0;right:0;bottom:22px;pointer-events:none}
 .hn-pill[hidden]{display:none}
-.hn-pillbox{position:relative;width:min(560px,100%);pointer-events:auto}
-.hn-pillbox button{display:flex;align-items:center;gap:10px;width:100%;height:46px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(24,24,27,.6);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);color:#fff;font:600 14px Inter,system-ui,sans-serif;text-align:left}
-.hn-pillbox button i{flex:none;width:8px;height:8px;border-radius:50%;background:#FF7A1A;box-shadow:0 0 0 4px rgba(255,122,26,.25)}
-.hn-pillbox button b{flex:none;color:#ff9a4d;font:500 12px var(--mono,ui-monospace,monospace)}
-.hn-pillbox button span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hn-pillbox button em{font-style:normal;color:#a1a1aa;transition:transform .2s}
-.hn-pillbox button[aria-expanded=true] em{transform:rotate(180deg)}
-.hn-pillbox ul{position:absolute;left:0;right:0;bottom:54px;margin:0;padding:6px;list-style:none;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(24,24,27,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-.hn-pillbox ul[hidden]{display:none}
-.hn-pillbox li a{display:flex;gap:10px;align-items:baseline;padding:10px 12px;border-radius:12px;color:var(--fg);text-decoration:none;font-size:13.5px;line-height:1.35}
-.hn-pillbox li a:hover,.hn-pillbox li a:focus-visible{background:rgba(255,255,255,.07)}
-.hn-pillbox li b{flex:none;color:#ff9a4d;font:500 12px var(--mono,ui-monospace,monospace)}
-.hn-open{bottom:88px}
+/* min-width:0 + width:min(): the pill never grows with the headline text */
+.hn-pillbox{position:relative;display:flex;align-items:center;gap:4px;width:min(620px,100%);min-height:64px;padding:0 6px;border-radius:32px;border:1px solid rgba(255,255,255,.14);background:rgba(24,24,27,.62);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);pointer-events:auto}
+.hn-pillbox .pp{flex:none;width:44px;height:44px;border:0;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.07);color:#d4d4d8;font-size:22px;line-height:1}
+.hn-pillbox .pp:hover{background:rgba(255,255,255,.1);color:#fff}
+.hn-pillbox .pm{flex:1;min-width:0;display:block;padding:9px 6px;color:#fff;text-decoration:none;border-radius:16px}
+.hn-pillbox .pm:hover .ph{text-decoration:underline}
+.hn-pillbox .pt{display:flex;align-items:center;gap:8px;color:#ff9a4d;font:500 12px var(--mono,ui-monospace,monospace)}
+.hn-pillbox .pt i{width:7px;height:7px;border-radius:50%;background:#FF7A1A;box-shadow:0 0 0 3px rgba(255,122,26,.25)}
+.hn-pillbox .pt em{margin-left:auto;font-style:normal;color:#a1a1aa}
+.hn-pillbox .ph{display:block;margin-top:3px;font:600 14.5px/1.3 Inter,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hn-pillbox .ps{display:block;margin-top:1px;font:400 13px/1.3 Inter,system-ui,sans-serif;color:#a1a1aa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hn-open{bottom:108px}
 }
-.hn-open span{color:#ff9a4d}
+.hn-open span{color:#ff9a4d}.hn-open .t{color:#fff}
+@media (max-width:900px){.hn-open{min-width:44px;padding:0 14px;gap:6px}.hn-open .t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
 .hn-hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,var(--bg) 0%,rgba(10,10,11,.85) 28%,transparent 55%),linear-gradient(0deg,var(--bg),transparent 22%)}
 .hn-copy{position:absolute;z-index:2;left:0;right:0;top:15%;pointer-events:none}
 .hn-copy .hn>*{pointer-events:auto}
@@ -120,10 +119,10 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .hn-ci img.lg{width:30px;height:30px;border-radius:7px;background:#fff;padding:3px;object-fit:contain}
 @media (max-width:900px){.hn-cal{grid-template-columns:1fr}.hn-mk{grid-template-columns:1fr 1fr}#hnClock{display:none}.hn-m{padding:11px 12px;gap:9px}}
 </style>
-<link rel="stylesheet" href="assets/home-news.css"><link rel="stylesheet" href="assets/since-news.css">
+<link rel="stylesheet" href="assets/home-news.css">
 <section class="hn-hero" aria-label="Live news globe">
   <iframe id="hnGlobe" title="Live news globe"></iframe>
-  <a class="hn-open" href="globe.html" aria-label="Open the full globe"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>Open globe<span aria-hidden="true">→</span></a>
+  <a class="hn-open" href="/assets/globe/news.html" aria-label="Open the globe"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg><span class="t">Open globe</span><span class="ar" aria-hidden="true">→</span></a>
   <div class="hn-copy"><div class="hn">
     <span class="hn-live" id="hnLive"><i></i>Live</span>
     <h1 class="hn-title" id="hnTitle"><b>Invest with clarity.</b><span>See the world move.</span></h1>
@@ -131,7 +130,11 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
     <a class="hn-search" href="assets/globe/news.html"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search assets, countries &amp; articles</a>
   </div></div>
   <div class="hn-tick"><div class="hn" id="hnTick"></div></div>
-  <div class="hn-pill" id="hnPill" hidden><div class="hn"><div class="hn-pillbox"><ul id="hnPillList" hidden></ul><button type="button" id="hnPillBtn" aria-expanded="false" aria-controls="hnPillList"><i aria-hidden="true"></i><b id="hnPillT"></b><span id="hnPillH"></span><em aria-hidden="true">▾</em></button></div></div></div>
+  <div class="hn-pill" id="hnPill" hidden><div class="hn"><div class="hn-pillbox" role="group" aria-roledescription="carousel" aria-label="Latest headlines">
+    <button type="button" class="pp" id="hnPrev" aria-label="Previous headline">‹</button>
+    <a class="pm" id="hnPillA" href="#" aria-live="polite"><span class="pt"><i aria-hidden="true"></i><b id="hnPillT"></b><em id="hnPillN"></em></span><span class="ph" id="hnPillH"></span><span class="ps" id="hnPillS"></span></a>
+    <button type="button" class="pp" id="hnNext" aria-label="Next headline">›</button>
+  </div></div></div>
 </section>
 <div class="hn">
   <section class="sec resources" aria-label="Recommended resources" style="margin-top:40px">
@@ -166,11 +169,11 @@ loadNews().then(d => {
   hnCty.innerHTML = countries(d.stories);
   const L = d.latest.slice(0, 6);
   if (L.length) {
-    hnPillT.textContent = ago(L[0].published_at); hnPillH.textContent = L[0].headline; hnPill.hidden = false;
-    hnPillList.innerHTML = L.map(s => '<li><a href="' + url(s) + '"><b>' + ago(s.published_at) + '</b>' + esc(s.headline) + '</a></li>').join('');
-    hnPillBtn.onclick = () => { const o = hnPillList.hidden; hnPillList.hidden = !o; hnPillBtn.setAttribute('aria-expanded', o); };
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !hnPillList.hidden) { hnPillList.hidden = true; hnPillBtn.setAttribute('aria-expanded', 'false'); hnPillBtn.focus(); } });
-    document.addEventListener('click', e => { if (!hnPillList.hidden && !e.target.closest('.hn-pillbox')) { hnPillList.hidden = true; hnPillBtn.setAttribute('aria-expanded', 'false'); } });
+    let k = 0;
+    const show = n => { k = (n + L.length) % L.length; const x = L[k]; hnPillT.textContent = ago(x.published_at); hnPillH.textContent = x.headline; hnPillS.textContent = x.summary || ''; hnPillA.href = url(x); hnPillN.textContent = (k + 1) + ' / ' + L.length; };
+    show(0); hnPill.hidden = false;
+    hnPrev.onclick = () => show(k - 1); hnNext.onclick = () => show(k + 1);
+    hnPill.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') { show(k - 1); e.preventDefault(); } else if (e.key === 'ArrowRight') { show(k + 1); e.preventDefault(); } });
   }
   hnTick.innerHTML = d.latest.slice(0, 6).map(s => '<a href="' + url(s) + '"><b>' + ago(s.published_at) + '</b>' + esc(s.headline) + '</a>').join('');
 }).catch(() => { hnTop.innerHTML = '<p class="hn-meta">News is loading. Please refresh in a moment.</p>'; });
