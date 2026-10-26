@@ -1,0 +1,14 @@
+[
+ {
+  "id": "O1 at normal zoom no country with news fills most of the globe at any rotation",
+  "pass": true
+ },
+ {
+  "id": "O2 zoomed in (detailed map) no country fills most of the globe at any rotation",
+  "pass": true
+ },
+ {
+  "id": "O3 countries entirely behind the globe add nothing to the picture",
+  "pass": true
+ }
+]

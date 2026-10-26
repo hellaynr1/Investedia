@@ -732,7 +732,7 @@ function updateNetwork() {
     const asset=assetForImpact(impact), target=asset && assetTarget(asset);
     return target ? [{article,impact,asset,target}] : [];
   })).slice(0,EMBED ? 10 : 40);
-  const count=$('connection-count');if(count) count.textContent=`${network.length} connections in ${WLABEL[F.win]}`;
+  const count=$('connection-count');if(count) count.textContent=`Show all ${network.length} ${network.length === 1 ? 'connection' : 'connections'} from ${WLABEL[F.win]}`;
 }
 function arcPick(x,y) { const pr=pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h); if(pr) return pr.edge; return arcHits.find(h=>h.points.some(p=>p[2] && Math.hypot(p[0]-x,p[1]-y)<10)); }
 function impactTargets(s) { return impactsOf(s).map(i => ({ impact: i, country: impactCountry(i) })).filter(x => x.country); }
@@ -1259,6 +1259,8 @@ function arcPts(a, b, n = 56) {
 }
 function ringPath(rr, fill) {
   // fill: points behind the globe are pulled onto its edge, and the outline follows the edge (an arc) between them, so shapes never cut across the globe
+  // A shape entirely behind the globe has nothing to show; pulling all of it onto the edge draws a ring that, filled, covers the whole disc (the globe flashed orange).
+  if (fill) { let seen = false; for (const [phi, lam] of rr) if (proj(phi, lam)[2] >= 0) { seen = true; break; } if (!seen) return; }
   let pen = false, pa = null;
   for (const [phi, lam] of rr) {
     const [x, y, z] = proj(phi, lam);
@@ -1449,7 +1451,10 @@ $('sw-mkt').onclick = () => {
 function layOpen(o) { $('lay-pop').hidden = !o; $('lay-btn').setAttribute('aria-expanded', String(o)); }
 $('lay-btn').onclick = () => layOpen($('lay-pop').hidden);
 addEventListener('keydown', e => { if (e.key === 'Escape' && !$('lay-pop').hidden) { layOpen(false); $('lay-btn').focus(); } });
-document.addEventListener('pointerdown', e => { if (!$('lay-pop').hidden && !e.target.closest('#layers')) layOpen(false); });
+// The card is open when the globe opens (Connections on, Market hours off) and stays until the visitor hides it with the button or Escape.
+if (!EMBED && !phone()) layOpen(true);
+// Coming back to the page from the browser's back/forward cache must not keep an old "connections off".
+addEventListener('pageshow', e => { if (e.persisted && new URLSearchParams(location.search).get('connections') !== '0') { CONNON = true; syncLayers(); } });
 syncLayers(); if (MKTON) panelTab = 'markets';
 placeFilters(phone()); addEventListener('resize', () => placeFilters(phone()));
 
