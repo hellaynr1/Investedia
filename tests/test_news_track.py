@@ -67,5 +67,49 @@ class Track(unittest.TestCase):
         self.assertEqual(data['s']['EB5.SI'][0][1], 3.64)
 
 
+class Ledger(unittest.TestCase):
+    PUB = NOW - timedelta(hours=30)
+    pm = staticmethod(lambda dt: int(dt.timestamp() // 60))
+
+    def st(self, direction, sid='n1', ticker='A'):
+        return {'id': sid, 'category': 'markets', 'published_at': self.PUB.strftime('%Y-%m-%dT%H:%M:%SZ'), 'impacts': [{'ticker': ticker, 'name': 'Asset A', 'direction': direction}]}
+
+    def series(self, end_price, end_hours=25):
+        pm = self.pm
+        return {'A': [[pm(self.PUB + timedelta(minutes=10)), 100.0], [pm(self.PUB + timedelta(hours=end_hours)), end_price]]}
+
+    def judge(self, story, series):
+        ledger = {'schema': 1, 'calls': []}
+        n = t.judge([story], series, ledger, NOW)
+        return n, ledger['calls']
+
+    def test_hit_miss_flat(self):
+        self.assertEqual(self.judge(self.st('up'), self.series(103))[1][0]['res'], 'hit')
+        self.assertEqual(self.judge(self.st('down'), self.series(103))[1][0]['res'], 'miss')
+        self.assertEqual(self.judge(self.st('up'), self.series(100.1))[1][0]['res'], 'flat')
+        self.assertEqual(self.judge(self.st('down'), self.series(97))[1][0]['res'], 'hit')
+
+    def test_mixed_and_unclear_are_not_calls(self):
+        self.assertEqual(self.judge(self.st('mixed'), self.series(103))[0], 0)
+        self.assertEqual(self.judge(self.st('unclear'), self.series(103))[0], 0)
+
+    def test_not_judged_before_24_hours_or_without_a_late_enough_price(self):
+        young = self.st('up'); young['published_at'] = (NOW - timedelta(hours=5)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        self.assertEqual(self.judge(young, self.series(103))[0], 0)
+        self.assertEqual(self.judge(self.st('up'), self.series(103, end_hours=10))[0], 0)  # no price 24 h later yet
+        self.assertEqual(self.judge(self.st('up'), self.series(103, end_hours=60))[0], 0)  # first later price is too far away
+
+    def test_a_call_is_only_judged_once(self):
+        ledger = {'schema': 1, 'calls': []}
+        self.assertEqual(t.judge([self.st('up')], self.series(103), ledger, NOW), 1)
+        self.assertEqual(t.judge([self.st('up')], self.series(90), ledger, NOW), 0)
+        self.assertEqual(len(ledger['calls']), 1)
+
+    def test_late_first_price_is_not_judged(self):
+        pm = self.pm
+        late = {'A': [[pm(self.PUB + timedelta(hours=5)), 100.0], [pm(self.PUB + timedelta(hours=26)), 110.0]]}
+        self.assertEqual(self.judge(self.st('up'), late)[0], 0)
+
+
 if __name__ == '__main__':
     unittest.main()
