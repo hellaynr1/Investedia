@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=3daf83cb0f">
-<script src="assets/consent.js?v=3daf83cb0f"></script>
+<link rel="stylesheet" href="assets/consent.css?v=7beb347e61">
+<script src="assets/consent.js?v=7beb347e61"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Track record — Investedia</title>
 <meta name="description" content="How often the direction an Investedia article implied matched what the asset did over the next 24 hours. Every judged call, hits and misses.">
@@ -14,8 +14,8 @@
 <meta property="og:image" content="assets/logo.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=3daf83cb0f">
-<link rel="stylesheet" href="assets/skin.css?v=3daf83cb0f">
+<link rel="stylesheet" href="assets/app.css?v=7beb347e61">
+<link rel="stylesheet" href="assets/skin.css?v=7beb347e61">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,16 +38,16 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=3daf83cb0f"></script>
-<script src="assets/legal-owner.js?v=3daf83cb0f"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=3daf83cb0f">
-<script src="assets/live-config.js?v=3daf83cb0f"></script>
-<script src="assets/prefs.js?v=3daf83cb0f"></script>
-<script src="assets/peek.js?v=3daf83cb0f"></script>
-<script src="assets/sectors.js?v=3daf83cb0f"></script>
-<script src="assets/news-menu.js?v=3daf83cb0f"></script>
-<script src="assets/ui.js?v=3daf83cb0f"></script>
-<script src="assets/news-alerts.js?v=3daf83cb0f" defer></script>
+<script src="assets/mock.js?v=7beb347e61"></script>
+<script src="assets/legal-owner.js?v=7beb347e61"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=7beb347e61">
+<script src="assets/live-config.js?v=7beb347e61"></script>
+<script src="assets/prefs.js?v=7beb347e61"></script>
+<script src="assets/peek.js?v=7beb347e61"></script>
+<script src="assets/sectors.js?v=7beb347e61"></script>
+<script src="assets/news-menu.js?v=7beb347e61"></script>
+<script src="assets/ui.js?v=7beb347e61"></script>
+<script src="assets/news-alerts.js?v=7beb347e61" defer></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <link rel="stylesheet" href="assets/track-record.css">
 <nav class="subnav" id="news-nav"></nav>
@@ -61,7 +61,8 @@
   <h2 id="tr-how-h">How a call is counted</h2>
   <ul>
     <li><b>The call.</b> The direction (up or down) an article implies for an asset that has a market price. Mixed and unclear articles are not calls.</li>
-    <li><b>The check.</b> Price change from the first price recorded after the article to the first price recorded at least 24 hours later (within 48 hours, so weekends and market holidays are handled honestly). Stocks are delayed 15–30 minutes.</li>
+    <li><b>The check.</b> For live-recorded calls: the price change from the first price recorded after the article to the first price recorded at least 24 hours later (within 48 hours, so weekends and market holidays are handled honestly). Stocks are delayed 15–30 minutes.</li>
+    <li><b>Older articles.</b> Articles from before live recording are judged on daily closes instead: the close of the session on the article's day to the close of the next session. They are marked "daily close". Every qualifying article is counted; none are chosen by result.</li>
     <li><b>Hit, miss, no clear move.</b> A hit moved at least 0.3% the way the article implied. A miss moved at least 0.3% the other way. Anything between is "no clear move" and is left out of the hit rate.</li>
     <li><b>Hit rate</b> = hits ÷ (hits + misses). We show it only after 50 judged calls; before that a percentage would mean little.</li>
   </ul>
@@ -83,11 +84,13 @@
   const up = calls.filter(c => c.dir === 'up'), dn = calls.filter(c => c.dir === 'down');
   const dirLine = (arr, w) => { const h = arr.filter(c => c.res === 'hit').length, m = arr.filter(c => c.res === 'miss').length; return `<li><b>${w}</b> ${h} hits · ${m} misses · ${arr.length - h - m} no clear move</li>`; };
   const recent = [...calls].sort((a, b) => b.pub - a.pub).slice(0, 20);
+  const back = calls.filter(c => c.basis === 'daily').length;
   const chip = r => r === 'hit' ? '<span class="tr-chip ok">✓ hit</span>' : r === 'miss' ? '<span class="tr-chip no">✗ miss</span>' : '<span class="tr-chip na">– no clear move</span>';
-  const row = c => `<a class="tr-row" href="story.html?id=${encodeURIComponent(c.id)}"><span class="tr-dir ${c.dir}" aria-label="Article implied ${c.dir}">${c.dir === 'up' ? '↑' : '↓'}</span><span class="tr-t"><b>${esc(c.name)}</b><small>${esc(c.h || 'Article')} · ${new Date(c.pub * 60000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</small></span><span class="tr-mv ${c.move > 0 ? 'up' : c.move < 0 ? 'dn' : ''}">${c.move > 0 ? '+' : ''}${c.move.toFixed(2)}%</span>${chip(c.res)}</a>`;
+  const row = c => `<a class="tr-row" href="story.html?id=${encodeURIComponent(c.id)}"><span class="tr-dir ${c.dir}" aria-label="Article implied ${c.dir}">${c.dir === 'up' ? '↑' : '↓'}</span><span class="tr-t"><b>${esc(c.name)}${c.basis === 'daily' ? ' <em class="tr-b" title="Judged on the next session\'s close, for an article from before live price recording">daily close</em>' : ''}</b><small>${esc(c.h || 'Article')} · ${new Date(c.pub * 60000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</small></span><span class="tr-mv ${c.move > 0 ? 'up' : c.move < 0 ? 'dn' : ''}">${c.move > 0 ? '+' : ''}${c.move.toFixed(2)}%</span>${chip(c.res)}</a>`;
   root.innerHTML = `<div class="tr-score">${big}<div class="tr-stats">${stat(hit, 'hits', 'ok')}${stat(miss, 'misses', 'no')}${stat(flat, 'no clear move', 'na')}</div></div>`
     + (calls.length ? `<ul class="tr-dirs">${dirLine(up, '↑ Up calls')}${dirLine(dn, '↓ Down calls')}</ul><h2>Recent calls</h2><div class="tr-list">${recent.map(row).join('')}</div>`
       : `<p class="tr-wait">${since ? `Recording started ${esc(since)}. ` : ''}The first calls are judged 24 hours after their article. Nothing is shown until there are real results.</p>`)
+    + (back ? `<p class="tr-since">${back} of ${calls.length} calls were judged on the next session's close, for articles from before live price recording began; the rest on prices recorded 24 hours after the article.</p>` : '')
     + (since ? `<p class="tr-since">Recording since ${esc(since)}.</p>` : '');
 })();
 </script>
