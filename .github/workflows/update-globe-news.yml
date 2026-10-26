@@ -33,6 +33,8 @@ jobs:
           BACKFILL_DAYS: ${{ inputs.backfill_days || '0' }}
         run: python3 update_globe_news.py
         timeout-minutes: 60
+      - name: Draw share cards
+        run: python3 update_share_cards.py || echo "Share cards failed; keeping the previous files"
       - name: Fetch economic calendar and earnings
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
@@ -42,7 +44,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add assets/globe docs/assets/globe assets/calendar-live.json docs/assets/calendar-live.json
+          git add assets/globe docs/assets/globe assets/share docs/assets/share assets/calendar-live.json docs/assets/calendar-live.json
           git diff --cached --quiet && exit 0
           git commit -q -m "Update globe news"
           for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep 5; done
