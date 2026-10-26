@@ -47,8 +47,7 @@
  {
   "width": 1440,
   "id": "SN10 a story opened from a link before the prices have loaded still gets its card once they arrive",
-  "pass": false,
-  "error": "page.waitForSelector: Timeout 20000ms exceeded. | Call log: | \u001b[2m  - waiting for locator('.sn') to be visible\u001b[22m"
+  "pass": true
  },
  {
   "width": 390,
@@ -98,7 +97,6 @@
  {
   "width": 390,
   "id": "SN10 a story opened from a link before the prices have loaded still gets its card once they arrive",
-  "pass": false,
-  "error": "page.waitForSelector: Timeout 20000ms exceeded. | Call log: | \u001b[2m  - waiting for locator('.sn') to be visible\u001b[22m"
+  "pass": true
  }
 ]
