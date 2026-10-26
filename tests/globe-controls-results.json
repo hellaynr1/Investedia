@@ -1,7 +1,7 @@
 [
  {
   "width": 1440,
-  "id": "LA1 the Layers card is already open when the globe opens, with Connections on and Market hours off",
+  "id": "LA1 the Layers card is closed when the globe opens, with Connections on and Market hours off",
   "pass": true
  },
  {
@@ -46,17 +46,17 @@
  },
  {
   "width": 1440,
-  "id": "RG1 the region row has no flags: All regions keeps its globe icon, every other region is plain text",
+  "id": "RG1 the region menu has All regions with the globe icon and seven plain-text regions, each with a count",
   "pass": true
  },
  {
   "width": 1440,
-  "id": "RG2 all icon files exist and load (no broken images)",
+  "id": "RG2 the icon file loads (no broken image)",
   "pass": true
  },
  {
   "width": 1440,
-  "id": "RG3 choosing a region still filters and turns the globe, and the control keeps a readable name",
+  "id": "RG3 choosing a region filters and turns the globe, closes the menu, and the button says which region",
   "pass": true
  },
  {
@@ -66,7 +66,7 @@
  },
  {
   "width": 390,
-  "id": "LA1 the Layers card is already open when the globe opens, with Connections on and Market hours off",
+  "id": "LA1 the Layers card is closed when the globe opens, with Connections on and Market hours off",
   "pass": true
  },
  {
@@ -106,17 +106,17 @@
  },
  {
   "width": 390,
-  "id": "RG1 the region row has no flags: All regions keeps its globe icon, every other region is plain text",
+  "id": "RG1 the region menu has All regions with the globe icon and seven plain-text regions, each with a count",
   "pass": true
  },
  {
   "width": 390,
-  "id": "RG2 all icon files exist and load (no broken images)",
+  "id": "RG2 the icon file loads (no broken image)",
   "pass": true
  },
  {
   "width": 390,
-  "id": "RG3 choosing a region still filters and turns the globe, and the control keeps a readable name",
+  "id": "RG3 choosing a region filters and turns the globe, closes the menu, and the button says which region",
   "pass": true
  },
  {
