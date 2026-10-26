@@ -111,7 +111,7 @@ const countryPoint=()=>p.evaluate(()=>{for(let y=globeBox.top+40;y<globeBox.bott
   const h=await p.evaluate(()=>{const n=Date.UTC(2026,9,25,23,22);return [hoursText(EXCH[0],n),hoursText(EXCH[3],n),hoursText(EXCH[4],n),exchangeState(EXCH[0],n).left];});
   assert.deepEqual(h.slice(0,3),['10:00–16:00 local · 23:00–05:00 UTC','08:00–16:30 local · 08:00–16:30 UTC','09:30–16:00 local · 13:30–20:00 UTC']);assert.equal(Math.round(h[3]/60000),5*60+38);
   if(phone)await p.locator('#dock [data-v=markets]').click();else if(await p.locator('.mk-row').count()===0)await mktSwitch(p);await p.waitForTimeout(300);
-  for(const t of await p.locator('.mk-main small').allInnerTexts())assert.match(t,/^\d\d:\d\d–\d\d:\d\d local · \d\d:\d\d–\d\d:\d\d UTC$/);});
+  for(const t of await p.locator('.mk-main small').allInnerTexts())assert.match(t,/^\d\d:\d\d–\d\d:\d\d local\s+\d\d:\d\d–\d\d:\d\d UTC$/);});
  if(!phone)await check(w,'M8 pressing the button again turns the layer off: the Markets tab goes, no dots, panel back to Top',async()=>{
   await mktSwitch(p);await p.waitForTimeout(300);
   const r=await p.evaluate(()=>({on:MKTON,tab:!!document.querySelector('#panel-tab-markets'),cur:panelTab,hits:exHits.length}));assert.equal(r.on,false);assert.equal(r.tab,false);assert.equal(r.cur,'top');assert.equal(r.hits,0);

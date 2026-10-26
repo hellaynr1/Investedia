@@ -51,13 +51,12 @@ for(const w of widths){
   const r=await p.evaluate(()=>{const on=document.querySelector('#cats .chip[aria-pressed=true]'),bd=on.querySelector('b');return {bg:getComputedStyle(on).backgroundColor,fg:getComputedStyle(on).color,bbg:getComputedStyle(bd).backgroundColor,txt:[...document.querySelectorAll('#cats .chip')].map(c=>c.textContent.trim().replace(/\s+/g,' ')),all:stories.filter(matchNoLens).length};});
   assert.equal(r.bg,'rgb(255, 255, 255)');assert.equal(r.bbg,'rgb(0, 0, 0)');assert.equal(r.txt[0],`All ${r.all}`);assert.deepEqual(r.txt.map(t=>t.replace(/ \d+$/,'')),['All','Energy','Central banks','Trade & tariffs','Earnings']);});
  // ---- 3C regions ----
- await check(w,'RG1 every region has its icon: a globe for All regions, a stack of its biggest markets\' flags for the others',async()=>{
+ await check(w,'RG1 the region row has no flags: All regions keeps its globe icon, every other region is plain text',async()=>{
   if(phone&&await p.locator('#fsheet').isHidden())await p.locator('#m-filters').click();
-  const r=await p.$$eval('#regions .reg',els=>els.map(e=>({k:e.dataset.k,label:e.textContent.trim(),globe:e.querySelector('.rg-globe')?.getAttribute('src')||'',flags:[...e.querySelectorAll('.rg-stack img')].map(i=>i.getAttribute('src').replace(/^flags\/|\.svg$/g,''))})));
+  const r=await p.$$eval('#regions .reg',els=>els.map(e=>({k:e.dataset.k,label:e.textContent.trim(),globe:e.querySelector('.rg-globe')?.getAttribute('src')||'',imgs:e.querySelectorAll('img').length})));
   assert.deepEqual(r.map(x=>x.k),['global','na','eu','asia','me','af','latam','oc']);
   assert.equal(r[0].label,'All regions');assert.equal(r[0].globe,'region-globe.png');
-  const want={na:'us,ca,mx',eu:'gb,de,fr',asia:'jp,cn,in',me:'sa,ae',af:'za,ng,eg',latam:'br,ar,cl',oc:'au,nz'};
-  for(const x of r.slice(1))assert.equal(x.flags.join(','),want[x.k],x.k);});
+  assert.deepEqual(r.slice(1).map(x=>x.imgs),[0,0,0,0,0,0,0]);assert.deepEqual(r.slice(1).map(x=>x.label),['North America','Europe','Asia','Middle East','Africa','Latin America','Oceania']);});
  await check(w,'RG2 all icon files exist and load (no broken images)',async()=>{
   const bad=await p.evaluate(async()=>{const imgs=[...document.querySelectorAll('#regions img')];await Promise.all(imgs.map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r;})));return imgs.filter(i=>!i.naturalWidth).map(i=>i.getAttribute('src'));});assert.deepEqual(bad,[]);});
  await check(w,'RG3 choosing a region still filters and turns the globe, and the control keeps a readable name',async()=>{

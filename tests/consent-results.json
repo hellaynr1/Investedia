@@ -107,10 +107,7 @@
     "all": "PASS",
     "withdraw": "PASS",
     "reprompt": "PASS",
-    "errors": [
-      "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'asset TypeError: Failed to fetch'\n+ ]\n- []\n",
-      "asset TypeError: Failed to fetch"
-    ]
+    "errors": []
   },
   {
     "page": "calculator.html",

@@ -1236,8 +1236,7 @@ function updateLensChips() {
     b.setAttribute('aria-label', `${LENSES.find(l => l[0] === k)[1]}, ${n} ${n === 1 ? 'article' : 'articles'}`);
   }
 }
-const RSTACK = { na: ['us', 'ca', 'mx'], latam: ['br', 'ar', 'cl'], eu: ['gb', 'de', 'fr'], af: ['za', 'ng', 'eg'], me: ['sa', 'ae'], asia: ['jp', 'cn', 'in'], oc: ['au', 'nz'] };
-$('regions').innerHTML = REGIONS.map(([k, l]) => `<button class="reg" data-k="${k}" aria-pressed="${k === F.region}">${k === 'global' ? '<img class="rg-globe" src="region-globe.png" alt="" width="24" height="24">All regions' : `<span class="rg-stack" aria-hidden="true">${RSTACK[k].map(c => `<img src="flags/${c}.svg" alt="" width="20" height="20">`).join('')}</span>${l}`}</button>`).join('');
+$('regions').innerHTML = REGIONS.map(([k, l]) => `<button class="reg" data-k="${k}" aria-pressed="${k === F.region}">${k === 'global' ? '<img class="rg-globe" src="region-globe.png" alt="" width="24" height="24">All regions' : l}</button>`).join('');
 $('wins').innerHTML = WINS.map(([k, l]) => `<button class="win" data-k="${k}" aria-pressed="${k === F.win}">${l}</button>`).join('');
 const press = (box, k) => box.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
 $('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.lens = b.dataset.k; if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } press($('cats'), F.lens); refresh(); };

@@ -41,7 +41,7 @@
  },
  {
   "width": 1440,
-  "id": "RG1 every region has its icon: a globe for All regions, a stack of its biggest markets' flags for the others",
+  "id": "RG1 the region row has no flags: All regions keeps its globe icon, every other region is plain text",
   "pass": true
  },
  {
@@ -96,7 +96,7 @@
  },
  {
   "width": 390,
-  "id": "RG1 every region has its icon: a globe for All regions, a stack of its biggest markets' flags for the others",
+  "id": "RG1 the region row has no flags: All regions keeps its globe icon, every other region is plain text",
   "pass": true
  },
  {

@@ -34,7 +34,7 @@ await check('P4 the peek card shows the top story (importance, then newest) with
 await check('P5 Filters opens a dialog with Topic, Region and Time (44 px controls), focus moves in, Escape closes and returns focus',async()=>{
  await p.locator('#m-filters').click();await p.waitForTimeout(300);
  assert.equal(await p.locator('#fsheet[role=dialog]').isVisible(),true);assert.equal(await p.evaluate(()=>document.activeElement.id),'fs-title');
- const labels=await p.locator('.fs-lbl').allInnerTexts();assert.deepEqual(labels.map(x=>x.toLowerCase()),['topic','region','time']);
+ const labels=await p.locator('.fs-lbl').allInnerTexts();assert.deepEqual(labels.map(x=>x.toLowerCase()),['topic','region','time','layers']);
  const small=await p.evaluate(()=>[...document.querySelectorAll('#fsheet .chip,#fsheet .reg,#fsheet .win,#fsheet .fs-btn,#fsheet .tl-play,#fs-show')].map(e=>[e.textContent.trim(),Math.round(e.getBoundingClientRect().height)]).filter(x=>x[1]<44));
  assert.deepEqual(small,[],JSON.stringify(small));
  await p.keyboard.press('Escape');await p.waitForTimeout(200);assert.equal(await p.locator('#fsheet').isVisible(),false);assert.equal(await p.evaluate(()=>document.activeElement.id),'m-filters');});

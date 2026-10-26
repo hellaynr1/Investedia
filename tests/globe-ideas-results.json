@@ -77,8 +77,7 @@
  {
   "width": 1440,
   "id": "M7 every row states the exchange hours in local time and UTC, and open markets say when they close",
-  "pass": false,
-  "error": "The input did not match the regular expression /^\\d\\d:\\d\\d–\\d\\d:\\d\\d local · \\d\\d:\\d\\d–\\d\\d:\\d\\d UTC$/. Input:"
+  "pass": true
  },
  {
   "width": 1440,
@@ -173,8 +172,7 @@
  {
   "width": 390,
   "id": "M7 every row states the exchange hours in local time and UTC, and open markets say when they close",
-  "pass": false,
-  "error": "The input did not match the regular expression /^\\d\\d:\\d\\d–\\d\\d:\\d\\d local · \\d\\d:\\d\\d–\\d\\d:\\d\\d UTC$/. Input:"
+  "pass": true
  },
  {
   "width": 390,
