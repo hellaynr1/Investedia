@@ -11,3 +11,10 @@
 .sn-note{margin:10px 0 0;color:var(--fg-3,#a1a1aa);font-size:12.5px;line-height:1.45}
 .sn-na{margin:0;color:var(--fg-2,#d4d4d8);font-size:14px;line-height:1.45}
 @media(max-width:760px){.sn{padding:14px}.sn-big{font-size:36px}.sn-eb,.sn-ba,.sn-axis,.sn-leg,.sn-note,.sn-na,.sn-v{font-size:14px}.sn svg{height:110px}}
+
+.sn-chart{position:relative;padding-top:30px}.sn-chart svg{margin-top:0}
+.sn-mark{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap;font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:99px;background:#ff7a1a;color:#111;pointer-events:none}
+.sn-chart[data-mark=flag] .sn-mark{transform:none;background:#1b1b1f;border:1px solid #ff7a1a;color:#ffb37a;font-weight:600;border-radius:8px}
+@media(max-width:760px){.sn-mark{font-size:13px}.sn-chart[data-mark=pill] .sn-mark{transform:translateX(-30%)}}
+.sn-chart svg{border-radius:14px}
+.sn-chart svg line{stroke-linecap:round}

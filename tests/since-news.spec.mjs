@@ -32,11 +32,11 @@ for(const w of widths){
   const baseP=pts.find(x=>x[0]*MIN>=pick.pub)[1],cur=pts.at(-1)[1],mv=(cur/baseP-1)*100;
   const big=await p.locator('.sn-big').innerText();assert.equal(big.replace(/\s+/g,' '),`${arrow(mv)} ${Math.abs(mv).toFixed(2)}%`);
   const ba=await p.locator('.sn-ba').innerText();const b0=pts.filter(x=>x[0]*MIN<pick.pub);const bm=(b0.at(-1)[1]/b0[0][1]-1)*100;
-  assert.match(ba,new RegExp(`Before the article:\\s*${arrow(bm)} ${Math.abs(bm).toFixed(2)}% over 3 hours`));assert.match(ba,new RegExp(`After:\\s*${arrow(mv)} ${Math.abs(mv).toFixed(2)}% over `));
+  assert.match(ba,new RegExp(`Before:\\s*${arrow(bm)} ${Math.abs(bm).toFixed(2)}% · 3 hours`));assert.match(ba,new RegExp(`After:\\s*${arrow(mv)} ${Math.abs(mv).toFixed(2)}% · `));
   assert.equal(await p.locator('.sn svg path[stroke="#8b8b94"]').count(),1);assert((await p.locator('.sn svg path[stroke="#f87171"], .sn svg path[stroke="#34d399"]').count())>=1);
-  assert.match(await p.locator('.sn-axis').innerText(),new RegExp(`article published ${hhmm(pick.pub)} UTC`));
+  assert.match(await p.locator('.sn-mark').innerText(),new RegExp(`Article posted here · ${hhmm(pick.pub)}`));
   assert.match(await p.locator('.sn-v').innerText(),new RegExp(`✓ the article said ${pick.dir} · it went ${pick.dir}`));
-  assert.match(await p.locator('.sn-note').innerText(),/delayed 15–30 minutes; not investment advice/);assert.deepEqual(p.errors,[]);await p.close();});
+  assert.match(await p.locator('.sn-note').innerText(),/delayed 15–30 min\. Not investment advice/);assert.deepEqual(p.errors,[]);await p.close();});
  await check(w,'SN2 the article was wrong: the card says so plainly',async()=>{
   const p=await open(ctx,story,series(bef,aft(wrongEnd)));const went=pick.dir==='down'?'up':'down';
   assert.match(await p.locator('.sn-v').innerText(),new RegExp(`✗ the article said ${pick.dir} · it went ${went}`));await p.close();});
@@ -51,7 +51,7 @@ for(const w of widths){
  await check(w,'SN6 the first price came more than 90 minutes after the article and nothing before it: not shown as a since-the-news chart',async()=>{
   const p=await open(ctx,story,series([],[[120,0],[135,-1],[150,-2]]));assert.equal(await p.locator('.sn svg').count(),0);assert.match(await p.locator('.sn').innerText(),/We started recording/);await p.close();});
  await check(w,'SN7 a late first price (30 min) is stated in the note and the change is measured from it; no before data is described honestly',async()=>{
-  const p=await open(ctx,story,series([],[[30,0],[45,-1],[60,-2]]));const n=await p.locator('.sn-note').innerText();assert.match(n,/first price was recorded 30 minutes after the article/);assert.match(await p.locator('.sn-ba').innerText(),/no price data \(market closed or not yet recorded\)/);assert.equal(await p.locator('.sn svg path[stroke="#8b8b94"]').count(),0);await p.close();});
+  const p=await open(ctx,story,series([],[[30,0],[45,-1],[60,-2]]));const n=await p.locator('.sn-note').innerText();assert.match(n,/first price 30 minutes after the article/);assert.doesNotMatch(await p.locator('.sn-ba').innerText(),/Before:/);assert.equal(await p.locator('.sn svg path[stroke="#8b8b94"]').count(),0);await p.close();});
  await check(w,'SN8 the pure calculation ignores bad points, sorts, and never invents a before line from one point',async()=>{
   const p=await open(ctx,story,null);const r=await p.evaluate(()=>{const pub=1e12;const m=x=>Math.round((pub+x*60000)/60000);
    const a=SinceNews.compute(pub,[[m(30),110],[m(5),100],[m(10),0],['x',1],[m(-10),99]],pub+3e6);

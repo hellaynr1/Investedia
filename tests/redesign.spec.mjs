@@ -29,10 +29,7 @@ for(const w of widths){
  // ---- Why it moved C ----
  await p.goto(base+'/index.html');await p.waitForSelector('#hnWhy .hn-wf');
  await check(w,'W1 no 01/02/03 numbering',async()=>assert.equal(/(^|\n)\s*0[1-3]\s*($|\n)/.test(await p.locator('#hnWhy').innerText()),false));
- await check(w,'W2 featured story shows the asset real % today and 7-day change',async()=>{const t=await p.locator('.hn-wf .hn-wbig').innerText();assert.match(t,/[↑↓↔] \d+\.\d\d%/);assert.match(t,/7 days [+-]/);const a=markets.find(a=>t.includes(a.n));assert(a,'asset name');assert(t.includes(pctText(a.d).replace(/^. /,m=>m)),'% matches markets.json');});
- await check(w,'W3 featured story has a price chart with an "article published" marker',async()=>{assert.equal(await p.locator('.hn-wf .hn-chart svg').count(),1);assert.equal(await p.locator('.hn-wf .hn-mark').count(),1);assert.match(await p.locator('.hn-wf .hn-wcap').innerText(),/article published/);});
- await check(w,'W4 the two side cards show asset, % pill and "Article implies"',async()=>{const c=p.locator('.hn-wc');assert.equal(await c.count(),2);for(let i=0;i<2;i++){const t=await c.nth(i).innerText();if(await c.nth(i).locator('.hn-pct').count())assert.match(t,/Article implies/);}});
- await check(w,'W5 featured: expected direction is shown next to the real move',async()=>assert.match(await p.locator('.hn-wf .hn-impl').first().innerText(),/Article implies/));
+ // W2-W5 (today / 7-day view) were replaced by the confirmed-articles section; see tests/confirmed.spec.mjs
  await check(w,'W6 no horizontal overflow',async()=>assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false));
  // ---- Globe hover B ----
  if(priced){

@@ -1,4 +1,4 @@
-{"title":"Investedia — Invest with clarity","desc":"Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.","key":"home","scripts":["assets/since-news.js","assets/home-news.js"]}
+{"title":"Investedia — Invest with clarity","desc":"Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.","key":"home","scripts":["assets/since-news.js","assets/implications.js","assets/home-news.js"]}
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
 body[data-page=home] main.wrap{max-width:none;padding:0}
@@ -92,7 +92,7 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
     <p class="res-note">Independent recommendations.</p>
   </section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Top articles</span><h2>What matters right now</h2></div><a href="assets/globe/news.html">All news →</a></div><div class="grid3" id="hnTop"></div></section>
-  <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Why it moved</span><h2>The articles moving markets</h2></div></div><div class="whys" id="hnWhy"></div></section>
+  <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Why it moved</span><h2>Articles the market confirmed</h2></div></div><div class="whys" id="hnWhy"></div><div id="hnWhyMore"></div></section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Countries</span><h2>Explore by country</h2></div><a href="assets/globe/news.html">Open the globe →</a></div><div class="hn-ctys" id="hnCty"></div></section>
   <section class="hn-sec"><div class="hn-cal">
     <div class="hn-box"><div class="hn-bh"><h3>Upcoming economic events</h3><a href="calendar.html">Full calendar →</a></div><div id="hnEv"></div></div>
@@ -114,7 +114,7 @@ fitTitle(); addEventListener('resize', fitTitle); document.fonts && document.fon
 loadNews().then(d => {
   hnLive.innerHTML = '<i></i>' + updatedText(d.updated);
   hnTop.innerHTML = d.top.slice(0, 5).map((s, i) => card(s, i === 0)).join('');
-  hnWhy.innerHTML = whySection(d.moved.slice(0, 3), d.asof);
+  { const cs = confirmedSection(d); hnWhy.innerHTML = cs.body; hnWhyMore.innerHTML = cs.more; }
   hnCty.innerHTML = countries(d.stories);
   const L = d.latest.slice(0, 6);
   if (L.length) {

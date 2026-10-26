@@ -1,4 +1,4 @@
-// Since-the-news card on the homepage "Why it moved" and on the article page (fixture price track; real articles).
+// Since-the-news card on the article page (the homepage section is covered by confirmed.spec.mjs) (fixture price track; real articles).
 import {launch,base,viewport,fixtureExternal} from './browser-support.mjs';
 import assert from 'node:assert/strict';
 const b=await launch();let fail=0;
@@ -16,12 +16,6 @@ async function ctx(w,track){
 for(const w of [1440,390]){
   let c=await ctx(w,'full'),p=await c.newPage();await p.goto(base+'/index.html');
   try{await p.getByRole('button',{name:'Accept essential',exact:true}).click({timeout:2500});}catch{}
-  await p.waitForSelector('.hn-wf',{timeout:15000});await p.waitForTimeout(1500);
-  await t(w+' E1 homepage Why it moved shows the since-the-news card when prices were recorded after the article',async()=>{
-    assert.ok(await p.locator('.hn-wf .sn').count()>=1,'no .sn in featured');
-    assert.match(await p.locator('.hn-wf .sn .sn-eb').first().innerText(),/since the article/i);
-    assert.ok(await p.locator('.hn-wf .sn svg').count()>=1);});
-  await t(w+' E2 no horizontal overflow on the homepage',async()=>assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)));
   const id=await p.evaluate(async()=>{const [n,m]=await Promise.all([fetch('assets/globe/news-live.json').then(r=>r.json()),fetch('assets/globe/markets.json').then(r=>r.json())]);const by=new Set((m.assets||[]).map(a=>a.s));
     const pub=s=>Date.parse(s.published_at);const s=n.stories.find(s=>Date.now()-pub(s)<26*36e5&&Date.now()-pub(s)>4*36e5&&(s.impacts||[]).some(i=>i.ticker&&(by.has(i.ticker.toUpperCase())||by.has(i.ticker.toUpperCase()+'-USD'))));return s&&s.id;});
   await t(w+' E3 article page shows the card above the tabs',async()=>{
@@ -31,9 +25,5 @@ for(const w of [1440,390]){
     const card=await q.locator('#sp-mi .sn').boundingBox(),tabs=await q.locator('#sp-mi .mi-p.on').first().boundingBox();assert.ok(card.y+card.height<=tabs.y+2);
     assert.ok(await q.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'overflow');await q.close();});
   await c.close();
-  c=await ctx(w,'empty');p=await c.newPage();await p.goto(base+'/index.html');
-  try{await p.getByRole('button',{name:'Accept essential',exact:true}).click({timeout:2500});}catch{}
-  await p.waitForSelector('.hn-wf',{timeout:15000});await p.waitForTimeout(1200);
-  await t(w+' E4 with no recorded prices the old today / 7-day view stays (no invented chart)',async()=>{assert.equal(await p.locator('.hn-wf .sn').count(),0);});
   await c.close();}
 await b.close();console.log(fail?fail+' failed':'all passed');process.exit(fail?1:0);

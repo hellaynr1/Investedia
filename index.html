@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=c4e19c890e">
-<script src="assets/consent.js?v=c4e19c890e"></script>
+<link rel="stylesheet" href="assets/consent.css?v=f475aa9965">
+<script src="assets/consent.js?v=f475aa9965"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia — Invest with clarity</title>
 <meta name="description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=c4e19c890e">
-<link rel="stylesheet" href="assets/skin.css?v=c4e19c890e">
+<link rel="stylesheet" href="assets/app.css?v=f475aa9965">
+<link rel="stylesheet" href="assets/skin.css?v=f475aa9965">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,18 +46,19 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=c4e19c890e"></script>
-<script src="assets/legal-owner.js?v=c4e19c890e"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=c4e19c890e">
-<script src="assets/live-config.js?v=c4e19c890e"></script>
-<script src="assets/prefs.js?v=c4e19c890e"></script>
-<script src="assets/peek.js?v=c4e19c890e"></script>
-<script src="assets/sectors.js?v=c4e19c890e"></script>
-<script src="assets/news-menu.js?v=c4e19c890e"></script>
-<script src="assets/ui.js?v=c4e19c890e"></script>
-<script src="assets/news-alerts.js?v=c4e19c890e" defer></script>
-<script src="assets/since-news.js?v=c4e19c890e"></script>
-<script src="assets/home-news.js?v=c4e19c890e"></script>
+<script src="assets/mock.js?v=f475aa9965"></script>
+<script src="assets/legal-owner.js?v=f475aa9965"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=f475aa9965">
+<script src="assets/live-config.js?v=f475aa9965"></script>
+<script src="assets/prefs.js?v=f475aa9965"></script>
+<script src="assets/peek.js?v=f475aa9965"></script>
+<script src="assets/sectors.js?v=f475aa9965"></script>
+<script src="assets/news-menu.js?v=f475aa9965"></script>
+<script src="assets/ui.js?v=f475aa9965"></script>
+<script src="assets/news-alerts.js?v=f475aa9965" defer></script>
+<script src="assets/since-news.js?v=f475aa9965"></script>
+<script src="assets/implications.js?v=f475aa9965"></script>
+<script src="assets/home-news.js?v=f475aa9965"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -152,7 +153,7 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
     <p class="res-note">Independent recommendations.</p>
   </section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Top articles</span><h2>What matters right now</h2></div><a href="assets/globe/news.html">All news →</a></div><div class="grid3" id="hnTop"></div></section>
-  <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Why it moved</span><h2>The articles moving markets</h2></div></div><div class="whys" id="hnWhy"></div></section>
+  <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Why it moved</span><h2>Articles the market confirmed</h2></div></div><div class="whys" id="hnWhy"></div><div id="hnWhyMore"></div></section>
   <section class="hn-sec"><div class="hn-sh"><div><span class="hn-eyebrow">Countries</span><h2>Explore by country</h2></div><a href="assets/globe/news.html">Open the globe →</a></div><div class="hn-ctys" id="hnCty"></div></section>
   <section class="hn-sec"><div class="hn-cal">
     <div class="hn-box"><div class="hn-bh"><h3>Upcoming economic events</h3><a href="calendar.html">Full calendar →</a></div><div id="hnEv"></div></div>
@@ -174,7 +175,7 @@ fitTitle(); addEventListener('resize', fitTitle); document.fonts && document.fon
 loadNews().then(d => {
   hnLive.innerHTML = '<i></i>' + updatedText(d.updated);
   hnTop.innerHTML = d.top.slice(0, 5).map((s, i) => card(s, i === 0)).join('');
-  hnWhy.innerHTML = whySection(d.moved.slice(0, 3), d.asof);
+  { const cs = confirmedSection(d); hnWhy.innerHTML = cs.body; hnWhyMore.innerHTML = cs.more; }
   hnCty.innerHTML = countries(d.stories);
   const L = d.latest.slice(0, 6);
   if (L.length) {
