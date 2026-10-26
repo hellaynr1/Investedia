@@ -12,6 +12,7 @@ const LENS={energy:/\b(oil|crude|opec|brent|wti|natural gas|lng|gasoline|petrol|
 const inLens=(s,k)=>LENS[k].test((s.headline+' '+(s.summary||'')).toLowerCase());
 const fmt=v=>Math.abs(v).toFixed(2)+'%';
 const lens=async(p,name,phone)=>{if(phone){await p.locator('#m-filters').click();await p.locator('#fsheet .chip',{hasText:name}).click();await p.locator('#fs-close').click();if(name!=='All')await p.locator('#dock [data-v=news]').click();}else await p.locator('#cats .chip',{hasText:name}).click();};
+const mktSwitch=async p=>{if(await p.locator('#lay-pop').isHidden())await p.locator('#lay-btn').click();await p.locator('#sw-mkt').click();};
 const open=async(p,q='')=>{await p.goto(base+'/assets/globe/news.html'+q);try{await p.getByRole('button',{name:'Accept essential',exact:true}).click({timeout:2500});}catch{}await p.waitForFunction(()=>typeof stories!=='undefined'&&stories.length>0&&MKT.all&&MKT.all.length>0);await p.waitForTimeout(800);};
 for(const w of widths){
  const ctx=await b.newContext({viewport:viewport(w),isMobile:w===390,hasTouch:w===390,serviceWorkers:'block',reducedMotion:'reduce'});await fixtureExternal(ctx);
@@ -21,7 +22,7 @@ for(const w of widths){
 const countryPoint=()=>p.evaluate(()=>{for(let y=globeBox.top+40;y<globeBox.bottom-40;y+=6)for(let x=globeBox.left+20;x<globeBox.right-20;x+=6){const g=inv(x,y),c=g&&countryAt(g[0],g[1]);if(c&&c.name==='United States of America'&&!pick(x,y,40)&&!arcPick(x,y)&&!exPick(x,y))return {x,y};}return null;});
  const phone=w===390;
  await check(w,'M0 market hours are off by default: no shade, no exchange dots, no Markets tab on the desktop panel; the button is not pressed',async()=>{
-  const r=await p.evaluate(()=>({on:MKTON,hits:exHits.length,tab:!!document.querySelector('#panel-tab-markets'),pressed:$('mk-toggle').getAttribute('aria-pressed')}));
+  const r=await p.evaluate(()=>({on:MKTON,hits:exHits.length,tab:!!document.querySelector('#panel-tab-markets'),pressed:$('sw-mkt').getAttribute('aria-checked')}));
   assert.equal(r.on,false);assert.equal(r.hits,0);assert.equal(r.pressed,'false');if(!phone)assert.equal(r.tab,false);});
  // ---- lenses ----
  await check(w,'L1 the topic bar is All + Energy + Central banks + Trade & tariffs + Earnings, each with the number of articles in the current window',async()=>{
@@ -101,7 +102,7 @@ const countryPoint=()=>p.evaluate(()=>{for(let y=globeBox.top+40;y<globeBox.bott
   assert(r.leftDay>r.leftNight,JSON.stringify(r));assert(r.rightDay>r.rightNight,JSON.stringify(r));});
  await check(w,'M5 the Markets tab lists Sydney, Tokyo, Hong Kong, London, New York with the right wording and a link to each main index',async()=>{
   await p.evaluate(()=>{hist=[];view={k:'top'};sel=null;selCountry=null;render();});
-  if(phone)await p.locator('#dock [data-v=markets]').click();else{await p.evaluate(()=>setMarketsLayer(false));await p.locator('#mk-toggle').click();}await p.waitForTimeout(400);
+  if(phone)await p.locator('#dock [data-v=markets]').click();else{await p.evaluate(()=>setMarketsLayer(false));await mktSwitch(p);}await p.waitForTimeout(400);
   const rows=await p.$$eval('.mk-row',e=>e.map(x=>({name:x.querySelector('b').textContent,when:x.querySelector('.mk-st').textContent,ix:x.dataset.asset})));
   assert.deepEqual(rows.map(r=>r.name),['Sydney','Tokyo','Hong Kong','London','New York'],JSON.stringify(rows));assert.deepEqual(rows.map(r=>r.ix),['^AXJO','^N225','^HSI','^FTSE','^GSPC']);
   for(const r of rows)assert(/^(Open · closes in .+|Opens in .+)$/.test(r.when),r.when);
@@ -109,12 +110,12 @@ const countryPoint=()=>p.evaluate(()=>{for(let y=globeBox.top+40;y<globeBox.bott
  await check(w,'M7 every row states the exchange hours in local time and UTC, and open markets say when they close',async()=>{
   const h=await p.evaluate(()=>{const n=Date.UTC(2026,9,25,23,22);return [hoursText(EXCH[0],n),hoursText(EXCH[3],n),hoursText(EXCH[4],n),exchangeState(EXCH[0],n).left];});
   assert.deepEqual(h.slice(0,3),['10:00–16:00 local · 23:00–05:00 UTC','08:00–16:30 local · 08:00–16:30 UTC','09:30–16:00 local · 13:30–20:00 UTC']);assert.equal(Math.round(h[3]/60000),5*60+38);
-  if(phone)await p.locator('#dock [data-v=markets]').click();else if(await p.locator('.mk-row').count()===0)await p.locator('#mk-toggle').click();await p.waitForTimeout(300);
+  if(phone)await p.locator('#dock [data-v=markets]').click();else if(await p.locator('.mk-row').count()===0)await mktSwitch(p);await p.waitForTimeout(300);
   for(const t of await p.locator('.mk-main small').allInnerTexts())assert.match(t,/^\d\d:\d\d–\d\d:\d\d local · \d\d:\d\d–\d\d:\d\d UTC$/);});
  if(!phone)await check(w,'M8 pressing the button again turns the layer off: the Markets tab goes, no dots, panel back to Top',async()=>{
-  await p.locator('#mk-toggle').click();await p.waitForTimeout(300);
+  await mktSwitch(p);await p.waitForTimeout(300);
   const r=await p.evaluate(()=>({on:MKTON,tab:!!document.querySelector('#panel-tab-markets'),cur:panelTab,hits:exHits.length}));assert.equal(r.on,false);assert.equal(r.tab,false);assert.equal(r.cur,'top');assert.equal(r.hits,0);
-  await p.locator('#mk-toggle').click();await p.waitForTimeout(300);assert.equal(await p.evaluate(()=>MKTON),true);});
+  await mktSwitch(p);await p.waitForTimeout(300);assert.equal(await p.evaluate(()=>MKTON),true);});
  await check(w,'M6 clicking a market row and a dot on the globe asks the asset viewer for that index',async()=>{
   await p.evaluate(()=>{window.__peek=[];InvPeek.open=s=>window.__peek.push(s);});
   await p.locator('.mk-row').nth(4).click();assert.equal(await p.evaluate(()=>__peek.at(-1)),'^GSPC');

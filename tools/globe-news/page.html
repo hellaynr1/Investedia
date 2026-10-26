@@ -420,6 +420,24 @@ h1 span{color:var(--fg-3)}
   .fsheet .tl-play::after{content:'Replay 7 days'}.fsheet .tl-play svg{width:14px;height:14px}
   .fsheet .reg[data-k=global]::before{display:none}
 }
+
+/* Layers menu (bottom left): Connections and Market hours switches plus the legend */
+.layers{position:fixed;left:max(24px,env(safe-area-inset-left));bottom:84px;z-index:4}
+.lay-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--fg-2)}.lay-btn:hover{color:#fff}.lay-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.lay-btn b{font:600 12px 'Geist Mono',monospace;color:#ff9a4d}
+.lay-pop{position:absolute;left:0;bottom:48px;width:280px;border-radius:18px;padding:10px 12px}.lay-pop[hidden]{display:none}
+.lay-sw{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:10px 4px;text-align:left;color:var(--fg)}.lay-sw+.lay-sw{border-top:1px solid var(--line)}.lay-sw b{display:block;font-size:14px;font-weight:650}.lay-sw small{display:block;color:var(--fg-3);font-size:12.5px;font-weight:500}
+.tg{flex:none;width:44px;height:26px;border-radius:99px;background:#3f3f46;position:relative}.tg::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}.lay-sw[aria-checked=true] .tg{background:var(--accent)}.lay-sw[aria-checked=true] .tg::after{left:21px}
+.lay-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;padding:10px 4px 2px;border-top:1px solid var(--line);font-size:12px;color:var(--fg-3)}.lay-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:6px}
+/* Regions: flag stacks, and a matching globe for All regions */
+.reg{display:inline-flex;align-items:center;gap:8px}.reg[data-k=global]::before{display:none!important}
+.rg-globe{width:24px;height:24px;border-radius:50%}.rg-stack{display:inline-flex}.rg-stack img{width:20px;height:20px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #1b1b1f}.rg-stack img+img{margin-left:-7px}.reg[aria-pressed=true] .rg-stack img{box-shadow:0 0 0 2px #fff}
+@media(min-width:761px){.regions{flex-wrap:wrap;border-radius:26px;max-width:100%}}
+/* Topic bar: separate outlined chips with a round count badge */
+#cats.chips{background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0;gap:8px;flex-wrap:wrap;border-radius:0;overflow:visible}
+#cats .chip{height:40px;padding:0 8px 0 15px;border:1px solid rgba(255,255,255,.16);background:rgba(24,24,27,.6);color:var(--fg-2);display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
+#cats .chip b{min-width:26px;height:26px;margin:0;border-radius:99px;display:grid;place-items:center;background:rgba(255,255,255,.1);color:#fff;font:600 12px 'Geist Mono',monospace}
+#cats .chip[aria-pressed=true]{background:#fff;color:#000;border-color:#fff}#cats .chip[aria-pressed=true] b{background:#000;color:#fff}
+@media(max-width:760px){.layers{display:none}#cats .chip{height:44px;padding:0 8px 0 16px}.fsheet .lay-sw{padding:12px 4px;font-size:15px}.fsheet .lay-sw small{font-size:14px}.fsheet .lay-sw b{font-size:15px}.fsheet .rg-stack img{width:22px;height:22px}}
 </style>
 </head>
 <body>
@@ -440,10 +458,18 @@ h1 span{color:var(--fg-3)}
     <div class="res" id="res" role="listbox" hidden></div></div>
   <div class="chips" id="cats" role="group" aria-label="Topic lens"></div>
   <div class="regions" id="regions" role="group" aria-label="Region"></div>
-  <button type="button" class="mk-toggle" id="mk-toggle" aria-pressed="false" aria-label="Market hours and open markets"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Market hours</button>
 </div>
 
-<div class="legend" aria-label="Connections legend"><span><i></i>News origin</span><span>↑ Asset</span><span>↓ Asset</span><span id="connection-count"></span></div>
+<div class="layers" id="layers">
+  <div class="lay-pop glass" id="lay-pop" role="group" aria-label="Map layers" hidden>
+    <div id="lay-switches">
+      <button type="button" class="lay-sw" id="sw-conn" role="switch" aria-checked="true"><span><b>Connections</b><small id="connection-count"></small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-mkt" role="switch" aria-checked="false"><span><b>Market hours</b><small>Night shade, open exchanges</small></span><i class="tg"></i></button>
+    </div>
+    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span>↑ Asset</span><span>↓ Asset</span></div>
+  </div>
+  <button type="button" class="lay-btn glass" id="lay-btn" aria-expanded="false" aria-controls="lay-pop" aria-haspopup="true" aria-label="Layers, 1 on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>Layers <b id="lay-n">1</b></button>
+</div>
 <div class="timeline glass" id="tl" role="group" aria-label="Time window">
   <button class="tl-play" id="play" aria-label="Replay the last 7 days"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.8v10.4a.6.6 0 0 0 .9.5l8.4-5.2a.6.6 0 0 0 0-1L4.9 2.3a.6.6 0 0 0-.9.5z"/></svg></button>
   <span class="tl-sep"></span>
@@ -454,7 +480,7 @@ h1 span{color:var(--fg-3)}
 <div class="fs-back" id="fsback" hidden></div>
 <section class="fsheet" id="fsheet" role="dialog" aria-modal="true" aria-labelledby="fs-title" hidden>
   <div class="fs-head"><h2 id="fs-title" tabindex="-1">Filters</h2><button type="button" class="fs-btn" id="fs-reset">Reset</button><button type="button" class="fs-btn fs-x" id="fs-close" aria-label="Close filters">✕</button></div>
-  <div class="fs-body"><div class="fs-lbl">Topic</div><div id="fs-cats"></div><div class="fs-lbl">Region</div><div id="fs-regions"></div><div class="fs-lbl">Time</div><div id="fs-time"></div><div id="fs-foot"></div></div>
+  <div class="fs-body"><div class="fs-lbl">Topic</div><div id="fs-cats"></div><div class="fs-lbl">Region</div><div id="fs-regions"></div><div class="fs-lbl">Time</div><div id="fs-time"></div><div class="fs-lbl">Layers</div><div id="fs-layers"></div><div id="fs-foot"></div></div>
   <button type="button" class="fs-show" id="fs-show">Show articles</button>
 </section>
 <button type="button" class="peek" id="peek" hidden></button>
@@ -735,9 +761,13 @@ function localMin(e, ms) {
   return { wd: p.weekday, m: (+p.hour) * 60 + (+p.minute) };
 }
 const isOpenAt = (e, ms) => { const l = localMin(e, ms); return l.wd !== 'Sat' && l.wd !== 'Sun' && l.m >= e.o && l.m < e.c; };
-let MKTON = new URLSearchParams(location.search).get('markets') === '1';
+let MKTON = new URLSearchParams(location.search).get('markets') === '1', CONNON = new URLSearchParams(location.search).get('connections') !== '0';
+function syncLayers() {
+  $('sw-conn').setAttribute('aria-checked', String(CONNON)); $('sw-mkt').setAttribute('aria-checked', String(MKTON));
+  const n = (CONNON ? 1 : 0) + (MKTON ? 1 : 0); $('lay-n').textContent = n; $('lay-btn').setAttribute('aria-label', `Layers, ${n} on`);
+}
 function setMarketsLayer(on) {
-  MKTON = on; $('mk-toggle').setAttribute('aria-pressed', String(on));
+  MKTON = on; syncLayers();
   if (!on && panelTab === 'markets') panelTab = 'top';
 }
 function hoursText(e, now = Date.now()) {
@@ -1206,7 +1236,8 @@ function updateLensChips() {
     b.setAttribute('aria-label', `${LENSES.find(l => l[0] === k)[1]}, ${n} ${n === 1 ? 'article' : 'articles'}`);
   }
 }
-$('regions').innerHTML = REGIONS.map(([k, l]) => `<button class="reg" data-k="${k}" aria-pressed="${k === F.region}">${l}</button>`).join('');
+const RSTACK = { na: ['us', 'ca', 'mx'], latam: ['br', 'ar', 'cl'], eu: ['gb', 'de', 'fr'], af: ['za', 'ng', 'eg'], me: ['sa', 'ae'], asia: ['jp', 'cn', 'in'], oc: ['au', 'nz'] };
+$('regions').innerHTML = REGIONS.map(([k, l]) => `<button class="reg" data-k="${k}" aria-pressed="${k === F.region}">${k === 'global' ? '<img class="rg-globe" src="region-globe.png" alt="" width="24" height="24">All regions' : `<span class="rg-stack" aria-hidden="true">${RSTACK[k].map(c => `<img src="flags/${c}.svg" alt="" width="20" height="20">`).join('')}</span>${l}`}</button>`).join('');
 $('wins').innerHTML = WINS.map(([k, l]) => `<button class="win" data-k="${k}" aria-pressed="${k === F.win}">${l}</button>`).join('');
 const press = (box, k) => box.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
 $('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.lens = b.dataset.k; if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } press($('cats'), F.lens); refresh(); };
@@ -1299,7 +1330,7 @@ function frame(t) {
 
   // Option C: a calm network; the selected article reveals its complete asset links.
   arcHits = []; pillRects = []; let visibleArcs=0;
-  for (const [i, edge] of network.entries()) {
+  for (const [i, edge] of (CONNON || focus ? network : []).entries()) {
     const {article,impact,asset,target}=edge, active=focus?.id === article.id;
     if (focus && !active) continue;
     const points=arcPts(article,target,32), col=IMPACT_COLOR[impact.direction];
@@ -1362,12 +1393,12 @@ function frame(t) {
 }
 
 // ===== Phone layout (option A): slim top bar, Filters sheet, peek card and bottom dock =====
-const PH = {}; for (const [k, el] of [['cats', $('cats')], ['regions', $('regions')], ['tl', $('tl')], ['badge', $('badge')]]) { PH[k] = document.createComment(k); el.parentNode.insertBefore(PH[k], el); }
+const PH = {}; for (const [k, el] of [['cats', $('cats')], ['regions', $('regions')], ['tl', $('tl')], ['badge', $('badge')], ['lay', $('lay-switches')]]) { PH[k] = document.createComment(k); el.parentNode.insertBefore(PH[k], el); }
 let filtersMoved = false;
 function placeFilters(on) {
   if (on === filtersMoved || EMBED) return; filtersMoved = on;
-  const dest = { cats: $('fs-cats'), regions: $('fs-regions'), tl: $('fs-time'), badge: $('fs-foot') };
-  for (const [k, el] of [['cats', $('cats')], ['regions', $('regions')], ['tl', $('tl')], ['badge', $('badge')]]) on ? dest[k].appendChild(el) : PH[k].parentNode.insertBefore(el, PH[k]);
+  const dest = { cats: $('fs-cats'), regions: $('fs-regions'), tl: $('fs-time'), badge: $('fs-foot'), lay: $('fs-layers') };
+  for (const [k, el] of [['cats', $('cats')], ['regions', $('regions')], ['tl', $('tl')], ['badge', $('badge')], ['lay', $('lay-switches')]]) on ? dest[k].appendChild(el) : PH[k].parentNode.insertBefore(el, PH[k]);
   if (!on) closeFilters(false);
 }
 let fsOpener = null;
@@ -1410,12 +1441,17 @@ $('dock').onclick = e => {
   hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = b.dataset.v === 'markets' ? 'markets' : (panelTab === 'markets' ? 'top' : panelTab); panelExpanded = false;
   render(); pbody.scrollTop = 0; setSheet('full');
 };
-$('mk-toggle').onclick = () => {
+$('sw-conn').onclick = () => { CONNON = !CONNON; syncLayers(); };
+$('sw-mkt').onclick = () => {
   const on = !MKTON; setMarketsLayer(on);
-  if (on) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'markets'; panelExpanded = false; }
+  if (on && !phone()) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'markets'; panelExpanded = false; }
   render(); pbody.scrollTop = 0;
 };
-$('mk-toggle').setAttribute('aria-pressed', String(MKTON)); if (MKTON) panelTab = 'markets';
+function layOpen(o) { $('lay-pop').hidden = !o; $('lay-btn').setAttribute('aria-expanded', String(o)); }
+$('lay-btn').onclick = () => layOpen($('lay-pop').hidden);
+addEventListener('keydown', e => { if (e.key === 'Escape' && !$('lay-pop').hidden) { layOpen(false); $('lay-btn').focus(); } });
+document.addEventListener('pointerdown', e => { if (!$('lay-pop').hidden && !e.target.closest('#layers')) layOpen(false); });
+syncLayers(); if (MKTON) panelTab = 'markets';
 placeFilters(phone()); addEventListener('resize', () => placeFilters(phone()));
 
 // ===== Start =====
