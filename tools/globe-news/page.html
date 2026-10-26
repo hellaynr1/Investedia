@@ -438,6 +438,23 @@ h1 span{color:var(--fg-3)}
 #cats .chip b{min-width:26px;height:26px;margin:0;border-radius:99px;display:grid;place-items:center;background:rgba(255,255,255,.1);color:#fff;font:600 12px 'Geist Mono',monospace}
 #cats .chip[aria-pressed=true]{background:#fff;color:#000;border-color:#fff}#cats .chip[aria-pressed=true] b{background:#000;color:#fff}
 @media(max-width:760px){.layers{display:none}#cats .chip{height:44px;padding:0 8px 0 16px}.fsheet .lay-sw{padding:12px 4px;font-size:15px}.fsheet .lay-sw small{font-size:14px}.fsheet .lay-sw b{font-size:15px}.fsheet .rg-stack img{width:22px;height:22px}}
+
+/* Dropdowns: glass menus for Region and My assets */
+.ddrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;position:relative;z-index:6}.dd{position:relative}
+.dd-btn{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 16px;border-radius:999px;font:600 14px Inter,system-ui,sans-serif;color:var(--fg-2);background:rgba(24,24,27,.5);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border:1px solid rgba(255,255,255,.14)}
+.dd-btn:hover{color:#fff}.dd-btn[aria-expanded=true],.dd-btn.on{background:rgba(255,255,255,.92);color:#111;border-color:#fff}.dd-btn b{font:600 12px 'Geist Mono',ui-monospace,monospace;color:#ff9a4d}.dd-btn.on b,.dd-btn[aria-expanded=true] b{color:#b4500a}.dd-car{font-style:normal;font-size:11px}
+.dd-star{width:20px;height:20px;flex:none}.dd-btn img{width:24px;height:24px;border-radius:50%}
+.dd-menu{position:absolute;top:52px;left:0;min-width:320px;z-index:30;border-radius:20px;padding:8px;background:rgba(24,24,27,.55);backdrop-filter:blur(28px) saturate(1.5);-webkit-backdrop-filter:blur(28px) saturate(1.5);border:1px solid rgba(255,255,255,.16);box-shadow:0 24px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06)}.dd-menu[hidden]{display:none}
+#regions.dd-menu{display:grid;gap:2px;padding:8px;margin:0;border-radius:20px;overflow:visible;max-width:none;-webkit-mask-image:none;mask-image:none;background:rgba(24,24,27,.55);backdrop-filter:blur(28px) saturate(1.5);-webkit-backdrop-filter:blur(28px) saturate(1.5)}
+#regions .reg{display:grid;grid-template-columns:28px 1fr 70px auto;align-items:center;gap:10px;width:100%;height:auto;min-height:44px;padding:8px 10px;border:0;border-radius:12px;background:none;color:#fff;text-align:left;font-size:14px;font-weight:600}
+#regions .reg:hover{background:rgba(255,255,255,.06)}#regions .reg[aria-pressed=true]{background:rgba(255,255,255,.12);color:#fff;border:0}#regions .reg .rg-globe{width:24px;height:24px}
+.rg-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}.rg-bar i{display:block;height:100%;background:var(--accent)}#regions .reg em{font:700 12px 'Geist Mono',ui-monospace,monospace;font-style:normal;color:#ff9a4d;background:rgba(255,122,26,.14);padding:3px 9px;border-radius:99px}
+.mine-top{display:flex;gap:6px;padding:4px 4px 8px}.mine-top button{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:99px;border:1px solid rgba(255,255,255,.16);color:var(--fg-2);font-size:13.5px;font-weight:650}.mine-top button svg{width:16px;height:16px}.mine-top button[aria-pressed=true]{background:#fff;color:#111;border-color:#fff}
+.mine-row{display:grid;grid-template-columns:34px 1fr auto 18px;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;border-top:1px solid rgba(255,255,255,.1);background:none;color:#fff;text-align:left}.mine-row:hover{background:rgba(255,255,255,.05);border-radius:12px}.mine-row .dd-star{width:16px;height:16px}
+.mine-ic .ai-t,.mine-ic .ai-i,.mine-ic .ai-pair{width:30px;height:30px;border-radius:8px}.mine-nm b{display:block;font-size:14px}.mine-nm small{color:var(--fg-3);font-size:12.5px}
+.mine-foot{display:block;padding:10px;border-top:1px solid rgba(255,255,255,.1);color:#ff9a4d;font-size:13.5px;font-weight:650;text-decoration:none}.mine-empty{display:grid;gap:6px;padding:14px;font-size:14px;color:var(--fg-2)}.mine-empty .dd-star{width:28px;height:28px}.mine-empty b{color:#fff;font-size:15px}
+.up-day{margin:14px 0 4px;font:600 12px 'Geist Mono',ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-3)}.up-row{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;width:100%;padding:11px 0;border:0;border-top:1px solid var(--line);background:none;color:inherit;text-align:left}.up-row .flag{width:24px;height:16px;border-radius:2px;object-fit:cover}.up-main b{display:block;font-size:14.5px}.up-main small{color:var(--fg-3);font-size:13px}.up-in{color:#fbbf24;font-weight:700;font-size:13px;white-space:nowrap}.up-list{display:grid}
+@media(max-width:760px){.ddrow{display:grid;grid-template-columns:1fr;margin-top:0}.fsheet .dd-btn{width:100%;justify-content:flex-start}.fsheet .dd-btn .dd-car{margin-left:auto}.fsheet .dd-menu{position:static;margin-top:8px;min-width:0;width:100%;box-shadow:none}.up-main small,.up-in,.up-day,.mine-nm small,.mine-foot{font-size:14px}.dd-btn{font-size:15px}}
 </style>
 </head>
 <body>
@@ -457,13 +474,17 @@ h1 span{color:var(--fg-3)}
   <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search assets, countries &amp; articles" autocomplete="off" aria-label="Search assets, countries and articles" aria-controls="res"><kbd>/</kbd>
     <div class="res" id="res" role="listbox" hidden></div></div>
   <div class="chips" id="cats" role="group" aria-label="Topic lens"></div>
-  <div class="regions" id="regions" role="group" aria-label="Region"></div>
+  <div class="ddrow" id="ddrow">
+    <div class="dd" id="reg-dd"><button type="button" class="dd-btn" id="reg-btn" aria-haspopup="true" aria-expanded="false" aria-controls="regions"><img class="rg-globe" src="region-globe.png" alt="" width="24" height="24"><span id="reg-label">Region: All regions</span><i class="dd-car" aria-hidden="true">▾</i></button><div class="regions dd-menu" id="regions" role="group" aria-label="Region" hidden></div></div>
+    <div class="dd" id="mine-dd"><button type="button" class="dd-btn" id="mine-btn" aria-haspopup="true" aria-expanded="false" aria-controls="mine-menu"><svg class="dd-star" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="stg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd166"/><stop offset="1" stop-color="#ff7a1a"/></linearGradient></defs><path d="M12 2.8l2.8 5.9 6.4.9-4.7 4.5 1.2 6.4L12 17.4l-5.7 3.1 1.2-6.4L2.8 9.6l6.4-.9z" fill="url(#stg)" stroke="#ff7a1a" stroke-width="1.2" stroke-linejoin="round"/></svg><span id="mine-label">My assets</span><b id="mine-n"></b><i class="dd-car" aria-hidden="true">▾</i></button><div class="dd-menu" id="mine-menu" role="group" aria-label="My assets" hidden></div></div>
+  </div>
 </div>
 
 <div class="layers" id="layers">
   <div class="lay-pop glass" id="lay-pop" role="group" aria-label="Map layers" hidden>
     <div id="lay-switches">
       <button type="button" class="lay-sw" id="sw-conn" role="switch" aria-checked="true"><span><b>Connections</b><small id="connection-count"></small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-up" role="switch" aria-checked="false"><span><b>Upcoming</b><small id="up-sub">Releases in the next 7 days</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-mkt" role="switch" aria-checked="false"><span><b>Market hours</b><small>Night shade, open exchanges</small></span><i class="tg"></i></button>
     </div>
     <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span>↑ Asset</span><span>↓ Asset</span></div>
@@ -761,11 +782,16 @@ function localMin(e, ms) {
   return { wd: p.weekday, m: (+p.hour) * 60 + (+p.minute) };
 }
 const isOpenAt = (e, ms) => { const l = localMin(e, ms); return l.wd !== 'Sat' && l.wd !== 'Sun' && l.m >= e.o && l.m < e.c; };
-let MKTON = new URLSearchParams(location.search).get('markets') === '1', CONNON = new URLSearchParams(location.search).get('connections') !== '0';
+let UPON = new URLSearchParams(location.search).get('upcoming') === '1', MKTON = new URLSearchParams(location.search).get('markets') === '1', CONNON = new URLSearchParams(location.search).get('connections') !== '0';
 function syncLayers() {
   $('sw-conn').setAttribute('aria-checked', String(CONNON)); $('sw-mkt').setAttribute('aria-checked', String(MKTON));
-  const n = (CONNON ? 1 : 0) + (MKTON ? 1 : 0); $('lay-n').textContent = n; $('lay-btn').setAttribute('aria-label', `Layers, ${n} on`);
+  $('sw-up').setAttribute('aria-checked', String(UPON));
+  const n = (CONNON ? 1 : 0) + (MKTON ? 1 : 0) + (UPON ? 1 : 0); $('lay-n').textContent = n; $('lay-btn').setAttribute('aria-label', `Layers, ${n} on`);
 }
+const CAPS = { US: [38.9, -77.04], GB: [51.5, -.13], JP: [35.68, 139.69], EU: [50.11, 8.68], AU: [-33.87, 151.21], CA: [45.42, -75.7], NZ: [-41.29, 174.78], CH: [46.95, 7.45], CN: [39.9, 116.4] };
+// High-impact releases in the next 7 days (assets/calendar-live.json), soonest first.
+function upcoming() { const now = Date.now(), end = now + 7 * 864e5; return CAL.filter(e => { const t = Date.parse(e.at); return t > now && t <= end && CAPS[e.country]; }).sort((a, b) => Date.parse(a.at) - Date.parse(b.at)); }
+function setUpcomingLayer(on) { UPON = on; syncLayers(); if (!on && panelTab === 'upcoming') panelTab = 'top'; const n = upcoming().length; $('up-sub').textContent = `Releases in the next 7 days · ${n} shown`; }
 function setMarketsLayer(on) {
   MKTON = on; syncLayers();
   if (!on && panelTab === 'markets') panelTab = 'top';
@@ -783,6 +809,14 @@ function exchangeState(e, now = Date.now()) {
 }
 const hm = ms => { const d = new Date(ms); return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0'); };
 function exchangeRows(now = Date.now()) { return EXCH.map(e => ({ e, st: exchangeState(e, now) })); }
+function upcomingPanel() {
+  const list = upcoming(), day = e => new Date(e.at).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short', timeZone: 'UTC' });
+  if (!list.length) return '<p class="note">No high-impact releases are scheduled in the next 7 days.</p>';
+  let last = '', rows = '';
+  for (const e of list) { const d = day(e); if (d !== last) { rows += `<div class="up-day">${d}</div>`; last = d; }
+    rows += `<button type="button" class="up-row" data-up="${esc(e.country)}"><img class="flag" src="flags/${e.country.toLowerCase()}.svg" alt="" onerror="this.remove()"><span class="up-main"><b>${esc(e.t)}</b><small>${e.fc ? 'Forecast ' + esc(e.fc) : 'No forecast published'}${e.prev ? ' · Previous ' + esc(e.prev) : ''}</small></span><span class="up-in">in ${untilText(Date.parse(e.at) - Date.now())}</span></button>`; }
+  return `<div class="eb mk-eyebrow">Upcoming · high impact · ${list.length} ${list.length === 1 ? 'release' : 'releases'}</div><div class="up-list">${rows}</div><p class="note">Dates and forecasts come from official schedules (BLS, BEA, Federal Reserve) and the weekly calendar feed. Earnings dates will be added when we have a licensed source.</p>`;
+}
 function marketsPanel() {
   const now = Date.now(), d = new Date(now), stamp = d.toISOString().slice(0, 10) + ' ' + hm(now) + ' UTC';
   const rows = exchangeRows(now).map(({ e, st }) => `<button class="mk-row" data-asset="${esc(e.ix)}"><img class="flag" src="flags/${e.cc}.svg" alt=""><span class="mk-main"><b>${e.n}</b><small>${hoursText(e, now).replace(' · ', '<br>')}</small></span><span class="mk-st ${st.open ? 'mk-open' : ''}">${st.open ? 'Open · closes in ' + untilText(st.left) : 'Opens in ' + untilText(st.in)}</span></button>`).join('');
@@ -806,7 +840,30 @@ function nightPath() {
   const path = new Path2D(); path.moveTo(pts[0][0], pts[0][1]); for (const q of pts) path.lineTo(q[0], q[1]); path.closePath();
   return { path, wholeDisc: inside !== nightCentre };
 }
-let exHits = [];
+let exHits = [], upHits = [], upLabels = [];
+function drawUpcoming() {
+  upHits = []; upLabels = []; const seen = {}, placed = [];
+  const evs = upcoming().filter(e => !seen[e.country] && (seen[e.country] = 1));
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.font = '650 12px Inter,sans-serif';
+  let shownLabels = 0;
+  for (const e of evs) {
+    const [la, lo] = CAPS[e.country], [x, y, z] = proj(la * rad, lo * rad); if (z <= .15 || x < globeBox.left || x > globeBox.right || y < globeBox.top || y > globeBox.bottom) continue;
+    ctx.save(); ctx.translate(x, y); ctx.rotate(Math.PI / 4); ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 14; ctx.fillStyle = '#fbbf24'; ctx.fillRect(-5, -5, 10, 10); ctx.restore();
+    const label = `${e.t.length > 22 ? e.t.slice(0, 21) + '…' : e.t} · in ${untilText(Date.parse(e.at) - Date.now())}`, w = ctx.measureText(label).width + 20, h = 26;
+    let hit = { x: x - 12, y: y - 12, w: 24, h: 24, e };
+    if (!(phone() && shownLabels >= 2)) for (const [dx, dy] of [[14, -h - 4], [14, 6], [-w - 14, -h - 4], [-w - 14, 6]]) {
+      const r = { x: x + dx, y: y + dy, w, h };
+      if (r.x < globeBox.left || r.x + w > globeBox.right || r.y < globeBox.top || r.y + h > globeBox.bottom) continue;
+      if (placed.some(q => r.x < q.x + q.w + 4 && r.x + r.w + 4 > q.x && r.y < q.y + q.h + 4 && r.y + r.h + 4 > q.y)) continue;
+      placed.push(r); upLabels.push(r); shownLabels++;
+      ctx.fillStyle = 'rgba(16,16,19,.94)'; ctx.strokeStyle = 'rgba(251,191,36,.6)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(r.x, r.y, w, h, 13); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.fillText(label, r.x + 10, r.y + h / 2 + .5);
+      hit = { x: Math.min(hit.x, r.x), y: Math.min(hit.y, r.y), w: Math.max(hit.x + hit.w, r.x + r.w) - Math.min(hit.x, r.x), h: Math.max(hit.y + hit.h, r.y + r.h) - Math.min(hit.y, r.y), e }; break;
+    }
+    placed.push({ x: x - 12, y: y - 12, w: 24, h: 24 }); upHits.push(hit);
+  }
+}
+const upPick = (x, y) => upHits.find(h => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h);
 function drawExchanges(t) {
   exHits = [];
   const rows = exchangeRows(), soon = rows.filter(r => !r.st.open).sort((a, b) => a.st.in - b.st.in)[0], showAll = view.k === 'top' && panelTab === 'markets';
@@ -832,15 +889,19 @@ function drawExchanges(t) {
 const exPick = (x, y) => exHits.find(h => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h);
 
 // ===== Filters =====
-const F = { cat: 'all', lens: 'all', region: 'global', win: '24h' }; let play = null;
+const F = { cat: 'all', lens: 'all', region: 'global', win: '24h', mine: new URLSearchParams(location.search).get('mine') === '1' }; let play = null;
 const winMin = () => WINS.find(w => w[0] === F.win)[2];
 const inTime = s => play ? s.t <= play.cur : T0 - s.t <= winMin() * 60000;
-const matchNoLens = s => (F.cat === 'all' || s.category === F.cat) && (F.region === 'global' || s.location.region === F.region) && inTime(s);
+// My assets: the watchlist is kept by the site in localStorage ('inv-watch': {a:[{s,...}], c:[...]}); a guest has none.
+function watchSyms() { try { const L = JSON.parse(localStorage.getItem('inv-watch') || '{}'); return new Set((L.a || []).map(x => String(x.s || '').toUpperCase()).filter(Boolean)); } catch { return new Set(); } }
+let WATCH = watchSyms();
+const touchesWatch = s => impactsOf(s).some(i => { const a = assetForImpact(i); return (a && WATCH.has(a.s.toUpperCase())) || WATCH.has(String(i.ticker || '').toUpperCase()); });
+const matchNoLens = s => (F.cat === 'all' || s.category === F.cat) && (F.region === 'global' || s.location.region === F.region) && inTime(s) && (!F.mine || touchesWatch(s));
 const match = s => (F.lens === 'all' || s.lens.includes(F.lens)) && matchNoLens(s);
 const sortTop = (a, b) => (b.importance - a.importance) || (b.t - a.t);
 let shown = [], dimmed = [], activity = {};
 function refresh() {
-  shown = stories.filter(match); dimmed = F.lens === 'all' ? [] : stories.filter(s => matchNoLens(s) && !s.lens.includes(F.lens)); activity = {}; updateLensChips(); updateFiltersUI(); for (const s of shown) activity[s.location.country] = (activity[s.location.country] || 0) + 1;
+  shown = stories.filter(match); dimmed = F.lens === 'all' ? [] : stories.filter(s => matchNoLens(s) && !s.lens.includes(F.lens)); activity = {}; WATCH = watchSyms(); updateLensChips(); updateFiltersUI(); updateDropdowns(); for (const s of shown) activity[s.location.country] = (activity[s.location.country] || 0) + 1;
   $('tlInfo').innerHTML = play ? `Replaying · <b>${new Date(play.cur).toLocaleDateString('en-GB', { weekday: 'short' })} ${new Date(play.cur).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</b>` : `<b>${shown.length}</b> ${shown.length === 1 ? 'article' : 'articles'}`;
   updateNetwork(); if (!play) render();
 }
@@ -963,7 +1024,7 @@ let cTimer = null, lastX = 0, lastY = 0;
 addEventListener('wheel', () => { clearTimeout(cTimer); hideHover(); }, { passive: true });
 function pick(x, y, r) { let best = null, bd = r * r; for (const d of drawn) { const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < bd) { bd = q; best = d; } } return best; }
 function hoverAt(x, y) {
-  const ex = !EMBED && exPick(x, y); if (ex) { $('hover').classList.remove('on'); cv.style.cursor = 'pointer'; return; }
+  const ex = !EMBED && (exPick(x, y) || upPick(x, y)); if (ex) { $('hover').classList.remove('on'); cv.style.cursor = 'pointer'; return; }
   const edge=arcPick(x,y); arcHover=edge || null;
   if(edge){const hv=$('hover');hv.className='hover glass solo hv-b on';hv.innerHTML=hoverCardHTML(edge);edge.pill?placeHover(edge.pill.x+edge.pill.w+4,edge.pill.y+edge.pill.h/2):placeHover(x,y);cv.style.cursor='pointer';return;}
 
@@ -992,6 +1053,7 @@ function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.of
 function hideHover() { delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on'); cv.style.cursor = ''; }
 function tap(x, y, touch) {
   if (touch) hideHover();
+  const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
   const ex = !EMBED && exPick(x, y); if (ex) { window.InvPeek?.open(ex.e.ix); return; }
   const edge=arcPick(x,y);if(edge){arcHover=null;openStory(edge.article);return;}
 
@@ -1107,9 +1169,10 @@ function compactItem(s) {
 function variantPanel(list) {
   if (PANEL_TEMPLATE === 'a') return `<h2>Top articles</h2><div class="meta">${Math.min(8, list.length)} of ${list.length} articles</div><div class="compact-list">${list.slice(0, 8).map(compactItem).join('')}</div>${list.length > 8 ? '<a class="panel-more" href="../../news.html">See all news →</a>' : ''}${list.length ? '' : '<div class="empty">No articles match these filters.</div>'}${noteHTML()}`;
   if (PANEL_TEMPLATE === 'b') return `<h2>Top articles</h2><div class="strip-list" aria-label="Top articles">${list.slice(0, phone() ? 3 : 12).map(compactItem).join('')}</div>${list.length ? '' : '<div class="empty">No articles match these filters.</div>'}${noteHTML()}`;
-  const tabs = [['top', 'Top'], ['movers', 'Movers'], ['latest', 'Latest'], ['countries', 'Countries'], ...(MKTON ? [['markets', 'Markets']] : [])];
+  const tabs = [['top', 'Top'], ['movers', 'Movers'], ['latest', 'Latest'], ['countries', 'Countries'], ...(UPON ? [['upcoming', 'Upcoming']] : []), ...(MKTON ? [['markets', 'Markets']] : [])];
   let items, count;
-  if (panelTab === 'markets') { items = marketsPanel(); count = 0; }
+  if (panelTab === 'upcoming') { items = upcomingPanel(); count = 0; }
+  else if (panelTab === 'markets') { items = marketsPanel(); count = 0; }
   else if (panelTab === 'movers') {
     const sp = (v, c) => { if (!v || v.length < 2) return ''; const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1; return `<svg viewBox="0 0 58 20" preserveAspectRatio="none"><path d="${v.map((y, i) => (i ? 'L' : 'M') + (i / (v.length - 1) * 58).toFixed(1) + ' ' + (18 - (y - lo) / r * 16).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`; };
     items = MKT.list.length ? MKT.list.slice(0, panelExpanded ? 12 : 6).map(a => { const v = MKT.intra[a.s]?.d1?.c || (a.sp || []).slice(-6), c = a.d > 0 ? '#34d399' : a.d < 0 ? '#f87171' : '#8b8b94'; return `<a class="mv-row" href="../../news.html?mover=${encodeURIComponent(a.s)}"><span>${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><span><b>${esc(a.n)}</b><small>${esc(a.s.replace(/[=^]/g, ''))}</small></span>${sp(v, c)}<span class="mono ${a.d > 0 ? 'u' : a.d < 0 ? 'd' : ''}">${a.d > 0 ? '+' : a.d < 0 ? '−' : ''}${Math.abs(a.d).toFixed(2)}%</span></a>`; }).join('') : '<div class="empty">Loading movers…</div>';
@@ -1236,11 +1299,11 @@ function updateLensChips() {
     b.setAttribute('aria-label', `${LENSES.find(l => l[0] === k)[1]}, ${n} ${n === 1 ? 'article' : 'articles'}`);
   }
 }
-$('regions').innerHTML = REGIONS.map(([k, l]) => `<button class="reg" data-k="${k}" aria-pressed="${k === F.region}">${k === 'global' ? '<img class="rg-globe" src="region-globe.png" alt="" width="24" height="24">All regions' : l}</button>`).join('');
+$('regions').innerHTML = REGIONS.map(([k, l]) => `<button class="reg" data-k="${k}" aria-pressed="${k === F.region}">${k === 'global' ? '<img class="rg-globe" src="region-globe.png" alt="" width="24" height="24">' : '<span class="rg-sp"></span>'}<span class="rg-name">${k === 'global' ? 'All regions' : l}</span><span class="rg-bar"><i></i></span><em data-n>0</em></button>`).join('');
 $('wins').innerHTML = WINS.map(([k, l]) => `<button class="win" data-k="${k}" aria-pressed="${k === F.win}">${l}</button>`).join('');
 const press = (box, k) => box.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
 $('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.lens = b.dataset.k; if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } press($('cats'), F.lens); refresh(); };
-$('regions').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.region = b.dataset.k; press($('regions'), F.region); const r = REGIONS.find(x => x[0] === F.region); if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } flyTo(r[2], r[3], r[4]); refresh(); };
+$('regions').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.region = b.dataset.k; press($('regions'), F.region); const r = REGIONS.find(x => x[0] === F.region); if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } flyTo(r[2], r[3], r[4]); refresh(); ddClose(); $('reg-btn').focus(); };
 $('wins').onclick = e => { const b = e.target.closest('button'); if (!b) return; play = null; F.win = b.dataset.k; press($('wins'), F.win); refresh(); };
 // Replay: sweep the last 7 days so articles appear on Earth in the order they were published
 $('play').onclick = () => { F.win = '7d'; press($('wins'), '7d'); play = { start: T0 - 7 * 1440 * 60000, cur: T0 - 7 * 1440 * 60000, t0: performance.now(), dur: reduce ? 1 : 7000 }; for (const s of stories) s.on = false; refresh(); };
@@ -1389,17 +1452,47 @@ function frame(t) {
   ctx.textBaseline='alphabetic';
   for(const {x,y,w:W,h:H,nm,pt,w1,d} of pillRects){ctx.fillStyle='rgba(16,16,19,.94)';ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x,y,W,H,13);ctx.fill();ctx.stroke();ctx.textAlign='left';ctx.font='650 12px Inter,sans-serif';ctx.fillStyle='#fff';ctx.fillText(nm,x+12,y+17);ctx.fillStyle=!Number.isFinite(d)||d===0?'#c4c4cc':d>0?'#5df08a':'#ff8a82';ctx.font='700 12px Inter,sans-serif';ctx.fillText(pt,x+12+w1+8,y+17);}
   if (!EMBED && MKTON) drawExchanges(t); else exHits = [];
+  if (!EMBED && UPON) drawUpcoming(); else upHits = [];
   ctx.restore();
   requestAnimationFrame(frame);
 }
 
+// ===== Dropdowns: Region and My assets (glass menus) =====
+const ddBtns = () => [$('reg-btn'), $('mine-btn')], ddMenus = () => [$('regions'), $('mine-menu')];
+function ddClose() { ddMenus().forEach(m => m.hidden = true); ddBtns().forEach(b => b.setAttribute('aria-expanded', 'false')); }
+function ddToggle(btn, menu) { const open = menu.hidden; ddClose(); if (open) { if (menu === $('mine-menu')) renderMine(); menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); } }
+const regionCount = k => stories.filter(x => (F.lens === 'all' || x.lens.includes(F.lens)) && (F.cat === 'all' || x.category === F.cat) && inTime(x) && (!F.mine || touchesWatch(x)) && (k === 'global' || x.location.region === k)).length;
+const STAR_SVG = `<svg class="dd-star" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="stg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd166"/><stop offset="1" stop-color="#ff7a1a"/></linearGradient></defs><path d="M12 2.8l2.8 5.9 6.4.9-4.7 4.5 1.2 6.4L12 17.4l-5.7 3.1 1.2-6.4L2.8 9.6l6.4-.9z" fill="url(#stg)" stroke="#ff7a1a" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
+function updateDropdowns() {
+  const counts = REGIONS.map(([k]) => regionCount(k)), mx = Math.max(1, ...counts);
+  $('regions').querySelectorAll('.reg').forEach((b, i) => { b.querySelector('[data-n]').textContent = counts[i]; b.querySelector('.rg-bar i').style.width = Math.max(3, counts[i] / mx * 100) + '%'; });
+  const r = REGIONS.find(x => x[0] === F.region); $('reg-label').textContent = 'Region: ' + (F.region === 'global' ? 'All regions' : r[1]);
+  $('mine-n').textContent = WATCH.size || ''; $('mine-btn').classList.toggle('on', F.mine); $('mine-label').textContent = F.mine ? 'My assets only' : 'My assets';
+  if (!$('mine-menu').hidden) renderMine();
+}
+function renderMine() {
+  const rows = [...WATCH].map(sym => ({ sym, a: MKT.by[sym] })).filter(r => r.a);
+  const n = sym => stories.filter(s => inTime(s) && impactsOf(s).some(i => { const a = assetForImpact(i); return (a && a.s.toUpperCase() === sym) || String(i.ticker || '').toUpperCase() === sym; })).length;
+  $('mine-menu').innerHTML = rows.length
+    ? `<div class="mine-top"><button type="button" data-mine="1" aria-pressed="${F.mine}">${STAR_SVG}My assets · ${rows.length}</button><button type="button" data-mine="0" aria-pressed="${!F.mine}">All news</button></div>${rows.map(r => { const c = n(r.sym); return `<button type="button" class="mine-row" data-asset="${esc(r.a.s)}"><span class="mine-ic">${window.AssetIcons ? AssetIcons.icon(r.a) : ''}</span><span class="mine-nm"><b>${esc(r.a.n)}</b><small>${c} ${c === 1 ? 'story' : 'stories'}</small></span>${Number.isFinite(r.a.d) ? pctPill(r.a.d) : ''}${STAR_SVG}</button>`; }).join('')}<a class="mine-foot" href="../../watchlist.html">Edit my watchlist</a>`
+    : `<div class="mine-empty">${STAR_SVG}<b>No assets followed yet</b><span>Sign in and tap the star on any asset to follow it. Then “My assets” shows only the news that touches them.</span><a class="mine-foot" href="../../watchlist.html">Open my watchlist</a></div>`;
+}
+$('reg-btn').onclick = () => ddToggle($('reg-btn'), $('regions'));
+$('mine-btn').onclick = () => ddToggle($('mine-btn'), $('mine-menu'));
+$('mine-menu').addEventListener('click', e => {
+  const m = e.target.closest('[data-mine]'); if (m) { F.mine = m.dataset.mine === '1'; if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } refresh(); ddClose(); $('mine-btn').focus(); return; }
+  const a = e.target.closest('[data-asset]'); if (a) { window.InvPeek?.open(a.dataset.asset); }
+});
+addEventListener('keydown', e => { if (e.key === 'Escape' && ddMenus().some(m => !m.hidden)) { const b = ddBtns().find(x => x.getAttribute('aria-expanded') === 'true'); ddClose(); e.stopPropagation(); if (b) b.focus(); } }, true);
+document.addEventListener('pointerdown', e => { if (!e.target.closest('.dd')) ddClose(); });
+
 // ===== Phone layout (option A): slim top bar, Filters sheet, peek card and bottom dock =====
-const PH = {}; for (const [k, el] of [['cats', $('cats')], ['regions', $('regions')], ['tl', $('tl')], ['badge', $('badge')], ['lay', $('lay-switches')]]) { PH[k] = document.createComment(k); el.parentNode.insertBefore(PH[k], el); }
+const PH = {}; for (const [k, el] of [['cats', $('cats')], ['regions', $('ddrow')], ['tl', $('tl')], ['badge', $('badge')], ['lay', $('lay-switches')]]) { PH[k] = document.createComment(k); el.parentNode.insertBefore(PH[k], el); }
 let filtersMoved = false;
 function placeFilters(on) {
   if (on === filtersMoved || EMBED) return; filtersMoved = on;
   const dest = { cats: $('fs-cats'), regions: $('fs-regions'), tl: $('fs-time'), badge: $('fs-foot'), lay: $('fs-layers') };
-  for (const [k, el] of [['cats', $('cats')], ['regions', $('regions')], ['tl', $('tl')], ['badge', $('badge')], ['lay', $('lay-switches')]]) on ? dest[k].appendChild(el) : PH[k].parentNode.insertBefore(el, PH[k]);
+  for (const [k, el] of [['cats', $('cats')], ['regions', $('ddrow')], ['tl', $('tl')], ['badge', $('badge')], ['lay', $('lay-switches')]]) on ? dest[k].appendChild(el) : PH[k].parentNode.insertBefore(el, PH[k]);
   if (!on) closeFilters(false);
 }
 let fsOpener = null;
@@ -1407,7 +1500,7 @@ function openFilters() { fsOpener = document.activeElement; $('fsback').hidden =
 function closeFilters(restore = true) { if ($('fsheet').hidden) return; $('fsheet').hidden = true; $('fsback').hidden = true; if (restore && fsOpener && fsOpener.focus) fsOpener.focus(); }
 $('m-filters').onclick = openFilters; $('fs-close').onclick = () => closeFilters(); $('fsback').onclick = () => closeFilters(); $('fs-show').onclick = () => closeFilters();
 $('m-search').onclick = () => { if (window.InvPeek) InvPeek.search(); else qi.focus(); };
-$('fs-reset').onclick = () => { for (const [box, k] of [[$('cats'), 'all'], [$('regions'), 'global'], [$('wins'), '24h']]) box.querySelector(`[data-k="${k}"]`).click(); };
+$('fs-reset').onclick = () => { F.mine = false; for (const [box, k] of [[$('cats'), 'all'], [$('regions'), 'global'], [$('wins'), '24h']]) box.querySelector(`[data-k="${k}"]`).click(); };
 $('fsheet').addEventListener('keydown', e => {
   if (e.key === 'Escape') { e.stopPropagation(); closeFilters(); return; }
   if (e.key !== 'Tab') return;
@@ -1442,7 +1535,13 @@ $('dock').onclick = e => {
   hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = b.dataset.v === 'markets' ? 'markets' : (panelTab === 'markets' ? 'top' : panelTab); panelExpanded = false;
   render(); pbody.scrollTop = 0; setSheet('full');
 };
+pbody.addEventListener('click', e => { const u = e.target.closest('[data-up]'); if (u && CAPS[u.dataset.up]) flyTo(CAPS[u.dataset.up][1], CAPS[u.dataset.up][0], 1.6); });
 $('sw-conn').onclick = () => { CONNON = !CONNON; syncLayers(); };
+$('sw-up').onclick = () => {
+  const on = !UPON; setUpcomingLayer(on);
+  if (on && !phone()) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; panelExpanded = false; }
+  render(); pbody.scrollTop = 0;
+};
 $('sw-mkt').onclick = () => {
   const on = !MKTON; setMarketsLayer(on);
   if (on && !phone()) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'markets'; panelExpanded = false; }
@@ -1451,11 +1550,10 @@ $('sw-mkt').onclick = () => {
 function layOpen(o) { $('lay-pop').hidden = !o; $('lay-btn').setAttribute('aria-expanded', String(o)); }
 $('lay-btn').onclick = () => layOpen($('lay-pop').hidden);
 addEventListener('keydown', e => { if (e.key === 'Escape' && !$('lay-pop').hidden) { layOpen(false); $('lay-btn').focus(); } });
-// The card is open when the globe opens (Connections on, Market hours off) and stays until the visitor hides it with the button or Escape.
-if (!EMBED && !phone()) layOpen(true);
+// The Layers card starts closed; once the visitor opens it, it stays open until they hide it with the button or Escape.
 // Coming back to the page from the browser's back/forward cache must not keep an old "connections off".
 addEventListener('pageshow', e => { if (e.persisted && new URLSearchParams(location.search).get('connections') !== '0') { CONNON = true; syncLayers(); } });
-syncLayers(); if (MKTON) panelTab = 'markets';
+syncLayers(); if (MKTON) panelTab = 'markets'; if (UPON) panelTab = 'upcoming';
 placeFilters(phone()); addEventListener('resize', () => placeFilters(phone()));
 
 // ===== Start =====
@@ -1471,7 +1569,7 @@ load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return 
   if (q.get('story') && byId[q.get('story')]) openStory(byId[q.get('story')]);
   else if (q.get('country') && byName[q.get('country')]) openCountry(byName[q.get('country')]);
 }).catch(() => { pbody.innerHTML = '<div class="empty">News could not be loaded. Please refresh the page.</div>'; });
-setInterval(() => { if (view.k === 'top' && panelTab === 'markets' && F.lens === 'all') render(); }, 60000);
+setInterval(() => { if (view.k === 'top' && (panelTab === 'markets' || panelTab === 'upcoming') && F.lens === 'all') render(); }, 60000);
 requestAnimationFrame(frame);
 </script>
 </body>
