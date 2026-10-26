@@ -96,13 +96,20 @@ GDELT_QUERIES = [
 ]
 
 
+REGION_GDELT = [  # (query, region): English-language business reporting from Africa, Latin America and the Middle East
+    ('(business OR economy OR market OR bank OR currency OR oil OR mining OR inflation) (sourcecountry:SF OR sourcecountry:NI OR sourcecountry:KE OR sourcecountry:EG OR sourcecountry:GH OR sourcecountry:MO OR sourcecountry:ET OR sourcecountry:TZ OR sourcecountry:UG) sourcelang:english', 'af'),
+    ('(business OR economy OR market OR bank OR currency OR oil OR mining OR inflation) (sourcecountry:BR OR sourcecountry:MX OR sourcecountry:AR OR sourcecountry:CI OR sourcecountry:CO OR sourcecountry:PE OR sourcecountry:UY OR sourcecountry:PM) sourcelang:english', 'latam'),
+    ('(business OR economy OR market OR bank OR currency OR oil OR investment OR inflation) (sourcecountry:AE OR sourcecountry:SA OR sourcecountry:QA OR sourcecountry:IS OR sourcecountry:TU OR sourcecountry:JO) sourcelang:english', 'me'),
+]
+
+
 BACKFILL_QUERY = '("central bank" OR inflation OR GDP OR tariffs OR earnings OR "stock market" OR merger OR oil OR OPEC OR bitcoin OR semiconductor) sourcelang:english'
 
 
 def gdelt(start=None, end=None):
     """Latest 3 hours, or a past window (start/end datetimes) for the backfill."""
     out = []
-    for i, q in enumerate([BACKFILL_QUERY] if start else GDELT_QUERIES):
+    for i, (q, reg) in enumerate([(BACKFILL_QUERY, None)] if start else [(q, None) for q in GDELT_QUERIES] + REGION_GDELT):
         url = 'https://api.gdeltproject.org/api/v2/doc/doc?' + urllib.parse.urlencode({'query': q, 'mode': 'ArtList', 'format': 'json', 'maxrecords': 150 if start else 75, 'sort': 'HybridRel', **({'startdatetime': start.strftime('%Y%m%d%H%M%S'), 'enddatetime': end.strftime('%Y%m%d%H%M%S')} if start else {'timespan': '3h'})})
         for t in range(1):  # one try per query: GDELT is a bonus source, the RSS feeds carry the run
             time.sleep(6)  # GDELT asks for one request every 5 seconds
@@ -112,7 +119,7 @@ def gdelt(start=None, end=None):
                     for a in json.loads(txt).get('articles', []):
                         if a.get('language', 'English') != 'English': continue
                         ts = datetime.strptime(a['seendate'], '%Y%m%dT%H%M%SZ').replace(tzinfo=timezone.utc)
-                        out.append({'title': html.unescape(a['title']).strip(), 'url': a['url'], 'source': a.get('domain', ''), 'published': ts.strftime('%Y-%m-%dT%H:%M:%SZ'), 'kind': 'news'})
+                        out.append({'title': html.unescape(a['title']).strip(), 'url': a['url'], 'source': a.get('domain', ''), 'published': ts.strftime('%Y-%m-%dT%H:%M:%SZ'), 'kind': 'news', **({'region': reg} if reg else {})})
                     break
                 log('GDELT busy:', txt[:80])
             except Exception as e:
@@ -151,9 +158,56 @@ NEWS_FEEDS = [  # publisher business feeds (headline + link + their own short de
 ]
 
 
+REGION_FEEDS = [  # regional business and central-bank feeds: (url, source name, region). Added so Africa, Latin America and the Middle East are not thin.
+    ('https://www.moneyweb.co.za/feed/', 'Moneyweb', 'af'),
+    ('https://nairametrics.com/feed/', 'Nairametrics', 'af'),
+    ('https://businessday.ng/feed/', 'BusinessDay Nigeria', 'af'),
+    ('https://dailynewsegypt.com/feed/', 'Daily News Egypt', 'af'),
+    ('https://allafrica.com/tools/headlines/rdf/business/headlines.rdf', 'AllAfrica', 'af'),
+    ('https://techcabal.com/feed/', 'TechCabal', 'af'),
+    ('https://iol.co.za/rss/iol/business', 'IOL Business', 'af'),
+    ('https://www.ghanabusinessnews.com/feed/', 'Ghana Business News', 'af'),
+    ('https://www.centralbank.go.ke/feed/', 'Central Bank of Kenya', 'af'),
+    ('https://www.capitalfm.co.ke/business/feed/', 'Capital FM Kenya', 'af'),
+    ('https://africa.businessinsider.com/rss', 'Business Insider Africa', 'af'),
+    ('https://addisfortune.news/feed/', 'Addis Fortune', 'af'),
+    ('https://www.premiumtimesng.com/category/business/feed', 'Premium Times', 'af'),
+    ('https://en.mercopress.com/rss', 'MercoPress', 'latam'),
+    ('https://www.batimes.com.ar/feed', 'Buenos Aires Times', 'latam'),
+    ('https://www.riotimesonline.com/feed/', 'The Rio Times', 'latam'),
+    ('https://mexiconewsdaily.com/feed/', 'Mexico News Daily', 'latam'),
+    ('https://colombiaone.com/feed/', 'Colombia One', 'latam'),
+    ('https://agenciabrasil.ebc.com.br/en/rss/ultimasnoticias/feed.xml', 'Agência Brasil', 'latam'),
+    ('https://perureports.com/feed/', 'Peru Reports', 'latam'),
+    ('https://latinamericareports.com/feed/', 'Latin America Reports', 'latam'),
+    ('https://dominicantoday.com/feed/', 'Dominican Today', 'latam'),
+    ('https://www.dailysabah.com/rssFeed/business', 'Daily Sabah', 'me'),
+    ('https://www.hurriyetdailynews.com/rss/economy', 'Hürriyet Daily News', 'me'),
+]
+REGION_RESERVE, REGION_EACH = 36, 14  # of the candidates sent to the editor, up to 36 are held for these regions (14 per region at most)
+
+
+def balance(cands, limit=140):
+    """Keep the editor's input geographically mixed: reserve slots for thin regions, then fill with the rest in the original order."""
+    by = {}
+    for c in cands:
+        if c.get('region'): by.setdefault(c['region'], []).append(c)
+    reserved, k = [], 0
+    while len(reserved) < REGION_RESERVE and any(len(v) > k for v in by.values()) and k < REGION_EACH:
+        for v in by.values():
+            if len(v) > k and len(reserved) < REGION_RESERVE: reserved.append(v[k])
+        k += 1
+    ids = {id(c) for c in reserved}
+    rest = [c for c in cands if id(c) not in ids]
+    return reserved + rest[:max(0, limit - len(reserved))]
+
+
 def rss():
-    out = []
-    for url, name, hint in FEEDS + [(u, n, '') for u, n in NEWS_FEEDS]:
+    srcs = [(u, n, h, None) for u, n, h in FEEDS] + [(u, n, '', None) for u, n in NEWS_FEEDS] + [(u, n, '', r) for u, n, r in REGION_FEEDS]
+
+    def one(src):
+        url, name, hint, region = src
+        out = []
         try:
             root = ET.fromstring(get(url).encode('utf-8'))
             for it in root.iter('item'):
@@ -167,9 +221,10 @@ def rss():
                 if ts.tzinfo is None: ts = ts.replace(tzinfo=timezone.utc)
                 if NOW - ts > timedelta(days=3): continue
                 desc = re.sub(r'<[^>]+>', ' ', html.unescape(it.findtext('description') or '')).strip()
-                out.append({'title': html.unescape(t), 'url': l, 'source': name, 'published': ts.strftime('%Y-%m-%dT%H:%M:%SZ'), 'kind': 'official' if hint else 'news', 'hint': hint, 'desc': desc[:400]})
+                out.append({'title': html.unescape(t), 'url': l, 'source': name, 'published': ts.strftime('%Y-%m-%dT%H:%M:%SZ'), 'kind': 'official' if hint else 'news', 'hint': hint, 'desc': desc[:400], **({'region': region} if region else {})})
         except Exception as e: err(f'RSS {name}: {e}')
-    return out
+        return out
+    with ThreadPoolExecutor(8) as ex: return [c for part in ex.map(one, srcs) for c in part]
 
 
 def describe(c):  # the article's own short description (meta tag), used only as input for our summary
@@ -211,7 +266,7 @@ def dedupe(items, known_titles):
 PROMPT = """You are the news editor of Investedia, a financial news globe for professional investors and finance practitioners. Below are candidate headlines (JSON) with their source and, when available, the article's own short description.
 
 Pick at most {n} stories that are genuinely about business, finance, markets, companies, the economy, commodities, crypto, technology business, or politics/geopolitics WITH a clear economic impact. Skip: sports, celebrity, crime, lifestyle, opinion columns, press-release spam, "stock to buy" tips, price-target listicles, and anything you cannot place.
-Merge candidates that report the same event into one story (list all their indexes in "members").
+Geographic balance matters: the candidates include regional sources for Africa, Latin America and the Middle East. Include their genuine business and economy stories (aim for roughly one pick in six from these regions when the candidates support it), and always give the country of the event, not the country of the publisher. Candidates may be in Spanish, Portuguese or French: write the headline and summary in English.\nMerge candidates that report the same event into one story (list all their indexes in "members").
 
 For each story return:
 - "members": candidate indexes (numbers) of the same event, most important source first
@@ -470,7 +525,7 @@ def main():
     status['fetched'] = len(raw)
     fresh = [c for c in raw if canon(c['url']) not in known_urls]
     fresh = [c for c in fresh if not NOISE.search(c['title'])]  # skip junk before it reaches Gemini
-    cands = dedupe(fresh, [s['headline'] for s in prev])[:140]
+    cands = balance(dedupe(fresh, [s['headline'] for s in prev]), 140)
     status['candidates'] = len(cands)
     log(f'{len(raw)} fetched, {len(cands)} new candidates')
     new = pick_stories(cands, box, by_iso, sym, known_iso, MAX_NEW, prev)

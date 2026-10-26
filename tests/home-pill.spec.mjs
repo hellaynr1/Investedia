@@ -9,11 +9,17 @@ for(const w of [1440,390]){
   await p.waitForTimeout(2500);
   const t=async(n,f)=>{try{await f();}catch(e){fail++;console.log('FAIL',w,n,e.message.slice(0,300));}};
   if(w===1440){
-    await t('P1 PC shows the slim pill, not the scrolling strip',async()=>{assert.ok(await p.locator('#hnPillBtn').isVisible());assert.equal(await p.locator('.hn-tick').isVisible(),false);});
-    await t('P2 the pill is one line, 46px tall, and clear of the Open globe button',async()=>{const a=await p.locator('#hnPillBtn').boundingBox(),o=await p.locator('.hn-open').boundingBox();assert.ok(Math.abs(a.height-46)<2);assert.ok(o.y+o.height<=a.y-8);});
-    await t('P3 tapping opens 6 headlines upward, Escape closes and returns focus',async()=>{await p.locator('#hnPillBtn').click();assert.equal(await p.locator('#hnPillList li').count(),6);assert.equal(await p.locator('#hnPillBtn').getAttribute('aria-expanded'),'true');const l=await p.locator('#hnPillList').boundingBox(),a=await p.locator('#hnPillBtn').boundingBox();assert.ok(l.y+l.height<=a.y);await p.keyboard.press('Escape');assert.equal(await p.locator('#hnPillList').isVisible(),false);assert.equal(await p.evaluate(()=>document.activeElement.id),'hnPillBtn');});
+    await t('P1 PC shows the headline pill with side arrows, not the scrolling strip or a dropdown',async()=>{assert.ok(await p.locator('#hnPillA').isVisible());assert.ok(await p.locator('#hnPrev').isVisible()&&await p.locator('#hnNext').isVisible());assert.equal(await p.locator('.hn-tick').isVisible(),false);assert.equal(await p.locator('#hnPillList').count(),0);});
+    await t('P2 the pill shows the headline and its summary sentence, stays one size and clear of Open globe',async()=>{const a=await p.locator('.hn-pillbox').boundingBox(),o=await p.locator('.hn-open').boundingBox();assert.ok(a.width<=620&&a.height<=80);assert.ok(o.y+o.height<=a.y-8);assert.ok((await p.locator('#hnPillS').innerText()).length>10);});
+    await t('P3 the right side moves to the next headline, the left goes back, it wraps, arrows are 44px, keys work',async()=>{
+      const h=()=>p.locator('#hnPillH').innerText();const h0=await h();assert.equal(await p.locator('#hnPillN').innerText(),'1 / 6');
+      for(const b of ['#hnPrev','#hnNext'])assert.ok((await p.locator(b).boundingBox()).width>=44);
+      await p.locator('#hnNext').click();assert.notEqual(await h(),h0);assert.equal(await p.locator('#hnPillN').innerText(),'2 / 6');
+      await p.locator('#hnPrev').click();assert.equal(await h(),h0);await p.locator('#hnPrev').click();assert.equal(await p.locator('#hnPillN').innerText(),'6 / 6');
+      await p.locator('#hnNext').focus();await p.keyboard.press('ArrowRight');assert.equal(await p.locator('#hnPillN').innerText(),'1 / 6');});
+    await t('P3b the headline links to the article',async()=>{assert.match(await p.locator('#hnPillA').getAttribute('href'),/story=/);});
   } else {
-    await t('P4 phone keeps the existing strip, no pill',async()=>{assert.equal(await p.locator('#hnPillBtn').isVisible(),false);assert.ok(await p.locator('.hn-tick').isVisible());});
+    await t('P4 phone keeps the existing strip, no pill',async()=>{assert.equal(await p.locator('#hnPillA').isVisible(),false);assert.ok(await p.locator('.hn-tick').isVisible());});
   }
   await t('P5 no horizontal overflow',async()=>assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)));
   await c.close();}

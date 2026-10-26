@@ -20,7 +20,7 @@
     const imp = s.impacts || [], e0 = imp[0], follow = (s.entities?.[0]?.name) || (e0 && e0.name) || nm(s.location.country);
     const photo = s.image ? `<div class="sp-im"><img class="ph" src="assets/globe/${esc(s.image.file)}" alt="${esc(s.image.alt || '')}"><span class="cr">${s.image.kind === 'place' ? 'Photo' : 'Illustration'} · ${esc(s.image.credit || '')} · ${esc(s.image.source || '')}</span></div>` : '';
     root.innerHTML = `<a class="sp-back" href="news.html">← News</a>
-    <div class="sp-pg"><div><div class="sp-m">${fl(ISO[s.location.country])}<b>${esc(s.location.place.split(',')[0])}</b><span>· ${esc(CAT[s.category] || '')} · ${ago(s.published_at)}</span></div><h1>${esc(s.headline)}</h1>${photo}<p class="sp-sum">${esc(s.summary)}</p>
+    <div class="sp-pg"><div><div class="sp-m">${fl(ISO[s.location.country])}<b>${esc(s.location.place.split(',')[0])}</b><span>· ${esc(CAT[s.category] || '')} · ${ago(s.published_at)}</span></div><h1>${esc(s.headline)}</h1><button type="button" class="sp-share" id="sp-share">Share</button>${photo}<p class="sp-sum">${esc(s.summary)}</p>
     <section class="sp-sec mi" id="sp-mi"><h2>Market implications</h2><p>What changed, which assets are exposed, and what investors are watching.</p>
      <div class="mi-seg" role="tablist" aria-label="Section"><button type="button" role="tab" data-p="event" aria-selected="false">Event</button><button type="button" role="tab" data-p="why" aria-selected="false">Rationale</button><button type="button" role="tab" data-p="exp" aria-selected="true">Exposure${imp.length ? ' · ' + Math.min(imp.length, 6) : ''}</button></div>
      <div class="mi-p mi-event" data-p="event"><span class="mi-eb">Event</span><p>${esc(s.summary)}</p></div>
@@ -39,7 +39,19 @@
     { const mi = document.getElementById('sp-mi'), show = p => { mi.querySelectorAll('.mi-seg button').forEach(b => b.setAttribute('aria-selected', b.dataset.p === p)); mi.querySelectorAll('.mi-p').forEach(el => el.classList.toggle('on', el.dataset.p === p)); }; show('exp'); mi.querySelector('.mi-seg').onclick = e => { const b = e.target.closest('button'); if (b) show(b.dataset.p); };
       Promise.all([fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] })), fetch('assets/globe/news-prices.json').then(r => r.json()).catch(() => ({ assets: {} }))]).then(([m, np]) => { const by = Object.fromEntries((m.assets || []).map(a => [a.s, a])); Object.assign(by, np.assets || {});
         mi.querySelectorAll('.mi-row').forEach(r => { const t = r.dataset.t, a = t && (by[t] || by[t.replace(/-USD$/, '')] || by[t.replace(/=X$/, '')]); if (!a || typeof a.w !== 'number') return; const v = a.w, c = v > 0.005 ? 'u' : v < -0.005 ? 'd' : 'o'; r.querySelector('.mi-px').innerHTML = `<span class="mi-chip ${c}">${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(Math.abs(v) >= 10 ? 1 : 2)}% <small>week</small></span>`; }); }); }
+    // Since the news (chart option B): first exposed asset that has prices recorded after the article.
+    if (window.SinceNews) Promise.all([fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] })), SinceNews.load('assets/globe/news-track.json')]).then(([m, trk]) => {
+      const by = Object.fromEntries((m.assets || []).map(a => [a.s, a])), pub = Date.parse(s.published_at);
+      for (const i of imp) {
+        const t = String(i.ticker || '').toUpperCase(), a = t && (by[t] || by[t + '-USD'] || by[t.replace(/=X$/, '')]);
+        const series = a && trk && trk.s && trk.s[a.s];
+        if (!series || SinceNews.compute(pub, series, Date.now()).state !== 'ok') continue;
+        const seg = document.querySelector('#sp-mi .mi-seg'); if (seg) seg.insertAdjacentHTML('beforebegin', SinceNews.card({ story: s, impact: i, asset: a, series, now: Date.now() }));
+        break;
+      }
+    });
     const px = document.getElementById('sp-px'); if (px && window.PriceRail) PriceRail.mount(px, s);
+    const sh = document.getElementById('sp-share'); if (sh) sh.onclick = () => window.ShareLink && ShareLink.share(s.id, s.headline, sh);
     const b = document.getElementById('sp-f'), paint = () => { const on = followed().includes(follow); b.textContent = on ? 'Following' : 'Follow'; b.classList.toggle('on', on); b.classList.toggle('p', !on); };
     paint(); b.onclick = () => { toggle(follow); paint(); };
   }).catch(() => { root.innerHTML = '<div class="sp-none">News could not load. Please refresh.</div>'; });

@@ -380,6 +380,16 @@
     "errors": []
   },
   {
+    "page": "track-record.html",
+    "width": 1440,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
     "page": "watchlist.html",
     "width": 1440,
     "first": "PASS",
@@ -781,6 +791,16 @@
   },
   {
     "page": "terms.html",
+    "width": 390,
+    "first": "PASS",
+    "essential": "PASS",
+    "all": "PASS",
+    "withdraw": "PASS",
+    "reprompt": "PASS",
+    "errors": []
+  },
+  {
+    "page": "track-record.html",
     "width": 390,
     "first": "PASS",
     "essential": "PASS",
