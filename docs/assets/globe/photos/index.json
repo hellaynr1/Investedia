@@ -1437,7 +1437,8 @@
   "oil tanker ship",
   "bitcoin cryptocurrency",
   "cyber security",
-  "airplane airport"
+  "airplane airport",
+  "steel factory"
  ],
  "airplane airport": [
   {
@@ -1784,6 +1785,12 @@
    "file": "photos/steel-factory-8253284.jpg",
    "credit": "wal_172619",
    "source_url": "https://pixabay.com/photos/silos-warehouse-storage-8253284/",
+   "alt": "steel factory"
+  },
+  {
+   "file": "photos/steel-factory-4161383.jpg",
+   "credit": "Tama66",
+   "source_url": "https://pixabay.com/photos/pipes-ventilation-metal-lines-4161383/",
    "alt": "steel factory"
   }
  ],
