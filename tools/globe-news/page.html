@@ -629,7 +629,7 @@ Promise.all([fetch('markets.json').then(r => r.json()), fetch('news-prices.json'
   const known = a => !/[.\d]/.test(a.s.replace(/[=^-]/g, '')) && a.t !== 'fx' && Math.abs(a.d) < 20 && (a.m || a.t === 'crypto' || a.t === 'cmd' || MKT.intra[a.s]);
   MKT.list = (m.assets || []).filter(known).sort((x, y) => Math.abs(y.d) - Math.abs(x.d)).slice(0, 12);
   MKT.all = m.assets || [];
-  updateNetwork(); if (view.k === 'top' && panelTab === 'movers') render();
+  updateNetwork(); if ((view.k === 'top' && panelTab === 'movers') || view.k === 'article') render();
 }).catch(() => {});
 let CAL = [];
 fetch('../calendar-live.json').then(r => r.json()).then(d => { CAL = (d.events || []).filter(e => e && e.imp >= 3 && e.at); }).catch(() => {});

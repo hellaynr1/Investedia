@@ -45,6 +45,12 @@
   "pass": true
  },
  {
+  "width": 1440,
+  "id": "SN10 a story opened from a link before the prices have loaded still gets its card once they arrive",
+  "pass": false,
+  "error": "page.waitForSelector: Timeout 20000ms exceeded. | Call log: | \u001b[2m  - waiting for locator('.sn') to be visible\u001b[22m"
+ },
+ {
   "width": 390,
   "id": "SN1 normal: big number is the move since the first price after the article; before and after are in words; grey and coloured lines; marker with the publish time",
   "pass": true
@@ -88,5 +94,11 @@
   "width": 390,
   "id": "SN9 layout: the card fits the panel with no sideways scroll; its text is at least 13 px (14 px on phones)",
   "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN10 a story opened from a link before the prices have loaded still gets its card once they arrive",
+  "pass": false,
+  "error": "page.waitForSelector: Timeout 20000ms exceeded. | Call log: | \u001b[2m  - waiting for locator('.sn') to be visible\u001b[22m"
  }
 ]

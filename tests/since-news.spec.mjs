@@ -11,7 +11,9 @@ async function open(ctx,url,trackBody){
  const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
  await p.route('**/assets/globe/news-track.json',r=>trackBody===null?r.fulfill({status:404,body:''}):r.fulfill({contentType:'application/json',body:JSON.stringify(trackBody)}));
  await p.goto(base+url);try{await p.getByRole('button',{name:'Accept essential',exact:true}).click({timeout:2500});}catch{}
- await p.waitForFunction(()=>typeof stories!=='undefined'&&stories.length>0&&MKT.all&&MKT.all.length>0);await p.waitForTimeout(700);p.errors=errors;return p;}
+ await p.waitForFunction(()=>typeof stories!=='undefined'&&stories.length>0&&MKT.all&&MKT.all.length>0);await p.waitForTimeout(700);p.errors=errors;
+ if(url.includes('story='))await p.waitForSelector('.sn',{timeout:15000}).catch(async()=>{throw new Error('no card after opening the story; page errors='+JSON.stringify(errors)+'; view='+await p.evaluate(()=>view.k+' '+(window.TRACK===undefined?'':'')+document.getElementById('pbody').innerText.slice(0,120).replace(/\s+/g,' ')));});
+ return p;}
 for(const w of widths){
  const phone=w===390;
  const ctx=await b.newContext({viewport:viewport(w),isMobile:phone,hasTouch:phone,serviceWorkers:'block',reducedMotion:'reduce'});await fixtureExternal(ctx);
@@ -60,6 +62,12 @@ for(const w of widths){
   if(phone)await p.evaluate(()=>{setSheet('full');});await p.waitForTimeout(400);
   const r=await p.evaluate(()=>{const c=document.querySelector('.sn').getBoundingClientRect(),pb=document.getElementById('pbody').getBoundingClientRect(),sizes=[...document.querySelectorAll('.sn-ba,.sn-axis,.sn-leg,.sn-note,.sn-v,.sn-eb')].map(e=>parseFloat(getComputedStyle(e).fontSize));return {fit:c.right<=pb.right+1&&c.left>=pb.left-1,min:Math.min(...sizes),over:document.documentElement.scrollWidth>innerWidth};});
   assert(r.fit,JSON.stringify(r));assert(r.min>=(phone?14:12),JSON.stringify(r));assert.equal(r.over,false);await p.close();});
+ await check(w,'SN10 a story opened from a link before the prices have loaded still gets its card once they arrive',async()=>{
+  const p=await ctx.newPage();await p.route('**/assets/globe/news-track.json',r=>r.fulfill({contentType:'application/json',body:JSON.stringify(series(bef,aft(rightEnd)))}));
+  await p.route('**/assets/globe/markets.json',async r=>{await new Promise(x=>setTimeout(x,7000));await r.continue();});
+  await p.goto(base+story);
+  await p.waitForFunction(()=>typeof stories!=='undefined'&&stories.length>0&&view.k==='article');assert.equal(await p.locator('.sn').count(),0,'prices should not be here yet');
+  await p.waitForSelector('.sn',{timeout:20000});assert.match(await p.locator('.sn-big').innerText(),/\d+\.\d\d%/);await p.close();});
  await ctx.close();
 }
 await b.close();
