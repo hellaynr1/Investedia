@@ -1297,6 +1297,24 @@
    "credit": "Ernest_Roy",
    "source_url": "https://pixabay.com/photos/house-home-real-estate-architecture-4819731/",
    "alt": "housing construction"
+  },
+  {
+   "file": "photos/housing-construction-19696.jpg",
+   "credit": "PublicDomainPictures",
+   "source_url": "https://pixabay.com/photos/construction-house-building-shell-19696/",
+   "alt": "housing construction"
+  },
+  {
+   "file": "photos/housing-construction-1407462.jpg",
+   "credit": "2211438",
+   "source_url": "https://pixabay.com/photos/housebuilding-new-building-1407462/",
+   "alt": "housing construction"
+  },
+  {
+   "file": "photos/housing-construction-3536755.jpg",
+   "credit": "anncapictures",
+   "source_url": "https://pixabay.com/photos/financing-housebuilding-to-build-3536755/",
+   "alt": "housing construction"
   }
  ],
  "container port": [
@@ -1438,7 +1456,9 @@
   "bitcoin cryptocurrency",
   "cyber security",
   "airplane airport",
-  "steel factory"
+  "steel factory",
+  "pharmaceutical laboratory",
+  "housing construction"
  ],
  "airplane airport": [
   {
@@ -1929,6 +1949,24 @@
    "file": "photos/pharmaceutical-laboratory-5895477.jpg",
    "credit": "torstensimon",
    "source_url": "https://pixabay.com/photos/vaccine-covid-19-vials-vaccination-5895477/",
+   "alt": "pharmaceutical laboratory"
+  },
+  {
+   "file": "photos/pharmaceutical-laboratory-1729445.jpg",
+   "credit": "garten-gg",
+   "source_url": "https://pixabay.com/photos/pharmacy-isolated-health-medicine-1729445/",
+   "alt": "pharmaceutical laboratory"
+  },
+  {
+   "file": "photos/pharmaceutical-laboratory-6165772.jpg",
+   "credit": "spencerbdavis1",
+   "source_url": "https://pixabay.com/photos/vaccine-coronavirus-medical-hand-6165772/",
+   "alt": "pharmaceutical laboratory"
+  },
+  {
+   "file": "photos/pharmaceutical-laboratory-2815640.jpg",
+   "credit": "jarmoluk",
+   "source_url": "https://pixabay.com/photos/chemist-laboratory-analysis-2815640/",
    "alt": "pharmaceutical laboratory"
   }
  ],
