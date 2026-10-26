@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="../consent.css">
+<link rel="stylesheet" href="../consent.css"><link rel="stylesheet" href="../since-news.css">
 <script src="../consent.js"></script>
 <script src="../live-config.js"></script><script src="../prefs.js"></script><script src="../sectors.js"></script><script src="../peek.js"></script>
 <script>document.addEventListener("DOMContentLoaded",()=>window.InvConsent?.mount());</script>
@@ -496,7 +496,7 @@ h1 span{color:var(--fg-3)}
 <script>if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');</script>
 <script src="../quotes.js"></script>
 <script src="../news-alerts.js" defer></script>
-<script src="../asset-icons.js"></script>
+<script src="../asset-icons.js"></script><script src="../since-news.js"></script>
 <script>
 // ===== Data =====
 // News is loaded from NEWS_URL. Today that is demo content; a live pipeline (sources → dedupe → location → entities → category → importance → validation → summary)
@@ -622,6 +622,7 @@ function briefHTML(c) {
     ${ix ? `<div class="brief-index"><span>${esc(ix.n)}</span>${pctPill(ix.d)}</div>` : ''}
     ${nx ? `<div class="brief-next">Next: <b>${esc(nx.t)}</b> in ${untilText(Date.parse(nx.at) - Date.now())}</div>` : ''}`;
 }
+let TRACK = null; if (window.SinceNews) SinceNews.load('news-track.json').then(t => { TRACK = t; if (view.k === 'article') render(); });
 let ECON = null; fetch('economy.json').then(r => r.json()).then(d => { ECON = d; if (view.k === 'country') render(); }).catch(() => {});
 const usd = v => v >= 1e12 ? '$' + (v / 1e12).toFixed(v >= 1e13 ? 1 : 2) + ' trillion' : v >= 1e9 ? '$' + (v / 1e9).toFixed(v >= 1e11 ? 0 : 1) + ' billion' : '$' + (v / 1e6).toFixed(0) + ' million';
 const people = v => v >= 1e9 ? (v / 1e9).toFixed(2) + ' billion' : v >= 1e6 ? (v / 1e6).toFixed(1) + ' million' : Math.round(v / 1e3) + ' thousand';
@@ -693,10 +694,16 @@ function impactVisual(i) {
   const lg = ['company', 'asset'].includes(i.kind) && !/[\^=]/.test(i.ticker || '') ? logoFor({ name: i.name, ticker: i.ticker }) : null;
   return lg ? limg(lg) : `<img src="flags/${i.country.toLowerCase()}.svg" alt="" data-logo loading="lazy">`;
 }
+// The first affected asset that has a price: its since-the-article card (option B).
+function sinceHTML(s, rows) {
+  if (!window.SinceNews) return '';
+  for (const i of rows) { const a = assetForImpact(i); if (a) return SinceNews.card({ story: s, impact: i, asset: a, series: TRACK && TRACK.s && TRACK.s[a.s], now: Date.now() }); }
+  return '';
+}
 function impactHTML(s) {
   const rows = impactsOf(s), moved = s.market_moving && typeof s.why_moved === 'string' ? s.why_moved : '';
   if (!rows.length && !moved) return '';
-  return `<section class="impact-section" aria-label="Affected assets">${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">Affected assets</div><div class="impact-list">${rows.map(i => `<div><div class="impact-head" ${assetForImpact(i) ? `data-asset="${esc(assetForImpact(i).s)}" role="button" tabindex="0"` : ''}>${impactVisual(i)}<span>${esc(i.name)}</span>${assetForImpact(i) && Number.isFinite(assetForImpact(i).d) ? pctPill(assetForImpact(i).d) : ''}<span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p></div>`).join('')}</div></section>`;
+  return `<section class="impact-section" aria-label="Affected assets">${sinceHTML(s, rows)}${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">Affected assets</div><div class="impact-list">${rows.map(i => `<div><div class="impact-head" ${assetForImpact(i) ? `data-asset="${esc(assetForImpact(i).s)}" role="button" tabindex="0"` : ''}>${impactVisual(i)}<span>${esc(i.name)}</span>${assetForImpact(i) && Number.isFinite(assetForImpact(i).d) ? pctPill(assetForImpact(i).d) : ''}<span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p></div>`).join('')}</div></section>`;
 }
 function assetForImpact(i) {
   if (!i.ticker) return null;
