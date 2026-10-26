@@ -39,6 +39,8 @@ jobs:
         run: python3 update_news_prices.py || echo "News prices failed; keeping the previous file"
       - name: Record prices for the since-the-news charts
         run: python3 update_news_track.py || echo "News track failed; keeping the previous file"
+      - name: Judge older articles on daily closes (track record)
+        run: python3 update_track_backfill.py || echo "Track record backfill failed; keeping the previous ledger"
       - name: Big-move analysis for assets
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
