@@ -27,3 +27,8 @@
 .cal-row{grid-template-columns:74px 22px minmax(0,1fr) 40px;grid-template-areas:"t f n b" ". . x x";row-gap:2px;padding:10px 6px}.cal-time{grid-area:t}.cal-flag{grid-area:f}.cal-name{grid-area:n}.cal-bars{grid-area:b}.cal-nums{grid-area:x;display:flex;gap:14px}.cal-fc,.cal-pv,.cal-ac{text-align:left}
 #cal-search{width:100%}.cal-reset{margin-left:0}}
 @media(min-width:701px){.cal-nums{display:contents}}
+/* Phone layout fixes: chips keep their size and scroll sideways, breadcrumb and watchlist row line up, headline wraps evenly */
+.page-head .crumbs{align-items:center}.page-head .crumbs a{display:inline-flex;align-items:center;min-height:44px}
+#cal-next{text-wrap:balance}
+#cal-mine-label:not([hidden]){display:inline-flex;align-items:center;gap:10px;min-height:44px}#cal-mine-label input{flex:none;width:22px;height:22px;margin:0}
+@media(max-width:700px){.cal-dates .cal-chip{flex:none}.cal-dates{margin-right:-16px;padding-right:16px}.cal-bar .cal-chip,.cal-menu{flex:none}.cal-bar{row-gap:8px}#cal-mine-label{flex:1 1 auto}.cal-reset{margin-left:auto}}
