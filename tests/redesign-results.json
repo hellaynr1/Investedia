@@ -37,22 +37,26 @@
  {
   "width": 1440,
   "id": "W2 featured story shows the asset real % today and 7-day change",
-  "pass": true
+  "pass": false,
+  "error": "locator.innerText: Timeout 30000ms exceeded."
  },
  {
   "width": 1440,
   "id": "W3 featured story has a price chart with an \"article published\" marker",
-  "pass": true
+  "pass": false,
+  "error": "Expected values to be strictly equal:"
  },
  {
   "width": 1440,
   "id": "W4 the two side cards show asset, % pill and \"Article implies\"",
-  "pass": true
+  "pass": false,
+  "error": "Expected values to be strictly equal:"
  },
  {
   "width": 1440,
   "id": "W5 featured: expected direction is shown next to the real move",
-  "pass": true
+  "pass": false,
+  "error": "locator.innerText: Timeout 30000ms exceeded."
  },
  {
   "width": 1440,
@@ -122,22 +126,26 @@
  {
   "width": 390,
   "id": "W2 featured story shows the asset real % today and 7-day change",
-  "pass": true
+  "pass": false,
+  "error": "locator.innerText: Timeout 30000ms exceeded."
  },
  {
   "width": 390,
   "id": "W3 featured story has a price chart with an \"article published\" marker",
-  "pass": true
+  "pass": false,
+  "error": "Expected values to be strictly equal:"
  },
  {
   "width": 390,
   "id": "W4 the two side cards show asset, % pill and \"Article implies\"",
-  "pass": true
+  "pass": false,
+  "error": "Expected values to be strictly equal:"
  },
  {
   "width": 390,
   "id": "W5 featured: expected direction is shown next to the real move",
-  "pass": true
+  "pass": false,
+  "error": "locator.innerText: Timeout 30000ms exceeded."
  },
  {
   "width": 390,

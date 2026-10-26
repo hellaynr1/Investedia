@@ -28,6 +28,7 @@ Target: WCAG 2.2 AA. Automated axe-core 4.10.3 checks at 1440×900 and 390×844,
 |editorial-policy.html|1440|none|none|0|false|false||
 |education.html|1440|none|none|0|false|false||
 |globe.html|1440|none|none|0|false|false||
+|implications.html|1440|color-contrast|none|0|false|false||
 |index.html|1440|none|none|0|false|false||
 |legal.html|1440|none|none|0|false|false||
 |lesson.html|1440|none|none|0|false|false||
@@ -69,6 +70,7 @@ Target: WCAG 2.2 AA. Automated axe-core 4.10.3 checks at 1440×900 and 390×844,
 |editorial-policy.html|390|none|none|1|false|false||
 |education.html|390|none|none|1|false|false||
 |globe.html|390|none|none|1|false|false||
+|implications.html|390|color-contrast|none|1|false|false||
 |index.html|390|none|none|1|false|false||
 |legal.html|390|none|none|1|false|false||
 |lesson.html|390|none|none|1|false|false||
@@ -80,7 +82,7 @@ Target: WCAG 2.2 AA. Automated axe-core 4.10.3 checks at 1440×900 and 390×844,
 |screener.html|390|none|none|1|false|false||
 |sources.html|390|none|none|1|false|false||
 |stocks.html|390|none|none|1|false|false||
-|story.html|390|none|none|4|false|false||
+|story.html|390|none|none|1|false|false||
 |studio.html|390|none|none|1|false|false||
 |terms.html|390|none|none|1|false|false||
 |track-record.html|390|aria-progressbar-name|none|1|false|false||

@@ -5,7 +5,7 @@ const NAME = { 'United States of America': 'United States', 'Dem. Rep. Congo': '
 const nm = c => NAME[c] || c;
 const CAT = { markets: 'Markets', companies: 'Companies', economy: 'Economy', technology: 'Technology', crypto: 'Crypto', commodities: 'Commodities', geopolitics: 'Geopolitics' };
 const FLAG = { breaking: 'Breaking', trending: 'Trending', moving: 'Market moving' };
-let ISO = {}, ENTITY_LOGOS = {}, TRACK = null;
+let ISO = {}, ENTITY_LOGOS = {}, TRACK = null, LEDGER = null;
 function ago(t) { const m = Math.round((Date.parse(t)-Date.now())/60000), r = new Intl.RelativeTimeFormat(undefined,{numeric:'auto'}); return Math.abs(m)<60 ? r.format(m,'minute') : Math.abs(m)<1440 ? r.format(Math.round(m/60),'hour') : r.format(Math.round(m/1440),'day'); }
 const flagSrc = c => ISO[c] ? `assets/globe/flags/${ISO[c].toLowerCase()}.svg` : '';
 const company = e => e.ticker && !/[\^=]/.test(e.ticker) && !/-USD$/.test(e.ticker);
@@ -72,10 +72,27 @@ function countries(list) {
 // rank: importance, then sources, then recency
 const rank = (a, b) => (b.importance - a.importance) || ((b.sources?.length || 1) - (a.sources?.length || 1)) || (Date.parse(b.published_at) - Date.parse(a.published_at));
 async function loadNews() {
-  const [n, iso, logos, mk, trk] = await Promise.all([fetch('assets/globe/news-live.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/iso.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/logos.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] })), window.SinceNews ? SinceNews.load('assets/globe/news-track.json') : null]);
-  MARKETS = mk.assets || []; TRACK = trk;
+  const [n, iso, logos, mk, trk, led] = await Promise.all([fetch('assets/globe/news-live.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/iso.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/logos.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] })), window.SinceNews ? SinceNews.load('assets/globe/news-track.json') : null, fetch('assets/globe/news-ledger.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => null)]);
+  MARKETS = mk.assets || []; TRACK = trk; LEDGER = led;
   ISO = iso; ENTITY_LOGOS = Object.fromEntries(Object.entries(logos).map(([k, v]) => [k, v.replace('../logos/', 'assets/logos/')])); const stories = n.stories || [];
   return { stories, top: [...stories].sort(rank), latest: [...stories].sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at)), updated: n.updated_at,
-    moved: (() => { const all = [...stories].filter(s => s.market_moving || s.importance === 3).sort(rank), seen = new Set(), out = []; for (const s of all) { const m = primary(s); if (m && !seen.has(m.a.s)) { seen.add(m.a.s); out.push(s); } } for (const s of all) if (!out.includes(s) && !primary(s)) out.push(s); return out; })(), asof: mk.asof };
+    moved: (() => { const all = [...stories].filter(s => s.market_moving || s.importance === 3).sort(rank), seen = new Set(), out = []; for (const s of all) { const m = primary(s); if (m && !seen.has(m.a.s)) { seen.add(m.a.s); out.push(s); } } for (const s of all) if (!out.includes(s) && !primary(s)) out.push(s); return out; })(), asof: mk.asof, calls: window.Implications ? Implications.collect({ stories, markets: MARKETS, track: TRACK, ledger: LEDGER }) : [] };
 }
 const updatedText = t => 'Live · updated ' + new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+// "Articles the market confirmed" (homepage): only calls the market bore out are featured; every other call is one click away on implications.html.
+const sgn = v => (v > 0 ? '↑ ' : v < 0 ? '↓ ' : '↔ ') + Math.abs(v).toFixed(2) + '%';
+const confirmedChip = c => `<span class="hn-conf">✓ Said ${c.dir} · went ${c.dir}</span>`;
+function confirmedFeatured(c) {
+  const s = c.story, card = window.SinceNews ? SinceNews.card({ story: s, impact: c.impact, asset: c.asset, series: c.series, now: Date.now() }) : '';
+  return `<a class="hn-wf" href="${url(s)}"><div class="hn-wtop">${tags(s)}</div>${confirmedChip(c)}<h3>${esc(s.headline)}</h3><p>${esc(s.why_moved || s.summary)}</p>${card}${impactChips(s)}</a>`;
+}
+const confirmedSmall = c => `<a class="hn-wc" href="${url(c.story)}"><div class="hn-wtop">${tags(c.story)}</div><h4>${esc(c.story.headline)}</h4><div class="hn-wasset"><span class="hn-conf sm">✓ ${esc(c.asset.n)} ${sgn(c.move)}</span></div></a>`;
+function confirmedSection(d) {
+  const calls = d.calls || [], C = window.Implications ? Implications.counts(calls) : { hit: 0, miss: 0, flat: 0 }, judged = C.hit + C.miss + C.flat;
+  const hits = calls.filter(c => c.res === 'hit' && c.judged === 'live').sort((a, b) => (b.story.importance - a.story.importance) || (b.pub - a.pub));
+  const seen = new Set(), list = hits.filter(c => !seen.has(c.story.id) && seen.add(c.story.id));
+  const more = `<div class="hn-wmore"><a class="hn-btn" href="implications.html">Recent market implications →</a><span class="hn-meta">${judged ? `${C.hit} of ${judged} confirmed · ` : ''}misses included · <a href="track-record.html">Track record</a></span></div>`;
+  const body = list.length ? confirmedFeatured(list[0]) + `<div class="hn-wside">${list.slice(1, 3).map(confirmedSmall).join('')}</div>` : `<p class="hn-meta" style="grid-column:1/-1">No recent article has been borne out by its price yet. Calls are listed as they resolve.</p>`;
+  return { body, more };
+}

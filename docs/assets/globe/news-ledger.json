@@ -1,1 +1,1 @@
-{"schema":1,"since":"2026-10-26","horizon_h":24,"calls":[]}
+{"schema":1,"since":"2026-10-26","horizon_h":24,"calls":[{"id":"old","sym":"AAA","name":"Aaa","dir":"up","pub":29875140,"move":3.0,"res":"hit","cat":null,"h":"x","basis":"daily"}]}
