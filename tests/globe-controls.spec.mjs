@@ -14,13 +14,13 @@ for(const w of widths){
  const openLayers=async()=>{if(phone){if(await p.locator('#fsheet').isHidden())await p.locator('#m-filters').click();}else if(await p.locator('#lay-pop').isHidden())await p.locator('#lay-btn').click();};
  const closeLayers=async()=>{if(phone){if(await p.locator('#fsheet').isVisible())await p.locator('#fs-close').click();}else if(await p.locator('#lay-pop').isVisible())await p.keyboard.press('Escape');};
  // ---- 1A layers ----
- await check(w,'LA1 the legend line is replaced by a Layers button that starts with Connections on and Market hours off',async()=>{
-  if(!phone){assert.equal(await p.locator('#lay-btn').isVisible(),true);assert.equal(await p.locator('#lay-btn').getAttribute('aria-expanded'),'false');assert.equal(await p.locator('#lay-pop').isVisible(),false);assert.equal(await p.locator('.legend').count(),0);}
+ await check(w,'LA1 the Layers card is already open when the globe opens, with Connections on and Market hours off',async()=>{
+  if(!phone){assert.equal(await p.locator('#lay-btn').isVisible(),true);assert.equal(await p.locator('#lay-btn').getAttribute('aria-expanded'),'true');assert.equal(await p.locator('#lay-pop').isVisible(),true);assert.equal(await p.locator('.legend').count(),0);}
   const r=await p.evaluate(()=>({conn:$('sw-conn').getAttribute('aria-checked'),mkt:$('sw-mkt').getAttribute('aria-checked'),n:$('lay-n').textContent}));assert.deepEqual(r,{conn:'true',mkt:'false',n:'1'});});
  await check(w,'LA2 the menu holds two real switches, says how many connections are shown, and keeps the legend',async()=>{
   await openLayers();
   assert.equal(await p.locator('#sw-conn[role=switch]').isVisible(),true);assert.equal(await p.locator('#sw-mkt[role=switch]').isVisible(),true);
-  const n=await p.evaluate(()=>network.length);assert.match(await p.locator('#connection-count').innerText(),new RegExp(`^${n} connections in `));
+  const n=await p.evaluate(()=>network.length);assert.match(await p.locator('#connection-count').innerText(),new RegExp(`^Show all ${n} connections? from the last `));
   if(!phone)assert.match(await p.locator('.lay-legend').innerText(),/News origin[\s\S]*Asset[\s\S]*Asset/);
   if(!phone){assert.equal(await p.locator('#lay-btn').getAttribute('aria-expanded'),'true');}});
  await check(w,'LA3 switching Connections off removes every line and pill from the globe; on brings them back',async()=>{
@@ -34,9 +34,14 @@ for(const w of widths){
   assert.equal(await p.evaluate(()=>MKTON),true);assert.equal(await p.locator('#lay-n').innerText(),'2');
   if(!phone){assert.equal(await p.locator('#panel-tab-markets').isVisible(),true);}
   await p.locator('#sw-mkt').click();await p.waitForTimeout(300);assert.equal(await p.evaluate(()=>MKTON),false);assert.equal(await p.locator('#lay-n').innerText(),'1');assert.equal(await p.evaluate(()=>exHits.length),0);});
- if(!phone)await check(w,'LA5 Escape and a click outside close the menu and focus returns to the Layers button',async()=>{
-  if(await p.locator('#lay-pop').isVisible())await p.locator('#lay-btn').click();await p.locator('#lay-btn').click();assert.equal(await p.locator('#lay-pop').isVisible(),true);await p.keyboard.press('Escape');assert.equal(await p.locator('#lay-pop').isVisible(),false,'escape');assert.equal(await p.evaluate(()=>document.activeElement.id),'lay-btn','focus');
-  await p.locator('#lay-btn').click();await p.mouse.click(700,500);assert.equal(await p.locator('#lay-pop').isVisible(),false,'outside click');});
+ if(!phone)await check(w,'LA5 the card stays open when the globe is dragged or clicked; the button and Escape hide it and bring it back',async()=>{
+  if(await p.locator('#lay-pop').isHidden())await p.locator('#lay-btn').click();
+  await p.mouse.move(600,500);await p.mouse.down();await p.mouse.move(700,520,{steps:5});await p.mouse.up();await p.mouse.click(620,430);assert.equal(await p.locator('#lay-pop').isVisible(),true,'closed by touching the globe');
+  await p.locator('#lay-btn').click();assert.equal(await p.locator('#lay-pop').isVisible(),false,'button hides');assert.equal(await p.locator('#lay-btn').getAttribute('aria-expanded'),'false');
+  await p.locator('#lay-btn').click();assert.equal(await p.locator('#lay-pop').isVisible(),true);await p.keyboard.press('Escape');assert.equal(await p.locator('#lay-pop').isVisible(),false,'escape');assert.equal(await p.evaluate(()=>document.activeElement.id),'lay-btn','focus');});
+ await check(w,'LA7 every time the globe opens, Connections is on and Market hours is off (nothing is remembered)',async()=>{
+  await p.evaluate(()=>{CONNON=false;setMarketsLayer(true);});await p.goto(base+'/assets/globe/news.html');await p.waitForFunction(()=>typeof stories!=='undefined'&&stories.length>0);await p.waitForTimeout(700);
+  assert.deepEqual(await p.evaluate(()=>({c:CONNON,m:MKTON,n:$('lay-n').textContent})),{c:true,m:false,n:'1'});assert((await p.evaluate(()=>+cv.dataset.arcCount))>0);});
  await check(w,'LA6 ?connections=0 opens with connections off',async()=>{
   await closeLayers();await p.goto(base+'/assets/globe/news.html?connections=0');await p.waitForFunction(()=>typeof stories!=='undefined'&&stories.length>0);await p.waitForTimeout(700);
   assert.equal(await p.evaluate(()=>CONNON),false);assert.equal(await p.evaluate(()=>+cv.dataset.arcCount),0);});
