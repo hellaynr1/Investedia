@@ -1,0 +1,90 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Globe on phone: options</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#09090b;--fg:#fff;--fg2:#d4d4d8;--fg3:#a1a1aa;--line:rgba(255,255,255,.14);--ac:#ff7a1a}
+*{box-sizing:border-box}body{margin:0;background:#18181b;color:var(--fg);font:15px/1.4 Inter,system-ui,sans-serif;padding:24px}
+h1{font-size:22px;margin:0 0 4px}p.lead{color:var(--fg2);margin:0 0 22px;max-width:900px}
+.row{display:flex;gap:26px;flex-wrap:wrap;margin-bottom:34px}.opt{width:810px}.opt h2{margin:0 0 4px;font-size:18px}.opt h2 b{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;color:#000;margin-right:8px}.opt p{margin:0 0 12px;color:var(--fg2);font-size:14px}
+.frames{display:flex;gap:26px}
+.ph{position:relative;width:390px;height:844px;border-radius:34px;background:var(--bg);border:1px solid #3f3f46;overflow:hidden;flex:none}
+.ph .lab{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:30;background:#ff7a1a;color:#000;font-weight:700;font-size:12px;padding:3px 10px;border-radius:99px}
+.globe{position:absolute;left:50%;transform:translateX(-50%);width:460px;height:460px;background:url(options-8/globe.png) center/cover}
+.top{position:absolute;top:34px;left:0;right:0;display:flex;align-items:center;gap:8px;padding:0 14px}.logo{font-weight:800;font-size:19px;letter-spacing:-.02em;margin-right:auto}
+.ib{height:44px;min-width:44px;border-radius:22px;border:1px solid var(--line);background:rgba(24,24,27,.85);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;font:600 15px Inter}
+.ib i{font-style:normal;background:var(--ac);color:#000;border-radius:99px;font-size:12px;padding:1px 7px}
+.pill{display:inline-flex;font-weight:700;font-size:14px;padding:4px 10px;border-radius:99px}.up{background:rgba(48,209,88,.18);color:#6ef59a}.dn{background:rgba(255,69,58,.18);color:#ff9a92}
+.dock{position:absolute;left:12px;right:12px;bottom:14px;height:64px;border-radius:32px;background:rgba(24,24,27,.95);border:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);padding:6px;gap:4px}
+.dock span{display:grid;place-items:center;border-radius:26px;font-weight:600;font-size:15px;color:var(--fg2)}.dock .on{background:#fff;color:#000}
+.card{background:rgba(24,24,27,.96);border:1px solid var(--line);border-radius:22px;padding:14px}
+.eb{font:600 12.5px 'Geist Mono',ui-monospace,monospace;color:#ff9a4d;letter-spacing:.03em}.eb em{font-style:normal;color:var(--fg3);font-family:Inter;font-weight:500;letter-spacing:0}
+.card h3{margin:6px 0 10px;font-size:17px;line-height:1.3;font-weight:650}.asset{display:flex;justify-content:space-between;align-items:center;color:var(--fg2);font-size:14px}
+.chips{display:flex;gap:8px;overflow:hidden;padding:0 14px}.ch{flex:none;height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 16px;border-radius:22px;border:1px solid var(--line);background:rgba(24,24,27,.85);color:var(--fg2);font-weight:600;font-size:15px}.ch b{color:#ff9a4d}.ch.on{background:#fff;color:#000}.ch.on b{color:#b4500a}
+.sheet{position:absolute;left:0;right:0;bottom:0;border-radius:28px 28px 0 0;background:#111114;border:1px solid var(--line);padding:10px 16px 16px}
+.grab{width:44px;height:5px;border-radius:3px;background:#71717a;margin:2px auto 10px}
+.sh{display:flex;align-items:center;gap:10px}.sh b{font-size:22px}.sh span{color:var(--fg2)}.sh .ib{margin-left:auto}
+.seg{display:flex;gap:8px;flex-wrap:wrap}.lbl{font:600 12.5px 'Geist Mono',monospace;color:var(--fg3);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px}
+.li{padding:12px 0;border-top:1px solid var(--line)}.li strong{display:block;font-size:16px;line-height:1.3;margin:4px 0 8px}
+.car{position:absolute;left:0;right:0;display:flex;gap:10px;padding:0 14px;overflow:hidden}.car .card{flex:none;width:300px}
+.big{font-size:15px;color:var(--fg2)}.btn{height:48px;border-radius:24px;background:#fff;color:#000;font-weight:700;display:grid;place-items:center;margin-top:18px}
+.legend{font-size:12.5px;color:var(--fg3)}
+</style></head><body>
+<h1>Globe on phone: three options</h1>
+<p class="lead">Problems in the current phone globe: three stacked control rows (search, topic chips, region chips) take a third of the screen before you see the globe; chips are cut off at the edge; the time-window bar floats mid-screen; the news sheet is closed to a title with a thin handle; panel tabs are 34 px tall; text is 12–13 px grey. All three options below use tap targets of 44 px or more, text of 14 px or more and lighter grey for contrast. Screens use today's real stories and real asset moves.</p>
+
+<div class="row">
+<div class="opt"><h2><b>A</b>Dock + peek card</h2><p>One slim top bar. Search and Filters (topic, region, time) are one tap each. A bottom dock switches Globe / News / Markets; a card above it shows the top story and its asset move.</p>
+<div class="frames">
+ <div class="ph"><span class="lab">A · Globe</span>
+  <div class="top"><span class="logo">Investedia</span><span class="ib" aria-label="Search">⌕</span><span class="ib">Filters <i>1</i></span></div>
+  <div class="globe" style="top:92px"></div>
+  <div class="card" style="position:absolute;left:12px;right:12px;bottom:92px"><div class="eb">4 H AGO <em>· ABC News Australia</em></div><h3>Machado Returns to Venezuela as US Administration Eyes Access to Oil Reserves</h3><div class="asset"><span>WTI crude oil</span><span class="pill up">↑ 3.82%</span></div></div>
+  <div class="dock"><span class="on">Globe</span><span>News</span><span>Markets</span></div>
+ </div>
+ <div class="ph"><span class="lab">A · News tab</span>
+  <div class="top"><span class="logo">Investedia</span><span class="ib">⌕</span><span class="ib">Filters <i>1</i></span></div>
+  <div style="position:absolute;top:96px;left:14px;right:14px">
+   <div class="sh"><b>131</b><span>articles · 24H · Global</span></div>
+   <div class="li"><div class="eb">12 H AGO <em>· Investing.com</em></div><strong>Markets Brace for Federal Reserve Decision, Heavy Earnings, and Energy Pressures</strong><div class="asset"><span>S&amp;P 500</span><span class="pill dn">↓ 0.52%</span></div></div>
+   <div class="li"><div class="eb">6 H AGO <em>· australiannews.net</em></div><strong>Meta Shares Fall as Rising AI Spending Rattles Investors</strong><div class="asset"><span>Meta Platforms</span><span class="pill dn">↓ 0.96%</span></div></div>
+   <div class="li"><div class="eb">13 H AGO <em>· thehindubusinessline.com</em></div><strong>Crude Oil Near $120 Threatens Global Economic Growth and State Budgets</strong></div>
+   <div class="li"><div class="eb">16 H AGO <em>· foxnews.com</em></div><strong>US Blockade Reduces Iran Floating Oil Inventory to Zero</strong></div>
+  </div>
+  <div class="dock"><span>Globe</span><span class="on">News</span><span>Markets</span></div>
+ </div></div></div>
+
+<div class="opt"><h2><b>B</b>Card carousel</h2><p>Globe on top, topic chips in one scrolling row, and swipeable story cards underneath. Swiping a card turns the globe to its pin. Region and time sit under Filters.</p>
+<div class="frames">
+ <div class="ph"><span class="lab">B · Globe</span>
+  <div class="top"><span class="logo">Investedia</span><span class="ib">⌕</span><span class="ib">Filters <i>1</i></span></div>
+  <div class="chips" style="position:absolute;top:90px;left:0;right:0"><span class="ch on">All <b>131</b></span><span class="ch">Energy <b>18</b></span><span class="ch">Central banks <b>15</b></span></div>
+  <div class="globe" style="top:120px;width:420px;height:420px"></div>
+  <div class="car" style="bottom:20px"><div class="card"><div class="eb">4 H AGO <em>· ABC News Australia</em></div><h3>Machado Returns to Venezuela as US Administration Eyes Access to Oil Reserves</h3><div class="asset"><span>WTI crude oil</span><span class="pill up">↑ 3.82%</span></div></div><div class="card"><div class="eb">12 H AGO <em>· Investing.com</em></div><h3>Markets Brace for Federal Reserve Decision…</h3></div></div>
+ </div>
+ <div class="ph"><span class="lab">B · Filters</span>
+  <div class="top"><span class="logo">Investedia</span><span class="ib">⌕</span><span class="ib">Filters <i>1</i></span></div>
+  <div class="sheet" style="top:96px;border-radius:28px"><div class="grab"></div><div class="sh"><b>Filters</b><span class="ib">Reset</span></div>
+   <div class="lbl">Topic</div><div class="seg"><span class="ch on">All <b>131</b></span><span class="ch">Energy <b>18</b></span><span class="ch">Central banks <b>15</b></span><span class="ch">Trade &amp; tariffs <b>9</b></span><span class="ch">Earnings <b>10</b></span></div>
+   <div class="lbl">Region</div><div class="seg"><span class="ch on">Global</span><span class="ch">North America</span><span class="ch">Europe</span><span class="ch">Asia</span><span class="ch">Middle East</span><span class="ch">Africa</span><span class="ch">Latin America</span><span class="ch">Oceania</span></div>
+   <div class="lbl">Time</div><div class="seg"><span class="ch">Now</span><span class="ch">1H</span><span class="ch">6H</span><span class="ch on">24H</span><span class="ch">7D</span><span class="ch">30D</span></div>
+   <div class="btn">Show 131 articles</div></div>
+ </div></div></div>
+
+<div class="opt"><h2><b>C</b>Sheet-first</h2><p>The globe fills the screen. One bottom sheet with three heights holds everything: a clear header ("131 articles · 24H · Global"), the topic chips and the stories. A visible "Expand" button replaces the thin handle.</p>
+<div class="frames">
+ <div class="ph"><span class="lab">C · Peek</span>
+  <div class="top"><span class="logo">Investedia</span><span class="ib">⌕</span></div>
+  <div class="globe" style="top:80px;width:520px;height:520px;margin-left:0"></div>
+  <div class="sheet" style="height:250px"><div class="grab"></div><div class="sh"><b>131</b><span>articles · 24H · Global</span><span class="ib">Expand ⌃</span></div>
+   <div class="chips" style="padding:12px 0 0"><span class="ch on">All <b>131</b></span><span class="ch">Energy <b>18</b></span><span class="ch">Central…</span></div>
+   <div class="li" style="margin-top:12px;border:0;padding:0"><div class="eb">4 H AGO <em>· ABC News Australia</em></div><strong style="font-size:15px;margin:4px 0 0">Machado Returns to Venezuela as US Administration Eyes Access to Oil Reserves</strong></div></div>
+ </div>
+ <div class="ph"><span class="lab">C · Expanded</span>
+  <div class="top"><span class="logo">Investedia</span><span class="ib">⌕</span></div>
+  <div class="globe" style="top:56px;width:300px;height:300px;margin-left:0"></div>
+  <div class="sheet" style="top:300px"><div class="grab"></div><div class="sh"><b>131</b><span>articles · 24H · Global</span><span class="ib">Filters <i>1</i></span></div>
+   <div class="chips" style="padding:12px 0"><span class="ch on">All <b>131</b></span><span class="ch">Energy <b>18</b></span><span class="ch">Central…</span></div>
+   <div class="li"><div class="eb">12 H AGO <em>· Investing.com</em></div><strong>Markets Brace for Federal Reserve Decision, Heavy Earnings, and Energy Pressures</strong><div class="asset"><span>S&amp;P 500</span><span class="pill dn">↓ 0.52%</span></div></div>
+   <div class="li"><div class="eb">6 H AGO <em>· australiannews.net</em></div><strong>Meta Shares Fall as Rising AI Spending Rattles Investors</strong><div class="asset"><span>Meta Platforms</span><span class="pill dn">↓ 0.96%</span></div></div></div>
+ </div></div></div>
+</div>
+<p class="legend">Common to all three: 44 px minimum tap targets, 14 px minimum text, high-contrast grey (#d4d4d8), a visible Filters button instead of three chip rows, every control reachable without dragging the globe, list of stories always available as text.</p>
+</body></html>
