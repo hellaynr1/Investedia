@@ -944,8 +944,8 @@
       },
       {
         "target": "button.",
-        "text": "Exposure",
-        "width": 93,
+        "text": "Exposure · 1",
+        "width": 110,
         "height": 40
       }
     ],
