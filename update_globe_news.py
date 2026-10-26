@@ -181,10 +181,20 @@ REGION_FEEDS = [  # regional business and central-bank feeds: (url, source name,
     ('https://perureports.com/feed/', 'Peru Reports', 'latam'),
     ('https://latinamericareports.com/feed/', 'Latin America Reports', 'latam'),
     ('https://dominicantoday.com/feed/', 'Dominican Today', 'latam'),
+    ('https://www.infobae.com/arc/outboundfeeds/rss/category/economia/', 'Infobae', 'latam'),
+    ('https://www.clarin.com/rss/economia/', 'Clarín', 'latam'),
+    ('https://www.lanacion.com.ar/arc/outboundfeeds/rss/category/economia/', 'La Nación', 'latam'),
+    ('https://www.infomoney.com.br/feed/', 'InfoMoney', 'latam'),
+    ('https://www.moneytimes.com.br/feed/', 'Money Times', 'latam'),
+    ('https://exame.com/feed/', 'Exame', 'latam'),
+    ('https://braziljournal.com/feed/', 'Brazil Journal', 'latam'),
+    ('https://www.portafolio.co/rss/economia.xml', 'Portafolio', 'latam'),
+    ('https://elcomercio.pe/arcio/rss/category/economia/', 'El Comercio', 'latam'),
+    ('https://www.banrep.gov.co/es/rss.xml', 'Banco de la República (Colombia)', 'latam'),
     ('https://www.dailysabah.com/rssFeed/business', 'Daily Sabah', 'me'),
     ('https://www.hurriyetdailynews.com/rss/economy', 'Hürriyet Daily News', 'me'),
 ]
-REGION_RESERVE, REGION_EACH = 36, 14  # of the candidates sent to the editor, up to 36 are held for these regions (14 per region at most)
+REGION_RESERVE, REGION_EACH = 42, 16  # of the candidates sent to the editor, up to 42 are held for these regions (16 per region at most)
 
 
 def balance(cands, limit=140):

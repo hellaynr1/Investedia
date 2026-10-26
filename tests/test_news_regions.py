@@ -14,7 +14,7 @@ class Balance(unittest.TestCase):
         self.assertEqual(len(out), 140)
         regs = [x.get('region') for x in out]
         for r in ('af', 'latam', 'me'):
-            self.assertEqual(regs.count(r), 12)
+            self.assertEqual(regs.count(r), 14)
 
     def test_a_thin_region_does_not_block_the_others(self):
         cands = [c(i) for i in range(50)] + [c(900, 'af')] + [c(910 + i, 'latam') for i in range(40)]
