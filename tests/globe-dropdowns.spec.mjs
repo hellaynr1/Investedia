@@ -30,22 +30,22 @@ for(const w of widths){
   const r=await p.$$eval('#regions .reg [data-n]',els=>els.map(e=>+e.textContent));const chip=+await p.locator('#cats .chip').first().locator('[data-n]').innerText();
   assert.equal(r.length,8);assert.equal(r.slice(1).reduce((a,x)=>a+x,0),r[0]);assert.equal(r[0],chip);await p.keyboard.press('Escape');
   assert.equal(await p.locator('#regions').isHidden(),true);assert.equal(await p.evaluate(()=>document.activeElement.id),'reg-btn');});
- await check(w,'DD4 My assets lists the watchlist with logos, the real % move, a star, and how many stories name each',async()=>{
+ await check(w,'DD4 My assets lists the watchlist with logos, the real % move, binoculars, and how many stories name each',async()=>{
   await openSheet(p);await p.locator('#mine-btn').click();
-  const rows=await p.$$eval('#mine-menu .mine-row',els=>els.map(e=>({sym:e.dataset.asset,logo:!!e.querySelector('.mine-ic > *'),star:!!e.querySelector('svg.dd-star'),pct:(e.querySelector('.pct')?.textContent||'').replace(/[^0-9.]/g,''),n:e.querySelector('small').textContent})));
+  const rows=await p.$$eval('#mine-menu .mine-row',els=>els.map(e=>({sym:e.dataset.asset,logo:!!e.querySelector('.mine-ic > *'),star:!!e.querySelector('svg.dd-bino'),pct:(e.querySelector('.pct')?.textContent||'').replace(/[^0-9.]/g,''),n:e.querySelector('small').textContent})));
   assert.deepEqual(rows.map(r=>r.sym).sort(),[...WATCH].sort());
-  for(const r of rows){assert(r.logo,r.sym+' logo');assert(r.star,r.sym+' star');assert.equal(r.pct,Math.abs(markets[r.sym].d).toFixed(2),r.sym);assert.match(r.n,/^\d+ stor(y|ies)$/);}
+  for(const r of rows){assert(r.logo,r.sym+' logo');assert(r.star,r.sym+' binoculars');assert.equal(r.pct,Math.abs(markets[r.sym].d).toFixed(2),r.sym);assert.match(r.n,/^\d+ stor(y|ies)$/);}
   const n=await p.evaluate(()=>{const sym='BZ=F';return stories.filter(s=>inTime(s)&&impactsOf(s).some(i=>{const a=assetForImpact(i);return (a&&a.s.toUpperCase()===sym)||String(i.ticker||'').toUpperCase()===sym;})).length;});
   assert.equal(rows.find(r=>r.sym==='BZ=F').n,`${n} ${n===1?'story':'stories'}`);await p.keyboard.press('Escape');});
- await check(w,'DD5 My assets only shows just the stories that touch the watchlist; All news brings everything back',async()=>{
+ await check(w,'DD5 My watchlist only shows just the stories that touch the watchlist; All news brings everything back',async()=>{
   await openSheet(p);const all=await p.evaluate(()=>stories.filter(match).length);
   await p.locator('#mine-btn').click();await p.locator('#mine-menu [data-mine="1"]').click();await p.waitForTimeout(400);
   const r=await p.evaluate(W=>({mine:F.mine,n:shown.length,bad:shown.some(s=>!impactsOf(s).some(i=>{const a=assetForImpact(i);return (a&&W.includes(a.s))||W.includes(String(i.ticker||'').toUpperCase());})),label:$('mine-label').textContent,on:$('mine-btn').classList.contains('on')}),WATCH);
-  assert.equal(r.mine,true);assert.equal(r.bad,false);assert(r.n<all&&r.n>0,JSON.stringify({r,all}));assert.equal(r.label,'My assets only');assert.equal(r.on,true);
+  assert.equal(r.mine,true);assert.equal(r.bad,false);assert(r.n<all&&r.n>0,JSON.stringify({r,all}));assert.equal(r.label,'My watchlist only');assert.equal(r.on,true);
   await p.locator('#mine-btn').click();await p.locator('#mine-menu [data-mine="0"]').click();await p.waitForTimeout(300);assert.equal(await p.evaluate(()=>stories.filter(match).length),all);assert.equal(await p.evaluate(()=>F.mine),false);});
  await check(w,'DD6 a guest with no watchlist sees a plain explanation and a link, and cannot filter to nothing',async()=>{
   const g=await mk(false);await openSheet(g);await g.locator('#mine-btn').click();
-  assert.match(await g.locator('#mine-menu').innerText(),/No assets followed yet[\s\S]*Sign in and tap the star/);assert.equal(await g.locator('#mine-menu .mine-foot').getAttribute('href'),'../../watchlist.html');assert.equal(await g.locator('#mine-menu [data-mine]').count(),0);await g.context().close();});
+  assert.match(await g.locator('#mine-menu').innerText(),/Your watchlist is empty[\s\S]*Sign in and add assets/);assert.equal(await g.locator('#mine-menu .mine-foot').getAttribute('href'),'../../watchlist.html');assert.equal(await g.locator('#mine-menu [data-mine]').count(),0);await g.context().close();});
  // ---- Upcoming ----
  const want=cal.filter(e=>e.imp>=3&&Date.parse(e.at)>Date.now()&&Date.parse(e.at)<=Date.now()+7*864e5&&CAPS.includes(e.country));
  await check(w,'UP1 the Layers card has an Upcoming switch, off by default, with the number of releases in its description',async()=>{

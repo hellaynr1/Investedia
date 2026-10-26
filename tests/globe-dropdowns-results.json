@@ -16,12 +16,12 @@
  },
  {
   "width": 1440,
-  "id": "DD4 My assets lists the watchlist with logos, the real % move, a star, and how many stories name each",
+  "id": "DD4 My assets lists the watchlist with logos, the real % move, binoculars, and how many stories name each",
   "pass": true
  },
  {
   "width": 1440,
-  "id": "DD5 My assets only shows just the stories that touch the watchlist; All news brings everything back",
+  "id": "DD5 My watchlist only shows just the stories that touch the watchlist; All news brings everything back",
   "pass": true
  },
  {
@@ -76,12 +76,12 @@
  },
  {
   "width": 390,
-  "id": "DD4 My assets lists the watchlist with logos, the real % move, a star, and how many stories name each",
+  "id": "DD4 My assets lists the watchlist with logos, the real % move, binoculars, and how many stories name each",
   "pass": true
  },
  {
   "width": 390,
-  "id": "DD5 My assets only shows just the stories that touch the watchlist; All news brings everything back",
+  "id": "DD5 My watchlist only shows just the stories that touch the watchlist; All news brings everything back",
   "pass": true
  },
  {
