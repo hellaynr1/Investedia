@@ -274,6 +274,8 @@ h1 span{color:var(--fg-3)}
 .panel-more:hover{color:var(--fg)}
 .panel-tabs{display:flex;gap:2px;margin:14px 0 8px}
 .mk-eyebrow{margin:6px 0 4px}.mk-list{display:grid}.mk-row{display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:12px;padding:12px 0;border:0;border-top:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.mk-main{display:grid;gap:2px}.mk-row small{color:var(--fg-3);font-size:12px;font-weight:500}.mk-row .mk-st{text-align:right}
+.mk-toggle{display:inline-flex;align-items:center;gap:8px;height:34px;margin-top:8px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:rgba(16,16,18,.6);color:var(--fg-2);font-size:12.5px;font-weight:600}.mk-toggle svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.mk-toggle:hover{color:#fff}.mk-toggle[aria-pressed=true]{background:#fff;color:#000;border-color:#fff}
 .mk-row .flag{width:24px;height:16px;border-radius:2px;object-fit:cover}.mk-row b{font-size:14.5px;font-weight:650}.mk-row span{font-size:12.5px;color:var(--fg-2)}.mk-row .mk-open{color:#34d399}
 .panel-tabs button{min-height:34px;padding:0 9px;border-radius:7px;color:var(--fg-3);font-size:12px}
 .panel-tabs button[aria-selected=true]{background:rgba(255,255,255,.08);color:var(--fg)}
@@ -376,6 +378,7 @@ h1 span{color:var(--fg-3)}
 .m-actions,.fs-back,.fsheet,.peek,.dock{display:none}
 @media(max-width:760px){
   :root{--fg-3:#a1a1aa}
+  .mk-toggle{display:none}.mk-row small{font-size:14px}
   .top{display:flex;align-items:center;gap:8px;top:calc(10px + env(safe-area-inset-top))}
   .top .brand{flex:1;min-width:0;flex-wrap:nowrap}.top .prod,.top #sbox{display:none!important}.top .globe-privacy{font-size:14px;color:var(--fg-2);padding:0 6px;min-height:44px}
   .m-actions{display:flex;gap:8px}
@@ -434,6 +437,7 @@ h1 span{color:var(--fg-3)}
     <div class="res" id="res" role="listbox" hidden></div></div>
   <div class="chips" id="cats" role="group" aria-label="Topic lens"></div>
   <div class="regions" id="regions" role="group" aria-label="Region"></div>
+  <button type="button" class="mk-toggle" id="mk-toggle" aria-pressed="false" aria-label="Market hours and open markets"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Market hours</button>
 </div>
 
 <div class="legend" aria-label="Connections legend"><span><i></i>News origin</span><span>↑ Asset</span><span>↓ Asset</span><span id="connection-count"></span></div>
@@ -728,9 +732,19 @@ function localMin(e, ms) {
   return { wd: p.weekday, m: (+p.hour) * 60 + (+p.minute) };
 }
 const isOpenAt = (e, ms) => { const l = localMin(e, ms); return l.wd !== 'Sat' && l.wd !== 'Sun' && l.m >= e.o && l.m < e.c; };
+let MKTON = new URLSearchParams(location.search).get('markets') === '1';
+function setMarketsLayer(on) {
+  MKTON = on; $('mk-toggle').setAttribute('aria-pressed', String(on));
+  if (!on && panelTab === 'markets') panelTab = 'top';
+}
+function hoursText(e, now = Date.now()) {
+  const u = new Date(now), d = localMin(e, now).m - (u.getUTCHours() * 60 + u.getUTCMinutes()), off = ((d + 1440 + 720) % 1440) - 720;
+  const f = m => { m = ((m % 1440) + 1440) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
+  return `${f(e.o)}–${f(e.c)} local · ${f(e.o - off)}–${f(e.c - off)} UTC`;
+}
 function exchangeState(e, now = Date.now()) {
   const m0 = Math.floor(now / 60000) * 60000;
-  if (isOpenAt(e, m0)) { let t = m0; for (let k = 0; k < 1440 && isOpenAt(e, t - 60000); k++) t -= 60000; return { open: true, since: t }; }
+  if (isOpenAt(e, m0)) { let t = m0, c = m0; for (let k = 0; k < 1440 && isOpenAt(e, t - 60000); k++) t -= 60000; for (let k = 1; k <= 1440 && isOpenAt(e, m0 + k * 60000); k++) c = m0 + k * 60000; return { open: true, since: t, closes: c + 60000, left: c + 60000 - now }; }
   for (let k = 1; k <= 8 * 1440; k++) if (isOpenAt(e, m0 + k * 60000)) return { open: false, in: m0 + k * 60000 - now, at: m0 + k * 60000 };
   return { open: false, in: Infinity };
 }
@@ -738,8 +752,8 @@ const hm = ms => { const d = new Date(ms); return String(d.getUTCHours()).padSta
 function exchangeRows(now = Date.now()) { return EXCH.map(e => ({ e, st: exchangeState(e, now) })); }
 function marketsPanel() {
   const now = Date.now(), d = new Date(now), stamp = d.toISOString().slice(0, 10) + ' ' + hm(now) + ' UTC';
-  const rows = exchangeRows(now).map(({ e, st }) => `<button class="mk-row" data-asset="${esc(e.ix)}"><img class="flag" src="flags/${e.cc}.svg" alt=""><b>${e.n}</b><span class="${st.open ? 'mk-open' : ''}">${st.open ? 'Open · opened ' + hm(st.since) + ' UTC' : 'Opens in ' + untilText(st.in)}</span></button>`).join('');
-  return `<div class="eyebrow mk-eyebrow">Markets now · ${stamp}</div><div class="mk-list">${rows}</div><p class="note">Regular trading hours at each exchange. Public holidays are not included. Tap a market to see how its main index moved.</p>`;
+  const rows = exchangeRows(now).map(({ e, st }) => `<button class="mk-row" data-asset="${esc(e.ix)}"><img class="flag" src="flags/${e.cc}.svg" alt=""><span class="mk-main"><b>${e.n}</b><small>${hoursText(e, now).replace(' · ', '<br>')}</small></span><span class="mk-st ${st.open ? 'mk-open' : ''}">${st.open ? 'Open · closes in ' + untilText(st.left) : 'Opens in ' + untilText(st.in)}</span></button>`).join('');
+  return `<div class="eyebrow mk-eyebrow">Markets now · ${stamp}</div><div class="mk-list">${rows}</div><p class="note">Regular trading hours at each exchange, shown in its local time and in UTC. Public holidays are not included. Tap a market to see how its main index moved.</p>`;
 }
 function sunPoint(ms) {
   const d = new Date(ms), day = (ms - Date.UTC(d.getUTCFullYear(), 0, 0)) / 864e5, h = d.getUTCHours() + d.getUTCMinutes() / 60 + d.getUTCSeconds() / 3600;
@@ -983,6 +997,7 @@ $('grab').onclick = () => {
 $('sheet-expand').onclick = () => setSheet('full');
 $('sheet-close').onclick = () => {
   if (!phone()) return;
+  setMarketsLayer(false);
   sel = null; selCountry = null; hist = []; view = { k: 'top' }; render(); pbody.scrollTop = 0; setSheet('closed');
 };
 // Only the handle and heading drag the sheet. Links retain their native taps;
@@ -1058,7 +1073,7 @@ function compactItem(s) {
 function variantPanel(list) {
   if (PANEL_TEMPLATE === 'a') return `<h2>Top articles</h2><div class="meta">${Math.min(8, list.length)} of ${list.length} articles</div><div class="compact-list">${list.slice(0, 8).map(compactItem).join('')}</div>${list.length > 8 ? '<a class="panel-more" href="../../news.html">See all news →</a>' : ''}${list.length ? '' : '<div class="empty">No articles match these filters.</div>'}${noteHTML()}`;
   if (PANEL_TEMPLATE === 'b') return `<h2>Top articles</h2><div class="strip-list" aria-label="Top articles">${list.slice(0, phone() ? 3 : 12).map(compactItem).join('')}</div>${list.length ? '' : '<div class="empty">No articles match these filters.</div>'}${noteHTML()}`;
-  const tabs = [['top', 'Top'], ['movers', 'Movers'], ['latest', 'Latest'], ['countries', 'Countries'], ['markets', 'Markets']];
+  const tabs = [['top', 'Top'], ['movers', 'Movers'], ['latest', 'Latest'], ['countries', 'Countries'], ...(MKTON ? [['markets', 'Markets']] : [])];
   let items, count;
   if (panelTab === 'markets') { items = marketsPanel(); count = 0; }
   else if (panelTab === 'movers') {
@@ -1253,7 +1268,7 @@ function frame(t) {
   // land: dots fade out as you zoom in, country shapes take over
   const da = Math.max(0, 1.25 - Z * .25), ds = Math.max(1.1, Math.min(2.2, R / 230));
   if (da > .02) for (const [phi, lam] of pts) { const [x, y, z] = proj(phi, lam); if (z <= 0) continue; ctx.fillStyle = `rgba(161,161,170,${((.08 + z * .42) * da).toFixed(3)})`; ctx.fillRect(x - ds / 2, y - ds / 2, ds, ds); }
-  if (!EMBED) { const n = nightPath(); ctx.save(); ctx.fillStyle = 'rgba(2,2,5,.46)'; if (n.wholeDisc) { const all = new Path2D(); all.arc(cx, cy, R, 0, 7); all.addPath(n.path); ctx.fill(all, 'evenodd'); } else ctx.fill(n.path); ctx.strokeStyle = 'rgba(255,160,100,.22)'; ctx.lineWidth = 1; ctx.stroke(n.path); ctx.restore(); }
+  if (!EMBED && MKTON) { const n = nightPath(); ctx.save(); ctx.fillStyle = 'rgba(2,2,5,.46)'; if (n.wholeDisc) { const all = new Path2D(); all.arc(cx, cy, R, 0, 7); all.addPath(n.path); ctx.fill(all, 'evenodd'); } else ctx.fill(n.path); ctx.strokeStyle = 'rgba(255,160,100,.22)'; ctx.lineWidth = 1; ctx.stroke(n.path); ctx.restore(); }
   const la = Math.min(.07, .012 + (Z - 1) * .02);
   const map = Z >= 1.8 ? countries : overview;
   ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = `rgba(255,255,255,${la})`; ctx.fill('evenodd');
@@ -1337,7 +1352,7 @@ function frame(t) {
   // connection pills (asset + real % move) are drawn last so map markers never cover them
   ctx.textBaseline='alphabetic';
   for(const {x,y,w:W,h:H,nm,pt,w1,d} of pillRects){ctx.fillStyle='rgba(16,16,19,.94)';ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x,y,W,H,13);ctx.fill();ctx.stroke();ctx.textAlign='left';ctx.font='650 12px Inter,sans-serif';ctx.fillStyle='#fff';ctx.fillText(nm,x+12,y+17);ctx.fillStyle=!Number.isFinite(d)||d===0?'#c4c4cc':d>0?'#5df08a':'#ff8a82';ctx.font='700 12px Inter,sans-serif';ctx.fillText(pt,x+12+w1+8,y+17);}
-  if (!EMBED) drawExchanges(t);
+  if (!EMBED && MKTON) drawExchanges(t); else exHits = [];
   ctx.restore();
   requestAnimationFrame(frame);
 }
@@ -1386,10 +1401,17 @@ function dockUpdate() {
 }
 $('dock').onclick = e => {
   const b = e.target.closest('button'); if (!b || !phone()) return;
+  setMarketsLayer(b.dataset.v === 'markets');
   if (b.dataset.v === 'globe') return $('sheet-close').click();
   hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = b.dataset.v === 'markets' ? 'markets' : (panelTab === 'markets' ? 'top' : panelTab); panelExpanded = false;
   render(); pbody.scrollTop = 0; setSheet('full');
 };
+$('mk-toggle').onclick = () => {
+  const on = !MKTON; setMarketsLayer(on);
+  if (on) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'markets'; panelExpanded = false; }
+  render(); pbody.scrollTop = 0;
+};
+$('mk-toggle').setAttribute('aria-pressed', String(MKTON)); if (MKTON) panelTab = 'markets';
 placeFilters(phone()); addEventListener('resize', () => placeFilters(phone()));
 
 // ===== Start =====
