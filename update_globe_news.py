@@ -327,6 +327,9 @@ def save_photo_index(idx):
         with open(os.path.join(d, PH, 'index.json'), 'w') as f: json.dump(idx, f, indent=1)
 
 
+NOT_PHOTO = re.compile(r'\b(ai generated|ai art|artificial intelligence art|illustration|cartoon|3d|render(?:ing)?|vector|clipart|clip art|icon|drawing|painting|fantasy|digital art|comic|sketch|collage|composite)\b', re.I)
+
+
 def photo(topic, seed, stories=None):
     if not topic or topic not in PHOTO_TOPICS: return None
     idx_path = os.path.join(G, PH, 'index.json')
@@ -348,9 +351,15 @@ def photo(topic, seed, stories=None):
             save_photo_index(idx)
             r = json.loads(get('https://pixabay.com/api/?' + urllib.parse.urlencode({'key': PIXABAY, 'q': topic, 'image_type': 'photo', 'orientation': 'horizontal', 'safesearch': 'true', 'per_page': 20, 'min_width': 1200})))
             got = list(opts); files = {p['file'] for p in got}
+            blocked = set()
+            try:
+                with open(os.path.join(G, PH, 'blocked.json')) as f: blocked = {str(i) for i in json.load(f).get('ids', [])}
+            except Exception: pass
             for h in r.get('hits', []):
                 if len(got) >= 10: break
                 if not isinstance(h, dict) or not h.get('largeImageURL') or not h.get('id'): continue
+                # Owner rule: professional photographs only, no cartoon, AI art or clip-art.
+                if str(h['id']) in blocked or NOT_PHOTO.search(str(h.get('tags', ''))): continue
                 name = f"{re.sub(r'[^a-z0-9]+', '-', topic)}-{h['id']}.jpg"
                 file = f'{PH}/{name}'
                 if file in files: continue
