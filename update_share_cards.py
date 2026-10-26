@@ -186,13 +186,9 @@ def render_site():
             px[x, y] = (10, 10, 11, a)
     im.paste(shade, (0, 0), shade); d = ImageDraw.Draw(im)
     draw_logo(d, F)
-    big = F('Inter-Bold.otf', 76)
-    d.text((56, 200), 'Invest with clarity.', font=big, fill=FG)
-    d.text((56, 290), 'See the world move.', font=big, fill=(150, 150, 160))
-    sub = F('Inter-Medium.otf', 29)
-    d.text((56, 420), 'Financial news and market intelligence:', font=sub, fill=MUTED)
-    d.text((56, 458), 'what happened, where, and what it means', font=sub, fill=MUTED)
-    d.text((56, 496), 'for markets and portfolios.', font=sub, fill=MUTED)
+    big = F('Inter-Bold.otf', 84)
+    d.text((56, 232), 'Invest with clarity.', font=big, fill=FG)
+    d.text((56, 330), 'See the world move.', font=big, fill=(150, 150, 160))
     d.text((56, 566), 'investedia.com', font=F('Inter-SemiBold.otf', 26), fill=ORANGE)
     return im
 
