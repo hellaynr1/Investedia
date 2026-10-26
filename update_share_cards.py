@@ -128,6 +128,75 @@ def spaced(draw, xy, text, font, fill, tracking=2):
     return x
 
 
+def draw_logo(d, F):
+    s = 54; ox, oy = 56, 44
+    d.rounded_rectangle((ox, oy, ox + s, oy + s), radius=int(s * .2), fill=(0, 0, 0))
+    k = s / 40
+    d.polygon([(ox + 0, oy + 31 * k), (ox + 11 * k, oy + 24.5 * k), (ox + 18 * k, oy + 29 * k), (ox + 28 * k, oy + 19 * k), (ox + 40 * k, oy + 25.5 * k), (ox + 40 * k, oy + 40 * k), (ox, oy + 40 * k)], fill=(30, 30, 33))
+    d.line([(ox + 0, oy + 28 * k), (ox + 11 * k, oy + 21.5 * k), (ox + 18 * k, oy + 26 * k), (ox + 28 * k, oy + 16 * k), (ox + 40 * k, oy + 22.5 * k)], fill=ORANGE, width=max(2, int(4 * k)), joint='curve')
+    wm = F('Inter-Bold.otf', 36); x = ox + s + 18; y = oy + 5
+    d.text((x, y), 'Invested', font=wm, fill=FG); x2 = x + d.textlength('Invested', font=wm)
+    d.text((x2, y), 'ı', font=wm, fill=FG); dot = x2 + d.textlength('ı', font=wm) / 2
+    d.ellipse((dot - 4.2, y + 10, dot + 4.2, y + 18.4), fill=ORANGE)
+    d.text((x2 + d.textlength('ı', font=wm), y), 'a', font=wm, fill=FG)
+
+
+def render_site():
+    """1200x630 default preview for the site (homepage and any page without its own card)."""
+    from PIL import Image, ImageDraw, ImageFont, ImageFilter
+    F = lambda n, sz: ImageFont.truetype(os.path.join(FONTS, n), sz)
+    im = Image.new('RGB', (W, H), BG)
+    dots = load(os.path.join(ROOT, 'tools', 'globe', 'dots.json'), [])
+    lat0, lon0 = math.radians(22), math.radians(-18)
+    R, cx, cy = 430, 900, 330
+    layer = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(layer)
+    for k in range(0, len(dots) - 1, 2):
+        lat, lon = math.radians(dots[k] / 10), math.radians(dots[k + 1] / 10)
+        c = math.sin(lat0) * math.sin(lat) + math.cos(lat0) * math.cos(lat) * math.cos(lon - lon0)
+        if c <= 0.02:
+            continue
+        x = cx + R * math.cos(lat) * math.sin(lon - lon0)
+        y = cy - R * (math.cos(lat0) * math.sin(lat) - math.sin(lat0) * math.cos(lat) * math.cos(lon - lon0))
+        d.ellipse((x - 1.5, y - 1.5, x + 1.5, y + 1.5), fill=(255, 150, 70, int(25 + 120 * c)))
+    im.paste(layer, (0, 0), layer)
+    ring = Image.new('RGBA', (W, H), (0, 0, 0, 0)); g = ImageDraw.Draw(ring)
+    g.ellipse((cx - R, cy - R, cx + R, cy + R), outline=(255, 122, 26, 150), width=3)
+    glow = ring.filter(ImageFilter.GaussianBlur(14)); im.paste(glow, (0, 0), glow); im.paste(ring, (0, 0), ring)
+    pts = Image.new('RGBA', (W, H), (0, 0, 0, 0)); g = ImageDraw.Draw(pts)
+    for lat_, lon_ in ((51.5, -0.1), (40.7, -74), (48.9, 2.3), (30, 31.2), (-23.5, -46.6), (25.2, 55.3), (35.7, 139.7), (-1.3, 36.8), (6.5, 3.4), (19.4, -99.1)):
+        la, lo = math.radians(lat_), math.radians(lon_)
+        c = math.sin(lat0) * math.sin(la) + math.cos(lat0) * math.cos(la) * math.cos(lo - lon0)
+        if c <= 0.05:
+            continue
+        x = cx + R * math.cos(la) * math.sin(lo - lon0); y = cy - R * (math.cos(lat0) * math.sin(la) - math.sin(lat0) * math.cos(la) * math.cos(lo - lon0))
+        g.ellipse((x - 16, y - 16, x + 16, y + 16), fill=(255, 122, 26, 120))
+    pts = pts.filter(ImageFilter.GaussianBlur(9)); im.paste(pts, (0, 0), pts)
+    d = ImageDraw.Draw(im)
+    for lat_, lon_ in ((51.5, -0.1), (40.7, -74), (48.9, 2.3), (30, 31.2), (-23.5, -46.6), (25.2, 55.3), (35.7, 139.7), (-1.3, 36.8), (6.5, 3.4), (19.4, -99.1)):
+        la, lo = math.radians(lat_), math.radians(lon_)
+        c = math.sin(lat0) * math.sin(la) + math.cos(lat0) * math.cos(la) * math.cos(lo - lon0)
+        if c <= 0.05:
+            continue
+        x = cx + R * math.cos(la) * math.sin(lo - lon0); y = cy - R * (math.cos(lat0) * math.sin(la) - math.sin(lat0) * math.cos(la) * math.cos(lo - lon0))
+        d.ellipse((x - 5, y - 5, x + 5, y + 5), fill=ORANGE)
+    shade = Image.new('RGBA', (W, H)); px = shade.load()
+    for x in range(W):
+        a = int(max(0, min(1, (700 - x) / 420)) * 240)
+        for y in range(H):
+            px[x, y] = (10, 10, 11, a)
+    im.paste(shade, (0, 0), shade); d = ImageDraw.Draw(im)
+    draw_logo(d, F)
+    big = F('Inter-Bold.otf', 76)
+    d.text((56, 200), 'Invest with clarity.', font=big, fill=FG)
+    d.text((56, 290), 'See the world move.', font=big, fill=(150, 150, 160))
+    sub = F('Inter-Medium.otf', 29)
+    d.text((56, 420), 'Financial news and market intelligence:', font=sub, fill=MUTED)
+    d.text((56, 458), 'what happened, where, and what it means', font=sub, fill=MUTED)
+    d.text((56, 496), 'for markets and portfolios.', font=sub, fill=MUTED)
+    d.text((56, 566), 'investedia.com', font=F('Inter-SemiBold.otf', 26), fill=ORANGE)
+    return im
+
+
 def render(story, ps, now=None):
     from PIL import Image, ImageDraw, ImageFont, ImageFilter
     now = now or datetime.now(timezone.utc)
@@ -160,17 +229,7 @@ def render(story, ps, now=None):
         for y in range(0, H):
             px[x, y] = (10, 10, 11, a)
     im.paste(shade, (0, 0), shade); d = ImageDraw.Draw(im)
-    # Real logo: mark from assets/favicon.svg (black tile, grey hill, orange line) + wordmark with the orange i-dot.
-    s = 54; ox, oy = 56, 44
-    d.rounded_rectangle((ox, oy, ox + s, oy + s), radius=int(s * .2), fill=(0, 0, 0))
-    k = s / 40
-    d.polygon([(ox + 0, oy + 31 * k), (ox + 11 * k, oy + 24.5 * k), (ox + 18 * k, oy + 29 * k), (ox + 28 * k, oy + 19 * k), (ox + 40 * k, oy + 25.5 * k), (ox + 40 * k, oy + 40 * k), (ox, oy + 40 * k)], fill=(30, 30, 33))
-    d.line([(ox + 0, oy + 28 * k), (ox + 11 * k, oy + 21.5 * k), (ox + 18 * k, oy + 26 * k), (ox + 28 * k, oy + 16 * k), (ox + 40 * k, oy + 22.5 * k)], fill=ORANGE, width=max(2, int(4 * k)), joint='curve')
-    wm = F('Inter-Bold.otf', 36); x = ox + s + 18; y = oy + 5
-    d.text((x, y), 'Invested', font=wm, fill=FG); x2 = x + d.textlength('Invested', font=wm)
-    d.text((x2, y), 'ı', font=wm, fill=FG); dot = x2 + d.textlength('ı', font=wm) / 2
-    d.ellipse((dot - 4.2, y + 10, dot + 4.2, y + 18.4), fill=ORANGE)
-    d.text((x2 + d.textlength('ı', font=wm), y), 'a', font=wm, fill=FG)
+    draw_logo(d, F)
     # Eyebrow
     place = (loc.get('place') or '').split(',')[0]
     eb = ' · '.join(p for p in [CAT.get(story.get('category'), '').upper(), place.upper(), parse(story['published_at']).strftime('%d %b · %H:%M UTC').lstrip('0').upper()] if p)
@@ -276,6 +335,13 @@ def run(now=None):
 
 
 if __name__ == '__main__':
+    if '--site' in sys.argv:
+        from PIL import Image
+        im = render_site()
+        for out in (os.path.join(ROOT, 'assets'), os.path.join(ROOT, 'docs', 'assets')):
+            os.makedirs(out, exist_ok=True)
+            im.convert('P', palette=Image.ADAPTIVE, colors=160).save(os.path.join(out, 'og-default.png'), optimize=True)
+        print('site card written'); sys.exit(0)
     try:
         m, r, n = run()
         print(f'share cards: {n} articles, {m} drawn, {r} old files removed')
