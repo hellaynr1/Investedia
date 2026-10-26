@@ -23,6 +23,7 @@ for(const w of [1440,390]){
     const q=await c.newPage();await q.goto(base+'/story.html?id='+id);await q.waitForSelector('#sp-mi',{timeout:15000});await q.waitForTimeout(2000);
     assert.equal(await q.locator('#sp-mi .sn').count(),1);
     const card=await q.locator('#sp-mi .sn').boundingBox(),tabs=await q.locator('#sp-mi .mi-p.on').first().boundingBox();assert.ok(card.y+card.height<=tabs.y+2);
+    const cb=await q.locator('#sp-mi .sn').boundingBox(),mk=await q.locator('#sp-mi .sn-mark').boundingBox();assert.ok(mk.x>=cb.x&&mk.x+mk.width<=cb.x+cb.width,'the label stays inside the card');
     assert.ok(await q.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'overflow');await q.close();});
   await c.close();
   await c.close();}
