@@ -11,6 +11,7 @@ const cal=JSON.parse(fs.readFileSync('assets/calendar-live.json','utf8')).events
 const LENS={energy:/\b(oil|crude|opec|brent|wti|natural gas|lng|gasoline|petrol|refiner\w*|energy)\b/,central:/(central bank|federal reserve|\bfed\b|fomc|\becb\b|bank of england|\bboe\b|bank of japan|\bboj\b|rate cuts?|rate hikes?|interest rates?|powell|lagarde|inflation)/,trade:/(tariffs?|trade deals?|trade wars?|trade talks|trade agreements?|export controls?|sanctions?|import dut(?:y|ies))/,earnings:/(earnings|quarterly results|\bprofits?\b|\brevenues?\b|guidance|\beps\b)/};
 const inLens=(s,k)=>LENS[k].test((s.headline+' '+(s.summary||'')).toLowerCase());
 const fmt=v=>Math.abs(v).toFixed(2)+'%';
+const lens=async(p,name,phone)=>{if(phone){await p.locator('#m-filters').click();await p.locator('#fsheet .chip',{hasText:name}).click();await p.locator('#fs-close').click();if(name!=='All')await p.locator('#dock [data-v=news]').click();}else await p.locator('#cats .chip',{hasText:name}).click();};
 const open=async(p,q='')=>{await p.goto(base+'/assets/globe/news.html'+q);try{await p.getByRole('button',{name:'Accept essential',exact:true}).click({timeout:2500});}catch{}await p.waitForFunction(()=>typeof stories!=='undefined'&&stories.length>0&&MKT.all&&MKT.all.length>0);await p.waitForTimeout(800);};
 for(const w of widths){
  const ctx=await b.newContext({viewport:viewport(w),isMobile:w===390,hasTouch:w===390,serviceWorkers:'block',reducedMotion:'reduce'});await fixtureExternal(ctx);
@@ -18,7 +19,7 @@ for(const w of widths){
  const errors=[];const p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));
  await open(p);
 const countryPoint=()=>p.evaluate(()=>{for(let y=globeBox.top+40;y<globeBox.bottom-40;y+=6)for(let x=globeBox.left+20;x<globeBox.right-20;x+=6){const g=inv(x,y),c=g&&countryAt(g[0],g[1]);if(c&&c.name==='United States of America'&&!pick(x,y,40)&&!arcPick(x,y)&&!exPick(x,y))return {x,y};}return null;});
- const phone=w===390; if(phone)await p.locator('#grab').click().catch(()=>{});
+ const phone=w===390;
  // ---- lenses ----
  await check(w,'L1 the topic bar is All + Energy + Central banks + Trade & tariffs + Earnings, each with the number of articles in the current window',async()=>{
   const got=await p.$$eval('#cats .chip',els=>els.map(e=>[e.textContent.replace(/\s+\d+$/,'').trim(),+e.querySelector('[data-n]').textContent]));
@@ -28,7 +29,7 @@ const countryPoint=()=>p.evaluate(()=>{for(let y=globeBox.top+40;y<globeBox.bott
   const keys=['energy','central','trade','earnings'];
   keys.forEach((k,i)=>assert.equal(got[i+1][1],news.filter(s=>ids.has(s.id)&&inLens(s,k)).length,k));});
  await check(w,'L2 choosing Energy marks the chip, shows "Energy lens", the same count as the chip, and only energy stories',async()=>{
-  await p.locator('#cats .chip',{hasText:'Energy'}).click();await p.waitForTimeout(400);
+  await lens(p,'Energy',phone);await p.waitForTimeout(400);
   assert.equal(await p.locator('#cats .chip[aria-pressed=true]').count(),1);
   const n=+await p.locator('#cats .chip',{hasText:'Energy'}).locator('[data-n]').innerText();
   assert.match(await p.locator('.lens-eyebrow').innerText(),/energy lens/i);
@@ -44,9 +45,9 @@ const countryPoint=()=>p.evaluate(()=>{for(let y=globeBox.top+40;y<globeBox.bott
   const r=await p.evaluate(()=>({shown:shown.length,dim:dimmed.length,all:stories.filter(matchNoLens).length,bad:shown.some(s=>!s.lens.includes('energy'))||dimmed.some(s=>s.lens.includes('energy'))}));
   assert.equal(r.shown+r.dim,r.all);assert(r.dim>0);assert.equal(r.bad,false);});
  await check(w,'L5 All brings back the normal panel and clears the dimming; ?lens=energy opens with the lens set',async()=>{
-  await p.locator('#cats .chip',{hasText:'All'}).click();await p.waitForTimeout(400);
+  await lens(p,'All',phone);await p.waitForTimeout(400);
   assert.equal(await p.locator('.lens-count').count(),0);assert.equal(await p.evaluate(()=>dimmed.length),0);
-  await open(p,'?lens=energy');assert.equal(await p.evaluate(()=>F.lens),'energy');assert.match(await p.locator('.lens-eyebrow').innerText(),/energy/i);await open(p);});
+  await open(p,'?lens=energy');if(phone)await p.locator('#dock [data-v=news]').click();assert.equal(await p.evaluate(()=>F.lens),'energy');assert.match(await p.locator('.lens-eyebrow').innerText(),/energy/i);await open(p);});
  await check(w,'L6 the Crypto label still exists for crypto stories (no "undefined")',async()=>{
   assert.equal(await p.evaluate(()=>CAT.crypto),'Crypto');
   const id=news.find(s=>s.category==='crypto')?.id;assert(id,'no crypto story in the data');
@@ -97,8 +98,7 @@ const countryPoint=()=>p.evaluate(()=>{for(let y=globeBox.top+40;y<globeBox.bott
   assert(r.leftDay>r.leftNight,JSON.stringify(r));assert(r.rightDay>r.rightNight,JSON.stringify(r));});
  await check(w,'M5 the Markets tab lists Sydney, Tokyo, Hong Kong, London, New York with the right wording and a link to each main index',async()=>{
   await p.evaluate(()=>{hist=[];view={k:'top'};sel=null;selCountry=null;render();});
-  if(phone)await p.evaluate(()=>{panel.classList.add('open');});
-  await p.locator('#panel-tab-markets').click();await p.waitForTimeout(400);
+  if(phone)await p.locator('#dock [data-v=markets]').click();else await p.locator('#panel-tab-markets').click();await p.waitForTimeout(400);
   const rows=await p.$$eval('.mk-row',e=>e.map(x=>({name:x.querySelector('b').textContent,when:x.querySelector('span').textContent,ix:x.dataset.asset})));
   assert.deepEqual(rows.map(r=>r.name),['Sydney','Tokyo','Hong Kong','London','New York']);assert.deepEqual(rows.map(r=>r.ix),['^AXJO','^N225','^HSI','^FTSE','^GSPC']);
   for(const r of rows)assert(/^(Open · opened \d\d:\d\d UTC|Opens in .+)$/.test(r.when),r.when);

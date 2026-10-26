@@ -82,7 +82,7 @@ h1 span{color:var(--fg-3)}
 .fnote{margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--fg-3)}
 .ch{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
 .chip b{font:600 12px 'Geist Mono',ui-monospace,monospace;color:#ff8c32;margin-left:5px}.chip[aria-pressed=true] b{color:#c2570a}
-.lens-eyebrow{margin-top:2px}.pbody .lens-count{font-weight:500;font-size:14px;color:var(--fg-2);margin:2px 0 10px}.lens-count b{font-size:26px;font-weight:700;color:var(--fg);letter-spacing:-.02em;margin-right:2px}
+.lens-eyebrow{margin-top:2px}.pbody .lens-count,.pbody .news-count{font-weight:500;font-size:14px;color:var(--fg-2);margin:2px 0 10px}.lens-count b,.news-count b{font-size:26px;font-weight:700;color:var(--fg);letter-spacing:-.02em;margin-right:2px}
 .lens-list{display:grid;border-top:1px solid var(--line)}.lens-item{display:grid;gap:6px;text-align:left;padding:12px 0;border:0;border-bottom:1px solid var(--line);background:none;color:inherit;font:inherit;cursor:pointer}
 .lens-item:hover strong{color:#fff}.lens-item strong{font-size:14px;line-height:1.35;font-weight:650;color:var(--fg)}
 .lens-meta{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--fg-3)}.lens-meta .flag{width:20px;height:14px;border-radius:2px;object-fit:cover}.lens-meta time{font:600 12px 'Geist Mono',ui-monospace,monospace;color:#ff8c32}
@@ -372,6 +372,48 @@ h1 span{color:var(--fg-3)}
 
 @media(pointer:coarse){.timeline .win{min-width:44px}}
 .impact-dir{font-weight:900!important;font-size:18px!important;-webkit-text-stroke:.45px currentColor}
+
+.m-actions,.fs-back,.fsheet,.peek,.dock{display:none}
+@media(max-width:760px){
+  :root{--fg-3:#a1a1aa}
+  .top{display:flex;align-items:center;gap:8px;top:calc(10px + env(safe-area-inset-top))}
+  .top .brand{flex:1;min-width:0;flex-wrap:nowrap}.top .prod,.top #sbox{display:none!important}.top .globe-privacy{font-size:14px;color:var(--fg-2);padding:0 6px;min-height:44px}
+  .m-actions{display:flex;gap:8px}
+  .m-btn{height:44px;min-width:44px;border-radius:22px;border:1px solid rgba(255,255,255,.16);background:rgba(24,24,27,.85);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;font-size:15px;font-weight:600}
+  .m-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+  .m-filters i{font-style:normal;background:var(--accent);color:#000;border-radius:99px;font-size:12px;font-weight:700;padding:1px 7px}
+  .zoom{right:14px}.zoom button{width:44px;height:44px;font-size:20px}
+  .panel[data-sheet=closed]{visibility:hidden}
+  .pbody{padding-bottom:104px}
+  .panel-tabs button,.panel-more,.pbody .back{min-height:44px;font-size:14px}
+  .eyebrow,.meta,.compact-item time,.note,.lens-meta,.lens-meta time,.lens-asset,.pk-e,.pk-e span,.fs-lbl,.mk-eyebrow,.mk-row span,.lens-eyebrow,.pk-m{font-size:14px}.compact-headline{font-size:16px}.lens-item strong{font-size:16px}
+  .peek{display:grid;gap:6px;position:fixed;left:12px;right:12px;bottom:calc(var(--dock-h,78px) + 12px + env(safe-area-inset-bottom));z-index:18;text-align:left;padding:14px;border-radius:22px;background:rgba(24,24,27,.96);border:1px solid rgba(255,255,255,.16);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+  .peek[hidden]{display:none}
+  body:has(#inv-consent-panel:not([hidden])) .peek{visibility:hidden}
+  .pk-e{font:600 14px 'Geist Mono',ui-monospace,monospace;color:#ff9a4d;text-transform:uppercase;letter-spacing:.03em}.pk-e span{font:500 14px Inter,system-ui,sans-serif;color:var(--fg-3);text-transform:none;margin-left:6px;letter-spacing:0}
+  .pk-h{font-size:17px;line-height:1.3;font-weight:650;color:#fff}.pk-m{font-size:14px;color:var(--fg-2)}
+  .pk-a{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--fg-2)}
+  .pct{font-size:14px}.pk-a .pct{padding:4px 10px}
+  .dock{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));height:64px;padding:6px;border-radius:32px;z-index:60;background:rgba(24,24,27,.96);border:1px solid rgba(255,255,255,.16)}
+  .dock button{border-radius:26px;font-size:15px;font-weight:600;color:var(--fg-2)}.dock button[aria-current=page]{background:#fff;color:#000}
+  .fs-back{display:block;position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.55)}.fs-back[hidden]{display:none}
+  .fsheet{display:flex;flex-direction:column;position:fixed;left:0;right:0;bottom:0;max-height:88dvh;z-index:80;border-radius:28px 28px 0 0;background:#111114;border:1px solid rgba(255,255,255,.16);padding:16px 16px calc(16px + env(safe-area-inset-bottom))}.fsheet[hidden]{display:none}
+  .fs-head{display:flex;align-items:center;gap:8px}.fs-head h2{margin:0 auto 0 4px;font-size:22px;outline:none}
+  .fs-btn{height:44px;min-width:44px;padding:0 16px;border-radius:22px;border:1px solid rgba(255,255,255,.16);font-size:15px;font-weight:600}
+  .fs-body{overflow:auto;padding-bottom:8px}.fs-lbl{font:600 14px 'Geist Mono',ui-monospace,monospace;color:var(--fg-3);letter-spacing:.06em;text-transform:uppercase;margin:18px 0 8px}
+  .fs-show{height:52px;border-radius:26px;background:#fff;color:#000;font-weight:700;font-size:16px;margin-top:10px}
+  #fs-foot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+  #fs-foot .demo{display:inline-flex}.fsheet .globe-privacy{min-height:44px;padding:0 14px;border:1px solid rgba(255,255,255,.16);border-radius:22px;font-size:14px}
+  .fsheet .chips,.fsheet .regions{display:flex;flex-wrap:wrap;gap:8px;overflow:visible;margin:0;padding:0;background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;-webkit-mask-image:none;mask-image:none;border-radius:0}
+  .fsheet .chip,.fsheet .reg,.fsheet .win{height:44px;min-width:44px;padding:0 16px;border-radius:22px;border:1px solid rgba(255,255,255,.16);background:rgba(24,24,27,.85);color:var(--fg-2);font-size:15px;font-weight:600}
+  .fsheet .chip[aria-pressed=true],.fsheet .reg[aria-pressed=true],.fsheet .win[aria-pressed=true]{background:#fff;color:#000;border-color:#fff}
+  .fsheet .chip[aria-pressed=true] b{color:#b4500a}
+  .fsheet .timeline{position:static;transform:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;border:0;background:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;max-width:none;overflow:visible}
+  .fsheet #wins{display:flex;flex-wrap:wrap;gap:8px!important}.fsheet .tl-sep,.fsheet .tl-info{display:none}
+  .fsheet .tl-play{width:auto;height:44px;padding:0 16px;border-radius:22px;border:1px solid rgba(255,255,255,.16);display:inline-flex;align-items:center;gap:8px;color:var(--fg-2);font-size:15px;font-weight:600}
+  .fsheet .tl-play::after{content:'Replay 7 days'}.fsheet .tl-play svg{width:14px;height:14px}
+  .fsheet .reg[data-k=global]::before{display:none}
+}
 </style>
 </head>
 <body>
@@ -383,6 +425,10 @@ h1 span{color:var(--fg-3)}
     <span class="prod">Globe · News</span>
     <button type="button" class="globe-privacy" data-cookie-settings>Privacy</button>
     <span class="demo" id="badge" title="Concept preview: every article is demo content written to show the design. Not real news.">Concept · demo articles</span>
+  </div>
+  <div class="m-actions">
+    <button type="button" class="m-btn" id="m-search" aria-label="Search assets, countries and articles"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+    <button type="button" class="m-btn m-filters" id="m-filters" aria-haspopup="dialog" aria-controls="fsheet">Filters <i id="m-fcount" hidden></i></button>
   </div>
   <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search assets, countries &amp; articles" autocomplete="off" aria-label="Search assets, countries and articles" aria-controls="res"><kbd>/</kbd>
     <div class="res" id="res" role="listbox" hidden></div></div>
@@ -398,6 +444,14 @@ h1 span{color:var(--fg-3)}
   <span class="tl-sep"></span>
   <span class="tl-info" id="tlInfo"></span>
 </div>
+<div class="fs-back" id="fsback" hidden></div>
+<section class="fsheet" id="fsheet" role="dialog" aria-modal="true" aria-labelledby="fs-title" hidden>
+  <div class="fs-head"><h2 id="fs-title" tabindex="-1">Filters</h2><button type="button" class="fs-btn" id="fs-reset">Reset</button><button type="button" class="fs-btn fs-x" id="fs-close" aria-label="Close filters">✕</button></div>
+  <div class="fs-body"><div class="fs-lbl">Topic</div><div id="fs-cats"></div><div class="fs-lbl">Region</div><div id="fs-regions"></div><div class="fs-lbl">Time</div><div id="fs-time"></div><div id="fs-foot"></div></div>
+  <button type="button" class="fs-show" id="fs-show">Show articles</button>
+</section>
+<button type="button" class="peek" id="peek" hidden></button>
+<nav class="dock" id="dock" aria-label="Views"><button type="button" data-v="globe" aria-current="page">Globe</button><button type="button" data-v="news">News</button><button type="button" data-v="markets">Markets</button></nav>
 <div class="zoom glass"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button></div>
 <div class="hover glass" id="hover" aria-hidden="true"></div>
 <aside class="panel glass" id="panel" aria-label="News panel">
@@ -716,7 +770,7 @@ function drawExchanges(t) {
     if (st.open) { const g = ctx.createRadialGradient(x, y, 0, x, y, 20); g.addColorStop(0, `rgba(52,211,153,${.45 + .2 * pulse})`); g.addColorStop(1, 'rgba(52,211,153,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 20, 0, 7); ctx.fill(); }
     ctx.strokeStyle = st.open ? 'rgba(52,211,153,.95)' : 'rgba(161,161,170,.55)'; ctx.fillStyle = st.open ? '#34d399' : 'rgba(24,24,27,.9)'; ctx.lineWidth = 1.4;
     ctx.beginPath(); ctx.arc(x, y, st.open ? 4.2 : 3.4, 0, 7); ctx.fill(); ctx.stroke();
-    const label = st.open ? e.n + ' open' : (e === soon?.e || showAll) ? `${e.n} · opens in ${untilText(st.in)}` : '';
+    const label = phone() && !showAll ? '' : st.open ? e.n + ' open' : (e === soon?.e || showAll) ? `${e.n} · opens in ${untilText(st.in)}` : '';
     let hit = { x: x - 12, y: y - 12, w: 24, h: 24, e };
     if (label && z > .3) {
       ctx.font = '600 12px Inter,sans-serif'; const w = ctx.measureText(label).width + (st.open ? 36 : 24), h = 26, lx = Math.min(x + 14, globeBox.right - w - 4), ly = y - h / 2 - 18;
@@ -739,13 +793,14 @@ const match = s => (F.lens === 'all' || s.lens.includes(F.lens)) && matchNoLens(
 const sortTop = (a, b) => (b.importance - a.importance) || (b.t - a.t);
 let shown = [], dimmed = [], activity = {};
 function refresh() {
-  shown = stories.filter(match); dimmed = F.lens === 'all' ? [] : stories.filter(s => matchNoLens(s) && !s.lens.includes(F.lens)); activity = {}; updateLensChips(); for (const s of shown) activity[s.location.country] = (activity[s.location.country] || 0) + 1;
+  shown = stories.filter(match); dimmed = F.lens === 'all' ? [] : stories.filter(s => matchNoLens(s) && !s.lens.includes(F.lens)); activity = {}; updateLensChips(); updateFiltersUI(); for (const s of shown) activity[s.location.country] = (activity[s.location.country] || 0) + 1;
   $('tlInfo').innerHTML = play ? `Replaying · <b>${new Date(play.cur).toLocaleDateString('en-GB', { weekday: 'short' })} ${new Date(play.cur).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</b>` : `<b>${shown.length}</b> ${shown.length === 1 ? 'article' : 'articles'}`;
   updateNetwork(); if (!play) render();
 }
 
 // ===== Globe =====
 const cv = $('cv'), ctx = cv.getContext('2d');
+const BOTTOM_DOCK = 90; let peekH = 140;
 let sheetState = 'closed', sheetVisible = 84, sheetGesture = null, phoneMapTop = 0;
 let cyT = 0, W = 0, H = 0, R0 = 0, R = 0, cx = 0, cy = 0, Z = 1, Zt = 1, lon0 = -15, lat0 = 24, ZMAX = 6, globeBox = { left: 0, top: 0, right: 0, bottom: 0 };
 function size() {
@@ -755,7 +810,7 @@ function size() {
   else if (phone()) {
     phoneMapTop = document.querySelector('.top').getBoundingClientRect().bottom + 12;
     // Size against the unobstructed map, never against the sheet's remaining space.
-    R0 = Math.min(W * .47, Math.max(120, H - phoneMapTop - 160) * .47);
+    R0 = Math.min(W * .47, Math.max(120, H - phoneMapTop - (BOTTOM_DOCK + peekH + 28)) * .47);
     cx = W / 2;
     sheetVisible = sheetHeight(sheetState);
     panel.style.setProperty('--sheet-offset', (H * .92 - sheetVisible) + 'px');
@@ -903,11 +958,11 @@ $('hover').addEventListener('click', e => { const n = $('hover').dataset.country
 const panel = $('panel'), pbody = $('pbody'); size(); new MutationObserver(() => { if (!phone()) size(); }).observe(panel, { attributes: true, attributeFilter: ['class'] }); let view = { k: 'top' }, hist = [];
 function sheetHeight(state) { return state === 'closed' ? 84 : H * ({ peek: .30, half: .55, full: .92 }[state] || .30); }
 function phoneMapArea() {
-  const bottom = sheetState === 'closed' ? H - 146 : H - sheetVisible - 12;
+  const pk = $('peek').getBoundingClientRect(); if (pk.height) peekH = pk.height;
+  const bottom = sheetState === 'closed' ? (pk.height ? pk.top : H - BOTTOM_DOCK - peekH - 20) - 10 : H - sheetVisible - 12;
   globeBox = { left: 8, top: phoneMapTop, right: W - 8, bottom };
   cyT = phoneMapTop + Math.max(0, bottom - phoneMapTop) / 2;
-  $('tl').hidden = sheetState !== 'closed';
-  document.querySelector('.zoom').style.top = Math.max(phoneMapTop, cyT - 36) + 'px';
+  document.querySelector('.zoom').style.top = Math.max(phoneMapTop, bottom - 96) + 'px';
 }
 function setSheet(state) {
   if (!phone() || EMBED) return;
@@ -917,7 +972,7 @@ function setSheet(state) {
   panel.style.setProperty('--sheet-visible', sheetVisible + 'px');
   $('grab').setAttribute('aria-label', state === 'full' ? 'Show news panel at peek height' : state === 'half' ? 'Show full news panel' : state === 'peek' ? 'Show news panel at half height' : 'Open Top articles');
   $('grab').setAttribute('aria-expanded', String(state !== 'closed'));
-  phoneMapArea();
+  phoneMapArea(); peekUpdate(); dockUpdate();
 }
 let sheetDraggedAt = -1000;
 $('grab').onclick = () => {
@@ -960,7 +1015,7 @@ function endSheetGesture(e) {
 panel.addEventListener('pointerup', endSheetGesture);
 panel.addEventListener('pointercancel', endSheetGesture);
 pbody.addEventListener('click', e => { if (phone() && sheetState === 'closed' && !e.target.closest('a,button,input')) setSheet('peek'); });
-const layoutObserver = new ResizeObserver(size); [document.querySelector('.top'), $('tl'), panel].forEach(e => layoutObserver.observe(e));
+const layoutObserver = new ResizeObserver(size); [document.querySelector('.top'), $('tl'), panel, $('peek')].forEach(e => layoutObserver.observe(e));
 document.fonts.ready.then(size);
 function go(v, push = true) { if (push && view.k !== v.k || push && view.id !== v.id) hist.push(view); view = v; render(); pbody.scrollTop = 0; if (phone()) setSheet('peek'); }
 function back() { view = hist.pop() || { k: 'top' }; if (view.k === 'top') { sel = null; selCountry = null; } else if (view.k === 'country') { sel = null; selCountry = byName[view.id]; } else if (view.k === 'article') { sel = byId[view.id]; } render(); }
@@ -1016,10 +1071,14 @@ function variantPanel(list) {
     items = countries.slice(0, panelExpanded ? countries.length : 3).map(([name, n]) => `<button class="compact-country" data-country="${esc(name)}">${flag(name)}<span>${esc(nm(name))}</span><small>${n} ${n === 1 ? 'article' : 'articles'}</small></button>`).join('');
   } else {
     const sorted = panelTab === 'latest' ? [...list].sort((a,b) => b.t-a.t) : list;
+    if (phone()) { count = sorted.length; items = sorted.slice(0, panelExpanded ? sorted.length : 20).map(lensItem).join(''); }
+    else {
     const hs = panelTab === 'top' && sorted.find(x => x.image && x.image.file), rest = hs ? sorted.filter(x => x !== hs) : sorted;
     count = sorted.length; items = (hs ? `<button class="panel-hero" data-story="${esc(hs.id)}" style="background-image:url('${esc(hs.image.file)}')"><small>${esc(CAT[hs.category] || 'News')} · ${ago(hs.t)}</small><span>${esc(hs.headline)}</span></button>` : '') + rest.slice(0, panelExpanded ? rest.length : 3).map(compactItem).join('');
+    }
   }
-  return `<h2>Top articles</h2><div class="panel-tabs" role="tablist" aria-label="News view">${tabs.map(([key,label]) => `<button role="tab" id="panel-tab-${key}" aria-selected="${key === panelTab}" aria-controls="panel-contents" tabindex="${key === panelTab ? 0 : -1}" data-panel-tab="${key}">${label}</button>`).join('')}</div><div class="compact-list" id="panel-contents" role="tabpanel" aria-labelledby="panel-tab-${panelTab}">${items || '<div class="empty">No articles match these filters.</div>'}</div>${count > 3 ? `<button class="panel-more" data-panel-more aria-expanded="${panelExpanded}">${panelExpanded ? 'Show less' : 'Show more'}</button>` : ''}${noteHTML()}`;
+  const rgName = REGIONS.find(r => r[0] === F.region)[1], head = phone() && (panelTab === 'top' || panelTab === 'latest') ? `<h2 class="news-count"><b>${list.length}</b> ${list.length === 1 ? 'article' : 'articles'} · ${F.win.toUpperCase()} · ${esc(rgName)}</h2>` : '<h2>Top articles</h2>';
+  return `${head}<div class="panel-tabs" role="tablist" aria-label="News view">${tabs.map(([key,label]) => `<button role="tab" id="panel-tab-${key}" aria-selected="${key === panelTab}" aria-controls="panel-contents" tabindex="${key === panelTab ? 0 : -1}" data-panel-tab="${key}">${label}</button>`).join('')}</div><div class="compact-list" id="panel-contents" role="tabpanel" aria-labelledby="panel-tab-${panelTab}">${items || '<div class="empty">No articles match these filters.</div>'}</div>${count > 3 ? `<button class="panel-more" data-panel-more aria-expanded="${panelExpanded}">${panelExpanded ? 'Show less' : 'Show more'}</button>` : ''}${noteHTML()}`;
 }
 pbody.addEventListener('click', e => {
   const tab = e.target.closest('[data-panel-tab]'), more = e.target.closest('[data-panel-more]');
@@ -1042,7 +1101,7 @@ function lensPanel(list, nc) {
     ${list.length ? `<div class="lens-list">${list.slice(0, 20).map(lensItem).join('')}</div>` : `<div class="empty">No ${esc(name.toLowerCase())} articles in ${WLABEL[F.win]}. Try a wider time window.</div>`}${noteHTML()}`;
 }
 function render() {
-  panel.dataset.view = view.k;
+  panel.dataset.view = view.k; peekUpdate(); dockUpdate();
   document.documentElement.classList.toggle('panel-top', !!PANEL_TEMPLATE && view.k === 'top');
   if (!panelInitialized) { panelInitialized = true; if (phone() && PANEL_TEMPLATE === 'b') panel.classList.add('open'); }
   requestAnimationFrame(size);
@@ -1282,6 +1341,56 @@ function frame(t) {
   ctx.restore();
   requestAnimationFrame(frame);
 }
+
+// ===== Phone layout (option A): slim top bar, Filters sheet, peek card and bottom dock =====
+const PH = {}; for (const [k, el] of [['cats', $('cats')], ['regions', $('regions')], ['tl', $('tl')], ['badge', $('badge')]]) { PH[k] = document.createComment(k); el.parentNode.insertBefore(PH[k], el); }
+let filtersMoved = false;
+function placeFilters(on) {
+  if (on === filtersMoved || EMBED) return; filtersMoved = on;
+  const dest = { cats: $('fs-cats'), regions: $('fs-regions'), tl: $('fs-time'), badge: $('fs-foot') };
+  for (const [k, el] of [['cats', $('cats')], ['regions', $('regions')], ['tl', $('tl')], ['badge', $('badge')]]) on ? dest[k].appendChild(el) : PH[k].parentNode.insertBefore(el, PH[k]);
+  if (!on) closeFilters(false);
+}
+let fsOpener = null;
+function openFilters() { fsOpener = document.activeElement; $('fsback').hidden = false; $('fsheet').hidden = false; $('fs-title').focus(); }
+function closeFilters(restore = true) { if ($('fsheet').hidden) return; $('fsheet').hidden = true; $('fsback').hidden = true; if (restore && fsOpener && fsOpener.focus) fsOpener.focus(); }
+$('m-filters').onclick = openFilters; $('fs-close').onclick = () => closeFilters(); $('fsback').onclick = () => closeFilters(); $('fs-show').onclick = () => closeFilters();
+$('m-search').onclick = () => { if (window.InvPeek) InvPeek.search(); else qi.focus(); };
+$('fs-reset').onclick = () => { for (const [box, k] of [[$('cats'), 'all'], [$('regions'), 'global'], [$('wins'), '24h']]) box.querySelector(`[data-k="${k}"]`).click(); };
+$('fsheet').addEventListener('keydown', e => {
+  if (e.key === 'Escape') { e.stopPropagation(); closeFilters(); return; }
+  if (e.key !== 'Tab') return;
+  const f = [...$('fsheet').querySelectorAll('button,[href],input')].filter(x => x.offsetParent !== null); if (!f.length) return;
+  const first = f[0], last = f[f.length - 1];
+  if (e.shiftKey && (document.activeElement === first || document.activeElement === $('fs-title'))) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+function updateFiltersUI() {
+  const n = (F.lens !== 'all') + (F.region !== 'global') + (F.win !== '24h'), c = $('m-fcount');
+  c.hidden = !n; c.textContent = n; $('m-filters').setAttribute('aria-label', n ? `Filters, ${n} active` : 'Filters');
+  $('fs-show').textContent = `Show ${shown.length} ${shown.length === 1 ? 'article' : 'articles'}`;
+}
+function peekUpdate() {
+  const el = $('peek'); if (EMBED || !phone()) { el.hidden = true; return; }
+  const show = sheetState === 'closed' && view.k === 'top' && !!stories.length; el.hidden = !show; if (!show) return;
+  const s = [...shown].sort(sortTop)[0];
+  if (!s) { el.dataset.story = ''; el.innerHTML = '<span class="pk-h">No articles match these filters</span><span class="pk-m">Open Filters to widen the time window.</span>'; return; }
+  const a = lensAsset(s), src = s.source && s.source.name ? s.source.name : '';
+  el.dataset.story = s.id;
+  el.innerHTML = `<span class="pk-e"><time datetime="${esc(s.published_at || '')}">${ago(s.t)}</time>${src ? `<span>· ${esc(src)}</span>` : ''}</span><span class="pk-h">${esc(s.headline)}</span>${a ? `<span class="pk-a"><span>${esc(a.n)}</span>${pctPill(a.d)}</span>` : ''}`;
+}
+$('peek').onclick = () => { const s = byId[$('peek').dataset.story]; if (s) openStory(s); else openFilters(); };
+function dockUpdate() {
+  const v = !phone() || sheetState === 'closed' ? 'globe' : panelTab === 'markets' ? 'markets' : 'news';
+  for (const b of $('dock').querySelectorAll('button')) b.dataset.v === v ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
+}
+$('dock').onclick = e => {
+  const b = e.target.closest('button'); if (!b || !phone()) return;
+  if (b.dataset.v === 'globe') return $('sheet-close').click();
+  hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = b.dataset.v === 'markets' ? 'markets' : (panelTab === 'markets' ? 'top' : panelTab); panelExpanded = false;
+  render(); pbody.scrollTop = 0; setSheet('full');
+};
+placeFilters(phone()); addEventListener('resize', () => placeFilters(phone()));
 
 // ===== Start =====
 let LIVE = null;
