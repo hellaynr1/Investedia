@@ -1,0 +1,117 @@
+[
+ {
+  "width": 1440,
+  "id": "LA1 the legend line is replaced by a Layers button that starts with Connections on and Market hours off",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "LA2 the menu holds two real switches, says how many connections are shown, and keeps the legend",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "LA3 switching Connections off removes every line and pill from the globe; on brings them back",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "LA4 switching Market hours on shows the night shade and exchange dots and the count becomes 2; off removes them",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "LA5 Escape and a click outside close the menu and focus returns to the Layers button",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "LA6 ?connections=0 opens with connections off",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "TC1 the topic bar has no dark pill container; each topic is its own outlined chip with a round count badge",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "TC2 the active chip is white with a black badge; the numbers are the real counts",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "RG1 the region row has no flags: All regions keeps its globe icon, every other region is plain text",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "RG2 all icon files exist and load (no broken images)",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "RG3 choosing a region still filters and turns the globe, and the control keeps a readable name",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "X1 no script errors and no horizontal overflow",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "LA1 the legend line is replaced by a Layers button that starts with Connections on and Market hours off",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "LA2 the menu holds two real switches, says how many connections are shown, and keeps the legend",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "LA3 switching Connections off removes every line and pill from the globe; on brings them back",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "LA4 switching Market hours on shows the night shade and exchange dots and the count becomes 2; off removes them",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "LA6 ?connections=0 opens with connections off",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "TC1 the topic bar has no dark pill container; each topic is its own outlined chip with a round count badge",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "TC2 the active chip is white with a black badge; the numbers are the real counts",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "RG1 the region row has no flags: All regions keeps its globe icon, every other region is plain text",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "RG2 all icon files exist and load (no broken images)",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "RG3 choosing a region still filters and turns the globe, and the control keeps a readable name",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "X1 no script errors and no horizontal overflow",
+  "pass": true
+ }
+]

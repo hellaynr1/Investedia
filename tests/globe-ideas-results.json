@@ -1,6 +1,11 @@
 [
  {
   "width": 1440,
+  "id": "M0 market hours are off by default: no shade, no exchange dots, no Markets tab on the desktop panel; the button is not pressed",
+  "pass": true
+ },
+ {
+  "width": 1440,
   "id": "L1 the topic bar is All + Energy + Central banks + Trade & tariffs + Earnings, each with the number of articles in the current window",
   "pass": true
  },
@@ -71,12 +76,27 @@
  },
  {
   "width": 1440,
+  "id": "M7 every row states the exchange hours in local time and UTC, and open markets say when they close",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M8 pressing the button again turns the layer off: the Markets tab goes, no dots, panel back to Top",
+  "pass": true
+ },
+ {
+  "width": 1440,
   "id": "M6 clicking a market row and a dot on the globe asks the asset viewer for that index",
   "pass": true
  },
  {
   "width": 1440,
   "id": "X1 no script errors, no horizontal overflow, no undefined/NaN in the panel",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M0 market hours are off by default: no shade, no exchange dots, no Markets tab on the desktop panel; the button is not pressed",
   "pass": true
  },
  {
@@ -147,6 +167,11 @@
  {
   "width": 390,
   "id": "M5 the Markets tab lists Sydney, Tokyo, Hong Kong, London, New York with the right wording and a link to each main index",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M7 every row states the exchange hours in local time and UTC, and open markets say when they close",
   "pass": true
  },
  {
