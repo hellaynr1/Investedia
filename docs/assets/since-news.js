@@ -29,14 +29,15 @@
     out.beforeSpan = out.before.length ? before[before.length - 1][0] - before[0][0] : 0;
     return out;
   }
+  let chartN = 0;
   function chart(c, published) {
     const W = 560, H = 130, P = 8, t0 = c.before.length ? c.before[0][0] : published, t1 = c.after[c.after.length - 1][0];
     const all = [...c.before, ...c.after, [0, 0]].map(p => p[1]), lo = Math.min(...all), hi = Math.max(...all), r = hi - lo || 1;
     const X = t => P + (t - t0) / ((t1 - t0) || 1) * (W - 2 * P), Y = v => P + (hi - v) / r * (H - 2 * P);
     const path = pts => pts.map((p, i) => (i ? 'L' : 'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1)).join('');
-    const col = c.move < 0 ? '#f87171' : c.move > 0 ? '#34d399' : '#a1a1aa', mx = X(Math.max(published, t0)), last = c.after[c.after.length - 1];
+    const gid = 'snf' + (++chartN), col = c.move < 0 ? '#f87171' : c.move > 0 ? '#34d399' : '#a1a1aa', mx = X(Math.max(published, t0)), last = c.after[c.after.length - 1];
     const lx = (mx / W * 100).toFixed(1), lab = `<span class="sn-mark" style="left:${lx}%">Article posted here · ${hhmm(published)}</span>`;
-    return `<div class="sn-chart" data-mark="${window.SinceNewsMark || 'pill'}">${lab}<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Price chart from ${c.before.length ? span(c.beforeSpan) + ' before the article' : 'the article'} to now: ${c.move < 0 ? 'down' : c.move > 0 ? 'up' : 'unchanged'} ${pct(c.move)} since the article"><rect x="${mx.toFixed(1)}" y="0" width="${(W - mx).toFixed(1)}" height="${H}" fill="${col}" opacity=".07"/>${c.before.length ? `<path d="${path(c.before)}" fill="none" stroke="#8b8b94" stroke-width="2.2"/>` : ''}<path d="${path(c.after)}" fill="none" stroke="${col}" stroke-width="2.6" stroke-linejoin="round"/><line x1="${mx.toFixed(1)}" x2="${mx.toFixed(1)}" y1="0" y2="${H}" stroke="#ff7a1a" stroke-dasharray="3 3"/><circle cx="${mx.toFixed(1)}" cy="${Y(0).toFixed(1)}" r="5" fill="#ff7a1a"/><circle cx="${X(last[0]).toFixed(1)}" cy="${Y(last[1]).toFixed(1)}" r="5" fill="${col}"/></svg></div>`;
+    return `<div class="sn-chart" data-mark="${window.SinceNewsMark || 'pill'}">${lab}<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Price chart from ${c.before.length ? span(c.beforeSpan) + ' before the article' : 'the article'} to now: ${c.move < 0 ? 'down' : c.move > 0 ? 'up' : 'unchanged'} ${pct(c.move)} since the article"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".28"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="${path(c.after)}L${X(last[0]).toFixed(1)} ${H}L${X(c.after[0][0]).toFixed(1)} ${H}Z" fill="url(#${gid})"/>${c.before.length ? `<path d="${path(c.before)}" fill="none" stroke="#8b8b94" stroke-width="2.2"/>` : ''}<path d="${path(c.after)}" fill="none" stroke="${col}" stroke-width="2.6" stroke-linejoin="round"/><line x1="${mx.toFixed(1)}" x2="${mx.toFixed(1)}" y1="0" y2="${H}" stroke="#ff7a1a" stroke-dasharray="3 3"/><circle cx="${mx.toFixed(1)}" cy="${Y(0).toFixed(1)}" r="5" fill="#ff7a1a"/><circle cx="${X(last[0]).toFixed(1)}" cy="${Y(last[1]).toFixed(1)}" r="5" fill="${col}"/></svg></div>`;
   }
   function verdict(direction, move) {
     if (direction !== 'up' && direction !== 'down') return '';
