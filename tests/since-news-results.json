@@ -1,0 +1,102 @@
+[
+ {
+  "width": 1440,
+  "id": "SN1 normal: big number is the move since the first price after the article; before and after are in words; grey and coloured lines; marker with the publish time",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "SN2 the article was wrong: the card says so plainly",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "SN3 a move under 0.3% is reported as \"barely moved\", not as right or wrong",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "SN4 no recording yet (file missing): no chart, plain explanation, and today's real move from the price file",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "SN5 a single recorded price says tracking has started and promises the chart after the next update",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "SN6 the first price came more than 90 minutes after the article and nothing before it: not shown as a since-the-news chart",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "SN7 a late first price (30 min) is stated in the note and the change is measured from it; no before data is described honestly",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "SN8 the pure calculation ignores bad points, sorts, and never invents a before line from one point",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "SN9 layout: the card fits the panel with no sideways scroll; its text is at least 13 px (14 px on phones)",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "SN10 a story opened from a link before the prices have loaded still gets its card once they arrive",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN1 normal: big number is the move since the first price after the article; before and after are in words; grey and coloured lines; marker with the publish time",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN2 the article was wrong: the card says so plainly",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN3 a move under 0.3% is reported as \"barely moved\", not as right or wrong",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN4 no recording yet (file missing): no chart, plain explanation, and today's real move from the price file",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN5 a single recorded price says tracking has started and promises the chart after the next update",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN6 the first price came more than 90 minutes after the article and nothing before it: not shown as a since-the-news chart",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN7 a late first price (30 min) is stated in the note and the change is measured from it; no before data is described honestly",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN8 the pure calculation ignores bad points, sorts, and never invents a before line from one point",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN9 layout: the card fits the panel with no sideways scroll; its text is at least 13 px (14 px on phones)",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "SN10 a story opened from a link before the prices have loaded still gets its card once they arrive",
+  "pass": true
+ }
+]

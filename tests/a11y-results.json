@@ -245,7 +245,30 @@
   {
     "page": "markets.html",
     "width": 1440,
-    "violations": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=axeAPI",
+        "nodes": [
+          {
+            "target": [
+              "button[data-n=\"Semiconductors\"] > span:nth-child(1) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.37 (foreground color: #afc6be, background color: #1b5c45, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<small>SMH</small>"
+          },
+          {
+            "target": [
+              "button[data-n=\"Semiconductors\"] > .u.mono"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.1 (foreground color: #34d399, background color: #1b5c45, font size: 16.5pt (22px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<span class=\"mono u\">↑ +3.22%</span>"
+          }
+        ]
+      }
+    ],
     "tapTargets": [],
     "overflow": false,
     "errors": [],
@@ -794,7 +817,30 @@
   {
     "page": "markets.html",
     "width": 390,
-    "violations": [],
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=axeAPI",
+        "nodes": [
+          {
+            "target": [
+              "button[data-n=\"Semiconductors\"] > span:nth-child(1) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.37 (foreground color: #afc6be, background color: #1b5c45, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<small>SMH</small>"
+          },
+          {
+            "target": [
+              "button[data-n=\"Semiconductors\"] > .u.mono"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.1 (foreground color: #34d399, background color: #1b5c45, font size: 16.5pt (22px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<span class=\"mono u\">↑ +3.22%</span>"
+          }
+        ]
+      }
+    ],
     "tapTargets": [
       {
         "target": "button.pf-btn",
