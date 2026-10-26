@@ -1436,7 +1436,8 @@
   "banknotes money",
   "oil tanker ship",
   "bitcoin cryptocurrency",
-  "cyber security"
+  "cyber security",
+  "airplane airport"
  ],
  "airplane airport": [
   {
@@ -1491,6 +1492,12 @@
    "file": "photos/airplane-airport-8607152.jpg",
    "credit": "rolandmey",
    "source_url": "https://pixabay.com/photos/airbus-plane-departure-lufthansa-8607152/",
+   "alt": "airplane airport"
+  },
+  {
+   "file": "photos/airplane-airport-170272.jpg",
+   "credit": "12019",
+   "source_url": "https://pixabay.com/photos/plane-aircraft-airbase-jet-170272/",
    "alt": "airplane airport"
   }
  ],
