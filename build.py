@@ -17,8 +17,16 @@ HEAD = """<!doctype html>
 <meta property="og:description" content="{desc}">
 <meta name="theme-color" content="#0A0A0B">
 <meta property="og:type" content="website">
-<meta property="og:image" content="assets/logo.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:site_name" content="Investedia">
+<meta property="og:url" content="https://investedia.com/{page}">
+<meta property="og:image" content="https://investedia.com/assets/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Investedia: invest with clarity, see the world move">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{desc}">
+<meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/app.css?v={ver}">
 <link rel="stylesheet" href="assets/skin.css?v={ver}">
@@ -76,7 +84,7 @@ def build(release=False):
             date = legal_check.html.escape(str(values['last_review_date']), quote=True)
             body = re.sub(r'<time datetime="2026-10-22">22 October 2026</time>', '<time datetime="'+date+'">'+date+'</time>', body)
         extra = "".join(f'<script src="{s}?v={ver}"></script>\n' for s in meta.get("scripts", []))
-        html = HEAD.format(title=meta["title"], desc=meta["desc"], key=meta["key"], extra=extra, ver=ver) + body.rstrip() + "\n" + TAIL
+        html = HEAD.format(title=meta["title"], desc=meta["desc"], key=meta["key"], extra=extra, ver=ver, page=("" if p.name == "index.html" else p.name)) + body.rstrip() + "\n" + TAIL
         if meta.get("redirect"):
             target = meta["redirect"]
             if not re.fullmatch(r"[a-z0-9-]+\.html", target) or target == p.name:
