@@ -81,6 +81,12 @@ h1 span{color:var(--fg-3)}
 @media (max-width:760px){.eco-g{grid-template-columns:repeat(2,minmax(0,1fr))}.flag.big{width:38px;height:28px}}
 .fnote{margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--fg-3)}
 .ch{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.chip b{font:600 12px 'Geist Mono',ui-monospace,monospace;color:#ff8c32;margin-left:5px}.chip[aria-pressed=true] b{color:#c2570a}
+.lens-eyebrow{margin-top:2px}.pbody .lens-count{font-weight:500;font-size:14px;color:var(--fg-2);margin:2px 0 10px}.lens-count b{font-size:26px;font-weight:700;color:var(--fg);letter-spacing:-.02em;margin-right:2px}
+.lens-list{display:grid;border-top:1px solid var(--line)}.lens-item{display:grid;gap:6px;text-align:left;padding:12px 0;border:0;border-bottom:1px solid var(--line);background:none;color:inherit;font:inherit;cursor:pointer}
+.lens-item:hover strong{color:#fff}.lens-item strong{font-size:14px;line-height:1.35;font-weight:650;color:var(--fg)}
+.lens-meta{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--fg-3)}.lens-meta .flag{width:20px;height:14px;border-radius:2px;object-fit:cover}.lens-meta time{font:600 12px 'Geist Mono',ui-monospace,monospace;color:#ff8c32}
+.lens-asset{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--fg-3)}
 .chip{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:rgba(16,16,18,.6);color:var(--fg-2);font-size:12.5px;font-weight:500;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
 .chip:hover{color:var(--fg);border-color:var(--line-2)}
 .chip[aria-pressed=true]{background:var(--fg);color:#0A0A0B;border-color:var(--fg)}
@@ -113,6 +119,8 @@ h1 span{color:var(--fg-3)}
 /* Hover preview */
 .hover{position:fixed;z-index:5;width:280px;padding:12px;border-radius:14px;pointer-events:none;display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:start;box-shadow:0 18px 50px rgba(0,0,0,.5);opacity:0;transform:translateY(4px);transition:opacity .14s,transform .14s}
 .hover.on{opacity:1;transform:none}
+.hover.brief{width:340px;display:block;padding:16px}.brief-head{display:flex;align-items:center;gap:10px;padding-bottom:10px}.brief-head .flag{width:22px;height:16px;border-radius:2px;object-fit:cover}.brief-head h3{margin:0;font-size:16px}.brief-head span{margin-left:auto;font-size:12px;color:var(--fg-3)}
+.brief-line{padding:9px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.35;font-weight:650}.brief-index{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding-top:10px;font-size:12.5px;color:var(--fg-3)}.brief-next{margin-top:8px;font-size:12px;color:var(--fg-3)}.brief-next b{color:var(--fg);font-weight:650}
 .hover .art{width:52px;height:52px;border-radius:9px}
 .hover .art span{display:none}
 .hover h3{margin:3px 0 6px;font-size:13.5px;line-height:1.3;font-weight:600;letter-spacing:-.01em}
@@ -253,6 +261,7 @@ h1 span{color:var(--fg-3)}
   .pbody{padding:2px 18px 28px}
   .pbody h2{font-size:19px}
   .hover{display:none}
+  .hover.brief.on{display:block;left:12px!important;right:12px;top:auto!important;bottom:100px;width:auto;pointer-events:auto}
 }
 /* Optional comparison layouts. Story and country views keep the original panel. */
 .compact-list{display:grid;gap:6px;margin-top:12px}
@@ -263,8 +272,10 @@ h1 span{color:var(--fg-3)}
 .compact-item time{display:block;font-size:11px;color:var(--fg-3);margin-top:5px}
 .panel-more{display:inline-flex;align-items:center;min-height:36px;margin-top:12px;font-size:12px;color:var(--fg-2)}
 .panel-more:hover{color:var(--fg)}
-.panel-tabs{display:flex;gap:4px;margin:14px 0 8px}
-.panel-tabs button{min-height:34px;padding:0 11px;border-radius:7px;color:var(--fg-3);font-size:12px}
+.panel-tabs{display:flex;gap:2px;margin:14px 0 8px}
+.mk-eyebrow{margin:6px 0 4px}.mk-list{display:grid}.mk-row{display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:12px;padding:12px 0;border:0;border-top:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.mk-row .flag{width:24px;height:16px;border-radius:2px;object-fit:cover}.mk-row b{font-size:14.5px;font-weight:650}.mk-row span{font-size:12.5px;color:var(--fg-2)}.mk-row .mk-open{color:#34d399}
+.panel-tabs button{min-height:34px;padding:0 9px;border-radius:7px;color:var(--fg-3);font-size:12px}
 .panel-tabs button[aria-selected=true]{background:rgba(255,255,255,.08);color:var(--fg)}
 .compact-country{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;text-align:left;font-size:13px}
 .compact-country small{margin-left:auto;color:var(--fg-3);font-size:11px}
@@ -352,6 +363,7 @@ h1 span{color:var(--fg-3)}
 .mv-row b{display:block;font-weight:600;font-size:13.5px}.mv-row small{color:var(--fg-3);font-size:11.5px}.mv-row svg{width:58px;height:20px}
 .mv-row .mono{font-family:'Geist Mono',monospace;font-weight:600;font-size:13px;text-align:right}.mv-row .u{color:#34d399}.mv-row .d{color:#f87171}
 .mv-row .ai-t,.mv-row .ai-i{width:30px;height:30px;border-radius:9px}
+.chip,.reg{flex:none}
 @media(max-width:760px){.chip{height:36px;padding:0 14px}}
 
 :focus-visible{outline:3px solid #FF7A1A!important;outline-offset:3px!important}.globe-skip{position:fixed;top:8px;left:8px;z-index:30000;transform:translateY(-200%);padding:12px;background:#FF7A1A;color:#111113}.globe-skip:focus{transform:none}@media(pointer:coarse){button,.chip,.regions button,.panel a{min-height:44px}.zoom button,.sheet-actions button{min-width:44px}.chips,.regions,.panel-tabs{gap:8px}}
@@ -374,7 +386,7 @@ h1 span{color:var(--fg-3)}
   </div>
   <div class="search glass" id="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search assets, countries &amp; articles" autocomplete="off" aria-label="Search assets, countries and articles" aria-controls="res"><kbd>/</kbd>
     <div class="res" id="res" role="listbox" hidden></div></div>
-  <div class="chips" id="cats" role="group" aria-label="Category"></div>
+  <div class="chips" id="cats" role="group" aria-label="Topic lens"></div>
   <div class="regions" id="regions" role="group" aria-label="Region"></div>
 </div>
 
@@ -414,7 +426,14 @@ let panelTab = 'top', panelExpanded = false, panelInitialized = false;
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const CATS = [['all', 'All'], ['markets', 'Markets'], ['companies', 'Companies'], ['economy', 'Economy'], ['technology', 'Technology'], ['commodities', 'Commodities'], ['geopolitics', 'Geopolitics']];
-const CAT = Object.fromEntries(CATS);
+const CAT = { ...Object.fromEntries(CATS), crypto: 'Crypto' };
+// Topic lenses: each story belongs to every lens whose words appear in its own headline or summary (no invented tags).
+const LENSES = [['all', 'All', null],
+  ['energy', 'Energy', /\b(oil|crude|opec|brent|wti|natural gas|lng|gasoline|petrol|refiner\w*|energy)\b/],
+  ['central', 'Central banks', /(central bank|federal reserve|\bfed\b|fomc|\becb\b|bank of england|\bboe\b|bank of japan|\bboj\b|rate cuts?|rate hikes?|interest rates?|powell|lagarde|inflation)/],
+  ['trade', 'Trade & tariffs', /(tariffs?|trade deals?|trade wars?|trade talks|trade agreements?|export controls?|sanctions?|import dut(?:y|ies))/],
+  ['earnings', 'Earnings', /(earnings|quarterly results|\bprofits?\b|\brevenues?\b|guidance|\beps\b)/]];
+const lensesOf = s => { const text = (s.headline + ' ' + (s.summary || '')).toLowerCase(); return LENSES.filter(l => l[2] && l[2].test(text)).map(l => l[0]); };
 const REGIONS = [['global', 'Global', -15, 24, 1], ['na', 'North America', -97, 40, 2], ['eu', 'Europe', 10, 50, 2.6], ['asia', 'Asia', 108, 28, 1.8], ['me', 'Middle East', 46, 26, 2.8], ['af', 'Africa', 20, 3, 1.8], ['latam', 'Latin America', -62, -16, 1.8], ['oc', 'Oceania', 140, -26, 2]];
 const WINS = [['now', 'Now', 15], ['1h', '1H', 60], ['6h', '6H', 360], ['24h', '24H', 1440], ['7d', '7D', 10080], ['30d', '30D', 43200]];
 const WLABEL = { now: 'the last 15 minutes', '1h': 'the last hour', '6h': 'the last 6 hours', '24h': 'the last 24 hours', '7d': 'the last 7 days', '30d': 'the last 30 days' };
@@ -501,8 +520,21 @@ Promise.all([fetch('markets.json').then(r => r.json()), fetch('news-prices.json'
   MKT.intra = i.s || {}; MKT.by = Object.fromEntries((m.assets || []).map(a => [a.s, a]));
   const known = a => !/[.\d]/.test(a.s.replace(/[=^-]/g, '')) && a.t !== 'fx' && Math.abs(a.d) < 20 && (a.m || a.t === 'crypto' || a.t === 'cmd' || MKT.intra[a.s]);
   MKT.list = (m.assets || []).filter(known).sort((x, y) => Math.abs(y.d) - Math.abs(x.d)).slice(0, 12);
+  MKT.all = m.assets || [];
   updateNetwork(); if (view.k === 'top' && panelTab === 'movers') render();
 }).catch(() => {});
+let CAL = [];
+fetch('../calendar-live.json').then(r => r.json()).then(d => { CAL = (d.events || []).filter(e => e && e.imp >= 3 && e.at); }).catch(() => {});
+const untilText = ms => { const m = Math.max(1, Math.round(ms / 60000)), d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60); return d ? `${d} d ${h} h` : h ? `${h} h ${m % 60} min` : `${m} min`; };
+function mainIndex(country) { return (MKT.all || []).find(a => a.g === 'Index' && a.k === nm(country) && a.m && Number.isFinite(a.d)) || null; }
+function nextRelease(country) { const code = ISO[country], now = Date.now(); return code ? CAL.filter(e => e.country === code && Date.parse(e.at) > now).sort((a, b) => Date.parse(a.at) - Date.parse(b.at))[0] || null : null; }
+function briefHTML(c) {
+  const list = stories.filter(s => s.location.country === c.name && match(s)).sort(sortTop), ix = mainIndex(c.name), nx = nextRelease(c.name);
+  return `<div class="brief-head">${flag(c.name)}<h3>${esc(nm(c.name))}</h3><span>${list.length ? `${list.length} ${list.length === 1 ? 'article' : 'articles'}` : 'No articles in this window'}</span></div>
+    ${[...new Map(list.map(s => [s.headline, s])).values()].slice(0, 3).map(s => `<div class="brief-line">${esc(s.headline)}</div>`).join('')}
+    ${ix ? `<div class="brief-index"><span>${esc(ix.n)}</span>${pctPill(ix.d)}</div>` : ''}
+    ${nx ? `<div class="brief-next">Next: <b>${esc(nx.t)}</b> in ${untilText(Date.parse(nx.at) - Date.now())}</div>` : ''}`;
+}
 let ECON = null; fetch('economy.json').then(r => r.json()).then(d => { ECON = d; if (view.k === 'country') render(); }).catch(() => {});
 const usd = v => v >= 1e12 ? '$' + (v / 1e12).toFixed(v >= 1e13 ? 1 : 2) + ' trillion' : v >= 1e9 ? '$' + (v / 1e9).toFixed(v >= 1e11 ? 0 : 1) + ' billion' : '$' + (v / 1e6).toFixed(0) + ' million';
 const people = v => v >= 1e9 ? (v / 1e9).toFixed(2) + ' billion' : v >= 1e6 ? (v / 1e6).toFixed(1) + ' million' : Math.round(v / 1e3) + ' thousand';
@@ -561,7 +593,7 @@ function countryAt(lo, la) {
 let stories = [], byId = {}, incoming = {};
 function normalize(raw) {
   return (raw.stories || []).map(s => ({ ...s, demo: !!(raw.demo || s.demo), t: s.published_at ? Date.parse(s.published_at) : T0 - (s.age_minutes || 0) * 60000,
-    phi: s.location.lat * rad, lam: s.location.lon * rad, links: s.links || [], entities: s.entities || [], vt: -1e9, on: false }));
+    phi: s.location.lat * rad, lam: s.location.lon * rad, links: s.links || [], entities: s.entities || [], lens: lensesOf(s), vt: -1e9, on: false }));
 }
 // Analysis is optional. Malformed fields never affect the original reporting.
 const IMPACT_COLOR = { up: '34,197,94', down: '240,68,68', mixed: '161,161,170', unclear: '161,161,170' };
@@ -628,15 +660,86 @@ function chainOf(s) {
   return out.length > 1 ? out : [];
 }
 
+// ===== Markets now: regular trading hours (local time), no holidays. Night side from the sun's position at the current UTC time. =====
+const EXCH = [
+  { n: 'Sydney', tz: 'Australia/Sydney', o: 600, c: 960, cc: 'au', la: -33.87, lo: 151.21, ix: '^AXJO' },
+  { n: 'Tokyo', tz: 'Asia/Tokyo', o: 540, c: 930, cc: 'jp', la: 35.68, lo: 139.69, ix: '^N225' },
+  { n: 'Hong Kong', tz: 'Asia/Hong_Kong', o: 570, c: 960, cc: 'hk', la: 22.32, lo: 114.17, ix: '^HSI' },
+  { n: 'London', tz: 'Europe/London', o: 480, c: 990, cc: 'gb', la: 51.51, lo: -0.13, ix: '^FTSE' },
+  { n: 'New York', tz: 'America/New_York', o: 570, c: 960, cc: 'us', la: 40.71, lo: -74.01, ix: '^GSPC' }];
+const tzFmt = {};
+function localMin(e, ms) {
+  const f = tzFmt[e.tz] || (tzFmt[e.tz] = new Intl.DateTimeFormat('en-GB', { timeZone: e.tz, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }));
+  const p = Object.fromEntries(f.formatToParts(new Date(ms)).map(x => [x.type, x.value]));
+  return { wd: p.weekday, m: (+p.hour) * 60 + (+p.minute) };
+}
+const isOpenAt = (e, ms) => { const l = localMin(e, ms); return l.wd !== 'Sat' && l.wd !== 'Sun' && l.m >= e.o && l.m < e.c; };
+function exchangeState(e, now = Date.now()) {
+  const m0 = Math.floor(now / 60000) * 60000;
+  if (isOpenAt(e, m0)) { let t = m0; for (let k = 0; k < 1440 && isOpenAt(e, t - 60000); k++) t -= 60000; return { open: true, since: t }; }
+  for (let k = 1; k <= 8 * 1440; k++) if (isOpenAt(e, m0 + k * 60000)) return { open: false, in: m0 + k * 60000 - now, at: m0 + k * 60000 };
+  return { open: false, in: Infinity };
+}
+const hm = ms => { const d = new Date(ms); return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0'); };
+function exchangeRows(now = Date.now()) { return EXCH.map(e => ({ e, st: exchangeState(e, now) })); }
+function marketsPanel() {
+  const now = Date.now(), d = new Date(now), stamp = d.toISOString().slice(0, 10) + ' ' + hm(now) + ' UTC';
+  const rows = exchangeRows(now).map(({ e, st }) => `<button class="mk-row" data-asset="${esc(e.ix)}"><img class="flag" src="flags/${e.cc}.svg" alt=""><b>${e.n}</b><span class="${st.open ? 'mk-open' : ''}">${st.open ? 'Open · opened ' + hm(st.since) + ' UTC' : 'Opens in ' + untilText(st.in)}</span></button>`).join('');
+  return `<div class="eyebrow mk-eyebrow">Markets now · ${stamp}</div><div class="mk-list">${rows}</div><p class="note">Regular trading hours at each exchange. Public holidays are not included. Tap a market to see how its main index moved.</p>`;
+}
+function sunPoint(ms) {
+  const d = new Date(ms), day = (ms - Date.UTC(d.getUTCFullYear(), 0, 0)) / 864e5, h = d.getUTCHours() + d.getUTCMinutes() / 60 + d.getUTCSeconds() / 3600;
+  return { la: -23.44 * rad * Math.cos(2 * Math.PI / 365 * (day + 10)), lo: -(h - 12) * 15 * rad };
+}
+// Night side as a path: the terminator (all points 90° from the sun), hidden points pushed onto the visible edge.
+function nightPath() {
+  const sp = sunPoint(Date.now()), pts = [];
+  for (let k = 0; k < 120; k++) {
+    const th = k / 120 * 2 * Math.PI, la = Math.asin(Math.cos(sp.la) * Math.cos(th)), lo = sp.lo + Math.atan2(Math.sin(th) * Math.cos(sp.la), -Math.sin(sp.la) * Math.sin(la));
+    let [x, y, z] = proj(la, lo);
+    if (z <= 0) { const dx = x - cx, dy = y - cy, l = Math.hypot(dx, dy) || 1; x = cx + dx / l * R; y = cy + dy / l * R; }
+    pts.push([x, y]);
+  }
+  let inside = false; for (let a = 0, b = pts.length - 1; a < pts.length; b = a++) { const [xa, ya] = pts[a], [xb, yb] = pts[b]; if ((ya > cy) !== (yb > cy) && cx < (xb - xa) * (cy - ya) / (yb - ya) + xa) inside = !inside; }
+  const nightCentre = Math.sin(lat0 * rad) * Math.sin(sp.la) + Math.cos(lat0 * rad) * Math.cos(sp.la) * Math.cos(lon0 * rad - sp.lo) < 0;
+  const path = new Path2D(); path.moveTo(pts[0][0], pts[0][1]); for (const q of pts) path.lineTo(q[0], q[1]); path.closePath();
+  return { path, wholeDisc: inside !== nightCentre };
+}
+let exHits = [];
+function drawExchanges(t) {
+  exHits = [];
+  const rows = exchangeRows(), soon = rows.filter(r => !r.st.open).sort((a, b) => a.st.in - b.st.in)[0], showAll = view.k === 'top' && panelTab === 'markets';
+  ctx.textBaseline = 'middle';
+  for (const { e, st } of rows) {
+    const [x, y, z] = proj(e.la * rad, e.lo * rad); if (z <= .08 || (x < globeBox.left || x > globeBox.right || y < globeBox.top || y > globeBox.bottom)) continue;
+    const pulse = reduce ? .5 : (Math.sin(t / 700) + 1) / 2;
+    if (st.open) { const g = ctx.createRadialGradient(x, y, 0, x, y, 20); g.addColorStop(0, `rgba(52,211,153,${.45 + .2 * pulse})`); g.addColorStop(1, 'rgba(52,211,153,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 20, 0, 7); ctx.fill(); }
+    ctx.strokeStyle = st.open ? 'rgba(52,211,153,.95)' : 'rgba(161,161,170,.55)'; ctx.fillStyle = st.open ? '#34d399' : 'rgba(24,24,27,.9)'; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(x, y, st.open ? 4.2 : 3.4, 0, 7); ctx.fill(); ctx.stroke();
+    const label = st.open ? e.n + ' open' : (e === soon?.e || showAll) ? `${e.n} · opens in ${untilText(st.in)}` : '';
+    let hit = { x: x - 12, y: y - 12, w: 24, h: 24, e };
+    if (label && z > .3) {
+      ctx.font = '600 12px Inter,sans-serif'; const w = ctx.measureText(label).width + (st.open ? 36 : 24), h = 26, lx = Math.min(x + 14, globeBox.right - w - 4), ly = y - h / 2 - 18;
+      ctx.fillStyle = 'rgba(16,16,19,.94)'; ctx.strokeStyle = st.open ? 'rgba(52,211,153,.7)' : 'rgba(255,255,255,.2)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(lx, ly, w, h, 13); ctx.fill(); ctx.stroke();
+      if (st.open) { ctx.fillStyle = '#34d399'; ctx.beginPath(); ctx.arc(lx + 15, ly + h / 2, 3.5, 0, 7); ctx.fill(); }
+      ctx.textAlign = 'left'; ctx.fillStyle = st.open ? '#6ee7b7' : '#fff'; ctx.fillText(label, lx + (st.open ? 27 : 12), ly + h / 2 + .5);
+      hit = { x: Math.min(hit.x, lx), y: Math.min(hit.y, ly), w: Math.max(x + 12, lx + w) - Math.min(hit.x, lx), h: Math.max(y + 12, ly + h) - Math.min(hit.y, ly), e };
+    }
+    exHits.push(hit);
+  }
+}
+const exPick = (x, y) => exHits.find(h => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h);
+
 // ===== Filters =====
-const F = { cat: 'all', region: 'global', win: '24h' }; let play = null;
+const F = { cat: 'all', lens: 'all', region: 'global', win: '24h' }; let play = null;
 const winMin = () => WINS.find(w => w[0] === F.win)[2];
 const inTime = s => play ? s.t <= play.cur : T0 - s.t <= winMin() * 60000;
-const match = s => (F.cat === 'all' || s.category === F.cat) && (F.region === 'global' || s.location.region === F.region) && inTime(s);
+const matchNoLens = s => (F.cat === 'all' || s.category === F.cat) && (F.region === 'global' || s.location.region === F.region) && inTime(s);
+const match = s => (F.lens === 'all' || s.lens.includes(F.lens)) && matchNoLens(s);
 const sortTop = (a, b) => (b.importance - a.importance) || (b.t - a.t);
-let shown = [], activity = {};
+let shown = [], dimmed = [], activity = {};
 function refresh() {
-  shown = stories.filter(match); activity = {}; for (const s of shown) activity[s.location.country] = (activity[s.location.country] || 0) + 1;
+  shown = stories.filter(match); dimmed = F.lens === 'all' ? [] : stories.filter(s => matchNoLens(s) && !s.lens.includes(F.lens)); activity = {}; updateLensChips(); for (const s of shown) activity[s.location.country] = (activity[s.location.country] || 0) + 1;
   $('tlInfo').innerHTML = play ? `Replaying · <b>${new Date(play.cur).toLocaleDateString('en-GB', { weekday: 'short' })} ${new Date(play.cur).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</b>` : `<b>${shown.length}</b> ${shown.length === 1 ? 'article' : 'articles'}`;
   updateNetwork(); if (!play) render();
 }
@@ -748,7 +851,7 @@ function endPointer(e) {
   drag = null; cv.classList.remove('drag');
 }
 cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
-cv.addEventListener('pointerleave', () => { if (!drag) hideHover(); });
+cv.addEventListener('pointerleave', () => { if (!drag && !phone()) hideHover(); });
 cv.addEventListener('wheel', e => { if (EMBED) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
 cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) setZ(Zt < ZMAX - .1 ? Zt * 1.8 : 1, e.clientX, e.clientY); });
 $('zin').onclick = () => setZ(Zt * 1.6); $('zout').onclick = () => setZ(Zt / 1.6);
@@ -757,6 +860,7 @@ let cTimer = null, lastX = 0, lastY = 0;
 addEventListener('wheel', () => { clearTimeout(cTimer); hideHover(); }, { passive: true });
 function pick(x, y, r) { let best = null, bd = r * r; for (const d of drawn) { const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < bd) { bd = q; best = d; } } return best; }
 function hoverAt(x, y) {
+  const ex = !EMBED && exPick(x, y); if (ex) { $('hover').classList.remove('on'); cv.style.cursor = 'pointer'; return; }
   const edge=arcPick(x,y); arcHover=edge || null;
   if(edge){const hv=$('hover');hv.className='hover glass solo hv-b on';hv.innerHTML=hoverCardHTML(edge);edge.pill?placeHover(edge.pill.x+edge.pill.w+4,edge.pill.y+edge.pill.h/2):placeHover(x,y);cv.style.cursor='pointer';return;}
 
@@ -767,8 +871,8 @@ function hoverAt(x, y) {
   cv.style.cursor = c ? 'pointer' : '';
   if (c === hoverCountry) return;
   hoverCountry = c; clearTimeout(cTimer); $('hover').classList.remove('on');
-  if (c && !EMBED) cTimer = setTimeout(() => { if (hoverCountry !== c || drag) return; const n = stories.filter(s => s.location.country === c.name && match(s)).length, hv = $('hover');
-    hv.className = 'hover glass solo on'; hv.innerHTML = `<div><div class="eyebrow">Country</div><h3 style="margin-bottom:2px;display:flex;align-items:center;gap:8px">${flag(c.name)}${esc(nm(c.name))}</h3><div class="meta">${n ? `<b>${n}</b> ${n === 1 ? 'article' : 'articles'} in ${WLABEL[F.win]}` : 'No articles in this window'} · click to explore</div></div>`; placeHover(lastX, lastY + 6); }, 650);
+  if (c && !EMBED) cTimer = setTimeout(() => { if (hoverCountry !== c || drag) return; const hv = $('hover');
+    hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); placeHover(lastX, lastY + 6); }, 650);
 }
 function showHover(d) {
   const hv = $('hover');
@@ -782,15 +886,18 @@ function showHover(d) {
   }
 }
 function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.offsetHeight; let l = x + 16, t = y - h / 2; if (l + w > innerWidth - 12) l = x - w - 16; t = Math.max(12, Math.min(innerHeight - h - 12, t)); hv.style.left = l + 'px'; hv.style.top = t + 'px'; }
-function hideHover() { arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on'); cv.style.cursor = ''; }
+function hideHover() { delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on'); cv.style.cursor = ''; }
 function tap(x, y, touch) {
+  if (touch) hideHover();
+  const ex = !EMBED && exPick(x, y); if (ex) { window.InvPeek?.open(ex.e.ix); return; }
   const edge=arcPick(x,y);if(edge){arcHover=null;openStory(edge.article);return;}
 
   const d = pick(x, y, touch ? 26 : 16);
   if (d) { hideHover(); if (d.list.length === 1) return openStory(d.list[0]); if (d.same || Z >= ZMAX - .2) return openPlace(d.list); return flyTo(d.lo, d.la, Math.min(ZMAX, Z * 2.2)); }
   const g = inv(x, y), c = g && countryAt(g[0], g[1]);
-  if (c) return openCountry(c);
+  if (c) { if (phone() && !EMBED) { const hv = $('hover'); hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); hv.dataset.country = c.name; return; } return openCountry(c); }
 }
+$('hover').addEventListener('click', e => { const n = $('hover').dataset.country; if (n && byName[n] && $('hover').classList.contains('brief')) { $('hover').classList.remove('on'); delete $('hover').dataset.country; openCountry(byName[n]); } });
 
 // ===== Panel =====
 const panel = $('panel'), pbody = $('pbody'); size(); new MutationObserver(() => { if (!phone()) size(); }).observe(panel, { attributes: true, attributeFilter: ['class'] }); let view = { k: 'top' }, hist = [];
@@ -896,9 +1003,10 @@ function compactItem(s) {
 function variantPanel(list) {
   if (PANEL_TEMPLATE === 'a') return `<h2>Top articles</h2><div class="meta">${Math.min(8, list.length)} of ${list.length} articles</div><div class="compact-list">${list.slice(0, 8).map(compactItem).join('')}</div>${list.length > 8 ? '<a class="panel-more" href="../../news.html">See all news →</a>' : ''}${list.length ? '' : '<div class="empty">No articles match these filters.</div>'}${noteHTML()}`;
   if (PANEL_TEMPLATE === 'b') return `<h2>Top articles</h2><div class="strip-list" aria-label="Top articles">${list.slice(0, phone() ? 3 : 12).map(compactItem).join('')}</div>${list.length ? '' : '<div class="empty">No articles match these filters.</div>'}${noteHTML()}`;
-  const tabs = [['top', 'Top'], ['movers', 'Movers'], ['latest', 'Latest'], ['countries', 'Countries']];
+  const tabs = [['top', 'Top'], ['movers', 'Movers'], ['latest', 'Latest'], ['countries', 'Countries'], ['markets', 'Markets']];
   let items, count;
-  if (panelTab === 'movers') {
+  if (panelTab === 'markets') { items = marketsPanel(); count = 0; }
+  else if (panelTab === 'movers') {
     const sp = (v, c) => { if (!v || v.length < 2) return ''; const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1; return `<svg viewBox="0 0 58 20" preserveAspectRatio="none"><path d="${v.map((y, i) => (i ? 'L' : 'M') + (i / (v.length - 1) * 58).toFixed(1) + ' ' + (18 - (y - lo) / r * 16).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`; };
     items = MKT.list.length ? MKT.list.slice(0, panelExpanded ? 12 : 6).map(a => { const v = MKT.intra[a.s]?.d1?.c || (a.sp || []).slice(-6), c = a.d > 0 ? '#34d399' : a.d < 0 ? '#f87171' : '#8b8b94'; return `<a class="mv-row" href="../../news.html?mover=${encodeURIComponent(a.s)}"><span>${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><span><b>${esc(a.n)}</b><small>${esc(a.s.replace(/[=^]/g, ''))}</small></span>${sp(v, c)}<span class="mono ${a.d > 0 ? 'u' : a.d < 0 ? 'd' : ''}">${a.d > 0 ? '+' : a.d < 0 ? '−' : ''}${Math.abs(a.d).toFixed(2)}%</span></a>`; }).join('') : '<div class="empty">Loading movers…</div>';
     count = MKT.list.length;
@@ -923,6 +1031,16 @@ pbody.addEventListener('keydown', e => {
   e.preventDefault(); const tabs = [...pbody.querySelectorAll('[data-panel-tab]')], index = tabs.indexOf(tab);
   tabs[e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length-1 : (index + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length].click();
 });
+function lensAsset(s) { for (const i of impactsOf(s)) { const a = assetForImpact(i); if (a && Number.isFinite(a.d)) return a; } return null; }
+function lensItem(s) {
+  const a = lensAsset(s), src = s.source && s.source.name ? s.source.name : '';
+  return `<button class="lens-item" data-story="${esc(s.id)}"><span class="lens-meta">${flag(s.location.country)}<time datetime="${esc(s.published_at || '')}">${ago(s.t)}</time>${src ? `<span class="lens-src">· ${esc(src)}</span>` : ''}</span><strong>${esc(s.headline)}</strong>${a ? `<span class="lens-asset"><span>${esc(a.n)}</span>${pctPill(a.d)}</span>` : ''}</button>`;
+}
+function lensPanel(list, nc) {
+  const name = LENSES.find(l => l[0] === F.lens)[1];
+  return `<div class="eyebrow lens-eyebrow">${esc(name)} lens</div><h2 class="lens-count"><b>${list.length}</b> ${list.length === 1 ? 'article' : 'articles'} · ${nc} ${nc === 1 ? 'country' : 'countries'}</h2>
+    ${list.length ? `<div class="lens-list">${list.slice(0, 20).map(lensItem).join('')}</div>` : `<div class="empty">No ${esc(name.toLowerCase())} articles in ${WLABEL[F.win]}. Try a wider time window.</div>`}${noteHTML()}`;
+}
 function render() {
   panel.dataset.view = view.k;
   document.documentElement.classList.toggle('panel-top', !!PANEL_TEMPLATE && view.k === 'top');
@@ -931,7 +1049,8 @@ function render() {
   if (view.k === 'top') {
     const list = [...shown].sort(sortTop), nc = new Set(list.map(s => s.location.country)).size, nb = list.filter(s => s.flag === 'breaking').length;
     const rg = REGIONS.find(r => r[0] === F.region)[1];
-    if (PANEL_TEMPLATE) pbody.innerHTML = variantPanel(list);
+    if (F.lens !== 'all') pbody.innerHTML = lensPanel(list, nc);
+    else if (PANEL_TEMPLATE) pbody.innerHTML = variantPanel(list);
     else pbody.innerHTML = `<div class="eyebrow">${F.region === 'global' ? 'Worldwide' : esc(rg)} · ${WLABEL[F.win]}</div><h2>${F.cat === 'all' ? 'Top articles' : esc(CAT[F.cat]) + ' articles'}</h2>
       <div class="stats"><div><b>${list.length}</b>articles</div><div><b>${nc}</b>countries</div><div><b>${nb}</b>breaking</div></div>
       ${list.length ? `<div class="list">${list.slice(0, 12).map(item).join('')}</div>` : `<div class="empty">No articles match these filters in ${WLABEL[F.win]}. Try a wider time window or another category.</div>`}${noteHTML()}`;
@@ -981,11 +1100,11 @@ function search() {
   res.hidden = false; mark();
 }
 const mark = () => res.querySelectorAll('.ri').forEach(b => b.setAttribute('aria-selected', +b.dataset.i === hi));
-function choose(h) { if (!h) return; res.hidden = true; qi.value = ''; qi.blur(); if (h.k === 'country') openCountry(h.c); else { if (!match(h.s)) { F.cat = 'all'; F.region = 'global'; F.win = '7d'; press($('cats'), 'all'); press($('regions'), 'global'); press($('wins'), '7d'); refresh(); } openStory(h.s); } }
+function choose(h) { if (!h) return; res.hidden = true; qi.value = ''; qi.blur(); if (h.k === 'country') openCountry(h.c); else { if (!match(h.s)) { F.cat = 'all'; F.lens = 'all'; F.region = 'global'; F.win = '7d'; press($('cats'), 'all'); press($('regions'), 'global'); press($('wins'), '7d'); refresh(); } openStory(h.s); } }
 qi.addEventListener('focus', () => { qi.blur(); if (window.InvPeek) InvPeek.search(); else search(); });
 window.InvGlobeNav = {
   country: n => { const c = byName[n]; if (!c) return false; openCountry(c); return true; },
-  story: id => { const s = byId[id]; if (!s) return false; if (!match(s)) { F.cat = 'all'; F.region = 'global'; F.win = '7d'; press($('cats'), 'all'); press($('regions'), 'global'); press($('wins'), '7d'); refresh(); } openStory(s); return true; }
+  story: id => { const s = byId[id]; if (!s) return false; if (!match(s)) { F.cat = 'all'; F.lens = 'all'; F.region = 'global'; F.win = '7d'; press($('cats'), 'all'); press($('regions'), 'global'); press($('wins'), '7d'); refresh(); } openStory(s); return true; }
 };
 qi.addEventListener('keydown', e => {
   if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); hi = (hi + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % Math.max(1, hits.length); mark(); }
@@ -1001,11 +1120,18 @@ const follows = () => { try { return JSON.parse(localStorage.getItem(FKEY)) || [
 function toggleFollow(name) { const f = follows(), i = f.indexOf(name); i < 0 ? f.push(name) : f.splice(i, 1); try { localStorage.setItem(FKEY, JSON.stringify(f)); } catch {} render(); }
 
 // ===== Filter controls =====
-$('cats').innerHTML = CATS.map(([k, l]) => `<button class="chip" data-k="${k}" aria-pressed="${k === F.cat}">${l}</button>`).join('');
+$('cats').innerHTML = LENSES.map(([k, l]) => `<button class="chip" data-k="${k}" aria-pressed="${k === F.lens}">${l} <b data-n></b></button>`).join('');
+function updateLensChips() {
+  for (const b of $('cats').querySelectorAll('.chip')) {
+    const k = b.dataset.k, n = stories.filter(s => matchNoLens(s) && (k === 'all' || s.lens.includes(k))).length, o = b.querySelector('[data-n]');
+    if (o.textContent !== String(n)) o.textContent = n;
+    b.setAttribute('aria-label', `${LENSES.find(l => l[0] === k)[1]}, ${n} ${n === 1 ? 'article' : 'articles'}`);
+  }
+}
 $('regions').innerHTML = REGIONS.map(([k, l]) => `<button class="reg" data-k="${k}" aria-pressed="${k === F.region}">${l}</button>`).join('');
 $('wins').innerHTML = WINS.map(([k, l]) => `<button class="win" data-k="${k}" aria-pressed="${k === F.win}">${l}</button>`).join('');
 const press = (box, k) => box.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
-$('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.cat = b.dataset.k; press($('cats'), F.cat); refresh(); };
+$('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.lens = b.dataset.k; if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } press($('cats'), F.lens); refresh(); };
 $('regions').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.region = b.dataset.k; press($('regions'), F.region); const r = REGIONS.find(x => x[0] === F.region); if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } flyTo(r[2], r[3], r[4]); refresh(); };
 $('wins').onclick = e => { const b = e.target.closest('button'); if (!b) return; play = null; F.win = b.dataset.k; press($('wins'), F.win); refresh(); };
 // Replay: sweep the last 7 days so articles appear on Earth in the order they were published
@@ -1068,6 +1194,7 @@ function frame(t) {
   // land: dots fade out as you zoom in, country shapes take over
   const da = Math.max(0, 1.25 - Z * .25), ds = Math.max(1.1, Math.min(2.2, R / 230));
   if (da > .02) for (const [phi, lam] of pts) { const [x, y, z] = proj(phi, lam); if (z <= 0) continue; ctx.fillStyle = `rgba(161,161,170,${((.08 + z * .42) * da).toFixed(3)})`; ctx.fillRect(x - ds / 2, y - ds / 2, ds, ds); }
+  if (!EMBED) { const n = nightPath(); ctx.save(); ctx.fillStyle = 'rgba(2,2,5,.46)'; if (n.wholeDisc) { const all = new Path2D(); all.arc(cx, cy, R, 0, 7); all.addPath(n.path); ctx.fill(all, 'evenodd'); } else ctx.fill(n.path); ctx.strokeStyle = 'rgba(255,160,100,.22)'; ctx.lineWidth = 1; ctx.stroke(n.path); ctx.restore(); }
   const la = Math.min(.07, .012 + (Z - 1) * .02);
   const map = Z >= 1.8 ? countries : overview;
   ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = `rgba(255,255,255,${la})`; ctx.fill('evenodd');
@@ -1110,6 +1237,8 @@ function frame(t) {
   }
   cv.dataset.arcCount=String(visibleArcs);
 
+  // lens active: stories outside the lens stay on the map as faint dots
+  for (const s of dimmed) { const [x, y, z] = proj(s.phi, s.lam); if (z <= .04) continue; ctx.fillStyle = `rgba(161,161,170,${(.1 + .22 * z).toFixed(3)})`; ctx.beginPath(); ctx.arc(x, y, 1.7, 0, 7); ctx.fill(); }
   // markers: project, cluster nearby ones, then draw
   const vis = [];
   for (const s of shown) {
@@ -1149,6 +1278,7 @@ function frame(t) {
   // connection pills (asset + real % move) are drawn last so map markers never cover them
   ctx.textBaseline='alphabetic';
   for(const {x,y,w:W,h:H,nm,pt,w1,d} of pillRects){ctx.fillStyle='rgba(16,16,19,.94)';ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x,y,W,H,13);ctx.fill();ctx.stroke();ctx.textAlign='left';ctx.font='650 12px Inter,sans-serif';ctx.fillStyle='#fff';ctx.fillText(nm,x+12,y+17);ctx.fillStyle=!Number.isFinite(d)||d===0?'#c4c4cc':d>0?'#5df08a':'#ff8a82';ctx.font='700 12px Inter,sans-serif';ctx.fillText(pt,x+12+w1+8,y+17);}
+  if (!EMBED) drawExchanges(t);
   ctx.restore();
   requestAnimationFrame(frame);
 }
@@ -1162,9 +1292,11 @@ load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return 
   for (const s of stories) for (const l of s.links) if (byId[l]) incoming[l] = s.id;
   refresh();
   const q = new URLSearchParams(location.search);
+  const lq = q.get('lens'); if (lq && LENSES.some(l => l[0] === lq)) { F.lens = lq; press($('cats'), lq); refresh(); }
   if (q.get('story') && byId[q.get('story')]) openStory(byId[q.get('story')]);
   else if (q.get('country') && byName[q.get('country')]) openCountry(byName[q.get('country')]);
 }).catch(() => { pbody.innerHTML = '<div class="empty">News could not be loaded. Please refresh the page.</div>'; });
+setInterval(() => { if (view.k === 'top' && panelTab === 'markets' && F.lens === 'all') render(); }, 60000);
 requestAnimationFrame(frame);
 </script>
 </body>

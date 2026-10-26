@@ -1,0 +1,162 @@
+[
+ {
+  "width": 1440,
+  "id": "L1 the topic bar is All + Energy + Central banks + Trade & tariffs + Earnings, each with the number of articles in the current window",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L2 choosing Energy marks the chip, shows \"Energy lens\", the same count as the chip, and only energy stories",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L3 each lens row shows the real % move of the asset the story names, or no pill when none is priced",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L4 shown pins are the lens stories; every other story in the window stays on the map as a dimmed dot",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L5 All brings back the normal panel and clears the dimming; ?lens=energy opens with the lens set",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "L6 the Crypto label still exists for crypto stories (no \"undefined\")",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "B1 the briefing text for a country has flag, name, article count, up to 3 different headlines, main index move and next high-impact release",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "B2 a country with no index or no scheduled release leaves those rows out and never prints undefined or NaN",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "B3 hovering a country on the globe shows the briefing card; clicking opens the full country panel",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M1 open/closed state follows each exchange's own hours and time zone (Sunday 23:22 UTC on 25 Oct 2026)",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M2 weekends are closed: New York on Friday evening opens on Monday",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M3 the sun is over the right place: noon UTC at about 0° longitude and the late-October declination",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M4 the night side is darker than the day side on the canvas (same land, only the sun moves)",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M5 the Markets tab lists Sydney, Tokyo, Hong Kong, London, New York with the right wording and a link to each main index",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "M6 clicking a market row and a dot on the globe asks the asset viewer for that index",
+  "pass": true
+ },
+ {
+  "width": 1440,
+  "id": "X1 no script errors, no horizontal overflow, no undefined/NaN in the panel",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L1 the topic bar is All + Energy + Central banks + Trade & tariffs + Earnings, each with the number of articles in the current window",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L2 choosing Energy marks the chip, shows \"Energy lens\", the same count as the chip, and only energy stories",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L3 each lens row shows the real % move of the asset the story names, or no pill when none is priced",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L4 shown pins are the lens stories; every other story in the window stays on the map as a dimmed dot",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L5 All brings back the normal panel and clears the dimming; ?lens=energy opens with the lens set",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "L6 the Crypto label still exists for crypto stories (no \"undefined\")",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "B1 the briefing text for a country has flag, name, article count, up to 3 different headlines, main index move and next high-impact release",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "B2 a country with no index or no scheduled release leaves those rows out and never prints undefined or NaN",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "B3 tapping a country on a phone shows the briefing card above the sheet; tapping the card opens the full country panel",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M1 open/closed state follows each exchange's own hours and time zone (Sunday 23:22 UTC on 25 Oct 2026)",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M2 weekends are closed: New York on Friday evening opens on Monday",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M3 the sun is over the right place: noon UTC at about 0° longitude and the late-October declination",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M4 the night side is darker than the day side on the canvas (same land, only the sun moves)",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M5 the Markets tab lists Sydney, Tokyo, Hong Kong, London, New York with the right wording and a link to each main index",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "M6 clicking a market row and a dot on the globe asks the asset viewer for that index",
+  "pass": true
+ },
+ {
+  "width": 390,
+  "id": "X1 no script errors, no horizontal overflow, no undefined/NaN in the panel",
+  "pass": true
+ }
+]
