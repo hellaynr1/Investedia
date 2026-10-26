@@ -55,6 +55,24 @@
    "credit": "fotoblend",
    "source_url": "https://pixabay.com/photos/banknotes-currency-finance-euro-7850299/",
    "alt": "banknotes money"
+  },
+  {
+   "file": "photos/banknotes-money-941246.jpg",
+   "credit": "TBIT",
+   "source_url": "https://pixabay.com/photos/bank-notes-dollar-us-dollars-usd-941246/",
+   "alt": "banknotes money"
+  },
+  {
+   "file": "photos/banknotes-money-8033100.jpg",
+   "credit": "vjkombajn",
+   "source_url": "https://pixabay.com/photos/money-cash-czech-crowns-banknotes-8033100/",
+   "alt": "banknotes money"
+  },
+  {
+   "file": "photos/banknotes-money-3100563.jpg",
+   "credit": "Ralphs_Fotos",
+   "source_url": "https://pixabay.com/photos/handshake-agreement-trade-business-3100563/",
+   "alt": "banknotes money"
   }
  ],
  "bank building": [
@@ -104,6 +122,18 @@
    "file": "photos/bank-building-5147228.jpg",
    "credit": "AJS1",
    "source_url": "https://pixabay.com/photos/city-tower-urban-building-5147228/",
+   "alt": "bank building"
+  },
+  {
+   "file": "photos/bank-building-9545194.jpg",
+   "credit": "Tho-Ge",
+   "source_url": "https://pixabay.com/photos/rhine-flow-quay-wall-building-9545194/",
+   "alt": "bank building"
+  },
+  {
+   "file": "photos/bank-building-4785454.jpg",
+   "credit": "Alex_vagler",
+   "source_url": "https://pixabay.com/photos/building-columns-architecture-4785454/",
    "alt": "bank building"
   }
  ],
@@ -160,6 +190,12 @@
    "file": "photos/parliament-government-building-4758687.jpg",
    "credit": "Michael_Luenen",
    "source_url": "https://pixabay.com/photos/berlin-germany-architecture-capital-4758687/",
+   "alt": "parliament government building"
+  },
+  {
+   "file": "photos/parliament-government-building-7202373.jpg",
+   "credit": "niki_emmert",
+   "source_url": "https://pixabay.com/photos/hungarian-parliament-building-7202373/",
    "alt": "parliament government building"
   }
  ],
@@ -279,6 +315,12 @@
    "credit": "Pexels",
    "source_url": "https://pixabay.com/photos/chairs-conference-room-contemporary-2181994/",
    "alt": "office meeting"
+  },
+  {
+   "file": "photos/office-meeting-2181920.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/bricks-chairs-classroom-empty-2181920/",
+   "alt": "office meeting"
   }
  ],
  "shopping retail store": [
@@ -396,6 +438,12 @@
    "file": "photos/car-factory-1354678.jpg",
    "credit": "652234",
    "source_url": "https://pixabay.com/photos/factory-ruin-old-factory-abandoned-1354678/",
+   "alt": "car factory"
+  },
+  {
+   "file": "photos/car-factory-4264793.jpg",
+   "credit": "ahundt",
+   "source_url": "https://pixabay.com/photos/automobile-antique-car-mustang-ford-4264793/",
    "alt": "car factory"
   }
  ],
@@ -516,6 +564,54 @@
    "file": "photos/artificial-intelligence-robot-2587571.jpg",
    "credit": "StockSnap",
    "source_url": "https://pixabay.com/photos/robot-technology-modern-white-2587571/",
+   "alt": "artificial intelligence robot"
+  },
+  {
+   "file": "photos/artificial-intelligence-robot-2765349.jpg",
+   "credit": "kalhh",
+   "source_url": "https://pixabay.com/photos/cyborg-future-digitization-robot-2765349/",
+   "alt": "artificial intelligence robot"
+  },
+  {
+   "file": "photos/artificial-intelligence-robot-2697683.jpg",
+   "credit": "Janson_G",
+   "source_url": "https://pixabay.com/photos/robot-isolated-2697683/",
+   "alt": "artificial intelligence robot"
+  },
+  {
+   "file": "photos/artificial-intelligence-robot-2740075.jpg",
+   "credit": "kalhh",
+   "source_url": "https://pixabay.com/photos/robot-artificial-intelligence-2740075/",
+   "alt": "artificial intelligence robot"
+  },
+  {
+   "file": "photos/artificial-intelligence-robot-1899013.jpg",
+   "credit": "kalhh",
+   "source_url": "https://pixabay.com/photos/robot-think-future-think-model-1899013/",
+   "alt": "artificial intelligence robot"
+  },
+  {
+   "file": "photos/artificial-intelligence-robot-7098345.jpg",
+   "credit": "qimono",
+   "source_url": "https://pixabay.com/photos/android-robot-humanoid-future-7098345/",
+   "alt": "artificial intelligence robot"
+  },
+  {
+   "file": "photos/artificial-intelligence-robot-4757878.jpg",
+   "credit": "koshinuke_mcfly",
+   "source_url": "https://pixabay.com/photos/robot-machine-android-ai-future-4757878/",
+   "alt": "artificial intelligence robot"
+  },
+  {
+   "file": "photos/artificial-intelligence-robot-3310190.jpg",
+   "credit": "TheDigitalArtist",
+   "source_url": "https://pixabay.com/photos/robot-cyborg-futuristic-android-3310190/",
+   "alt": "artificial intelligence robot"
+  },
+  {
+   "file": "photos/artificial-intelligence-robot-7736878.jpg",
+   "credit": "Alexandra_Koch",
+   "source_url": "https://pixabay.com/photos/ai-generated-computer-7736878/",
    "alt": "artificial intelligence robot"
   }
  ],
@@ -679,6 +775,18 @@
    "credit": "12019",
    "source_url": "https://pixabay.com/photos/alaska-alaska-pipeline-oil-67304/",
    "alt": "gas pipeline"
+  },
+  {
+   "file": "photos/gas-pipeline-2852047.jpg",
+   "credit": "ArtisticOperations",
+   "source_url": "https://pixabay.com/photos/water-pipe-plumbing-pipeline-2852047/",
+   "alt": "gas pipeline"
+  },
+  {
+   "file": "photos/gas-pipeline-2784899.jpg",
+   "credit": "jarmoluk",
+   "source_url": "https://pixabay.com/photos/fittings-water-polo-construction-2784899/",
+   "alt": "gas pipeline"
   }
  ],
  "copper mine": [
@@ -829,6 +937,18 @@
    "credit": "Akela999",
    "source_url": "https://pixabay.com/photos/data-center-engine-room-2476790/",
    "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-2653041.jpg",
+   "credit": "tstokes",
+   "source_url": "https://pixabay.com/photos/computers-information-technology-2653041/",
+   "alt": "data center servers"
+  },
+  {
+   "file": "photos/data-center-servers-2653024.jpg",
+   "credit": "tstokes",
+   "source_url": "https://pixabay.com/photos/computers-information-technology-2653024/",
+   "alt": "data center servers"
   }
  ],
  "oil refinery": [
@@ -947,6 +1067,12 @@
    "credit": "Tho-Ge",
    "source_url": "https://pixabay.com/photos/rhine-industry-factory-ship-5385905/",
    "alt": "oil tanker ship"
+  },
+  {
+   "file": "photos/oil-tanker-ship-106398.jpg",
+   "credit": "12019",
+   "source_url": "https://pixabay.com/photos/maracaibo-venezuela-sunrise-ship-106398/",
+   "alt": "oil tanker ship"
   }
  ],
  "smartphone": [
@@ -984,6 +1110,30 @@
    "file": "photos/smartphone-586266.jpg",
    "credit": "niekverlaan",
    "source_url": "https://pixabay.com/photos/telephone-mobile-call-samsung-586266/",
+   "alt": "smartphone"
+  },
+  {
+   "file": "photos/smartphone-3353701.jpg",
+   "credit": "Erik_Lucatero",
+   "source_url": "https://pixabay.com/photos/technology-smartphone-telephone-3353701/",
+   "alt": "smartphone"
+  },
+  {
+   "file": "photos/smartphone-5537230.jpg",
+   "credit": "tranmautritam",
+   "source_url": "https://pixabay.com/photos/iphone-hand-phone-mobile-phone-5537230/",
+   "alt": "smartphone"
+  },
+  {
+   "file": "photos/smartphone-1283938.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/samsung-smartphone-hand-holding-1283938/",
+   "alt": "smartphone"
+  },
+  {
+   "file": "photos/smartphone-4060860.jpg",
+   "credit": "ThorstenF",
+   "source_url": "https://pixabay.com/photos/phone-business-person-lifestyle-4060860/",
    "alt": "smartphone"
   }
  ],
@@ -1072,6 +1222,36 @@
    "file": "photos/bitcoin-cryptocurrency-2865892.jpg",
    "credit": "vjkombajn",
    "source_url": "https://pixabay.com/photos/bitcoin-cryptocurrency-btc-currency-2865892/",
+   "alt": "bitcoin cryptocurrency"
+  },
+  {
+   "file": "photos/bitcoin-cryptocurrency-2008262.jpg",
+   "credit": "MichaelWuensch",
+   "source_url": "https://pixabay.com/photos/bitcoin-money-decentralized-virtual-2008262/",
+   "alt": "bitcoin cryptocurrency"
+  },
+  {
+   "file": "photos/bitcoin-cryptocurrency-4619097.jpg",
+   "credit": "line2art",
+   "source_url": "https://pixabay.com/photos/bitcoin-money-cryptocurrency-4619097/",
+   "alt": "bitcoin cryptocurrency"
+  },
+  {
+   "file": "photos/bitcoin-cryptocurrency-7116924.jpg",
+   "credit": "EivindPedersen",
+   "source_url": "https://pixabay.com/photos/bitcoin-crypto-finance-coin-money-7116924/",
+   "alt": "bitcoin cryptocurrency"
+  },
+  {
+   "file": "photos/bitcoin-cryptocurrency-2643159.jpg",
+   "credit": "geralt",
+   "source_url": "https://pixabay.com/photos/bitcoin-cryptocurrency-currency-2643159/",
+   "alt": "bitcoin cryptocurrency"
+  },
+  {
+   "file": "photos/bitcoin-cryptocurrency-7117056.jpg",
+   "credit": "EivindPedersen",
+   "source_url": "https://pixabay.com/photos/bitcoin-crypto-finance-coins-money-7117056/",
    "alt": "bitcoin cryptocurrency"
   }
  ],
@@ -1167,6 +1347,18 @@
    "credit": "wal_172619",
    "source_url": "https://pixabay.com/photos/cranes-industry-crane-system-port-7921948/",
    "alt": "container port"
+  },
+  {
+   "file": "photos/container-port-8243960.jpg",
+   "credit": "Tho-Ge",
+   "source_url": "https://pixabay.com/photos/ship-container-ship-freighter-8243960/",
+   "alt": "container port"
+  },
+  {
+   "file": "photos/container-port-6779970.jpg",
+   "credit": "Manuel-H",
+   "source_url": "https://pixabay.com/photos/container-port-container-ship-6779970/",
+   "alt": "container port"
   }
  ],
  "city skyline business district": [
@@ -1231,7 +1423,21 @@
    "alt": "city skyline business district"
   }
  ],
- "_topup_attempted": [],
+ "_topup_attempted": [
+  "parliament government building",
+  "office meeting",
+  "bank building",
+  "data center servers",
+  "gas pipeline",
+  "smartphone",
+  "artificial intelligence robot",
+  "car factory",
+  "container port",
+  "banknotes money",
+  "oil tanker ship",
+  "bitcoin cryptocurrency",
+  "cyber security"
+ ],
  "airplane airport": [
   {
    "file": "photos/airplane-airport-1822133.jpg",
@@ -1355,6 +1561,60 @@
    "file": "photos/cyber-security-621830.jpg",
    "credit": "JeongGuHyeok",
    "source_url": "https://pixabay.com/photos/keyboard-key-success-online-621830/",
+   "alt": "cyber security"
+  },
+  {
+   "file": "photos/cyber-security-1591018.jpg",
+   "credit": "TheDigitalWay",
+   "source_url": "https://pixabay.com/photos/computer-security-padlock-hacker-1591018/",
+   "alt": "cyber security"
+  },
+  {
+   "file": "photos/cyber-security-3537389.jpg",
+   "credit": "geralt",
+   "source_url": "https://pixabay.com/photos/blockchain-globe-network-3537389/",
+   "alt": "cyber security"
+  },
+  {
+   "file": "photos/cyber-security-3563638.jpg",
+   "credit": "geralt",
+   "source_url": "https://pixabay.com/photos/internet-cyber-network-finger-3563638/",
+   "alt": "cyber security"
+  },
+  {
+   "file": "photos/cyber-security-4610993.jpg",
+   "credit": "TheDigitalArtist",
+   "source_url": "https://pixabay.com/photos/cyber-security-internet-network-4610993/",
+   "alt": "cyber security"
+  },
+  {
+   "file": "photos/cyber-security-4926021.jpg",
+   "credit": "herbinisaac",
+   "source_url": "https://pixabay.com/photos/the-legal-justice-law-right-4926021/",
+   "alt": "cyber security"
+  },
+  {
+   "file": "photos/cyber-security-3062259.jpg",
+   "credit": "geralt",
+   "source_url": "https://pixabay.com/photos/padlock-matrix-binary-security-3062259/",
+   "alt": "cyber security"
+  },
+  {
+   "file": "photos/cyber-security-7900060.jpg",
+   "credit": "flutie8211",
+   "source_url": "https://pixabay.com/photos/technology-digital-data-network-7900060/",
+   "alt": "cyber security"
+  },
+  {
+   "file": "photos/cyber-security-2883623.jpg",
+   "credit": "geralt",
+   "source_url": "https://pixabay.com/photos/matrix-binary-security-private-2883623/",
+   "alt": "cyber security"
+  },
+  {
+   "file": "photos/cyber-security-3211957.jpg",
+   "credit": "TheDigitalArtist",
+   "source_url": "https://pixabay.com/photos/woman-technology-binary-computer-3211957/",
    "alt": "cyber security"
   }
  ],
