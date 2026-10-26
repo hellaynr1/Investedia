@@ -1,0 +1,2 @@
+Inter typeface (c) The Inter Project Authors, SIL Open Font License 1.1, https://openfontlicense.org
+Used only to draw the article share images made by update_share_cards.py.
