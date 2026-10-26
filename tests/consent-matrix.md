@@ -42,6 +42,7 @@ Chromium; docs served locally; 1440×900 and 390×844. All canonical public page
 | story.html | 1440 | PASS | PASS | PASS | PASS | PASS |  |
 | studio.html | 1440 | PASS | PASS | PASS | PASS | PASS |  |
 | terms.html | 1440 | PASS | PASS | PASS | PASS | PASS |  |
+| track-record.html | 1440 | PASS | PASS | PASS | PASS | PASS |  |
 | watchlist.html | 1440 | PASS | PASS | PASS | PASS | PASS |  |
 | assets/globe/news.html | 1440 | PASS | PASS | PASS | PASS | PASS |  |
 | assets/globe/news.html?embed=1 | 1440 | PASS (no banner in embed) | PASS | PASS | PASS | parent banner |  |
@@ -83,6 +84,7 @@ Chromium; docs served locally; 1440×900 and 390×844. All canonical public page
 | story.html | 390 | PASS | PASS | PASS | PASS | PASS |  |
 | studio.html | 390 | PASS | PASS | PASS | PASS | PASS |  |
 | terms.html | 390 | PASS | PASS | PASS | PASS | PASS |  |
+| track-record.html | 390 | PASS | PASS | PASS | PASS | PASS |  |
 | watchlist.html | 390 | PASS | PASS | PASS | PASS | PASS |  |
 | assets/globe/news.html | 390 | PASS | PASS | PASS | PASS | PASS |  |
 | assets/globe/news.html?embed=1 | 390 | PASS (no banner in embed) | PASS | PASS | PASS | parent banner |  |

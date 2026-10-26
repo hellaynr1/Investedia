@@ -256,15 +256,15 @@
             "target": [
               "button[data-n=\"Semiconductors\"] > span:nth-child(1) > small"
             ],
-            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.37 (foreground color: #afc6be, background color: #1b5c45, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.29 (foreground color: #b0c7bf, background color: #1c5e47, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
             "html": "<small>SMH</small>"
           },
           {
             "target": [
               "button[data-n=\"Semiconductors\"] > .u.mono"
             ],
-            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.1 (foreground color: #34d399, background color: #1b5c45, font size: 16.5pt (22px), font weight: normal). Expected contrast ratio of 4.5:1",
-            "html": "<span class=\"mono u\">↑ +3.22%</span>"
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #34d399, background color: #1c5e47, font size: 16.5pt (22px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<span class=\"mono u\">↑ +3.32%</span>"
           }
         ]
       }
@@ -359,6 +359,31 @@
     "page": "terms.html",
     "width": 1440,
     "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "track-record.html",
+    "width": 1440,
+    "violations": [
+      {
+        "id": "aria-progressbar-name",
+        "impact": "serious",
+        "description": "Ensure every ARIA progressbar node has an accessible name",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/aria-progressbar-name?application=axeAPI",
+        "nodes": [
+          {
+            "target": [
+              ".tr-bar"
+            ],
+            "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute",
+            "html": "<div class=\"tr-bar\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"50\" aria-valuenow=\"0\"><i style=\"width:0%\"></i></div>"
+          }
+        ]
+      }
+    ],
     "tapTargets": [],
     "overflow": false,
     "errors": [],
@@ -828,15 +853,15 @@
             "target": [
               "button[data-n=\"Semiconductors\"] > span:nth-child(1) > small"
             ],
-            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.37 (foreground color: #afc6be, background color: #1b5c45, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.29 (foreground color: #b0c7bf, background color: #1c5e47, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
             "html": "<small>SMH</small>"
           },
           {
             "target": [
               "button[data-n=\"Semiconductors\"] > .u.mono"
             ],
-            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.1 (foreground color: #34d399, background color: #1b5c45, font size: 16.5pt (22px), font weight: normal). Expected contrast ratio of 4.5:1",
-            "html": "<span class=\"mono u\">↑ +3.22%</span>"
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #34d399, background color: #1c5e47, font size: 16.5pt (22px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<span class=\"mono u\">↑ +3.32%</span>"
           }
         ]
       }
@@ -1019,6 +1044,38 @@
     "page": "terms.html",
     "width": 390,
     "violations": [],
+    "tapTargets": [
+      {
+        "target": "button.pf-btn",
+        "text": "Region, language and currency",
+        "width": 43,
+        "height": 44
+      }
+    ],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "track-record.html",
+    "width": 390,
+    "violations": [
+      {
+        "id": "aria-progressbar-name",
+        "impact": "serious",
+        "description": "Ensure every ARIA progressbar node has an accessible name",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/aria-progressbar-name?application=axeAPI",
+        "nodes": [
+          {
+            "target": [
+              ".tr-bar"
+            ],
+            "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute",
+            "html": "<div class=\"tr-bar\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"50\" aria-valuenow=\"0\"><i style=\"width:0%\"></i></div>"
+          }
+        ]
+      }
+    ],
     "tapTargets": [
       {
         "target": "button.pf-btn",
