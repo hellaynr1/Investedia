@@ -31,7 +31,7 @@ Target: WCAG 2.2 AA. Automated axe-core 4.10.3 checks at 1440×900 and 390×844,
 |index.html|1440|none|none|0|false|false||
 |legal.html|1440|none|none|0|false|false||
 |lesson.html|1440|none|none|0|false|false||
-|markets.html|1440|none|none|0|false|false||
+|markets.html|1440|color-contrast|none|0|false|false||
 |movers.html|1440|none|none|0|false|false||
 |news.html|1440|none|none|0|false|false||
 |privacy.html|1440|none|none|0|false|false||
@@ -71,7 +71,7 @@ Target: WCAG 2.2 AA. Automated axe-core 4.10.3 checks at 1440×900 and 390×844,
 |index.html|390|none|none|1|false|false||
 |legal.html|390|none|none|1|false|false||
 |lesson.html|390|none|none|1|false|false||
-|markets.html|390|none|none|1|false|false||
+|markets.html|390|color-contrast|none|1|false|false||
 |movers.html|390|none|none|1|false|false||
 |news.html|390|none|none|1|false|false||
 |privacy.html|390|none|none|1|false|false||
