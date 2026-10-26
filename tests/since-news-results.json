@@ -52,8 +52,7 @@
  {
   "width": 390,
   "id": "SN2 the article was wrong: the card says so plainly",
-  "pass": false,
-  "error": "locator.innerText: Timeout 30000ms exceeded. | Call log: | \u001b[2m  - waiting for locator('.sn-v')\u001b[22m"
+  "pass": true
  },
  {
   "width": 390,
