@@ -1,0 +1,26 @@
+[
+ {
+  "id": "S1 home hero: double-click, triple-click and a drag across the globe select nothing",
+  "pass": true
+ },
+ {
+  "id": "S2 home hero: the globe container and the document inside it have user-select none",
+  "pass": true
+ },
+ {
+  "id": "S1 globe page: double-click, triple-click and a drag across the globe select nothing",
+  "pass": true
+ },
+ {
+  "id": "S2 globe page: the globe container and the document inside it have user-select none",
+  "pass": true
+ },
+ {
+  "id": "S3 article text in the globe panel can still be selected and copied; search input too",
+  "pass": true
+ },
+ {
+  "id": "S4 double-click on the open globe page selects nothing and the canvas ignores selectstart",
+  "pass": true
+ }
+]

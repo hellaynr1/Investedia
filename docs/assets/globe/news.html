@@ -20,6 +20,9 @@
   --pw:392px;color-scheme:dark;
 }
 *{box-sizing:border-box}
+/* Dragging or double-clicking the globe must never select text or paint the page orange. Article text in the panel stays selectable. */
+html,body,#cv{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea,.pbody,.pbody *,.fsheet input{-webkit-user-select:text;user-select:text}
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
@@ -922,6 +925,7 @@ function endPointer(e) {
 cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
 cv.addEventListener('pointerleave', () => { if (!drag && !phone()) hideHover(); });
 cv.addEventListener('wheel', e => { if (EMBED) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
+cv.addEventListener('selectstart', e => e.preventDefault()); cv.addEventListener('dragstart', e => e.preventDefault());
 cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) setZ(Zt < ZMAX - .1 ? Zt * 1.8 : 1, e.clientX, e.clientY); });
 $('zin').onclick = () => setZ(Zt * 1.6); $('zout').onclick = () => setZ(Zt / 1.6);
 
