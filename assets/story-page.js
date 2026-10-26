@@ -39,6 +39,17 @@
     { const mi = document.getElementById('sp-mi'), show = p => { mi.querySelectorAll('.mi-seg button').forEach(b => b.setAttribute('aria-selected', b.dataset.p === p)); mi.querySelectorAll('.mi-p').forEach(el => el.classList.toggle('on', el.dataset.p === p)); }; show('exp'); mi.querySelector('.mi-seg').onclick = e => { const b = e.target.closest('button'); if (b) show(b.dataset.p); };
       Promise.all([fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] })), fetch('assets/globe/news-prices.json').then(r => r.json()).catch(() => ({ assets: {} }))]).then(([m, np]) => { const by = Object.fromEntries((m.assets || []).map(a => [a.s, a])); Object.assign(by, np.assets || {});
         mi.querySelectorAll('.mi-row').forEach(r => { const t = r.dataset.t, a = t && (by[t] || by[t.replace(/-USD$/, '')] || by[t.replace(/=X$/, '')]); if (!a || typeof a.w !== 'number') return; const v = a.w, c = v > 0.005 ? 'u' : v < -0.005 ? 'd' : 'o'; r.querySelector('.mi-px').innerHTML = `<span class="mi-chip ${c}">${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(Math.abs(v) >= 10 ? 1 : 2)}% <small>week</small></span>`; }); }); }
+    // Since the news (chart option B): first exposed asset that has prices recorded after the article.
+    if (window.SinceNews) Promise.all([fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] })), SinceNews.load('assets/globe/news-track.json')]).then(([m, trk]) => {
+      const by = Object.fromEntries((m.assets || []).map(a => [a.s, a])), pub = Date.parse(s.published_at);
+      for (const i of imp) {
+        const t = String(i.ticker || '').toUpperCase(), a = t && (by[t] || by[t + '-USD'] || by[t.replace(/=X$/, '')]);
+        const series = a && trk && trk.s && trk.s[a.s];
+        if (!series || SinceNews.compute(pub, series, Date.now()).state !== 'ok') continue;
+        const seg = document.querySelector('#sp-mi .mi-seg'); if (seg) seg.insertAdjacentHTML('beforebegin', SinceNews.card({ story: s, impact: i, asset: a, series, now: Date.now() }));
+        break;
+      }
+    });
     const px = document.getElementById('sp-px'); if (px && window.PriceRail) PriceRail.mount(px, s);
     const b = document.getElementById('sp-f'), paint = () => { const on = followed().includes(follow); b.textContent = on ? 'Following' : 'Follow'; b.classList.toggle('on', on); b.classList.toggle('p', !on); };
     paint(); b.onclick = () => { toggle(follow); paint(); };

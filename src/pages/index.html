@@ -1,4 +1,4 @@
-{"title":"Investedia — Invest with clarity","desc":"Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.","key":"home","scripts":["assets/home-news.js"]}
+{"title":"Investedia — Invest with clarity","desc":"Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.","key":"home","scripts":["assets/since-news.js","assets/home-news.js"]}
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
 body[data-page=home] main.wrap{max-width:none;padding:0}
@@ -68,7 +68,7 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .hn-ci img.lg{width:30px;height:30px;border-radius:7px;background:#fff;padding:3px;object-fit:contain}
 @media (max-width:900px){.hn-cal{grid-template-columns:1fr}.hn-mk{grid-template-columns:1fr 1fr}#hnClock{display:none}.hn-m{padding:11px 12px;gap:9px}}
 </style>
-<link rel="stylesheet" href="assets/home-news.css">
+<link rel="stylesheet" href="assets/home-news.css"><link rel="stylesheet" href="assets/since-news.css">
 <section class="hn-hero" aria-label="Live news globe">
   <iframe id="hnGlobe" title="Live news globe"></iframe>
   <a class="hn-open" href="globe.html" aria-label="Open the full globe"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>Open globe<span aria-hidden="true">→</span></a>

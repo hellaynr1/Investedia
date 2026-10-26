@@ -5,7 +5,7 @@ const NAME = { 'United States of America': 'United States', 'Dem. Rep. Congo': '
 const nm = c => NAME[c] || c;
 const CAT = { markets: 'Markets', companies: 'Companies', economy: 'Economy', technology: 'Technology', crypto: 'Crypto', commodities: 'Commodities', geopolitics: 'Geopolitics' };
 const FLAG = { breaking: 'Breaking', trending: 'Trending', moving: 'Market moving' };
-let ISO = {}, ENTITY_LOGOS = {};
+let ISO = {}, ENTITY_LOGOS = {}, TRACK = null;
 function ago(t) { const m = Math.round((Date.parse(t)-Date.now())/60000), r = new Intl.RelativeTimeFormat(undefined,{numeric:'auto'}); return Math.abs(m)<60 ? r.format(m,'minute') : Math.abs(m)<1440 ? r.format(Math.round(m/60),'hour') : r.format(Math.round(m/1440),'day'); }
 const flagSrc = c => ISO[c] ? `assets/globe/flags/${ISO[c].toLowerCase()}.svg` : '';
 const company = e => e.ticker && !/[\^=]/.test(e.ticker) && !/-USD$/.test(e.ticker);
@@ -58,8 +58,10 @@ function spark(a, mark, up) {
   return `<div class="hn-chart" aria-hidden="true"><svg viewBox="0 0 420 96" preserveAspectRatio="none"><path d="${d}L420 96L0 96Z" fill="${c}" opacity=".12"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg><i class="hn-mark" style="left:${(X(mark) / 4.2).toFixed(1)}%"></i><b class="hn-dot" style="left:${(X(mark) / 4.2).toFixed(1)}%;top:${(Y(sp[mark]) / 96 * 100).toFixed(1)}%"></b></div>`;
 }
 const markIndex = (s, a, asof) => { const days = Math.max(0, (Date.parse(asof) - Date.parse(s.published_at)) / 864e5); return Math.max(0, Math.min(a.sp.length - 1, a.sp.length - 1 - Math.round(days * 5 / 7))); };
+// Since-the-news card (chart option B) when we recorded prices after the article; otherwise the older today / 7-day view.
+const sinceOf = (s, m) => { if (!m || !window.SinceNews || !TRACK || !TRACK.s) return ''; const series = TRACK.s[m.a.s], st = SinceNews.compute(Date.parse(s.published_at), series, Date.now()).state; return st === 'ok' ? SinceNews.card({ story: s, impact: m.i, asset: m.a, series, now: Date.now() }) : ''; };
 const whyFeatured = (s, asof) => { const m = primary(s), t = s.why_moved || s.summary;
-  const body = m ? `<div class="hn-wrow"><div class="hn-wbig"><span class="hn-wl">${esc(m.a.n)} · today</span><strong class="${m.a.d > 0 ? 'up' : m.a.d < 0 ? 'down' : 'flat'}">${m.a.d > 0 ? '↑' : m.a.d < 0 ? '↓' : '↔'} ${Math.abs(m.a.d).toFixed(2)}%</strong><span class="hn-wl">7 days ${sign(m.a.w)}</span></div><div class="hn-wchart">${spark(m.a, markIndex(s, m.a, asof), m.a.w >= 0)}<div class="hn-wcap"><span>22 sessions ago</span><span class="hn-wmk">● article published</span><span>now</span></div></div></div>` : '';
+  const since = sinceOf(s, m), body = since || (m ? `<div class="hn-wrow"><div class="hn-wbig"><span class="hn-wl">${esc(m.a.n)} · today</span><strong class="${m.a.d > 0 ? 'up' : m.a.d < 0 ? 'down' : 'flat'}">${m.a.d > 0 ? '↑' : m.a.d < 0 ? '↓' : '↔'} ${Math.abs(m.a.d).toFixed(2)}%</strong><span class="hn-wl">7 days ${sign(m.a.w)}</span></div><div class="hn-wchart">${spark(m.a, markIndex(s, m.a, asof), m.a.w >= 0)}<div class="hn-wcap"><span>22 sessions ago</span><span class="hn-wmk">● article published</span><span>now</span></div></div></div>` : '');
   return `<a class="hn-wf" href="${url(s)}"><div class="hn-wtop">${tags(s)}${m ? implies(m.i) : ''}</div><h3>${esc(s.headline)}</h3><p>${esc(t)}</p>${body}${impactChips(s)}</a>`; };
 const whySmall = s => { const m = primary(s); return `<a class="hn-wc" href="${url(s)}"><div class="hn-wtop">${tags(s)}</div><h4>${esc(s.headline)}</h4>${m ? `<div class="hn-wasset"><b>${esc(m.a.n)}</b>${pctPill(m.a.d)}${implies(m.i)}</div>` : impactChips(s)}</a>`; };
 const whySection = (list, asof) => list.length ? whyFeatured(list[0], asof) + `<div class="hn-wside">${list.slice(1, 3).map(whySmall).join('')}</div>` : '';
@@ -70,8 +72,8 @@ function countries(list) {
 // rank: importance, then sources, then recency
 const rank = (a, b) => (b.importance - a.importance) || ((b.sources?.length || 1) - (a.sources?.length || 1)) || (Date.parse(b.published_at) - Date.parse(a.published_at));
 async function loadNews() {
-  const [n, iso, logos, mk] = await Promise.all([fetch('assets/globe/news-live.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/iso.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/logos.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] }))]);
-  MARKETS = mk.assets || [];
+  const [n, iso, logos, mk, trk] = await Promise.all([fetch('assets/globe/news-live.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/iso.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/logos.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] })), window.SinceNews ? SinceNews.load('assets/globe/news-track.json') : null]);
+  MARKETS = mk.assets || []; TRACK = trk;
   ISO = iso; ENTITY_LOGOS = Object.fromEntries(Object.entries(logos).map(([k, v]) => [k, v.replace('../logos/', 'assets/logos/')])); const stories = n.stories || [];
   return { stories, top: [...stories].sort(rank), latest: [...stories].sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at)), updated: n.updated_at,
     moved: (() => { const all = [...stories].filter(s => s.market_moving || s.importance === 3).sort(rank), seen = new Set(), out = []; for (const s of all) { const m = primary(s); if (m && !seen.has(m.a.s)) { seen.add(m.a.s); out.push(s); } } for (const s of all) if (!out.includes(s) && !primary(s)) out.push(s); return out; })(), asof: mk.asof };
