@@ -13,8 +13,8 @@ for(const w of [390,1440]){
     for(const s of ['.dock','.peek','.fsheet','.layers'])assert.equal(await f.locator(s).first().isVisible().catch(()=>false),false,s);});
   await t('H2 Open globe button is small, tappable, clear of the ticker and links to the globe',async()=>{
     const a=p.locator('.hn-open');assert.equal(await a.getAttribute('href'),'/assets/globe/news.html');
-    const r=await a.boundingBox(),k=await p.locator(w>900?'.hn-pillbox':'.hn-tick').boundingBox();
-    assert.ok(r.height>=44&&(w>900?r.width<200:r.width<90));assert.ok(r.y+r.height<=k.y+1);assert.ok(r.x+r.width<=w);});
+    const r=await a.boundingBox(),k=await p.locator(w>900?'.hn-hero':'.hn-tick').boundingBox();
+    assert.ok(r.height>=44&&(w>900?r.width<200:r.width<90));assert.ok(w>900?(r.y+r.height<=k.y+k.height&&r.y+r.height>=k.y+k.height-80):r.y+r.height<=k.y+1);assert.ok(r.x+r.width<=w);});
   await t('H3 no horizontal overflow',async()=>assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)));
   await t('H4 clicking it opens the globe page',async()=>{await p.locator('.hn-open').click({noWaitAfter:true});await p.waitForURL(/assets\/globe\/news\.html/,{waitUntil:'commit'});});
   await c.close();}

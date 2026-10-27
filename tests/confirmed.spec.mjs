@@ -8,8 +8,10 @@ async function ctx(w,track){
   await c.addInitScript(()=>{for(const k of ['inv-auth-seen','inv-pop','inv-app-x'])localStorage.setItem(k,'1');});
   await c.route('**/assets/globe/news-track.json',async r=>{
     if(track==='empty')return r.fulfill({json:{schema:1,s:{}}});
-    const m=await (await c.request.get(base+'/assets/globe/markets.json')).json();const now=Math.floor(Date.now()/60000),s={};
-    for(const a of m.assets||[]){if(!(a.p>0))continue;const dir=[...a.s].reduce((x,ch)=>x+ch.charCodeAt(0),0)%2?1:-1;const pts=[];for(let k=120;k>=0;k--)pts.push([now-k*15,a.p*(1+dir*0.03*(1-k/120))]);s[a.s]=pts;}
+    const m=await (await c.request.get(base+'/assets/globe/markets.json')).json(),n=await (await c.request.get(base+'/assets/globe/news-live.json')).json();const now=Math.floor(Date.now()/60000),s={};
+    const by={};for(const a of m.assets||[])by[a.s.toUpperCase()]=a;const dir={};let k=0;   // deterministic: the first priced asset follows its article, the next goes against it, and so on
+    for(const st of n.stories||[]){if(Date.now()-Date.parse(st.published_at)>60*36e5)continue;for(const i of st.impacts||[]){if(i.direction!=='up'&&i.direction!=='down')continue;const t=String(i.ticker||'').toUpperCase(),a=by[t]||by[t+'-USD']||by[t.replace(/=X$/,'')];if(!a||dir[a.s]!==undefined)continue;const want=i.direction==='up'?1:-1;dir[a.s]=(k++%2===0)?want:-want;}}
+    for(const a of m.assets||[]){if(!(a.p>0))continue;const d=dir[a.s]??1;const pts=[];for(let q=120;q>=0;q--)pts.push([now-q*15,a.p*(1+d*0.03*(1-q/120))]);s[a.s]=pts;}
     r.fulfill({json:{schema:1,s}});});
   await c.route('**/assets/globe/news-ledger.json',r=>r.fulfill({json:{schema:1,calls:[]}}));
   return c;}
