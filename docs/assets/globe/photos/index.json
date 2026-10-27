@@ -501,6 +501,12 @@
    "credit": "Pexels",
    "source_url": "https://pixabay.com/photos/kuala-lumpur-twin-tower-city-lights-1283140/",
    "alt": "telecom tower 5g"
+  },
+  {
+   "file": "photos/telecom-tower-5g-5053729.jpg",
+   "credit": "AhmadArdity",
+   "source_url": "https://pixabay.com/photos/telecommunication-antenna-5053729/",
+   "alt": "telecom tower 5g"
   }
  ],
  "cargo trucks highway": [
@@ -1511,7 +1517,9 @@
   "supermarket groceries",
   "gold bars",
   "copper mine",
-  "cargo trucks highway"
+  "cargo trucks highway",
+  "telecom tower 5g",
+  "hotel tourism"
  ],
  "airplane airport": [
   {
@@ -1740,6 +1748,24 @@
    "file": "photos/hotel-tourism-3696461.jpg",
    "credit": "garciabilbao1",
    "source_url": "https://pixabay.com/photos/architecture-facade-hotel-tourism-3696461/",
+   "alt": "hotel tourism"
+  },
+  {
+   "file": "photos/hotel-tourism-8978132.jpg",
+   "credit": "fjc_media",
+   "source_url": "https://pixabay.com/photos/folkstone-harbor-port-england-8978132/",
+   "alt": "hotel tourism"
+  },
+  {
+   "file": "photos/hotel-tourism-6238228.jpg",
+   "credit": "Tama66",
+   "source_url": "https://pixabay.com/photos/city-downtown-road-old-town-6238228/",
+   "alt": "hotel tourism"
+  },
+  {
+   "file": "photos/hotel-tourism-4401278.jpg",
+   "credit": "franky1st",
+   "source_url": "https://pixabay.com/photos/algarve-hotel-carvoeiro-portugal-4401278/",
    "alt": "hotel tourism"
   }
  ],
