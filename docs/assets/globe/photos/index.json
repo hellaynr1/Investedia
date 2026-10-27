@@ -1191,6 +1191,12 @@
    "credit": "AKrebs60",
    "source_url": "https://pixabay.com/photos/charging-station-e-mobility-energy-4632700/",
    "alt": "electric car charging"
+  },
+  {
+   "file": "photos/electric-car-charging-4293128.jpg",
+   "credit": "bayern-reporter_com",
+   "source_url": "https://pixabay.com/photos/electro-e-car-electric-car-4293128/",
+   "alt": "electric car charging"
   }
  ],
  "bitcoin cryptocurrency": [
@@ -1458,7 +1464,8 @@
   "airplane airport",
   "steel factory",
   "pharmaceutical laboratory",
-  "housing construction"
+  "housing construction",
+  "electric car charging"
  ],
  "airplane airport": [
   {
