@@ -725,6 +725,18 @@
    "credit": "Global_Intergold",
    "source_url": "https://pixabay.com/photos/gold-money-business-cash-finance-2024083/",
    "alt": "gold bars"
+  },
+  {
+   "file": "photos/gold-bars-217674.jpg",
+   "credit": "stux",
+   "source_url": "https://pixabay.com/photos/gold-feingold-1-gram-glittering-217674/",
+   "alt": "gold bars"
+  },
+  {
+   "file": "photos/gold-bars-4722600.jpg",
+   "credit": "flaart",
+   "source_url": "https://pixabay.com/photos/gold-bars-bullion-wallpaper-gold-4722600/",
+   "alt": "gold bars"
   }
  ],
  "gas pipeline": [
@@ -886,6 +898,18 @@
    "file": "photos/supermarket-groceries-5956725.jpg",
    "credit": "tomo_BEGINNER",
    "source_url": "https://pixabay.com/photos/milk-drinks-supermarket-5956725/",
+   "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-2619380.jpg",
+   "credit": "ccipeggy",
+   "source_url": "https://pixabay.com/photos/grocery-store-supermarket-retail-2619380/",
+   "alt": "supermarket groceries"
+  },
+  {
+   "file": "photos/supermarket-groceries-1165437.jpg",
+   "credit": "Alexas_Fotos",
+   "source_url": "https://pixabay.com/photos/shopping-business-retail-trade-1165437/",
    "alt": "supermarket groceries"
   }
  ],
@@ -1465,7 +1489,9 @@
   "steel factory",
   "pharmaceutical laboratory",
   "housing construction",
-  "electric car charging"
+  "electric car charging",
+  "supermarket groceries",
+  "gold bars"
  ],
  "airplane airport": [
   {
