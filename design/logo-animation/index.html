@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Investedia logo animation · preview</title>
+<link rel="stylesheet" href="../../assets/logo/logo-anim.css">
+<style>
+:root{--bg:#0b0b0d;--fg:#f4f4f5;--mut:#8b8b94;--line:rgba(255,255,255,.12)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 Inter,-apple-system,system-ui,sans-serif;padding:32px 24px 60px}
+main{max-width:1100px;margin:auto}h1{font-size:28px;letter-spacing:-.03em;margin:0 0 4px}p{color:var(--mut);margin:0 0 22px;max-width:680px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:26px}
+button,label{font:600 13px Inter,system-ui;color:inherit}button{height:40px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);cursor:pointer}button.p{background:#fff;color:#000;border-color:#fff}
+label{display:inline-flex;gap:8px;align-items:center;color:var(--mut);font-weight:500}input[type=range]{accent-color:#ff7a1a}
+.stage{display:grid;place-items:center;border:1px solid var(--line);border-radius:28px;padding:56px 20px;background:radial-gradient(60% 80% at 50% 0,rgba(255,122,26,.10),transparent 70%),#050506}
+.stage.light{background:#f2f2f4}
+.sizes{display:flex;flex-wrap:wrap;gap:34px;align-items:flex-end;justify-content:center;margin-top:28px}.sizes figure{margin:0;text-align:center;color:var(--mut);font-size:12px}.sizes figure .ila{display:block;margin:0 auto 8px}
+.phone{width:390px;max-width:100%;height:520px;border-radius:34px;border:1px solid var(--line);margin:28px auto 0;display:grid;place-items:center;background:#000}
+.tl{display:grid;grid-template-columns:repeat(9,1fr);gap:10px;margin-top:28px}.tl figure{margin:0;text-align:center;font-size:11px;color:var(--mut)}.tl .ila{display:block;margin:0 auto 6px}
+h2{font-size:16px;margin:34px 0 10px;letter-spacing:-.01em}code{font-family:ui-monospace,monospace;color:#d4d4d8}
+@media(max-width:700px){.tl{grid-template-columns:repeat(3,1fr)}}
+</style>
+<main>
+<h1>Investedia logo animation</h1>
+<p>Preview of the reusable mark. Nothing on the website uses it yet. The line is drawn left to right, and the charcoal area follows its tip.</p>
+<div class="bar"><button class="p" id="replay">Replay</button><label><input type="checkbox" id="loop" checked> Loop (demo mode)</label><label>Draw time <input type="range" id="dur" min="1" max="3.2" step=".1" value="1.7"> <span id="durv">1.7s</span></label><label><input type="checkbox" id="light"> Light page</label></div>
+<div class="stage" id="stage"><div class="ila" id="hero" style="--ila-size:256px"></div></div>
+<h2>Sizes</h2>
+<div class="stage"><div class="sizes" id="sizes"></div></div>
+<h2>Mobile splash</h2>
+<div class="phone"><div class="ila" id="splash" style="--ila-size:112px"></div></div>
+<h2>Frames (exact, paused)</h2><div class="tl" id="tl"></div>
+<h2>How to use</h2>
+<p><code>&lt;link rel="stylesheet" href="assets/logo/logo-anim.css"&gt;</code> <code>&lt;script src="assets/logo/logo-anim.js"&gt;&lt;/script&gt;</code><br><code>InvLogoAnim.mount(el)</code> plays once (production). <code>InvLogoAnim.mount(el, { loop: true })</code> loops (demo). Colours, delay and duration are CSS variables on <code>.ila</code> (<code>--ila-orange --ila-bg --ila-charcoal --ila-delay --ila-duration --ila-hold</code>) or options. With reduced motion the finished mark appears with a 160 ms fade.</p>
+</main>
+<script src="../../assets/logo/logo-anim.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let hero=InvLogoAnim.mount($('hero'),{loop:true});
+$('replay').onclick=()=>hero.play();
+$('loop').onchange=e=>{hero.options.loop=e.target.checked;hero.play()};
+$('dur').oninput=e=>{hero.options.duration=+e.target.value;$('durv').textContent=e.target.value+'s';hero.play()};
+$('light').onchange=e=>$('stage').classList.toggle('light',e.target.checked);
+const sz=[16,32,64,128,256,512];$('sizes').innerHTML=sz.map(s=>`<figure><div class="ila" data-s="${s}" style="--ila-size:${s}px"></div>${s}px</figure>`).join('');
+const sizeAnims=[...document.querySelectorAll('#sizes .ila')].map(el=>InvLogoAnim.mount(el,{loop:true}));
+InvLogoAnim.mount($('splash'),{loop:true});
+const T=[0,.3,.6,.9,1.2,1.5,1.8,1.9,2.4];$('tl').innerHTML=T.map(t=>`<figure><div class="ila" style="--ila-size:96px"></div>${t.toFixed(2)}s</figure>`).join('');
+[...document.querySelectorAll('#tl .ila')].forEach((el,i)=>InvLogoAnim.mount(el).seek(T[i]));
+window.__ready=1;
+</script>
