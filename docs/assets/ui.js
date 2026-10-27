@@ -545,6 +545,7 @@
   function newsNav(k) {
     const el = document.getElementById('news-nav'); if (!el) return;
     el.innerHTML = [['news', 'Latest news', 'news.html'], ['analysis', 'Analysis', 'analysis.html'], ['ai', 'AI brief', 'ai-insights.html'], ['impl', 'Market implications', 'implications.html'], ['track', 'Track record', 'track-record.html']].map(([key, t, h]) => `<a href="${h}" ${key === k ? 'aria-current="page"' : ''}>${key === 'ai' ? icon('sparkle') : ''}${t}</a>`).join('');
+    const cur = el.querySelector('[aria-current]'); if (cur && el.scrollWidth > el.clientWidth) el.scrollLeft = Math.max(0, cur.offsetLeft - (el.clientWidth - cur.offsetWidth) / 2);
   }
   // Treemap-style heatmap from [asset, colSpan, rowSpan]
   const heatColor = d => { const t = Math.min(1, Math.abs(d) / 4); return d >= 0 ? `rgba(34,197,94,${.12 + t * .30})` : `rgba(240,68,68,${.12 + t * .30})`; };
