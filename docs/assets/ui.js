@@ -229,12 +229,13 @@
   if (!window.AssetIcons && !window.__aiLoad) { window.__aiLoad = 1; const sc = document.createElement('script'); sc.src = 'assets/asset-icons.js'; sc.onload = () => { try { paintNotif(); } catch {} }; document.head.appendChild(sc); }
   const GL = { markets: '<path d="M4 19V5M4 19h16M8 15l3-4 3 2 5-6"/>', companies: '<path d="M4 20V8l8-4 8 4v12M9 20v-6h6v6M8 11h.01M12 11h.01M16 11h.01"/>', economy: '<path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/>', technology: '<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M9 3v4M15 3v4M9 17v4M15 17v4M3 9h4M3 15h4M17 9h4M17 15h4"/>', crypto: '<circle cx="12" cy="12" r="8"/><path d="M10 8v8m3-8v8M9 9h4.5a1.5 1.5 0 0 1 0 3H9m0 0h5a1.5 1.5 0 0 1 0 3H9"/>', commodities: '<path d="M7 4h10a2 2 0 0 1 1.8 1.2c.8 2.1 1.2 4.2 1.2 6.8s-.4 4.7-1.2 6.8A2 2 0 0 1 17 20H7a2 2 0 0 1-1.8-1.2C4.4 16.700 4 14.600 4 12s.4-4.700 1.200-6.800A2 2 0 0 1 7 4zM4.400 9h15.200M4.400 15h15.200"/>', geopolitics: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.200 3 14.800 0 18M12 3c-3 3.200-3 14.800 0 18"/>' };
   const GC = { markets: '#3AA0FF', companies: '#8E8E93', economy: '#FF9F0A', technology: '#8B5CF6', crypto: '#F7931A', commodities: '#E0803F', geopolitics: '#FF453A' };
+  let ISO = {}; fetch('assets/globe/iso.json').then(r => r.json()).then(j => { ISO = j; try { paintNotif(); } catch {} }).catch(() => {});
   const notifIcon = s => {
-    const i = (s.impacts || []).find(x => x.ticker && x.kind !== 'country') || (s.impacts || [])[0], cc = String(i?.country || '').toLowerCase();
+    const i = (s.impacts || []).find(x => x.ticker && x.kind !== 'country') || (s.impacts || [])[0];
+    const cc = String(i?.country || ISO[s.location?.country] || '').toLowerCase();
     if (window.AssetIcons && i && i.kind !== 'country' && (i.ticker || i.name)) return `<span class="notif-ic">${AssetIcons.icon({ s: i.ticker || i.name, n: i.name, t: /-USD$/.test(i.ticker || '') ? 'crypto' : 'stocks', g: 'Country ETF', cc })}</span>`; // g keeps the flag as the last fallback instead of a lone letter
-    if (cc && cc.length === 2) return `<span class="notif-ic"><img src="assets/globe/flags/${ne(cc)}.svg" alt="" onerror="this.remove()"></span>`;
-    const k = s.category in GL ? s.category : 'markets';
-    return `<span class="notif-ic notif-gl" style="--c:${GC[k]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GL[k]}</svg></span>`;
+    if (cc.length === 2) return `<span class="notif-ic"><img src="assets/globe/flags/${ne(cc)}.svg" alt="" onerror="this.remove()"></span>`;
+    return `<span class="notif-ic notif-gl" style="--c:${GC.geopolitics}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GL.geopolitics}</svg></span>`;
   };
   const paintNotif = () => {
     const unread = NOTIFS.filter(s=>!readIds.has(s.id)).length;
