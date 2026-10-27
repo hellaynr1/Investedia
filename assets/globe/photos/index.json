@@ -849,6 +849,18 @@
    "credit": "Neta623",
    "source_url": "https://pixabay.com/photos/sweden-copper-mine-debtors-boliden-1689163/",
    "alt": "copper mine"
+  },
+  {
+   "file": "photos/copper-mine-3143739.jpg",
+   "credit": "TheDigitalArtist",
+   "source_url": "https://pixabay.com/photos/ancient-artefact-bitcoin-3143739/",
+   "alt": "copper mine"
+  },
+  {
+   "file": "photos/copper-mine-7721472.jpg",
+   "credit": "ignartonosbg",
+   "source_url": "https://pixabay.com/photos/acalypha-wilkensia-flora-nature-7721472/",
+   "alt": "copper mine"
   }
  ],
  "supermarket groceries": [
@@ -1491,7 +1503,8 @@
   "housing construction",
   "electric car charging",
   "supermarket groceries",
-  "gold bars"
+  "gold bars",
+  "copper mine"
  ],
  "airplane airport": [
   {
