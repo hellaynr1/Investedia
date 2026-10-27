@@ -557,6 +557,12 @@
    "credit": "rauschenberger",
    "source_url": "https://pixabay.com/photos/transport-truck-tractor-trailer-4916922/",
    "alt": "cargo trucks highway"
+  },
+  {
+   "file": "photos/cargo-trucks-highway-2677373.jpg",
+   "credit": "chapay",
+   "source_url": "https://pixabay.com/photos/truck-freight-transportation-2677373/",
+   "alt": "cargo trucks highway"
   }
  ],
  "artificial intelligence robot": [
@@ -1504,7 +1510,8 @@
   "electric car charging",
   "supermarket groceries",
   "gold bars",
-  "copper mine"
+  "copper mine",
+  "cargo trucks highway"
  ],
  "airplane airport": [
   {
