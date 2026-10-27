@@ -9,6 +9,7 @@ We never copy articles: each story keeps its headline (rewritten neutrally), our
 Without keys or when a source fails, the previous news stays online."""
 import html, json, os, re, sys, time, hashlib, urllib.error, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
+from email.utils import parsedate_to_datetime
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone, timedelta
@@ -224,11 +225,13 @@ def rss():
                 t, l = (it.findtext('title') or '').strip(), (it.findtext('link') or '').strip()
                 if not t or not l: continue
                 pd = it.findtext('pubDate') or it.findtext('{http://purl.org/dc/elements/1.1/}date') or ''
-                try: ts = datetime.strptime(pd.strip()[:25].strip(), '%a, %d %b %Y %H:%M:%S').replace(tzinfo=timezone.utc)
-                except ValueError:
+                try: ts = parsedate_to_datetime(pd.strip())  # RFC 822 with its own offset (+0800, GMT ...)
+                except (TypeError, ValueError, IndexError):
                     try: ts = datetime.fromisoformat(pd.strip().replace('Z', '+00:00'))
                     except ValueError: ts = NOW
                 if ts.tzinfo is None: ts = ts.replace(tzinfo=timezone.utc)
+                ts = ts.astimezone(timezone.utc)
+                if ts > NOW: ts = NOW  # a publication time can never be in the future
                 if NOW - ts > timedelta(days=3): continue
                 desc = re.sub(r'<[^>]+>', ' ', html.unescape(it.findtext('description') or '')).strip()
                 out.append({'title': html.unescape(t), 'url': l, 'source': name, 'published': ts.strftime('%Y-%m-%dT%H:%M:%SZ'), 'kind': 'official' if hint else 'news', 'hint': hint, 'desc': desc[:400], **({'region': region} if region else {})})
@@ -516,6 +519,8 @@ def main():
         have = {s['id'] for s in prev}
         prev += [s for s in json.load(open(arc_path)).get('stories', []) if s['id'] not in have]
     cutoff = NOW - timedelta(days=KEEP_DAYS)
+    for s in prev:  # repair older stories whose local publication time was stored as UTC (it would lie in the future)
+        if s['published_at'] > s.get('retrieved_at', s['published_at']): s['published_at'] = s['retrieved_at']
     prev = [s for s in prev if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > cutoff]
     known_urls = {canon(u['url']) for s in prev for u in s.get('sources', [])}
     days = max(0, min(KEEP_DAYS, int(os.environ.get('BACKFILL_DAYS') or 0)))
