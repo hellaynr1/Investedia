@@ -1008,9 +1008,14 @@ function setZ(z, x, y, anchor) {
 let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
 // pointer: drag to rotate, pinch / wheel / double-click / buttons to zoom, tap to select
 const touches = new Map(); let pinch = null, drag = null;
+// In the homepage embed a pinch must zoom the globe only: the page behind must not scroll with it. Two fingers cancel the browser's scrolling,
+// and the parent page is asked to hold its scroll position for the length of the gesture (some browsers start scrolling before the second finger lands).
+const gestureLock = on => { if (!EMBED) return; try { parent.postMessage({ inv: 'globe-gesture', on }, location.origin); } catch {} };
+const twoFingers = e => { if (EMBED && e.touches && e.touches.length >= 2 && e.cancelable) e.preventDefault(); };
+cv.addEventListener('touchstart', twoFingers, { passive: false }); cv.addEventListener('touchmove', twoFingers, { passive: false });
 cv.addEventListener('pointerdown', e => {
   touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); cv.setPointerCapture(e.pointerId);
-  if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), z: Zt, anchor: inv((a.x + b.x) / 2, (a.y + b.y) / 2) }; drag = null; return; }
+  if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), z: Zt, anchor: inv((a.x + b.x) / 2, (a.y + b.y) / 2) }; drag = null; gestureLock(true); return; }
   drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false };
 });
 cv.addEventListener('pointermove', e => {
@@ -1026,7 +1031,7 @@ cv.addEventListener('pointermove', e => {
 });
 function endPointer(e) {
   touches.delete(e.pointerId);
-  if (pinch) { if (touches.size < 2) pinch = null; drag = null; return; }
+  if (pinch) { if (touches.size < 2) { pinch = null; gestureLock(false); } drag = null; return; }
   if (drag && !drag.moved && e.type === 'pointerup') tap(e.clientX, e.clientY, e.pointerType !== 'mouse');
   drag = null; cv.classList.remove('drag');
 }
