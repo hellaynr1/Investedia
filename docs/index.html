@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=a97d04aaac">
-<script src="assets/consent.js?v=a97d04aaac"></script>
+<link rel="stylesheet" href="assets/consent.css?v=45a41102e4">
+<script src="assets/consent.js?v=45a41102e4"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia</title>
 <meta name="description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=a97d04aaac">
-<link rel="stylesheet" href="assets/skin.css?v=a97d04aaac">
+<link rel="stylesheet" href="assets/app.css?v=45a41102e4">
+<link rel="stylesheet" href="assets/skin.css?v=45a41102e4">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,20 +46,20 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=a97d04aaac"></script>
-<script src="assets/legal-owner.js?v=a97d04aaac"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=a97d04aaac">
-<script src="assets/live-config.js?v=a97d04aaac"></script>
-<script src="assets/live-data.js?v=a97d04aaac" defer></script>
-<script src="assets/prefs.js?v=a97d04aaac"></script>
-<script src="assets/peek.js?v=a97d04aaac"></script>
-<script src="assets/sectors.js?v=a97d04aaac"></script>
-<script src="assets/news-menu.js?v=a97d04aaac"></script>
-<script src="assets/ui.js?v=a97d04aaac"></script>
-<script src="assets/news-alerts.js?v=a97d04aaac" defer></script>
-<script src="assets/since-news.js?v=a97d04aaac"></script>
-<script src="assets/implications.js?v=a97d04aaac"></script>
-<script src="assets/home-news.js?v=a97d04aaac"></script>
+<script src="assets/mock.js?v=45a41102e4"></script>
+<script src="assets/legal-owner.js?v=45a41102e4"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=45a41102e4">
+<script src="assets/live-config.js?v=45a41102e4"></script>
+<script src="assets/live-data.js?v=45a41102e4" defer></script>
+<script src="assets/prefs.js?v=45a41102e4"></script>
+<script src="assets/peek.js?v=45a41102e4"></script>
+<script src="assets/sectors.js?v=45a41102e4"></script>
+<script src="assets/news-menu.js?v=45a41102e4"></script>
+<script src="assets/ui.js?v=45a41102e4"></script>
+<script src="assets/news-alerts.js?v=45a41102e4" defer></script>
+<script src="assets/since-news.js?v=45a41102e4"></script>
+<script src="assets/implications.js?v=45a41102e4"></script>
+<script src="assets/home-news.js?v=45a41102e4"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -203,6 +203,27 @@ fetch('assets/calendar-live.json', { cache: 'no-cache' }).then(r => r.json()).th
 const RES = [['Investor.gov', 'https://www.investor.gov', 'sans'], ['TradingView', 'https://www.tradingview.com', 'sans'], ['Morningstar', 'https://www.morningstar.com', 'serif'], ['Yahoo Finance', 'https://finance.yahoo.com', 'sans'], ['Khan Academy', 'https://www.khanacademy.org/economics-finance-domain', 'sans'], ['FRED', 'https://fred.stlouisfed.org', 'mono'], ['CoinMarketCap', 'https://coinmarketcap.com', 'sans'], ['Bogleheads', 'https://www.bogleheads.org', 'serif'], ['Reuters Markets', 'https://www.reuters.com/markets/', 'sans'], ['SEC EDGAR', 'https://www.sec.gov/edgar', 'mono'], ['Federal Reserve', 'https://www.federalreserve.gov', 'serif'], ['ECB', 'https://www.ecb.europa.eu', 'sans'], ['IMF', 'https://www.imf.org', 'sans'], ['World Bank', 'https://data.worldbank.org', 'sans'], ['Finviz', 'https://finviz.com', 'sans'], ['BIS', 'https://www.bis.org', 'serif']];
 const resItems = RES.map(([n, u, f]) => `<a class="res-item res-${f}" href="${u}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('<span class="res-sep" aria-hidden="true"></span>');
 document.getElementById('res-track').innerHTML = resItems + '<span class="res-sep" aria-hidden="true"></span>' + resItems.replace(/<a /g, '<a tabindex="-1" aria-hidden="true" ');
+</script>
+<script>
+// PREVIEW ONLY (?hbg=1|2|3): decorative hero backgrounds to compare; illustrative curves, not market data.
+(function () {
+  var v = new URLSearchParams(location.search).get('hbg'); if (!v) return;
+  var hero = document.querySelector('.hn-hero'); if (!hero) return;
+  var W = 1000, H = 600, seed = 11; function r() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+  function line(amp, base, n, drift) { var pts = [], y = base; for (var i = 0; i <= n; i++) { y += (r() - .5) * amp + drift; pts.push((i / n * W).toFixed(1) + ',' + Math.max(40, Math.min(H - 40, y)).toFixed(1)); } return pts.join(' '); }
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1">';
+  if (v === '1' || v === '3') { svg += '<defs><linearGradient id="hbgF" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FF7A1A" stop-opacity=".22"/><stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/></linearGradient></defs>';
+    var p = line(70, 330, 60, -1.5); svg += '<polygon points="0,' + H + ' ' + p + ' ' + W + ',' + H + '" fill="url(#hbgF)"/><polyline points="' + p + '" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="2" vector-effect="non-scaling-stroke"/>'; }
+  if (v === '4') { svg = svg.replace('</svg>', '');
+    svg += '<defs><linearGradient id="mwB4" x1="0" x2="1" y1="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".07"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><linearGradient id="chF4" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FF7A1A" stop-opacity=".2"/><stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/></linearGradient></defs>';
+    svg += '<rect x="-200" y="-100" width="1400" height="800" fill="url(#mwB4)" transform="rotate(-18 500 300)"/>';
+    var c4 = line(55, 380, 70, -1.2); svg += '<svg x="0" y="0" width="560" height="600" viewBox="0 0 560 600" preserveAspectRatio="none" style="overflow:visible"><polygon points="0,600 ' + c4.split(' ').map(function (pt) { var q = pt.split(','); return (+q[0] * 0.56).toFixed(1) + ',' + q[1]; }).join(' ') + ' 560,600" fill="url(#chF4)"/><polyline points="' + c4.split(' ').map(function (pt) { var q = pt.split(','); return (+q[0] * 0.56).toFixed(1) + ',' + q[1]; }).join(' ') + '" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></svg>'; }
+  if (v === '2' || v === '3') { svg += '<defs><linearGradient id="mwB" x1="0" x2="1" y1="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".07"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect x="-200" y="-100" width="1400" height="800" fill="url(#mwB)" transform="rotate(-18 500 300)"/>';
+    var q = line(40, 470, 80, -.6); svg += '<polyline points="' + q + '" fill="none" stroke="rgba(160,170,190,.22)" stroke-width="1.2" vector-effect="non-scaling-stroke"/>'; }
+  svg += '</svg>';
+  hero.insertAdjacentHTML('afterbegin', svg);
+  var h = hero.querySelector('svg'); h.style.zIndex = '0';
+})();
 </script>
 </main>
 </body>
