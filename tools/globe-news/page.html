@@ -1439,10 +1439,9 @@ const starList = (() => { let seed = 7; const rnd = () => (seed = (seed * 16807)
   const n = SM === 3 ? (innerWidth <= 760 ? 90 : 130) : SM === 2 ? 38 : (innerWidth <= 760 ? 40 : 60);  // fewer stars on a phone, where the space is smaller
   return Array.from({ length: n }, () => { const big = rnd() > .93, band = STARS > 1 && rnd() < .38; const x = rnd(), y = band ? Math.min(1, Math.max(0, .78 - x * .55 + (rnd() - .5) * .22)) : rnd();
     return { x, y, r: SM === 2 ? 1.2 + rnd() * 1.1 : SM === 3 ? .5 + rnd() * .6 : big ? 1.6 + rnd() * 1.2 : .8 + rnd() * .9, a: SM === 2 ? .7 + rnd() * .3 : SM === 3 ? .15 + rnd() * .35 : .45 + rnd() * .55, ph: rnd() * 6.28, sp: .4 + rnd() * 1.2, warm: (!STAR_MONO && rnd() > .82), d: .15 + rnd() * .85 }; }); })();
-// Black-and-white desktop previews (?bw=A|B). Only the sphere background and the star brightness change: the outline, glow and grid stay as they are. Phones are untouched.
-const BW = { A: { s0: '#0c0c0d', s1: '#000000' }, B: { s0: '#161618', s1: '#050506' } }[new URLSearchParams(location.search).get('bw')];
-if (BW && innerWidth > 760) Object.assign(GB, BW);
-const STAR_DIM = BW && innerWidth > 760 ? .4 : 1;  // stars dimmer under the black-and-white previews
+// Desktop look (chosen design B): a near-black grey globe background and dimmer stars. The outline, glow and grid are unchanged. Phones are untouched.
+if (innerWidth > 760) Object.assign(GB, { s0: '#161618', s1: '#050506' });
+const STAR_DIM = innerWidth > 760 ? .4 : 1;  // desktop stars are dimmer
 // Galaxy preview (?gx=1 violet band, 2 warm nebula, 3 spiral galaxy, 4 nebula + spiral). Drawn once into an offscreen canvas per size, then copied each frame: cheap for scrolling and dragging.
 const GALAXY = innerWidth > 760 ? 4 : 0;  // desktop: nebula + spiral mix. Phones: no galaxy or Milky Way, only the thin stars
 let galaxyCv = null, galaxyKey = '';
