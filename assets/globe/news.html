@@ -365,7 +365,7 @@ h1 span{color:var(--fg-3)}
 @media (prefers-reduced-motion:reduce){html[data-panel] .panel{transition:none}}
 .embed body,.embed{background:transparent}
 .embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom,.embed .dock,.embed .peek,.embed .fsheet,.embed .fs-back,.embed .layers,.embed .ddrow{display:none!important}
-.embed #cv{touch-action:none}  /* a finger that lands on the globe spins it first; the page scrolls from anywhere else */
+.embed #cv{touch-action:pan-y}  /* the page scrolls from anywhere next to the globe; a finger that lands ON the globe is claimed in JS (touchstart below) so it spins first */
 
 /* Atlas-style floating glass: segmented category + region bars, richer news panel */
 .chips{display:inline-flex;flex-wrap:nowrap;gap:2px;padding:4px;border-radius:999px;background:rgba(24,24,27,.62);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border:1px solid rgba(255,255,255,.1);box-shadow:0 12px 40px rgba(0,0,0,.35);max-width:100%;overflow-x:auto;scrollbar-width:none}
@@ -1019,18 +1019,22 @@ const touches = new Map(); let pinch = null, drag = null, spin = null;  // spin:
 // In the homepage embed a pinch must zoom the globe only: the page behind must not scroll with it. Two fingers cancel the browser's scrolling,
 // and the parent page is asked to hold its scroll position for the length of the gesture (some browsers start scrolling before the second finger lands).
 const gestureLock = on => { if (!EMBED) return; try { parent.postMessage({ inv: 'globe-gesture', on }, location.origin); } catch {} };
+// A touch only belongs to the globe when it starts on the globe disc or on its outline (14 px of tolerance). Next to it nothing rotates, and in the embed the page scrolls.
+const onGlobe = (x, y) => Math.hypot(x - cx, y - cy) <= R + 14;
+const claimGlobe = e => { if (EMBED && e.touches.length === 1 && e.cancelable && onGlobe(e.touches[0].clientX, e.touches[0].clientY)) e.preventDefault(); };
 const twoFingers = e => { if (EMBED && e.touches && e.touches.length >= 2 && e.cancelable) e.preventDefault(); };
-cv.addEventListener('touchstart', twoFingers, { passive: false }); cv.addEventListener('touchmove', twoFingers, { passive: false });
+cv.addEventListener('touchstart', e => { claimGlobe(e); twoFingers(e); }, { passive: false }); cv.addEventListener('touchmove', twoFingers, { passive: false });
 cv.addEventListener('pointerdown', e => {
   touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); cv.setPointerCapture(e.pointerId);
-  if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), z: Zt, anchor: inv((a.x + b.x) / 2, (a.y + b.y) / 2) }; drag = null; gestureLock(true); return; }
-  spin = null; drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false, t: performance.now(), vx: 0, vy: 0, touch: e.pointerType !== 'mouse' };
+  if (touches.size === 2 && (() => { const [a, b] = [...touches.values()]; return onGlobe((a.x + b.x) / 2, (a.y + b.y) / 2); })()) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), z: Zt, anchor: inv((a.x + b.x) / 2, (a.y + b.y) / 2) }; drag = null; gestureLock(true); return; }
+  spin = null; drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false, rot: onGlobe(e.clientX, e.clientY), t: performance.now(), vx: 0, vy: 0, touch: e.pointerType !== 'mouse' };
 });
 cv.addEventListener('pointermove', e => {
   if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pinch && touches.size === 2) { const [a, b] = [...touches.values()]; setZ(pinch.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2, pinch.anchor); return; }
   if (drag) {
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.rot) return;  // the touch started next to the globe: it never rotates it
     if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; fly = null; zoomAnchor = null; Zt = Z; cv.classList.add('drag'); hideHover(); }
     if (drag.moved) {
       const gain = 1;  // original sensitivity (a faster phone setting was tried and was too fast)
