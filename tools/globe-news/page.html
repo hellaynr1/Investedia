@@ -1026,9 +1026,9 @@ cv.addEventListener('pointermove', e => {
   if (pinch && touches.size === 2) { const [a, b] = [...touches.values()]; setZ(pinch.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2, pinch.anchor); return; }
   if (drag) {
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-    if (!drag.moved && Math.abs(dx) + Math.abs(dy) > (drag.touch ? 2 : 4)) { drag.moved = true; fly = null; zoomAnchor = null; Zt = Z; cv.classList.add('drag'); hideHover(); }
+    if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; fly = null; zoomAnchor = null; Zt = Z; cv.classList.add('drag'); hideHover(); }
     if (drag.moved) {
-      const gain = drag.touch ? 1.45 : 1;  // fingers cover less distance than a mouse: more rotation per pixel on a phone
+      const gain = 1;  // original sensitivity (a faster phone setting was tried and was too fast)
       const pl = lon0, pa = lat0, now = performance.now(), dt = Math.max(1, now - drag.t); drag.t = now;
       lon0 = drag.lon - dx * .3 * gain / Z; lat0 = Math.max(-70, Math.min(70, drag.lat + dy * .26 * gain / Z));
       drag.vx = drag.vx * .6 + ((lon0 - pl) / dt) * .4; drag.vy = drag.vy * .6 + ((lat0 - pa) / dt) * .4;  // smoothed velocity, for the glide
