@@ -20,7 +20,8 @@ export async function refresh(env, now = Date.now(), fetchFn = fetch) {
   results.forEach(r => { stats.upstream_calls++; if (r.status === 'fulfilled') for (const [y, q] of Object.entries(r.value)) { const e = byY.get(y); const row = e && toRow(q, e.inv, now, e.k); if (row) fresh[e.site] = row; } else stats.upstream_failures++; });
   const got = Object.keys(fresh).length;
   if (!got) { stats.cron_failures++; return { ok: 0, wrote: false, stats, snapshot: snap, reason: 'no valid quotes: previous snapshot kept' }; } // never overwrite good data with nothing
-  const p = merge(snap.p, fresh, now), changed = !unchanged(snap.p, p);
+  const known = new Set(ALL.map(e => e.site)), prevP = Object.fromEntries(Object.entries(snap.p || {}).filter(([k]) => known.has(k)));  // rows of symbols that are no longer in the list are dropped, never served
+  const p = merge(prevP, fresh, now), changed = !unchanged(snap.p, p);
   if (!changed) stats.skipped_unchanged++;
   const write = shouldWrite({ changed, lastWrite: snap.t, writesToday: stats.writes, now });
   let next = snap;

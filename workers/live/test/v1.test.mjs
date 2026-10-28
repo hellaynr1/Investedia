@@ -87,3 +87,10 @@ test('a run stays well inside the free subrequest limit', async () => {
   let calls = 0; const f = async (...a) => { calls++; return fakeFetch()(...a); };
   await refresh({ PRICES: fakeKV() }, NOW, f); assert.ok(calls <= 20, 'calls ' + calls);
 });
+
+test('rows of symbols that left the list are purged from the served snapshot', async () => {
+  const env = { PRICES: fakeKV({ px: JSON.stringify({ t: NOW - 1000, p: { OLDGONE: [1, 1, 0, NOW - 1000] }, stats: null }) }) };
+  await refresh(env, NOW, fakeFetch());
+  const res = await handlePrices(new URL('https://x/v1/prices'), env, {}, NOW + 1000);
+  assert.ok(!('OLDGONE' in res.body.data));
+});

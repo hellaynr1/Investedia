@@ -1038,7 +1038,7 @@ cv.addEventListener('touchstart', e => { claimGlobe(e); twoFingers(e); }, { pass
 cv.addEventListener('pointerdown', e => {
   touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); cv.setPointerCapture(e.pointerId);
   if (touches.size === 2 && (() => { const [a, b] = [...touches.values()]; return onGlobe((a.x + b.x) / 2, (a.y + b.y) / 2); })()) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), z: Zt, anchor: inv((a.x + b.x) / 2, (a.y + b.y) / 2) }; drag = null; gestureLock(true); return; }
-  spin = null; drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false, rot: onGlobe(e.clientX, e.clientY), t: performance.now(), vx: 0, vy: 0, touch: e.pointerType !== 'mouse' };
+  spin = null; drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false, rot: e.pointerType === 'mouse' || onGlobe(e.clientX, e.clientY), t: performance.now(), vx: 0, vy: 0, touch: e.pointerType !== 'mouse' };
 });
 cv.addEventListener('pointermove', e => {
   if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -1061,12 +1061,12 @@ function endPointer(e) {
   touches.delete(e.pointerId);
   if (pinch) { if (touches.size < 2) { pinch = null; gestureLock(false); } drag = null; return; }
   if (drag && !drag.moved && e.type === 'pointerup') tap(e.clientX, e.clientY, e.pointerType !== 'mouse');
-  if (drag && drag.moved && e.type === 'pointerup' && !reduce && performance.now() - drag.t < 90 && Math.hypot(drag.vx, drag.vy) > .005) spin = { vx: Math.max(-.6, Math.min(.6, drag.vx)), vy: Math.max(-.3, Math.min(.3, drag.vy)) };
+  if (drag && drag.moved && e.type === 'pointerup' && e.pointerType === 'touch' && !reduce && performance.now() - drag.t < 90 && Math.hypot(drag.vx, drag.vy) > .005) spin = { vx: Math.max(-.6, Math.min(.6, drag.vx)), vy: Math.max(-.3, Math.min(.3, drag.vy)) };
   drag = null; cv.classList.remove('drag');
 }
 cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
 cv.addEventListener('pointerleave', () => { if (!drag && !phone()) hideHover(); });
-cv.addEventListener('wheel', e => { if (EMBED) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
+cv.addEventListener('wheel', e => { if (EMBED && !e.ctrlKey) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
 cv.addEventListener('selectstart', e => e.preventDefault()); cv.addEventListener('dragstart', e => e.preventDefault());
 cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) setZ(Zt < ZMAX - .1 ? Zt * 1.8 : 1, e.clientX, e.clientY); });
 $('zin').onclick = () => setZ(Zt * 1.6); $('zout').onclick = () => setZ(Zt / 1.6);
@@ -1427,7 +1427,10 @@ const GB0 = { s0: '#26262c', s1: '#101014', atm: .22, atmRGB: '255,122,26', dot:
 const GB = Object.assign({}, GB0, ({
   A: { rim: .9, rimRGB: '232,232,238', rimW: 1.6, glow: '255,255,255,.28', blur: 10, atm: .10, atmRGB: '215,215,225' },
   B: { rim: .75, rimRGB: '150,150,160', rimW: 1.6, glow: '0,0,0,0', blur: 0, atm: .06, atmRGB: '170,170,180' },
-  C: { rim: .65, rimRGB: '255,168,104', rimW: 1.4, glow: '255,160,90,.35', blur: 10, atm: .12, atmRGB: '255,160,90' } })[new URLSearchParams(location.search).get('gb')]);
+  C: { rim: .65, rimRGB: '255,168,104', rimW: 1.4, glow: '255,160,90,.35', blur: 10, atm: .12, atmRGB: '255,160,90' },
+  D: { rim: .8, rimRGB: '196,190,182', rimW: 1.5, glow: '230,222,210,.22', blur: 12, atm: .08, atmRGB: '210,204,194' },   // titanium: warm silver
+  E: { rim: .5, rimRGB: '255,255,255', rimW: 1, glow: '255,255,255,.18', blur: 16, atm: .05, atmRGB: '235,240,255' },       // glass: white hairline
+  F: { rim: .9, rimRGB: '120,124,134', rimW: 2, glow: '0,0,0,0', blur: 0, atm: .04, atmRGB: '120,124,134' } })[new URLSearchParams(location.search).get('gb')], (g => g === null ? {} : { grid: +g })(new URLSearchParams(location.search).get('gr')));  // ?gr=0..2 previews the grid strength
 let last = performance.now();
 function frame(t) {
   const dt = Math.min(50, t - last); last = t;
