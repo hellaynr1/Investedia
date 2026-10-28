@@ -324,7 +324,6 @@ h1 span{color:var(--fg-3)}
   html[data-panel] .panel{height:92vh;height:92dvh;max-height:none;transform:translate3d(0,var(--sheet-offset,calc(100% - 84px)),0);transition:transform .32s cubic-bezier(.2,.8,.2,1);will-change:transform}
   html[data-panel].panel-top .panel:not(.open){transform:translate3d(0,var(--sheet-offset,calc(100% - 84px)),0)}
   html[data-panel] .panel.sheet-dragging,html[data-panel] .panel.sheet-dragging .pbody{transition:none!important;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-  html[data-panel] .panel:not([data-sheet=closed]){contain:layout style}
   .grab{height:40px;min-height:40px;touch-action:none;cursor:ns-resize}
   .grab::after{top:13px;width:80px;height:5px;margin-left:-40px;background:rgba(255,255,255,.32)}
   .grab:focus-visible{outline:1px solid var(--accent);outline-offset:-5px;border-radius:18px}
@@ -338,7 +337,9 @@ h1 span{color:var(--fg-3)}
   .panel[data-sheet=closed] .sheet-close{visibility:hidden}
   .panel[data-sheet=full] #sheet-expand{visibility:hidden}
   /* Open sheet = a card floating above the dock (never under it); header is one slim row: Back, expand, close. */
-  html[data-panel] .panel:not([data-sheet=closed]){left:12px;right:12px;top:auto;bottom:calc(var(--dock-gap,90px) + env(safe-area-inset-bottom));height:calc(var(--sheet-visible,84px) - var(--dock-gap,90px));border-radius:22px;border:1px solid rgba(255,255,255,.16);transform:none;transition:height .32s cubic-bezier(.2,.8,.2,1)}
+  /* The open sheet is ONE full-height card moved with transform (compositor only) and cropped with clip-path, so dragging never re-lays-out the article list.
+     --sheet-drop = how far it is pulled down from fully open. The page never decides a height: JS writes any pixel value between the minimum and maximum. */
+  html[data-panel] .panel:not([data-sheet=closed]){left:12px;right:12px;top:auto;bottom:calc(var(--dock-gap,90px) + env(safe-area-inset-bottom));height:calc(var(--sheet-max,92dvh) - var(--dock-gap,90px));border-radius:22px;border:1px solid rgba(255,255,255,.16);box-shadow:none;transform:translate3d(0,var(--sheet-drop,0px),0);clip-path:inset(0 0 var(--sheet-drop,0px) 0 round 22px);transition:transform .32s cubic-bezier(.2,.8,.2,1),clip-path .32s cubic-bezier(.2,.8,.2,1);will-change:transform,clip-path}
   html[data-panel] .panel:not([data-sheet=closed]) .grab{height:18px;min-height:18px}
   html[data-panel] .panel:not([data-sheet=closed]) .grab::after{top:7px}
   html[data-panel] .panel:not([data-sheet=closed]) .grab{touch-action:none;position:relative;z-index:2}
@@ -347,7 +348,7 @@ h1 span{color:var(--fg-3)}
   html[data-panel] .panel:not([data-sheet=closed]) .sheet-actions{z-index:4}
   html[data-panel] .panel:not([data-sheet=closed]) .sheet-actions{top:0}
   html[data-panel] .panel:not([data-sheet=closed]) .sheet-actions button{min-width:44px;min-height:44px;width:44px;height:44px}
-  html[data-panel] .panel:not([data-sheet=closed]) .pbody{height:calc(var(--sheet-visible,84px) - var(--dock-gap,90px) - 18px);padding-bottom:24px;transition:height .32s cubic-bezier(.2,.8,.2,1)}
+  html[data-panel] .panel:not([data-sheet=closed]) .pbody{height:calc(var(--sheet-max,92dvh) - var(--dock-gap,90px) - 18px);padding-bottom:calc(24px + var(--sheet-pad,0px));transition:none}
   html[data-panel] .panel:not([data-sheet=closed]) .pbody:has(.back){padding-top:44px}
   html[data-panel] .panel:not([data-sheet=closed]) .pbody .back{position:absolute;left:12px;top:0;margin:0;min-height:44px;z-index:3;color:#fff;font-size:15px;font-weight:600;background:none}
   .panel[data-sheet=closed] .pbody{cursor:pointer}
@@ -935,6 +936,17 @@ function refresh() {
 const cv = $('cv'), ctx = cv.getContext('2d');
 const BOTTOM_DOCK = 90; let peekH = 140;
 let sheetState = 'closed', sheetVisible = 84, sheetGesture = null, phoneMapTop = 0;
+// Sheet model: the open sheet has ONE continuous height (sheetVisible, in px) between SHEET_MIN and SHEET_MAX. There are no detents.
+// sheetState is only 'closed' or 'open'. Every resting height is wherever the user left it (sheetFrac keeps it through resizes).
+let sheetFrac = .30;
+const SHEET_MIN = () => H * .30, SHEET_MAX = () => H * .92;
+const clampSheet = h => Math.max(SHEET_MIN(), Math.min(SHEET_MAX(), h));
+function sheetHeight(state) { return state === 'closed' ? 84 : clampSheet(sheetFrac * H); }
+function paintSheet(h, rest) {  // rest = a resting position (also re-pads the article list so its last item can be scrolled into view)
+  const drop = SHEET_MAX() - h + 'px';
+  panel.style.setProperty('--sheet-max', SHEET_MAX() + 'px'); panel.style.setProperty('--sheet-drop', drop);
+  if (rest) { panel.style.setProperty('--sheet-pad', drop); panel.style.setProperty('--sheet-visible', h + 'px'); panel.style.setProperty('--sheet-offset', (H * .92 - h) + 'px'); }
+}
 let cyT = 0, W = 0, H = 0, R0 = 0, R = 0, cx = 0, cy = 0, Z = 1, Zt = 1, lon0 = -15, lat0 = 24, ZMAX = 6, globeBox = { left: 0, top: 0, right: 0, bottom: 0 };
 function size() {
   const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -946,9 +958,8 @@ function size() {
     R0 = Math.min(W * .47, Math.max(120, H - phoneMapTop - (BOTTOM_DOCK + peekH + 28)) * .47);
     cx = W / 2;
     sheetVisible = sheetHeight(sheetState);
-    panel.style.setProperty('--sheet-offset', (H * .92 - sheetVisible) + 'px');
-    panel.style.setProperty('--sheet-visible', sheetVisible + 'px');
-    panel.dataset.sheet = sheetState;
+    paintSheet(sheetVisible, true);
+    panel.dataset.sheet = sheetState === 'closed' ? 'closed' : sheetVisible >= SHEET_MAX() - 1 ? 'full' : 'open';
     phoneMapArea();
   }
   else {
@@ -1106,9 +1117,6 @@ $('hover').addEventListener('click', e => { const n = $('hover').dataset.country
 
 // ===== Panel =====
 const panel = $('panel'), pbody = $('pbody'); size(); new MutationObserver(() => { if (!phone()) size(); }).observe(panel, { attributes: true, attributeFilter: ['class'] }); let view = { k: 'top' }, hist = [];
-let sheetFrac = .55;  // height of a freely placed sheet as a fraction of the viewport (survives rotation and the keyboard)
-const SHEET_MIN = () => H * .30, SHEET_MAX = () => H * .92;
-function sheetHeight(state) { return state === 'closed' ? 84 : state === 'free' ? Math.max(SHEET_MIN(), Math.min(SHEET_MAX(), sheetFrac * H)) : H * ({ peek: .30, half: .55, full: .92 }[state] || .30); }
 function phoneMapArea() {
   const pk = $('peek').getBoundingClientRect(); if (pk.height) peekH = pk.height;
   const bottom = sheetState === 'closed' ? (pk.height ? pk.top : H - BOTTOM_DOCK - peekH - 20) - 10 : H - sheetVisible - 12;
@@ -1116,21 +1124,27 @@ function phoneMapArea() {
   cyT = phoneMapTop + Math.max(0, bottom - phoneMapTop) / 2;
   document.querySelector('.zoom').style.top = Math.max(phoneMapTop, bottom - 96) + 'px';
 }
+function placeSheet(st, h) {  // a resting position; CSS animates programmatic changes (opening, expand button), never a drag
+  sheetState = st; sheetVisible = h; if (st !== 'closed') sheetFrac = h / H;
+  const atMax = st !== 'closed' && h >= SHEET_MAX() - 1;
+  panel.dataset.sheet = st === 'closed' ? 'closed' : atMax ? 'full' : 'open'; panel.classList.toggle('open', st !== 'closed');
+  paintSheet(h, true);
+  $('grab').setAttribute('aria-label', st === 'closed' ? 'Open Top articles' : atMax ? 'Collapse the news panel' : 'Expand the news panel');
+  $('grab').setAttribute('aria-expanded', String(st !== 'closed'));
+  phoneMapArea(); peekUpdate(); dockUpdate();
+}
+// Programmatic requests: 'closed', 'full' (jump to the maximum), anything else = "make sure it is open" (opens at the minimum, never moves a sheet the user already placed).
 function setSheet(state) {
   if (!phone() || EMBED) return;
-  sheetState = state; sheetVisible = sheetHeight(state); if (state !== 'closed') sheetFrac = sheetVisible / H;
-  panel.dataset.sheet = state; panel.classList.toggle('open', state !== 'closed');
-  panel.style.setProperty('--sheet-offset', (H * .92 - sheetVisible) + 'px');
-  panel.style.setProperty('--sheet-visible', sheetVisible + 'px');
-  $('grab').setAttribute('aria-label', state === 'full' ? 'Show news panel at peek height' : state === 'closed' ? 'Open Top articles' : state === 'peek' ? 'Show news panel at half height' : 'Show full news panel');
-  $('grab').setAttribute('aria-expanded', String(state !== 'closed'));
-  phoneMapArea(); peekUpdate(); dockUpdate();
+  if (state === 'closed') return placeSheet('closed', 84);
+  placeSheet('open', state === 'full' ? SHEET_MAX() : sheetState === 'closed' ? SHEET_MIN() : sheetVisible);
 }
 let sheetDraggedAt = -1000;
 $('grab').onclick = () => {
   if (!phone()) return panel.classList.toggle('open');
   if (performance.now() - sheetDraggedAt < 400) return;
-  setSheet({ closed: 'peek', peek: 'half', half: 'full', full: 'peek', free: sheetVisible > H * .6 ? 'peek' : 'full' }[sheetState]);
+  if (sheetState === 'closed') return setSheet('peek');
+  sheetVisible >= SHEET_MAX() - 1 ? placeSheet('open', SHEET_MIN()) : setSheet('full');  // a tap on the handle toggles collapse / expand
 };
 $('sheet-expand').onclick = () => setSheet('full');
 $('sheet-close').onclick = () => {
@@ -1138,57 +1152,45 @@ $('sheet-close').onclick = () => {
   setMarketsLayer(false);
   sel = null; selCountry = null; hist = []; view = { k: 'top' }; render(); pbody.scrollTop = 0; setSheet('closed');
 };
-// Sheet drag: the top 56 px of the sheet (header row, grabber and the space around them) resizes it; the article list below scrolls; the map outside moves the globe.
-// While the finger is down the sheet follows it 1:1 (no thresholds, no stages, no transition); one requestAnimationFrame per frame writes one CSS variable.
-// After release it stays where it was left, with a gentle magnet only within 28 px of the smallest or largest height and a short glide from the release velocity.
-const DRAG_ZONE = 56, MAGNET = 28;
+// Sheet drag. Gesture ownership is decided once, at pointerdown, by WHERE the touch lands, and never changes until it ends:
+//   the handle / header zone (#grab and its 56 px overlay) -> this code resizes the sheet and nothing else moves
+//   the article list (#pbody)                               -> the browser scrolls it; this code never sees the gesture
+//   the map outside the sheet                              -> the globe handlers own it
+// While dragging: newHeight = heightAtStart + (fingerStartY - fingerY), clamped to [MIN, MAX]. No snap points, no thresholds, no transition, no velocity.
+// On release the sheet stays at that exact height; only the last MAGNET px next to the minimum or maximum pull in.
+const MAGNET = 24, grab = $('grab');
 let sheetRaf = 0, sheetWant = 0;
 const sheetApply = () => {
   sheetRaf = 0; sheetVisible = sheetWant;
-  panel.style.setProperty('--sheet-visible', sheetVisible + 'px');
-  globeBox.bottom = H - sheetVisible - 12; cyT = phoneMapTop + Math.max(0, globeBox.bottom - phoneMapTop) / 2;  // writes only: no layout reads while dragging
+  paintSheet(sheetVisible, false);  // one custom property: transform + clip-path, compositor only
+  globeBox.bottom = H - sheetVisible - 12; cyT = phoneMapTop + Math.max(0, globeBox.bottom - phoneMapTop) / 2;  // writes only, no layout reads
   document.querySelector('.zoom').style.top = Math.max(phoneMapTop, globeBox.bottom - 96) + 'px';
 };
-const inZone = (e, y) => phone() && !EMBED && sheetState !== 'closed' && y - panel.getBoundingClientRect().top < DRAG_ZONE && !e.target.closest('a,button:not(.grab),input,select,textarea');
-function sheetStart(y, id) {
-  sheetGesture = { id, y, height: sheetVisible, lastY: y, lastT: performance.now(), velocity: 0, moved: false };
-}
-function sheetMove(y) {
-  const g = sheetGesture; if (!g) return false;
-  const now = performance.now(), delta = g.y - y;
-  if (!g.moved && Math.abs(delta) < 2) return false;  // 2 px of jitter tolerance so a tap stays a tap; beyond it the sheet follows the finger exactly
-  if (!g.moved) { g.moved = true; panel.classList.add('sheet-dragging'); }
-  const v = (g.lastY - y) / Math.max(1, now - g.lastT); g.velocity = g.velocity * .6 + v * .4; g.lastY = y; g.lastT = now;  // px per ms, only used after release
-  sheetWant = Math.max(SHEET_MIN(), Math.min(SHEET_MAX(), g.height + delta));
+grab.addEventListener('pointerdown', e => {
+  if (!phone() || EMBED || sheetState === 'closed' || e.button !== 0) return;
+  sheetGesture = { id: e.pointerId, y0: e.clientY, h0: sheetVisible, moved: false }; sheetWant = sheetVisible;
+  panel.classList.add('sheet-dragging');  // transitions off from the first touch
+  try { grab.setPointerCapture(e.pointerId); } catch {}
+});
+grab.addEventListener('pointermove', e => {
+  const g = sheetGesture; if (!g || g.id !== e.pointerId) return;
+  if (Math.abs(g.y0 - e.clientY) > 1) g.moved = true;
+  sheetWant = clampSheet(g.h0 + (g.y0 - e.clientY));
   if (!sheetRaf) sheetRaf = requestAnimationFrame(sheetApply);
-  return true;
-}
-function sheetEnd(cancelled) {
-  const g = sheetGesture; if (!g) return; sheetGesture = null;
-  if (sheetRaf) { cancelAnimationFrame(sheetRaf); sheetApply(); }
+});
+function sheetEnd(e) {
+  const g = sheetGesture; if (!g || g.id !== e.pointerId) return; sheetGesture = null;
+  if (sheetRaf) { cancelAnimationFrame(sheetRaf); sheetRaf = 0; }
   panel.classList.remove('sheet-dragging');
-  if (!g.moved) return;
+  if (!g.moved) { sheetVisible = g.h0; paintSheet(g.h0, true); return; }  // it was a tap: the click handler toggles
   sheetDraggedAt = performance.now();
-  const fresh = performance.now() - g.lastT < 90 && !cancelled;
-  let end = sheetVisible + (fresh ? Math.max(-1.6, Math.min(1.6, g.velocity)) * 90 : 0);  // a flick adds at most ~140 px of glide
-  end = Math.max(SHEET_MIN(), Math.min(SHEET_MAX(), end));
-  if (end - SHEET_MIN() < MAGNET) end = SHEET_MIN(); else if (SHEET_MAX() - end < MAGNET) end = SHEET_MAX();
-  sheetFrac = end / H; sheetState = end === SHEET_MIN() ? 'peek' : end === SHEET_MAX() ? 'full' : 'free';
-  sheetVisible = end; panel.dataset.sheet = sheetState;
-  panel.style.setProperty('--sheet-visible', end + 'px'); panel.style.setProperty('--sheet-offset', (H * .92 - end) + 'px');
-  $('grab').setAttribute('aria-label', sheetState === 'full' ? 'Show news panel at peek height' : sheetState === 'peek' ? 'Show news panel at half height' : 'Show full news panel');
-  phoneMapArea(); peekUpdate(); dockUpdate();
+  let h = sheetWant;
+  // the magnet only pulls toward the edge the finger was moving to: dragging 10 px up from the minimum stays 10 px up
+  if (h < g.h0 && h - SHEET_MIN() < MAGNET) h = SHEET_MIN(); else if (h > g.h0 && SHEET_MAX() - h < MAGNET) h = SHEET_MAX();
+  placeSheet('open', h);
 }
-// Touch (iPhone Safari): non-passive listeners so a drag that starts in the zone is never taken over by the browser's own scrolling
-panel.addEventListener('touchstart', e => { if (e.touches.length === 1 && inZone(e, e.touches[0].clientY)) sheetStart(e.touches[0].clientY, 'touch'); else sheetGesture = null; }, { passive: false });
-panel.addEventListener('touchmove', e => { if (sheetGesture && sheetGesture.id === 'touch') { if (sheetMove(e.touches[0].clientY) || e.cancelable) e.preventDefault(); } }, { passive: false });
-panel.addEventListener('touchend', e => { if (sheetGesture && sheetGesture.id === 'touch') { if (!sheetGesture.moved && e.changedTouches[0]) sheetMove(e.changedTouches[0].clientY); sheetEnd(false); } });  // browsers may swallow the first few px of movement (touch slop): count them at release
-panel.addEventListener('touchcancel', () => { if (sheetGesture && sheetGesture.id === 'touch') sheetEnd(true); });
-// Mouse and pen (desktop browser narrowed to phone width)
-panel.addEventListener('pointerdown', e => { if (e.pointerType === 'touch' || e.button !== 0 || !inZone(e, e.clientY)) return; sheetStart(e.clientY, e.pointerId); e.target.setPointerCapture?.(e.pointerId); });
-panel.addEventListener('pointermove', e => { if (sheetGesture && sheetGesture.id === e.pointerId) sheetMove(e.clientY); });
-panel.addEventListener('pointerup', e => { if (sheetGesture && sheetGesture.id === e.pointerId) sheetEnd(false); });
-panel.addEventListener('pointercancel', e => { if (sheetGesture && sheetGesture.id === e.pointerId) sheetEnd(true); });
+grab.addEventListener('pointerup', sheetEnd); grab.addEventListener('pointercancel', sheetEnd);
+grab.addEventListener('lostpointercapture', sheetEnd);
 pbody.addEventListener('click', e => { const b = e.target.closest('[data-share]'); if (b && window.ShareLink) { e.preventDefault(); ShareLink.share(b.dataset.share, (pbody.querySelector('h2') || {}).textContent || 'Investedia', b); } });
 pbody.addEventListener('click', e => { if (phone() && sheetState === 'closed' && !e.target.closest('a,button,input')) setSheet('peek'); });
 const layoutObserver = new ResizeObserver(() => { if (!sheetGesture) size(); }); [document.querySelector('.top'), $('tl'), panel, $('peek')].forEach(e => layoutObserver.observe(e));
@@ -1414,7 +1416,12 @@ function countryShape(c, fill, stroke, lw = 1) {
   ctx.beginPath(); for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke();
 }
 // globe look: neutral grey sphere, brighter than before, with a strong orange outline
-const GB = { s0: '#26262c', s1: '#101014', atm: .22, dot: 1.35, rgb: '161,161,170', land: .015, line: .04, grid: 1.5, rim: .9 };
+const GB0 = { s0: '#26262c', s1: '#101014', atm: .22, atmRGB: '255,122,26', dot: 1.35, rgb: '161,161,170', land: .015, line: .04, grid: 1.5, rim: .9, rimRGB: '255,122,26', rimW: 2, glow: '255,122,26,.7', blur: 14 };
+// ?gb=A|B|C previews outline options (temporary, for choosing a look)
+const GB = Object.assign({}, GB0, ({
+  A: { rim: .9, rimRGB: '232,232,238', rimW: 1.6, glow: '255,255,255,.28', blur: 10, atm: .10, atmRGB: '215,215,225' },
+  B: { rim: .75, rimRGB: '150,150,160', rimW: 1.6, glow: '0,0,0,0', blur: 0, atm: .06, atmRGB: '170,170,180' },
+  C: { rim: .65, rimRGB: '255,168,104', rimW: 1.4, glow: '255,160,90,.35', blur: 10, atm: .12, atmRGB: '255,160,90' } })[new URLSearchParams(location.search).get('gb')]);
 let last = performance.now();
 function frame(t) {
   const dt = Math.min(50, t - last); last = t;
@@ -1429,10 +1436,10 @@ function frame(t) {
   ctx.clearRect(0, 0, W, H);
   ctx.save(); // no hard clip: when zoomed in, the map runs softly behind the controls (markers still stay inside the free area)
   // atmosphere + sphere
-  const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, `rgba(255,122,26,${GB.atm})`); at.addColorStop(.25, `rgba(255,122,26,${GB.atm / 3})`); at.addColorStop(1, 'rgba(255,122,26,0)');
+  const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, `rgba(${GB.atmRGB},${GB.atm})`); at.addColorStop(.25, `rgba(${GB.atmRGB},${GB.atm / 3})`); at.addColorStop(1, `rgba(${GB.atmRGB},0)`);
   ctx.fillStyle = at; ctx.beginPath(); ctx.arc(cx, cy, R * 1.22, 0, 7); ctx.fill();
   const sg = ctx.createRadialGradient(cx - R * .4, cy - R * .45, R * .05, cx, cy, R); sg.addColorStop(0, GB.s0); sg.addColorStop(1, GB.s1);
-  ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill(); ctx.strokeStyle = `rgba(255,122,26,${GB.rim})`; ctx.lineWidth = 2; ctx.shadowColor = 'rgba(255,122,26,.7)'; ctx.shadowBlur = 14; ctx.stroke(); ctx.shadowBlur = 0;
+  ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill(); ctx.strokeStyle = `rgba(${GB.rimRGB},${GB.rim})`; ctx.lineWidth = GB.rimW; ctx.shadowColor = `rgba(${GB.glow})`; ctx.shadowBlur = GB.blur; ctx.stroke(); ctx.shadowBlur = 0;
   ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.clip();
   // faint latitude / longitude lines
   if (Z < 2.6) { ctx.beginPath(); for (let lo = -180; lo < 180; lo += 30) { let pen = false; for (let la = -80; la <= 80; la += 4) { const [x, y, z] = proj(la * rad, lo * rad); if (z <= 0) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } }
