@@ -1439,6 +1439,11 @@ const starList = (() => { let seed = 7; const rnd = () => (seed = (seed * 16807)
   const n = SM === 3 ? (innerWidth <= 760 ? 90 : 130) : SM === 2 ? 38 : (innerWidth <= 760 ? 40 : 60);  // fewer stars on a phone, where the space is smaller
   return Array.from({ length: n }, () => { const big = rnd() > .93, band = STARS > 1 && rnd() < .38; const x = rnd(), y = band ? Math.min(1, Math.max(0, .78 - x * .55 + (rnd() - .5) * .22)) : rnd();
     return { x, y, r: SM === 2 ? 1.2 + rnd() * 1.1 : SM === 3 ? .5 + rnd() * .6 : big ? 1.6 + rnd() * 1.2 : .8 + rnd() * .9, a: SM === 2 ? .7 + rnd() * .3 : SM === 3 ? .15 + rnd() * .35 : .45 + rnd() * .55, ph: rnd() * 6.28, sp: .4 + rnd() * 1.2, warm: (!STAR_MONO && rnd() > .82), d: .15 + rnd() * .85 }; }); })();
+// Black-and-white desktop previews (?bw=A|B). Phones keep the current look: these only apply above 760 px wide.
+const BW = { A: { s0: '#1b1b1e', s1: '#050506', atm: .03, atmRGB: '255,255,255', rim: .9, rimRGB: '235,235,240', rimW: 1.2, glow: '255,255,255,.12', blur: 10, grid: .7 },
+  B: { s0: '#1b1b1e', s1: '#050506', atm: .06, atmRGB: '255,255,255', rim: .95, rimRGB: '255,255,255', rimW: 1.6, glow: '255,255,255,.26', blur: 18, grid: .5 } }[new URLSearchParams(location.search).get('bw')];
+if (BW && innerWidth > 760) Object.assign(GB, BW);
+const STAR_DIM = BW && innerWidth > 760 ? .55 : 1;  // black-and-white previews: stars a little dimmer
 // Galaxy preview (?gx=1 violet band, 2 warm nebula, 3 spiral galaxy, 4 nebula + spiral). Drawn once into an offscreen canvas per size, then copied each frame: cheap for scrolling and dragging.
 const GALAXY = 4;  // chosen: nebula + spiral mix
 let galaxyCv = null, galaxyKey = '';
@@ -1462,7 +1467,7 @@ function drawStars(now) {
   for (const st of starList) {
     const tw = 1;
     const x = ((st.x * W - par * st.d) % W + W) % W, y = st.y * H;
-    ctx.fillStyle = st.warm ? `rgba(255,214,170,${(st.a * tw).toFixed(3)})` : `rgba(225,232,255,${(st.a * tw).toFixed(3)})`;
+    ctx.fillStyle = st.warm ? `rgba(255,214,170,${(st.a * tw * STAR_DIM).toFixed(3)})` : `rgba(225,232,255,${(st.a * tw * STAR_DIM).toFixed(3)})`;
     ctx.beginPath(); ctx.arc(x, y, st.r, 0, 7); ctx.fill();
   }
 }
