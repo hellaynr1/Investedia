@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=d8d2243f5a">
-<script src="assets/consent.js?v=d8d2243f5a"></script>
+<link rel="stylesheet" href="assets/consent.css?v=87f24c4498">
+<script src="assets/consent.js?v=87f24c4498"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia</title>
 <meta name="description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=d8d2243f5a">
-<link rel="stylesheet" href="assets/skin.css?v=d8d2243f5a">
+<link rel="stylesheet" href="assets/app.css?v=87f24c4498">
+<link rel="stylesheet" href="assets/skin.css?v=87f24c4498">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,20 +46,20 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=d8d2243f5a"></script>
-<script src="assets/legal-owner.js?v=d8d2243f5a"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=d8d2243f5a">
-<script src="assets/live-config.js?v=d8d2243f5a"></script>
-<script src="assets/live-data.js?v=d8d2243f5a" defer></script>
-<script src="assets/prefs.js?v=d8d2243f5a"></script>
-<script src="assets/peek.js?v=d8d2243f5a"></script>
-<script src="assets/sectors.js?v=d8d2243f5a"></script>
-<script src="assets/news-menu.js?v=d8d2243f5a"></script>
-<script src="assets/ui.js?v=d8d2243f5a"></script>
-<script src="assets/news-alerts.js?v=d8d2243f5a" defer></script>
-<script src="assets/since-news.js?v=d8d2243f5a"></script>
-<script src="assets/implications.js?v=d8d2243f5a"></script>
-<script src="assets/home-news.js?v=d8d2243f5a"></script>
+<script src="assets/mock.js?v=87f24c4498"></script>
+<script src="assets/legal-owner.js?v=87f24c4498"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=87f24c4498">
+<script src="assets/live-config.js?v=87f24c4498"></script>
+<script src="assets/live-data.js?v=87f24c4498" defer></script>
+<script src="assets/prefs.js?v=87f24c4498"></script>
+<script src="assets/peek.js?v=87f24c4498"></script>
+<script src="assets/sectors.js?v=87f24c4498"></script>
+<script src="assets/news-menu.js?v=87f24c4498"></script>
+<script src="assets/ui.js?v=87f24c4498"></script>
+<script src="assets/news-alerts.js?v=87f24c4498" defer></script>
+<script src="assets/since-news.js?v=87f24c4498"></script>
+<script src="assets/implications.js?v=87f24c4498"></script>
+<script src="assets/home-news.js?v=87f24c4498"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -207,7 +207,7 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
 <script>
 // PREVIEW ONLY (?hbg=1|2|3): decorative hero backgrounds to compare; illustrative curves, not market data.
 (function () {
-  var v = new URLSearchParams(location.search).get('hbg') || (innerWidth > 900 ? '8' : ''); if (!v) return;  // desktop: the galaxy is the live hero background (AI-generated, decorative); phones unchanged
+  var v = new URLSearchParams(location.search).get('hbg') || (innerWidth > 900 ? '9' : ''); if (!v) return;  // desktop: the Milky Way traced as a G is the live hero background; phones unchanged
   var hero = document.querySelector('.hn-hero'); if (!hero) return;
   var W = 1000, H = 600, seed = 11; function r() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
   function line(amp, base, n, drift) { var pts = [], y = base; for (var i = 0; i <= n; i++) { y += (r() - .5) * amp + drift; pts.push((i / n * W).toFixed(1) + ',' + Math.max(40, Math.min(H - 40, y)).toFixed(1)); } return pts.join(' '); }
