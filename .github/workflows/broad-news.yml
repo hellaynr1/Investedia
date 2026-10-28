@@ -40,6 +40,12 @@ jobs:
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python3 update_calendar.py || echo "Calendar update failed; keeping the previous data"
+      - name: Push to the Worker (optional, never blocks)
+        if: always()
+        env:
+          WORKER_URL: ${{ vars.WORKER_URL }}
+          NEWS_INGEST_TOKEN: ${{ secrets.NEWS_INGEST_TOKEN }}
+        run: python3 tools/push-news-to-worker.py
       - name: Publish
         if: always()
         run: |

@@ -24,3 +24,10 @@ Streams near-real-time crypto prices (refreshed every ~3 s) through our own subd
 - Provider code is isolated in `providers/yahoo.js` (not licensed for commercial use, see ../../DATA-LICENSING.md).
 - Tests: `cd workers/live && npm test`. CPU benchmark: `npm run bench` (estimate; the real CPU time is in the Cloudflare dashboard after deploy).
 - Deploy: `cd ~/Investedia && git pull origin main && cd workers/live && npx wrangler deploy` (free plan; creates the KV namespace on first deploy).
+
+## News and globe (built, benchmarked, NOT the primary path)
+- `GET /v1/news` -> newest AI-enriched articles; `GET /v1/globe` -> the same articles as compact map events (no second pipeline).
+- `POST /v1/ingest/news` (header `Authorization: Bearer <INGEST_TOKEN>`): the GitHub robots push their newest 40 articles here (`tools/push-news-to-worker.py`), so the site can read news without a commit and a Pages deploy. Empty or invalid lists are refused; an unchanged list is not written.
+- A full priority-news job inside the Worker (RSS parse, dedupe, score, Gemini) is written and tested (`v1/news.js`, `refreshNews`), but it is OFF (`NEWS_CRON = "off"`):
+  `npm run bench:news` measured about **6 ms median and 15 ms p95 for a run with nothing new, and about 10 ms median and 26 ms p95 for a run with new articles** (Node estimate; limit 10 ms on the free plan). That is not reliably inside the limit, so the heavy work stays on GitHub and only the ingest (about 1 ms) runs in the Worker.
+- Secrets (never committed): `npx wrangler secret put INGEST_TOKEN` (any long random string; add the same value as GitHub secret `NEWS_INGEST_TOKEN` and set the GitHub repository variable `WORKER_URL`), and `npx wrangler secret put GEMINI_API_KEY` (only needed if the Worker news cron is ever turned on).

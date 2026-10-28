@@ -25,6 +25,12 @@ jobs:
           NEWS_TIER: priority
         run: python3 update_globe_news.py
         timeout-minutes: 6
+      - name: Push to the Worker (optional, never blocks)
+        if: always()
+        env:
+          WORKER_URL: ${{ vars.WORKER_URL }}
+          NEWS_INGEST_TOKEN: ${{ secrets.NEWS_INGEST_TOKEN }}
+        run: python3 tools/push-news-to-worker.py
       - name: Publish (only when something changed)
         run: |
           git config user.name "github-actions[bot]"

@@ -7,3 +7,4 @@ export const fakeFetch = (opts = {}) => async (url) => {
   if (opts.junk) out[syms[0]] = null;
   return { ok: true, status: 200, json: async () => out };
 };
+export const rssXml = (items) => `<?xml version="1.0"?><rss><channel><title>t</title>${items.map(i => `<item><title><![CDATA[${i.title}]]></title><link>${i.url}</link><pubDate>${new Date(i.t).toUTCString()}</pubDate><description><![CDATA[<p>${i.desc || ''}</p>]]></description></item>`).join('')}</channel></rss>`;

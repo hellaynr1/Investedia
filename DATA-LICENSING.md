@@ -16,3 +16,21 @@
 
 Rules we follow: no full-text republishing, no paywall bypass, no publisher image hotlinking, always link to the original. Provider adapters are
 isolated per source so a licensed feed can replace a risky one without touching the rest.
+
+## What must change before Investedia earns revenue (per provider)
+Nothing below has been replaced yet. Each provider sits behind its own adapter, so a swap touches one file.
+
+| Provider | Where in code | Problem | What to change |
+|---|---|---|---|
+| Yahoo Finance (prices, spark/chart) | `workers/live/providers/yahoo.js`; `update_market.py`, `update_globe.py` and related robots | Free, unofficial endpoints; Yahoo's terms allow personal use only, no redistribution or commercial display. | Licensed market-data provider with a commercial redistribution/display licence (e.g. Polygon, Twelve Data, FMP, EODHD, Finnhub paid, or exchange-direct). Write a new `providers/<name>.js` returning the same `{ p, prev, t }` shape; swap the robots' fetchers. Real-time or exchange data also needs exchange licences: keep the "Delayed" labelling until then. |
+| Publisher RSS (BBC, Guardian, NYT, MarketWatch, Investing.com, regional feeds) | `FEEDS`/`NEWS_FEEDS` in `update_globe_news.py` (mirrored into `workers/live/v1/feeds.js`) | RSS is licensed for personal/non-commercial reading; headline-and-link republishing in a commercial product is uncertain, and some publishers forbid it. | Keep only official/public-sector feeds (central banks, SEC, BEA, EIA...) after checking each site's terms, and add a licensed news API (e.g. Marketaux, NewsAPI.ai, Benzinga) or direct publisher agreements for the rest. |
+| Google News / Yahoo RSS | `update_news.py` | Not licensed for redistribution. | Remove, or replace with the licensed news API above. |
+| GDELT | `gdelt()` in `update_globe_news.py` | Metadata is open; the linked article text is not. We use title and link only. | Fine to keep with attribution; confirm GDELT terms before launch. |
+| faireconomy / ForexFactory calendar | `update_calendar.py` | Third-party calendar, terms unclear. | Use official release calendars and FRED (already used for part of the data). |
+| Coinbase public market data | `workers/live/index.js` `/ticker` | Public data; attribution required; redistribution terms should be confirmed. | Keep the attribution line; confirm with Coinbase terms or use a licensed crypto data vendor. |
+| Brandfetch logos | `assets/globe/logos.json` | Terms need checking for commercial use. | Confirm the plan, or fall back to initials/own icons. |
+| Gemini | `update_globe_news.py`, `workers/live/providers/gemini.js` | Commercial use needs the paid API tier's terms, not the free tier's. | Move to the paid tier (or another model) before revenue; keep the "AI-assisted" labelling. |
+| Cloudflare Workers/KV | `workers/live` | Free plan is fine for non-commercial; commercial use is allowed but limits (10 ms CPU, 1000 KV writes/day) will bind at scale. | Workers Paid ($5/month) before real traffic. Not enabled. |
+
+## Data served by the Worker API (internal metadata only)
+Every `/v1` response carries `meta.provider` and `meta.licensed` (currently `false` for Yahoo and RSS), so an unlicensed source can be found and switched off quickly.
