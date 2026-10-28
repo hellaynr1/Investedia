@@ -381,11 +381,22 @@
   // Everything else: pick up the robot's newest prices every 2 minutes without reloading the page
   whenVisible(() => fetch('assets/quotes.js?t=' + Date.now(), { cache: 'no-store' }).then(r => r.text()).then(t => {
     const j = JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1)); if (!j.q || (M.updated && new Date(j.updated) <= M.updated)) return;
+    if (window.InvData && InvData.mode === 'worker' && Date.now() - (InvData.workerAt || 0) < 300000) return;  // the Worker answered in the last 5 minutes: its prices stay, the static file is only the fallback
     for (const s in j.q) { const a = M.bySym[s]; if (!a || a.live) continue; a.base = null; setPrice(s, j.q[s].p, j.q[s].d); Object.assign(a, { w: j.q[s].w, m1: j.q[s].m1 }); }
     M.updated = new Date(j.updated);
     document.querySelectorAll('[data-asof]').forEach(el => el.textContent = 'Delayed · updated ' + M.updated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     document.dispatchEvent(new CustomEvent('inv:tick'));
   }).catch(() => {}), 120000);
+
+  // Prices from the Cloudflare Worker (INV_DATA_MODE = 'worker'): stocks, indices, currencies and commodities, every 30 s while the page is open.
+  // Only price and change are taken; the static file keeps providing everything else and is the fallback whenever the Worker is slow, down or empty.
+  whenVisible(() => { const D = window.InvData; if (!D || D.mode !== 'worker') return;
+    D.get('prices').then(r => {
+      D.workerAt = Date.now(); const q = window.QUOTES && window.QUOTES.q;
+      for (const s in r.data) { const a = M.bySym[s]; if (!a || a.live) continue; const row = r.data[s]; a.base = null; setPrice(s, row[0], row[1]); if (q && q[s]) { q[s].p = row[0]; q[s].d = row[1]; } }
+      document.dispatchEvent(new CustomEvent('inv:tick'));
+    }).catch(() => {});
+  }, 30000);
 
   // ---------- live crypto: Coinbase's free public feed, applied at most once a second ----------
   (function liveCrypto() {

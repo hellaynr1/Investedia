@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fakeKV, fakeFetch } from './helpers.mjs';
 import { parseSpark } from '../providers/yahoo.js';
-import { toRow, merge, unchanged, shouldWrite, envelope, stateOf, KEEP_MS, WRITE_BUDGET, rollStats } from '../v1/core.js';
+import { toRow, entry, merge, unchanged, shouldWrite, envelope, stateOf, KEEP_MS, WRITE_BUDGET, rollStats } from '../v1/core.js';
 import { refresh, handlePrices, handleStatus, SYMBOLS_BY_GROUP } from '../v1/prices.js';
 
 const NOW = Date.UTC(2026, 9, 28, 14, 0, 0);
@@ -16,6 +16,10 @@ test('toRow computes the change, inverts when asked, rejects absurd moves', () =
   assert.deepEqual(toRow({ p: 110, prev: 100, t: 5 }, false, NOW), [110, 10, 5, NOW]);
   assert.equal(toRow({ p: 110, prev: 100, t: 5 }, true, NOW)[1], -10);
   assert.equal(toRow({ p: 1000, prev: 100, t: 5 }, false, NOW), null);
+});
+test('toRow applies the unit scale (pence and cents quotes) and entry() parses it', () => {
+  assert.equal(toRow({ p: 10050, prev: 10000, t: 1 }, false, NOW, 0.01)[0], 100.5);
+  assert.equal(entry('SHEL|SHEL.L|0|s|0.01').k, 0.01); assert.equal(entry('AAPL|AAPL|0|s|1').k, 1); assert.equal(entry('X|X|0|s').k, 1);
 });
 test('merge keeps old rows (stale) up to 7 days and lets fresh rows win', () => {
   const prev = { A: [1, 0, 0, NOW - 1000], OLD: [1, 0, 0, NOW - KEEP_MS - 1] };

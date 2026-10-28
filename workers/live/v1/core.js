@@ -6,13 +6,13 @@ export const HEARTBEAT_MS = 10 * 60e3;    // an unchanged snapshot is still rewr
 export const WRITE_BUDGET = 900;          // free plan allows 1000 KV writes a day: past this, writes are slowed to one per 15 minutes
 export const day = (now) => new Date(now).toISOString().slice(0, 10);
 
-export const entry = (line) => { const [site, y, inv, g] = line.split('|'); return { site, y, inv: inv === '1', g: g || 's' }; };
+export const entry = (line) => { const [site, y, inv, g, k] = line.split('|'); return { site, y, inv: inv === '1', g: g || 's', k: +k || 1 }; };
 
 // quote {p, prev, t} -> stored row [price, day%, providerTime, fetchedAt]
-export function toRow(q, inv, now) {
+export function toRow(q, inv, now, k = 1) {  // k = unit scale (0.01 for quotes in pence or cents)
   const d = (q.p / q.prev - 1) * 100 * (inv ? -1 : 1);
   if (!Number.isFinite(d) || Math.abs(d) > 60) return null;      // implausible move: treat as bad data
-  return [+q.p.toFixed(6), +d.toFixed(2), q.t || 0, now];
+  return [+(q.p * k).toFixed(6), +d.toFixed(2), q.t || 0, now];
 }
 
 // Merge fresh rows over the previous snapshot; drops rows older than KEEP_MS. Never returns less than it was given.

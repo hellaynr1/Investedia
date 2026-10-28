@@ -10,14 +10,14 @@ const B_PER_RUN = 160;  // 8 spark calls: with tier A (7 calls) one run uses abo
 
 // One cron run: all of tier A plus one rotating slice of tier B (the slice depends on the clock, so no state is needed between runs).
 export async function refresh(env, now = Date.now(), fetchFn = fetch) {
-  const slot = Math.floor(now / 120e3), nB = Math.ceil(B.length / B_PER_RUN), sliceB = B.slice((slot % nB) * B_PER_RUN, (slot % nB + 1) * B_PER_RUN);
+  const slot = Math.floor(now / 120e3), nB = Math.ceil(B.length / B_PER_RUN), sliceB = nB ? B.slice((slot % nB) * B_PER_RUN, (slot % nB + 1) * B_PER_RUN) : [];  // tier B is empty while the whole site list fits in tier A
   const batch = [...A, ...sliceB], byY = new Map(batch.map(e => [e.y, e]));
   let snap = {}; try { snap = JSON.parse(await env.PRICES.get('px')) || {}; } catch {}
   const stats = rollStats(snap.stats, now); stats.cron_runs++;
   const fresh = {};
   const calls = chunks(batch.map(e => e.y), MAX_SYMBOLS);
   const results = await Promise.allSettled(calls.map(c => fetchQuotes(c, fetchFn)));
-  results.forEach(r => { stats.upstream_calls++; if (r.status === 'fulfilled') for (const [y, q] of Object.entries(r.value)) { const e = byY.get(y); const row = e && toRow(q, e.inv, now); if (row) fresh[e.site] = row; } else stats.upstream_failures++; });
+  results.forEach(r => { stats.upstream_calls++; if (r.status === 'fulfilled') for (const [y, q] of Object.entries(r.value)) { const e = byY.get(y); const row = e && toRow(q, e.inv, now, e.k); if (row) fresh[e.site] = row; } else stats.upstream_failures++; });
   const got = Object.keys(fresh).length;
   if (!got) { stats.cron_failures++; return { ok: 0, wrote: false, stats, snapshot: snap, reason: 'no valid quotes: previous snapshot kept' }; } // never overwrite good data with nothing
   const p = merge(snap.p, fresh, now), changed = !unchanged(snap.p, p);
