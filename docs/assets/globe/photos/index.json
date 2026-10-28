@@ -1519,7 +1519,8 @@
   "copper mine",
   "cargo trucks highway",
   "telecom tower 5g",
-  "hotel tourism"
+  "hotel tourism",
+  "beer brewery"
  ],
  "airplane airport": [
   {
@@ -2234,6 +2235,54 @@
    "file": "photos/beer-brewery-2370783.jpg",
    "credit": "PeterKraayvanger",
    "source_url": "https://pixabay.com/photos/beer-varieties-different-sorts-2370783/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-1283566.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/beers-glasses-of-beer-drink-alcohol-1283566/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-2439237.jpg",
+   "credit": "Alexas_Fotos",
+   "source_url": "https://pixabay.com/photos/beer-mug-refreshment-beer-mug-2439237/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-956322.jpg",
+   "credit": "stevepb",
+   "source_url": "https://pixabay.com/photos/beer-barrel-keg-cask-oak-barrel-956322/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-1866945.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/bottles-beer-bottles-bottle-caps-1866945/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-7415073.jpg",
+   "credit": "RitaE",
+   "source_url": "https://pixabay.com/photos/hop-vines-hop-hop-plants-hop-garden-7415073/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-564401.jpg",
+   "credit": "stevepb",
+   "source_url": "https://pixabay.com/photos/beer-drinks-bottles-beer-bottles-564401/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-1518504.jpg",
+   "credit": "tiburi",
+   "source_url": "https://pixabay.com/photos/factory-beer-production-brewery-1518504/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-5164755.jpg",
+   "credit": "2112ST",
+   "source_url": "https://pixabay.com/photos/beer-bottle-craft-beer-beer-glass-5164755/",
    "alt": "beer brewery"
   }
  ],
