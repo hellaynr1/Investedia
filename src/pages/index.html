@@ -159,22 +159,25 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
   if (v === '8') {  // galaxy photo (desktop only), dimmed and faded at the edges, above the headline
     hero.insertAdjacentHTML('afterbegin', '<div aria-hidden="true" style="position:absolute;left:-8%;top:-10%;width:44%;height:62%;pointer-events:none;z-index:0;background:url(assets/galaxy-hero.jpg) center/cover no-repeat;opacity:.42;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 45% 45%,#000 28%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 45% 45%,#000 28%,transparent 100%)"></div>');
     return; }
-  if (v === '10' || v === '11' || v === '12' || v === '13') {  // Guidify G as a 3D star field, top-left: 10 = tilt back (design 3), 11 = larger stars (5), 12 = soft roll (4)
+  if (v === '10' || v === '11' || v === '12' || v === '13' || v === '14') {  // Guidify G as a 3D star field, top-left: 10 = tilt back (design 3), 11 = larger stars (5), 12 = soft roll (4)
     var cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
     cv.style.cssText = 'display:block;width:150px;height:150px;margin:0 0 6px -8px;pointer-events:none';
-    if (v === '13') { cv.style.cssText = 'position:absolute;left:40px;top:0;width:360px;height:300px;pointer-events:none;z-index:0'; hero.insertBefore(cv, hero.firstChild); }  // large 3D background behind the headline; no layout change
+    if (v === '13') { cv.style.cssText = 'position:absolute;left:40px;top:0;width:360px;height:300px;pointer-events:none;z-index:0'; hero.insertBefore(cv, hero.firstChild); }  // live version, unchanged
+    else if (v === '14') { cv.style.cssText = 'position:absolute;left:150px;top:0;width:380px;height:200px;pointer-events:none;z-index:1'; hero.insertBefore(cv, hero.firstChild); }  // variations in review: in the circled spot, above the dark gradient, behind the text  // background in the top-left of the hero, above the headline; no layout change
     else { var badge = document.getElementById('hnLive'); if (badge && badge.parentNode) badge.parentNode.insertBefore(cv, badge); else hero.insertBefore(cv, hero.firstChild); }  // above the Updated badge
-    var cfg = { '13': { tilt: .3, roll: 0, sz: 1, br: .22 }, '10': { tilt: .3, roll: 0, sz: 1, br: .22 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
+    var cfg = { '13': { tilt: .3, roll: 0, sz: 1, br: .22 }, '14': { tilt: .3, roll: 0, sz: 1, br: .22 }, '10': { tilt: .3, roll: 0, sz: 1, br: .22 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
     var qp = new URLSearchParams(location.search);  // preview overrides: ?tilt= &roll= &br= &sz=
-    if (qp.has('tilt')) cfg.tilt = +qp.get('tilt'); if (qp.has('roll')) cfg.roll = +qp.get('roll'); if (qp.has('br')) cfg.br = +qp.get('br'); if (qp.has('sz')) cfg.sz = +qp.get('sz');
+    if (qp.has('tilt')) cfg.tilt = +qp.get('tilt'); cfg.n = qp.has('n') ? +qp.get('n') : 1; cfg.haze = qp.has('haze') ? +qp.get('haze') : (v === '14' ? .04 : .07); if (qp.has('roll')) cfg.roll = +qp.get('roll'); if (qp.has('br')) cfg.br = +qp.get('br'); if (qp.has('sz')) cfg.sz = +qp.get('sz');
     fetch('assets/g-stars.json').then(function (r) { return r.json(); }).then(function (pts) {
       var dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr;
       var x = cv.getContext('2d'); x.scale(dpr, dpr);
       
       var S = Math.min(w, h) * 1.0, seed = 5; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
       var cA = Math.cos(cfg.tilt), sA = Math.sin(cfg.tilt), cR = Math.cos(cfg.roll), sR = Math.sin(cfg.roll);
+      pts = pts.slice(0, Math.round(pts.length * cfg.n));
+      if (cfg.haze > 0) { var hz = x.createRadialGradient(w * .5, h * .5, 6, w * .5, h * .5, (v === '14' ? Math.min(w, h) * .5 : Math.max(w, h) * .6)); hz.addColorStop(0, 'rgba(230,236,255,' + cfg.haze + ')'); hz.addColorStop(1, 'rgba(230,236,255,0)'); x.fillStyle = hz; x.fillRect(0, 0, w, h); }
       pts.forEach(function (q) {
-        var X = (q[0] - .5) * S, Y = (q[1] - .5) * S, z0 = (rnd() - .5) * 80, size = (.8 + rnd() * .9) * cfg.sz;
+        var X = (q[0] - .5) * S, Y = (q[1] - .5) * S, z0 = (rnd() - .5) * (v === '14' ? 26 : 80), size = (.8 + rnd() * .9) * cfg.sz;
         var y2 = Y * cA - z0 * sA, z2 = Y * sA + z0 * cA; Y = y2; var Z = z2;
         var x2 = X * cR - Y * sR, y3 = X * sR + Y * cR; X = x2; Y = y3;
         var f = 800 / (800 - Z); X *= f; Y *= f; var bright = Math.min(1, cfg.br * f); size *= f * .9;
