@@ -1520,7 +1520,8 @@
   "cargo trucks highway",
   "telecom tower 5g",
   "hotel tourism",
-  "beer brewery"
+  "beer brewery",
+  "freight train"
  ],
  "airplane airport": [
   {
@@ -2159,6 +2160,18 @@
    "file": "photos/freight-train-8568473.jpg",
    "credit": "Ralf1403",
    "source_url": "https://pixabay.com/photos/locomotive-railroad-transport-train-8568473/",
+   "alt": "freight train"
+  },
+  {
+   "file": "photos/freight-train-4789035.jpg",
+   "credit": "Michael_Luenen",
+   "source_url": "https://pixabay.com/photos/freight-depot-trains-railroad-4789035/",
+   "alt": "freight train"
+  },
+  {
+   "file": "photos/freight-train-6392173.jpg",
+   "credit": "DivineLeaders",
+   "source_url": "https://pixabay.com/photos/train-railroad-trees-cargo-rails-6392173/",
    "alt": "freight train"
   }
  ],
