@@ -145,7 +145,7 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
 <script>
 // PREVIEW ONLY (?hbg=1|2|3): decorative hero backgrounds to compare; illustrative curves, not market data.
 (function () {
-  var v = new URLSearchParams(location.search).get('hbg') || '';  // no decorative hero background by default (previews via ?hbg=) if (!v) return;  
+  var v = new URLSearchParams(location.search).get('hbg') || (innerWidth > 900 ? '13' : '');  // desktop: the 3D Guidify G as a large background behind the headline (no layout change); phones unchanged if (!v) return;  
   var hero = document.querySelector('.hn-hero'); if (!hero) return;
   var W = 1000, H = 600, seed = 11; function r() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
   function line(amp, base, n, drift) { var pts = [], y = base; for (var i = 0; i <= n; i++) { y += (r() - .5) * amp + drift; pts.push((i / n * W).toFixed(1) + ',' + Math.max(40, Math.min(H - 40, y)).toFixed(1)); } return pts.join(' '); }
@@ -159,11 +159,12 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
   if (v === '8') {  // galaxy photo (desktop only), dimmed and faded at the edges, above the headline
     hero.insertAdjacentHTML('afterbegin', '<div aria-hidden="true" style="position:absolute;left:-8%;top:-10%;width:44%;height:62%;pointer-events:none;z-index:0;background:url(assets/galaxy-hero.jpg) center/cover no-repeat;opacity:.42;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 45% 45%,#000 28%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 45% 45%,#000 28%,transparent 100%)"></div>');
     return; }
-  if (v === '10' || v === '11' || v === '12') {  // Guidify G as a 3D star field, top-left: 10 = tilt back (design 3), 11 = larger stars (5), 12 = soft roll (4)
+  if (v === '10' || v === '11' || v === '12' || v === '13') {  // Guidify G as a 3D star field, top-left: 10 = tilt back (design 3), 11 = larger stars (5), 12 = soft roll (4)
     var cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
     cv.style.cssText = 'display:block;width:150px;height:150px;margin:0 0 6px -8px;pointer-events:none';
-    var badge = document.getElementById('hnLive'); if (badge && badge.parentNode) badge.parentNode.insertBefore(cv, badge); else hero.insertBefore(cv, hero.firstChild);  // right above the Updated badge, in the text column
-    var cfg = { '10': { tilt: .3, roll: 0, sz: 1, br: .22 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
+    if (v === '13') { cv.style.cssText = 'position:absolute;left:4%;top:4%;width:62%;height:84%;pointer-events:none;z-index:0'; hero.insertBefore(cv, hero.firstChild); }  // large 3D background behind the headline; no layout change
+    else { var badge = document.getElementById('hnLive'); if (badge && badge.parentNode) badge.parentNode.insertBefore(cv, badge); else hero.insertBefore(cv, hero.firstChild); }  // above the Updated badge
+    var cfg = { '13': { tilt: .3, roll: 0, sz: 1, br: .22 }, '10': { tilt: .3, roll: 0, sz: 1, br: .22 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
     var qp = new URLSearchParams(location.search);  // preview overrides: ?tilt= &roll= &br= &sz=
     if (qp.has('tilt')) cfg.tilt = +qp.get('tilt'); if (qp.has('roll')) cfg.roll = +qp.get('roll'); if (qp.has('br')) cfg.br = +qp.get('br'); if (qp.has('sz')) cfg.sz = +qp.get('sz');
     fetch('assets/g-stars.json').then(function (r) { return r.json(); }).then(function (pts) {
