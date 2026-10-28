@@ -251,6 +251,8 @@ h1 span{color:var(--fg-3)}
   h1{display:none}
   .chips,.regions{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent)}
   .chips::-webkit-scrollbar,.regions::-webkit-scrollbar{display:none}
+  .chips,.regions,.strip-list{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .strip-list::-webkit-scrollbar{display:none}
   .chips{margin-top:10px}.regions{margin-top:6px}
   .search{margin-top:12px;height:48px;width:100%}.search kbd{display:none}
   .legend{display:none}
@@ -276,7 +278,8 @@ h1 span{color:var(--fg-3)}
 .compact-item time{display:block;font-size:11px;color:var(--fg-3);margin-top:5px}
 .panel-more{display:inline-flex;align-items:center;min-height:36px;margin-top:12px;font-size:12px;color:var(--fg-2)}
 .panel-more:hover{color:var(--fg)}
-.panel-tabs{display:flex;gap:2px;margin:14px 0 8px}
+.panel-tabs{display:flex;gap:2px;margin:14px 0 8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.panel-tabs::-webkit-scrollbar{display:none}.panel-tabs button{flex:none;white-space:nowrap;touch-action:manipulation}
 .mk-eyebrow{margin:6px 0 4px}.mk-list{display:grid}.mk-row{display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:12px;padding:12px 0;border:0;border-top:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .mk-main{display:grid;gap:2px}.mk-row small{color:var(--fg-3);font-size:12px;font-weight:500}.mk-row .mk-st{text-align:right}
 .mk-toggle{display:inline-flex;align-items:center;gap:8px;height:34px;margin-top:8px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:rgba(16,16,18,.6);color:var(--fg-2);font-size:12.5px;font-weight:600}.mk-toggle svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.mk-toggle:hover{color:#fff}.mk-toggle[aria-pressed=true]{background:#fff;color:#000;border-color:#fff}
@@ -285,7 +288,7 @@ h1 span{color:var(--fg-3)}
 .panel-tabs button[aria-selected=true]{background:rgba(255,255,255,.08);color:var(--fg)}
 .compact-country{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;text-align:left;font-size:13px}
 .compact-country small{margin-left:auto;color:var(--fg-3);font-size:11px}
-.strip-list{display:flex;gap:18px;overflow-x:auto;scrollbar-width:thin;scroll-snap-type:x proximity;padding-bottom:6px}
+.strip-list{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding-bottom:6px}
 .strip-list .compact-item{flex:0 0 255px;scroll-snap-align:start}
 @media(min-width:761px){
   html[data-panel=a].panel-top{--pw:320px}
@@ -329,7 +332,7 @@ h1 span{color:var(--fg-3)}
   .sheet-actions button:active{background:rgba(255,255,255,.08)}
   .sheet-actions svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
   .sheet-close{font-size:25px;line-height:1}
-  html[data-panel] .panel .pbody{flex:none;min-height:0;height:calc(var(--sheet-visible,84px) - 40px);padding:0 18px max(28px,env(safe-area-inset-bottom));overscroll-behavior:contain;touch-action:pan-y;overflow-y:auto;box-sizing:border-box}
+  html[data-panel] .panel .pbody{flex:none;min-height:0;height:calc(var(--sheet-visible,84px) - 40px);padding:0 18px max(28px,env(safe-area-inset-bottom));overscroll-behavior:contain;touch-action:pan-x pan-y;overflow-y:auto;box-sizing:border-box}
   html[data-panel] .panel[data-sheet=closed] .pbody{overflow:hidden;padding-bottom:0}
   .panel[data-sheet=closed] .sheet-close{visibility:hidden}
   .panel[data-sheet=full] #sheet-expand{visibility:hidden}
@@ -1217,7 +1220,13 @@ function variantPanel(list) {
 }
 pbody.addEventListener('click', e => {
   const tab = e.target.closest('[data-panel-tab]'), more = e.target.closest('[data-panel-more]');
-  if (tab) { panelTab = tab.dataset.panelTab; panelExpanded = false; render(); $('panel-tab-' + panelTab).focus(); }
+  if (tab) {
+    const strip = pbody.querySelector('.panel-tabs'), left = strip ? strip.scrollLeft : 0;
+    panelTab = tab.dataset.panelTab; panelExpanded = false; render();
+    const cur = $('panel-tab-' + panelTab); cur.focus({ preventScroll: true });
+    const ns = pbody.querySelector('.panel-tabs');  // render rebuilt the strip: restore where it was, then glide the chosen tab fully into view (the page itself never moves)
+    if (ns && cur) { ns.scrollLeft = left; const want = Math.max(0, Math.min(ns.scrollWidth - ns.clientWidth, cur.offsetLeft - (ns.clientWidth - cur.offsetWidth) / 2)); if (Math.abs(want - left) > 1) ns.scrollTo({ left: want, behavior: matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth' }); }
+  }
   else if (more) { panelExpanded = !panelExpanded; render(); pbody.querySelector('[data-panel-more]')?.focus({ preventScroll: true }); }
 });
 pbody.addEventListener('keydown', e => {
