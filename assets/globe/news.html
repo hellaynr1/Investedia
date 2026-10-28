@@ -1422,7 +1422,7 @@ function countryShape(c, fill, stroke, lw = 1) {
   ctx.beginPath(); for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke();
 }
 // globe look: neutral grey sphere, brighter than before, with a strong orange outline
-const GB0 = { s0: '#26262c', s1: '#101014', atm: .14, atmRGB: '255,122,26', dot: 1.35, rgb: '161,161,170', land: .015, line: .04, grid: .5, rim: .85, rimRGB: '140,144,154', rimW: 1.8, glow: '255,122,26,.42', blur: 16 };  // default: graphite rim with orange glow
+const GB0 = { s0: '#26262c', s1: '#101014', atm: .14, atmRGB: '255,122,26', dot: 1.35, rgb: '161,161,170', land: .015, line: .04, grid: .5, rim: .9, rimRGB: '180,136,109', rimW: 1.8, glow: '255,122,26,.42', blur: 16 };  // default: graphite rim with orange glow
 // ?gb=A|B|C previews outline options (temporary, for choosing a look)
 const GB = Object.assign({}, GB0, ({
   A: { rim: .9, rimRGB: '232,232,238', rimW: 1.6, glow: '255,255,255,.28', blur: 10, atm: .10, atmRGB: '215,215,225' },
