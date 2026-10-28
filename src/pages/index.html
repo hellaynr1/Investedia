@@ -164,6 +164,8 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
     cv.style.cssText = 'display:block;width:150px;height:150px;margin:0 0 6px -8px;pointer-events:none';
     var badge = document.getElementById('hnLive'); if (badge && badge.parentNode) badge.parentNode.insertBefore(cv, badge); else hero.insertBefore(cv, hero.firstChild);  // right above the Updated badge, in the text column
     var cfg = { '10': { tilt: .55, roll: .35, sz: 1, br: .45 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
+    var qp = new URLSearchParams(location.search);  // preview overrides: ?tilt= &roll= &br= &sz=
+    if (qp.has('tilt')) cfg.tilt = +qp.get('tilt'); if (qp.has('roll')) cfg.roll = +qp.get('roll'); if (qp.has('br')) cfg.br = +qp.get('br'); if (qp.has('sz')) cfg.sz = +qp.get('sz');
     fetch('assets/g-stars.json').then(function (r) { return r.json(); }).then(function (pts) {
       var dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr;
       var x = cv.getContext('2d'); x.scale(dpr, dpr);
