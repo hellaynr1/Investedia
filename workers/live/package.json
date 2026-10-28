@@ -1,0 +1,1 @@
+{ "name": "investedia-live", "private": true, "type": "module", "scripts": { "test": "node --test test/*.test.mjs", "bench": "node test/bench.mjs" } }
