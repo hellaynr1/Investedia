@@ -56,6 +56,7 @@ HEAD = """<!doctype html>
 <script src="assets/legal-owner.js?v={ver}"></script>
 <link rel="stylesheet" href="assets/news-menu.css?v={ver}">
 <script src="assets/live-config.js?v={ver}"></script>
+<script src="assets/live-data.js?v={ver}" defer></script>
 <script src="assets/prefs.js?v={ver}"></script>
 <script src="assets/peek.js?v={ver}"></script>
 <script src="assets/sectors.js?v={ver}"></script>
