@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=f8ee20b522">
-<script src="assets/consent.js?v=f8ee20b522"></script>
+<link rel="stylesheet" href="assets/consent.css?v=685f321782">
+<script src="assets/consent.js?v=685f321782"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia</title>
 <meta name="description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=f8ee20b522">
-<link rel="stylesheet" href="assets/skin.css?v=f8ee20b522">
+<link rel="stylesheet" href="assets/app.css?v=685f321782">
+<link rel="stylesheet" href="assets/skin.css?v=685f321782">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,20 +46,20 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=f8ee20b522"></script>
-<script src="assets/legal-owner.js?v=f8ee20b522"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=f8ee20b522">
-<script src="assets/live-config.js?v=f8ee20b522"></script>
-<script src="assets/live-data.js?v=f8ee20b522" defer></script>
-<script src="assets/prefs.js?v=f8ee20b522"></script>
-<script src="assets/peek.js?v=f8ee20b522"></script>
-<script src="assets/sectors.js?v=f8ee20b522"></script>
-<script src="assets/news-menu.js?v=f8ee20b522"></script>
-<script src="assets/ui.js?v=f8ee20b522"></script>
-<script src="assets/news-alerts.js?v=f8ee20b522" defer></script>
-<script src="assets/since-news.js?v=f8ee20b522"></script>
-<script src="assets/implications.js?v=f8ee20b522"></script>
-<script src="assets/home-news.js?v=f8ee20b522"></script>
+<script src="assets/mock.js?v=685f321782"></script>
+<script src="assets/legal-owner.js?v=685f321782"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=685f321782">
+<script src="assets/live-config.js?v=685f321782"></script>
+<script src="assets/live-data.js?v=685f321782" defer></script>
+<script src="assets/prefs.js?v=685f321782"></script>
+<script src="assets/peek.js?v=685f321782"></script>
+<script src="assets/sectors.js?v=685f321782"></script>
+<script src="assets/news-menu.js?v=685f321782"></script>
+<script src="assets/ui.js?v=685f321782"></script>
+<script src="assets/news-alerts.js?v=685f321782" defer></script>
+<script src="assets/since-news.js?v=685f321782"></script>
+<script src="assets/implications.js?v=685f321782"></script>
+<script src="assets/home-news.js?v=685f321782"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -224,7 +224,7 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
   if (v === '10' || v === '11' || v === '12' || v === '13') {  // Guidify G as a 3D star field, top-left: 10 = tilt back (design 3), 11 = larger stars (5), 12 = soft roll (4)
     var cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
     cv.style.cssText = 'display:block;width:150px;height:150px;margin:0 0 6px -8px;pointer-events:none';
-    if (v === '13') { cv.style.cssText = 'position:absolute;left:4%;top:4%;width:62%;height:84%;pointer-events:none;z-index:0'; hero.insertBefore(cv, hero.firstChild); }  // large 3D background behind the headline; no layout change
+    if (v === '13') { cv.style.cssText = 'position:absolute;left:40px;top:0;width:360px;height:300px;pointer-events:none;z-index:0'; hero.insertBefore(cv, hero.firstChild); }  // large 3D background behind the headline; no layout change
     else { var badge = document.getElementById('hnLive'); if (badge && badge.parentNode) badge.parentNode.insertBefore(cv, badge); else hero.insertBefore(cv, hero.firstChild); }  // above the Updated badge
     var cfg = { '13': { tilt: .3, roll: 0, sz: 1, br: .22 }, '10': { tilt: .3, roll: 0, sz: 1, br: .22 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
     var qp = new URLSearchParams(location.search);  // preview overrides: ?tilt= &roll= &br= &sz=

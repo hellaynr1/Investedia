@@ -162,7 +162,7 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
   if (v === '10' || v === '11' || v === '12' || v === '13') {  // Guidify G as a 3D star field, top-left: 10 = tilt back (design 3), 11 = larger stars (5), 12 = soft roll (4)
     var cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
     cv.style.cssText = 'display:block;width:150px;height:150px;margin:0 0 6px -8px;pointer-events:none';
-    if (v === '13') { cv.style.cssText = 'position:absolute;left:4%;top:4%;width:62%;height:84%;pointer-events:none;z-index:0'; hero.insertBefore(cv, hero.firstChild); }  // large 3D background behind the headline; no layout change
+    if (v === '13') { cv.style.cssText = 'position:absolute;left:40px;top:0;width:360px;height:300px;pointer-events:none;z-index:0'; hero.insertBefore(cv, hero.firstChild); }  // large 3D background behind the headline; no layout change
     else { var badge = document.getElementById('hnLive'); if (badge && badge.parentNode) badge.parentNode.insertBefore(cv, badge); else hero.insertBefore(cv, hero.firstChild); }  // above the Updated badge
     var cfg = { '13': { tilt: .3, roll: 0, sz: 1, br: .22 }, '10': { tilt: .3, roll: 0, sz: 1, br: .22 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
     var qp = new URLSearchParams(location.search);  // preview overrides: ?tilt= &roll= &br= &sz=
