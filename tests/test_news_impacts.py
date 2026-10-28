@@ -69,12 +69,45 @@ class NewsImpacts(unittest.TestCase):
         latest = max(robot.datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) for s in FEED['stories'])
         before = (ROOT / 'assets/globe/news-live.json').read_bytes()
         with patch.object(robot, 'gdelt', return_value=[]), patch.object(robot, 'rss', return_value=[]), \
-             patch.object(robot, 'gemini', side_effect=fake), patch.object(robot, 'save', side_effect=lambda n,v:writes.update({n:v})), \
+             patch.object(robot, 'gemini', side_effect=fake), patch.object(robot, 'save', side_effect=lambda n,v,feed=False:writes.update({n:v})), \
              patch.object(robot, 'NOW', latest):
             robot.main()
         self.assertIn('news-live.json', writes)
         had = {s['id'] for s in FEED['stories'] if 'impacts' in s}  # the live feed may already carry real analysis
         self.assertLessEqual(sum('impacts' in s and s['id'] not in had for s in writes['news-live.json']['stories']), 40)
         self.assertEqual((ROOT / 'assets/globe/news-live.json').read_bytes(), before)
+
+    def _run(self, tier, raw, gemini):
+        writes, seen = {}, {}
+        latest = robot.datetime.fromisoformat(max(s['published_at'] for s in FEED['stories']).replace('Z', '+00:00'))
+        with patch.object(robot, 'TIER', tier), patch.object(robot, 'gdelt', return_value=[]), patch.object(robot, 'rss', return_value=raw), \
+             patch.object(robot, 'gemini', side_effect=gemini), patch.object(robot, 'backfill_impacts', return_value=0), patch.object(robot, 'load_seen', return_value={}), \
+             patch.object(robot, 'save_seen', side_effect=lambda x: seen.update(x)), patch.object(robot, 'NOW', latest), \
+             patch.object(robot, 'save', side_effect=lambda n, v, feed=False: writes.update({n: v})):
+            robot.status.update({'errors': [], 'failed_sources': []}); robot.status.pop('gemini_ok', None)
+            robot.main()
+        return writes, seen
+
+    def _cand(self):
+        return [{'title': 'Brand new central bank surprise decision on interest rates', 'url': 'https://example.org/zz1', 'source': 'Example', 'kind': 'news',
+                 'published': max(s['published_at'] for s in FEED['stories']), 'desc': 'd'}]
+
+    def test_priority_tier_never_rewrites_archive(self):
+        ok = lambda prompt: [{**copy.deepcopy(FIXTURE[0]), 'members': [0], 'headline': 'Rates decision', 'category': 'economy', 'country': 'US', 'lat': 38.9, 'lon': -77, 'place': 'Washington'}]
+        writes, seen = self._run('priority', self._cand(), ok)
+        self.assertNotIn('news-archive.json', writes); self.assertIn('news-live.json', writes)
+        self.assertEqual(writes['news-status.json']['tiers']['priority']['new_articles'], 1)
+        self.assertTrue(seen)
+
+    def test_failed_gemini_does_not_mark_candidates_judged_and_empty_feed_not_published(self):
+        def boom(prompt): raise RuntimeError('quota')
+        writes, seen = self._run('priority', self._cand(), boom)
+        self.assertFalse(seen); self.assertNotIn('last_success', writes['news-status.json']['tiers']['priority'])
+        self.assertTrue(all(v for v in [writes['news-live.json']['stories']]) if 'news-live.json' in writes else True)
+
+    def test_no_candidates_keeps_feed_untouched_in_priority(self):
+        writes, _ = self._run('priority', [], lambda p: [])
+        self.assertNotIn('news-live.json', writes); self.assertNotIn('news-archive.json', writes)
+        self.assertIn('last_success', writes['news-status.json']['tiers']['priority'])
 
 if __name__ == '__main__': unittest.main()

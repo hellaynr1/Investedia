@@ -1,5 +1,5 @@
 """Live news for the Globe News page -> assets/globe/news-live.json (+ photos, + news-status.json)
-Runs every 30 minutes in GitHub Actions (update-globe-news.yml). Free sources only:
+Runs every 30 minutes in GitHub Actions (broad-news.yml). Free sources only:
   - GDELT DOC 2.0 (open, no key): business / economy headlines from around the world
   - Official press releases (ECB, Federal Reserve, Bank of England RSS)
   - Gemini (GEMINI_API_KEY): picks the financially relevant stories, merges duplicates, finds the place, category,
@@ -9,6 +9,7 @@ We never copy articles: each story keeps its headline (rewritten neutrally), our
 Without keys or when a source fails, the previous news stays online."""
 import html, json, os, re, sys, time, hashlib, urllib.error, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
+import news_core as core
 from email.utils import parsedate_to_datetime
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -21,8 +22,12 @@ UA = 'InvestediaNews/1.0 (+https://investedia.com; info@investedia.com)'
 NOW = datetime.now(timezone.utc); ISO_NOW = NOW.strftime('%Y-%m-%dT%H:%M:%SZ')
 KEEP_DAYS, MAX_STORIES, MAX_NEW = 30, 160, 45  # live file: newest 160 (globe, home); archive file: up to ARCHIVE_MAX over KEEP_DAYS (News page)
 ARCHIVE_MAX, ARCHIVE, LIVE_DAYS = 600, 'news-archive.json', 7
+PRIORITY_MAX, PRIORITY_NEW = 24, 10  # the priority tier is intentionally small
 GEMINI = os.environ.get('GEMINI_API_KEY', '').strip(); PIXABAY = os.environ.get('PIXABAY_KEY', '').strip()
-status = {'ran_at': ISO_NOW, 'errors': []}
+TIER = (os.environ.get('NEWS_TIER') or (sys.argv[sys.argv.index('--tier') + 1] if '--tier' in sys.argv else 'broad')).lower()
+if TIER not in ('priority', 'broad'): TIER = 'broad'
+SEEN, SEEN_DAYS = 'news-seen.json', 3  # candidates already judged (kept or rejected): never sent to Gemini again while their text is unchanged
+status = {'ran_at': ISO_NOW, 'tier': TIER, 'errors': [], 'failed_sources': []}
 CATS = ['markets', 'companies', 'economy', 'technology', 'crypto', 'commodities', 'geopolitics']
 REGION = {}  # iso2 -> region key, filled from the World Bank country list
 PHOTO_TOPICS = ['oil refinery', 'oil tanker ship', 'container port', 'semiconductor chip', 'data center servers', 'bank building', 'stock market trading screen',
@@ -44,10 +49,10 @@ def get(url, data=None, headers=None, timeout=40, raw=False):
     return b if raw else b.decode('utf-8', 'replace')
 
 
-def save(name, obj):
-    s = json.dumps(obj, ensure_ascii=False, separators=(',', ':'))
+def save(name, obj, feed=False):
+    """Atomic (temp file, validate, replace) into assets/globe and docs/assets/globe. A feed is never published empty or malformed."""
     for d in (G, D):
-        os.makedirs(d, exist_ok=True); open(os.path.join(d, name), 'w', encoding='utf-8').write(s)
+        core.atomic_write(os.path.join(d, name), obj, (lambda o: core.validate_feed(o)) if feed else None)
 
 
 # ---------- reference data: map countries, codes, bounding boxes, price symbols ----------
@@ -213,29 +218,34 @@ def balance(cands, limit=140):
     return reserved + rest[:max(0, limit - len(reserved))]
 
 
-def rss():
-    srcs = [(u, n, h, None) for u, n, h in FEEDS] + [(u, n, '', None) for u, n in NEWS_FEEDS] + [(u, n, '', r) for u, n, r in REGION_FEEDS]
+PRIORITY_NEWS = {'BBC News', 'The Guardian', 'MarketWatch', 'The New York Times', 'CoinDesk', 'OilPrice.com'}  # fast publisher feeds kept in the small priority tier
+
+
+def rss(tier='broad'):
+    """Priority: official sources + a handful of fast business feeds. Broad: everything. One retry per feed, failures are recorded per source."""
+    srcs = [(u, n, h, None) for u, n, h in FEEDS] + [(u, n, '', None) for u, n in NEWS_FEEDS if tier == 'broad' or n in PRIORITY_NEWS]
+    if tier == 'broad': srcs += [(u, n, '', r) for u, n, r in REGION_FEEDS]
 
     def one(src):
         url, name, hint, region = src
-        out = []
-        try:
-            root = ET.fromstring(get(url).encode('utf-8'))
-            for it in root.iter('item'):
-                t, l = (it.findtext('title') or '').strip(), (it.findtext('link') or '').strip()
-                if not t or not l: continue
-                pd = it.findtext('pubDate') or it.findtext('{http://purl.org/dc/elements/1.1/}date') or ''
-                try: ts = parsedate_to_datetime(pd.strip())  # RFC 822 with its own offset (+0800, GMT ...)
-                except (TypeError, ValueError, IndexError):
-                    try: ts = datetime.fromisoformat(pd.strip().replace('Z', '+00:00'))
-                    except ValueError: ts = NOW
-                if ts.tzinfo is None: ts = ts.replace(tzinfo=timezone.utc)
-                ts = ts.astimezone(timezone.utc)
-                if ts > NOW: ts = NOW  # a publication time can never be in the future
-                if NOW - ts > timedelta(days=3): continue
-                desc = re.sub(r'<[^>]+>', ' ', html.unescape(it.findtext('description') or '')).strip()
-                out.append({'title': html.unescape(t), 'url': l, 'source': name, 'published': ts.strftime('%Y-%m-%dT%H:%M:%SZ'), 'kind': 'official' if hint else 'news', 'hint': hint, 'desc': desc[:400], **({'region': region} if region else {})})
-        except Exception as e: err(f'RSS {name}: {e}')
+        out, last = [], None
+        for attempt in range(2):
+            try:
+                root = ET.fromstring(get(url, timeout=15 if tier == 'priority' else 25).encode('utf-8'))
+                for it in list(root.iter('item')) + list(root.iter('{http://www.w3.org/2005/Atom}entry')):
+                    t = (it.findtext('title') or it.findtext('{http://www.w3.org/2005/Atom}title') or '').strip()
+                    l = (it.findtext('link') or '').strip()
+                    if not l:
+                        le = it.find('{http://www.w3.org/2005/Atom}link'); l = (le.get('href') if le is not None else '') or ''
+                    if not t or not l: continue
+                    pd = it.findtext('pubDate') or it.findtext('{http://purl.org/dc/elements/1.1/}date') or it.findtext('{http://www.w3.org/2005/Atom}updated') or ''
+                    ts = core.parse_time(pd, NOW) or NOW  # always UTC, never in the future
+                    if NOW - ts > timedelta(days=3): continue
+                    desc = re.sub(r'<[^>]+>', ' ', html.unescape(it.findtext('description') or '')).strip()
+                    out.append({'title': html.unescape(t), 'url': l, 'source': name, 'published': ts.strftime('%Y-%m-%dT%H:%M:%SZ'), 'kind': 'official' if hint else 'news', 'hint': hint, 'desc': desc[:400], **({'region': region} if region else {})})
+                return out
+            except Exception as e: last = e
+        err(f'RSS {name}: {last}'); status['failed_sources'].append(name)
         return out
     with ThreadPoolExecutor(8) as ex: return [c for part in ex.map(one, srcs) for c in part]
 
@@ -254,25 +264,15 @@ def describe(c):  # the article's own short description (meta tag), used only as
 NOISE = re.compile(r'\b(stock to buy|stocks to buy|price target|horoscope|celebrity|football|soccer)\b', re.I)  # junk headlines, never sent to Gemini
 
 
-def norm(t): return set(w for w in re.sub(r'[^a-z0-9 ]', ' ', t.lower()).split() if len(w) > 2)
+norm, canon = core.norm, core.canon
 
 
-def canon(u):
-    """Same article, different address: drop tracking parameters, fragments, www and trailing slashes."""
-    try:
-        p = urllib.parse.urlsplit(u.strip()); q = [(k, v) for k, v in urllib.parse.parse_qsl(p.query) if not re.match(r'(utm_|fbclid|gclid|ref|cmp|ito|at_|ocid|taid)', k, re.I)]
-        return (p.netloc.lower().removeprefix('www.') + p.path.rstrip('/') + ('?' + urllib.parse.urlencode(q) if q else '')).lower()
-    except Exception: return u
-
-
-def dedupe(items, known_titles):
-    out, seen, urls = [], [norm(t) for t in known_titles], set()
-    for c in sorted(items, key=lambda c: c['kind'] != 'official'):
-        w = norm(c['title'])
-        if len(w) < 3 or canon(c['url']) in urls: continue
-        if any(len(w & s) / max(1, len(w | s)) > .55 for s in seen): continue
-        seen.append(w); urls.add(canon(c['url'])); out.append(c)
-    return out
+def dedupe(items, known_titles, known_times=None):
+    """URL canonicalisation + title/entity similarity close in time; the most authoritative source wins. See news_core.dedupe."""
+    known = [(t, (known_times or {}).get(t) or ISO_NOW) for t in known_titles]
+    kept, dropped = core.dedupe(items, known, NOW)
+    status['deduped'] = status.get('deduped', 0) + dropped
+    return kept
 
 
 # ---------- Gemini ----------
@@ -457,12 +457,30 @@ def photo(topic, seed, stories=None):
             'license_url': 'https://pixabay.com/service/license-summary/', 'source': 'Pixabay', 'source_url': p['source_url']}
 
 
+# ---------- seen-cache ----------
+def load_seen():
+    try:
+        d = json.load(open(os.path.join(G, SEEN)))
+        cut = core.iso(NOW - timedelta(days=SEEN_DAYS))
+        return {k: v for k, v in d.get('items', {}).items() if isinstance(v, dict) and v.get('t', '') > cut}
+    except Exception: return {}
+
+
+def save_seen(seen):
+    if not seen: return
+    try:
+        for d in (G,):
+            core.atomic_write(os.path.join(d, SEEN), {'schema': 'investedia.news.seen/v1', 'updated_at': ISO_NOW, 'items': dict(list(seen.items())[-3000:])})
+    except Exception as e: err(f'seen cache: {e}')
+
+
 # ---------- main ----------
 def pick_stories(cands, box, by_iso, sym, known_iso, n, online_stories=None):
     """Editor step: Gemini picks, merges and summarises candidates; everything is validated before it is kept."""
     new, photo_topics = [], {}
     if cands:
-        with ThreadPoolExecutor(8) as ex: cands = list(ex.map(describe, cands))
+        if TIER == 'broad':
+            with ThreadPoolExecutor(8) as ex: cands = list(ex.map(describe, cands))  # priority never fetches article pages: feed text only
         listing = json.dumps([{'i': i, 'title': c['title'], 'source': c['source'], **({'about': c['hint']} if c.get('hint') else {}), **({'description': c['desc']} if c.get('desc') else {})} for i, c in enumerate(cands)], ensure_ascii=False)
         try:
             picked = gemini(PROMPT.format(n=n, cats=', '.join(CATS), topics=', '.join(PHOTO_TOPICS), cands=listing))
@@ -491,7 +509,8 @@ def pick_stories(cands, box, by_iso, sym, known_iso, n, online_stories=None):
                      'category': p['category'], 'importance': max(1, min(3, int(p.get('importance', 1)))), 'flag': None, 'market_moving': bool(p.get('market_moving')),
                      'location': {'place': str(p.get('place') or country)[:60], 'country': country, 'lat': round(lat, 3), 'lon': round(lon, 3), 'region': REGION.get(iso2, 'eu')},
                      'entities': ents, 'links': [], 'source': srcs[0], 'sources': srcs, 'published_at': pub, 'retrieved_at': ISO_NOW,
-                     'official': any(cands[m]['kind'] == 'official' for m in mem), 'ai_summary': True}
+                     'official': any(cands[m]['kind'] == 'official' for m in mem), 'ai_summary': True,
+                     'score': max(cands[m].get('score', 0) for m in mem), 'content_hash': cands[mem[0]].get('chash')}
                 if isinstance(p.get('impacts'), list): s.update(validate_analysis(p, s['market_moving'], known_iso))
                 if s['importance'] >= 2: photo_topics[sid] = p.get('photo')
                 new.append(s); ids.append((s, p.get('leads_to')))
@@ -536,40 +555,71 @@ def main():
             save(OUT, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW,
                        'notice': 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.',
                        'stories': sorted(prev, key=lambda s: s['published_at'], reverse=True)[:MAX_STORIES]})
-    raw = gdelt() + rss()
+    raw = (gdelt() if TIER == 'broad' else []) + rss(TIER)
     status['fetched'] = len(raw)
-    fresh = [c for c in raw if canon(c['url']) not in known_urls]
-    fresh = [c for c in fresh if not NOISE.search(c['title'])]  # skip junk before it reaches Gemini
-    cands = balance(dedupe(fresh, [s['headline'] for s in prev]), 140)
+    seen = load_seen()
+    fresh = []
+    for c in raw:
+        c['chash'] = core.content_hash(c)
+        if canon(c['url']) in known_urls or NOISE.search(c['title']): continue
+        if seen.get(canon(c['url']), {}).get('h') == c['chash']: status['skipped_seen'] = status.get('skipped_seen', 0) + 1; continue  # already judged, text unchanged
+        fresh.append(c)
+    titles = [s['headline'] for s in prev]; times = {s['headline']: s['published_at'] for s in prev}
+    cands = dedupe(fresh, titles, times)
+    for c in cands: c['score'] = core.score(c, NOW, c.get('dups', 0))
+    cands.sort(key=lambda c: -c['score'])  # best first: the caps below drop the weakest, not the newest
+    cands = balance(cands, 140) if TIER == 'broad' else cands[:PRIORITY_MAX]
     status['candidates'] = len(cands)
-    log(f'{len(raw)} fetched, {len(cands)} new candidates')
-    new = pick_stories(cands, box, by_iso, sym, known_iso, MAX_NEW, prev)
+    log(f'[{TIER}] {len(raw)} fetched, {len(cands)} new candidates')
+    for c in cands: seen[canon(c['url'])] = {'h': c['chash'], 't': ISO_NOW}
+    new = pick_stories(cands, box, by_iso, sym, known_iso, MAX_NEW if TIER == 'broad' else PRIORITY_NEW, prev)
     status['new_stories'] = len(new)
+    if status.get('gemini_ok') or not cands: save_seen(seen)  # a failed Gemini call must not mark candidates as judged
     every = sorted(new + prev, key=lambda s: s['published_at'], reverse=True)[:ARCHIVE_MAX]
     live_cut = NOW - timedelta(days=LIVE_DAYS)
     stories = [s for s in every if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > live_cut][:MAX_STORIES]
-    status['impacts_backfilled'] = backfill_impacts(stories, known_iso)
+    status['impacts_backfilled'] = backfill_impacts(stories, known_iso) if TIER == 'broad' else 0
     # flags, used sparingly: breaking = major and under 90 minutes old; trending = 4+ sources; market moving = flagged by the editor step
     for s in stories: s['flag'] = None
     age = lambda s: (NOW - datetime.fromisoformat(s['published_at'].replace('Z', '+00:00'))).total_seconds() / 60
     for s in [s for s in stories if s['importance'] == 3 and age(s) < 90][:2]: s['flag'] = 'breaking'
     for s in [s for s in stories if not s['flag'] and len(s.get('sources', [])) >= 4][:2]: s['flag'] = 'trending'
     for s in [s for s in stories if not s['flag'] and s.get('market_moving') and age(s) < 1440][:2]: s['flag'] = 'moving'
+    notice = 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.'
+    wrote = False
     if not stories:
-        status['note'] = 'No stories yet: keeping the page on demo content'
+        status['note'] = 'No stories: keeping the previous feed online'
+    elif TIER == 'priority' and not new:
+        status['note'] = 'Nothing new: feed file left untouched'; wrote = True
     else:
-        save(OUT, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW,
-                   'notice': 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.',
-                   'stories': stories})
-        save(ARCHIVE, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW,
-                       'notice': 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.',
-                       'stories': every})
+        try:
+            save(OUT, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW, 'tier': TIER, 'notice': notice, 'stories': stories}, feed=True)
+            if TIER == 'broad':  # the archive is rebuilt only by the broad run, never by the 5-10 minute priority run
+                save(ARCHIVE, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW, 'notice': notice, 'stories': every}, feed=True)
+            wrote = True
+        except Exception as e: err(f'write refused, previous feed kept: {e}')
     status['stories_online'] = len(stories); status['archive'] = len(every)
-    save(STATUS, status)
+    write_status(stories, wrote)
     log(json.dumps(status, indent=1))
+
+
+def write_status(stories, wrote):
+    """news-status.json keeps the last success per tier, so one tier failing never hides the other."""
+    try: prevst = json.load(open(os.path.join(G, STATUS)))
+    except Exception: prevst = {}
+    tiers = prevst.get('tiers', {}) if isinstance(prevst.get('tiers'), dict) else {}
+    t = tiers.get(TIER, {})
+    ok = wrote and bool(status.get('gemini_ok') or not status.get('candidates'))
+    t.update({'last_run': ISO_NOW, 'sources_failed': sorted(set(status['failed_sources'])), 'fetched': status.get('fetched', 0), 'candidates': status.get('candidates', 0), 'new_articles': status.get('new_stories', 0)})
+    if ok: t['last_success'] = ISO_NOW
+    tiers[TIER] = t
+    pubs = sorted(s['published_at'] for s in stories)
+    out = {**status, 'version': 2, 'tiers': tiers, 'newest_article': pubs[-1] if pubs else None, 'oldest_article': pubs[0] if pubs else None, 'live_articles': len(stories)}
+    try: save(STATUS, out)
+    except Exception as e: log('status write failed', e)
 
 
 if __name__ == '__main__':
     try: main()
     except Exception as e:
-        err(f'fatal: {e}'); save(STATUS, status); sys.exit(0)  # never break the workflow: the previous news stays online
+        err(f'fatal: {e}'); write_status([], False); sys.exit(0)  # never break the workflow: the previous news stays online

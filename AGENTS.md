@@ -25,7 +25,7 @@ investedia.com: **investing media for everyone**. A news-first website: the worl
 - **Homepage** `src/pages/index.html` + `assets/home-news.js` + `assets/home-news.css` (classes prefixed `hn-` so they never clash with app.css): globe hero, top stories, why it moved, countries, markets open now, upcoming events + earnings, free-resources strip.
 - **Globe News page** `assets/globe/news.html`, source in `tools/globe-news/` (`page.html`, `build.py`). Build: `python3 tools/globe-news/build.py && python3 build.py`. `?embed=1` gives the globe alone (used by the homepage).
 - **Robots (GitHub Actions):**
-  - `update-globe-news.yml` every 30 min: `update_globe_news.py` (GDELT + ECB/Fed/BoE feeds, Gemini picks and summarises, Pixabay topic photos) → `assets/globe/news-live.json`; `update_calendar.py` (ForexFactory events, Nasdaq earnings) → `assets/calendar-live.json`.
+  - `broad-news.yml` every 30 min: `update_globe_news.py` (GDELT + ECB/Fed/BoE feeds, Gemini picks and summarises, Pixabay topic photos) → `assets/globe/news-live.json`; `update_calendar.py` (ForexFactory events, Nasdaq earnings) → `assets/calendar-live.json`.
   - `update-economy.yml` weekly: `update_economy.py` (World Bank) → `assets/globe/economy.json`.
   - `update-market.yml`: old price data (still used by Tools pages).
   - Secrets in GitHub: `GEMINI_API_KEY`, `PIXABAY_KEY`. Brandfetch logo Client ID is public, in `tools/globe-news/page.html`.

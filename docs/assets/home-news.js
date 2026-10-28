@@ -69,8 +69,8 @@ function countries(list) {
   const c = {}; for (const s of list) c[s.location.country] = (c[s.location.country] || 0) + 1;
   return Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, n]) => `<a class="hn-cty" href="assets/globe/news.html?country=${encodeURIComponent(k)}">${flagSrc(k) ? `<img src="${flagSrc(k)}" alt="">` : ''}<span><b>${esc(nm(k))}</b><small>${n} ${n === 1 ? 'article' : 'articles'}</small></span></a>`).join('');
 }
-// rank: importance, then sources, then recency
-const rank = (a, b) => (b.importance - a.importance) || ((b.sources?.length || 1) - (a.sources?.length || 1)) || (Date.parse(b.published_at) - Date.parse(a.published_at));
+// rank: importance, then priority score (stored, never shown), then sources, then recency
+const rank = (a, b) => (b.importance - a.importance) || ((b.score || 0) - (a.score || 0)) || ((b.sources?.length || 1) - (a.sources?.length || 1)) || (Date.parse(b.published_at) - Date.parse(a.published_at));
 async function loadNews() {
   const [n, iso, logos, mk, trk, led] = await Promise.all([fetch('assets/globe/news-live.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/iso.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/logos.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] })), window.SinceNews ? SinceNews.load('assets/globe/news-track.json') : null, fetch('assets/globe/news-ledger.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => null)]);
   MARKETS = mk.assets || []; TRACK = trk; LEDGER = led;
@@ -78,7 +78,8 @@ async function loadNews() {
   return { stories, top: [...stories].sort(rank), latest: [...stories].sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at)), updated: n.updated_at,
     moved: (() => { const all = [...stories].filter(s => s.market_moving || s.importance === 3).sort(rank), seen = new Set(), out = []; for (const s of all) { const m = primary(s); if (m && !seen.has(m.a.s)) { seen.add(m.a.s); out.push(s); } } for (const s of all) if (!out.includes(s) && !primary(s)) out.push(s); return out; })(), asof: mk.asof, calls: window.Implications ? Implications.collect({ stories, markets: MARKETS, track: TRACK, ledger: LEDGER }) : [] };
 }
-const updatedText = t => 'Live · updated ' + new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+const freshAgo = t => { const m = Math.max(0, Math.round((Date.now() - Date.parse(t)) / 60000)); return m < 1 ? 'just now' : m < 60 ? m + 'm ago' : m < 1440 ? Math.floor(m / 60) + 'h ago' : Math.floor(m / 1440) + 'd ago'; };
+const updatedText = t => 'Updated ' + freshAgo(t);
 
 // "Articles the market confirmed" (homepage): only calls the market bore out are featured; every other call is one click away on implications.html.
 const sgn = v => (v > 0 ? '↑ ' : v < 0 ? '↓ ' : '↔ ') + Math.abs(v).toFixed(2) + '%';

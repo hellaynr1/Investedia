@@ -43,7 +43,7 @@ All bases below are **proposed for review**. All suggested periods are **to conf
 ## Source and deployment evidence
 
 - Browser/storage: `assets/consent.js`, `assets/ui.js`, `tests/fixtures/legal-storage.json`, `tests/consent-matrix.md`.
-- Public news/AI/photo pipeline: `update_globe_news.py`, `news_rules.py`, `.github/workflows/update-globe-news.yml`, `assets/globe/photos/index.json`.
+- Public news/AI/photo pipeline: `update_globe_news.py`, `news_rules.py`, `.github/workflows/broad-news.yml`, `assets/globe/photos/index.json`.
 - Account lists: `assets/ui.js` (`watchlists`); usage: REST `/rest/v1/events`; templates: `emails/`.
 - Local checks cannot establish Supabase RLS deployment, email-trigger installation, provider region/retention, ownership facts or commercial contracts.
 

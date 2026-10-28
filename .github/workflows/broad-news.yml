@@ -1,5 +1,5 @@
-name: Update globe news
-# Live news for the Globe News page (update_globe_news.py): free sources (GDELT, official press releases), Gemini for selection + short summaries,
+name: Broad news (every 30 min)
+# Tier B. Live news for the Globe News page (update_globe_news.py): free sources (GDELT, official press releases), Gemini for selection + short summaries,
 # Pixabay for topic photos. Every 30 minutes; visitors only read the saved file, so traffic never uses the free limits.
 on:
   schedule:
@@ -11,11 +11,11 @@ on:
         default: "0"
   push:
     branches: [preview/live-news]
-    paths: [update_globe_news.py, .github/workflows/update-globe-news.yml]
+    paths: [update_globe_news.py, news_core.py, .github/workflows/broad-news.yml]
 permissions:
   contents: write
 concurrency:
-  group: market-data
+  group: news-data
   cancel-in-progress: false
 jobs:
   update:
@@ -30,6 +30,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PIXABAY_KEY: ${{ secrets.PIXABAY_KEY }}
+          NEWS_TIER: broad
           BACKFILL_DAYS: ${{ inputs.backfill_days || '0' }}
         run: python3 update_globe_news.py
         timeout-minutes: 60
