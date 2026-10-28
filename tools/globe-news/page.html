@@ -1435,8 +1435,8 @@ const GB = Object.assign({}, GB0, ({
 // Star field behind the globe (preview: ?st=1 sparse, 2 dense with a soft galaxy band, 3 dense + slow twinkle and parallax). Off by default.
 const STARS = 1;  // chosen: sparse stars, no twinkle
 const P = new URLSearchParams(location.search), ARC_A = +P.get('arc') || .4, STAR_MONO = !P.has('color');  // previews: ?arc=0.3 stronger connections, ?smono black-and-white stars
-const starList = (() => { let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647; const SM = +P.get('sm') || 0;  // preview styles: ?sm=2 bright and sparse, ?sm=3 dim and dense
-  const n = SM === 3 ? 110 : SM === 2 ? 38 : (innerWidth <= 760 ? 40 : 60);  // fewer stars on a phone, where the space is smaller
+const starList = (() => { let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647; const SM = +P.get('sm') || 3;  // star style: 3 = dim and dense (default); ?sm=2 bright and sparse, ?sm=1 the earlier style
+  const n = SM === 3 ? (innerWidth <= 760 ? 90 : 130) : SM === 2 ? 38 : (innerWidth <= 760 ? 40 : 60);  // fewer stars on a phone, where the space is smaller
   return Array.from({ length: n }, () => { const big = rnd() > .93, band = STARS > 1 && rnd() < .38; const x = rnd(), y = band ? Math.min(1, Math.max(0, .78 - x * .55 + (rnd() - .5) * .22)) : rnd();
     return { x, y, r: SM === 2 ? 1.2 + rnd() * 1.1 : SM === 3 ? .5 + rnd() * .6 : big ? 1.6 + rnd() * 1.2 : .8 + rnd() * .9, a: SM === 2 ? .7 + rnd() * .3 : SM === 3 ? .15 + rnd() * .35 : .45 + rnd() * .55, ph: rnd() * 6.28, sp: .4 + rnd() * 1.2, warm: (!STAR_MONO && rnd() > .82), d: .15 + rnd() * .85 }; }); })();
 // Galaxy preview (?gx=1 violet band, 2 warm nebula, 3 spiral galaxy, 4 nebula + spiral). Drawn once into an offscreen canvas per size, then copied each frame: cheap for scrolling and dragging.
