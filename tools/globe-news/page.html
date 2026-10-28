@@ -1435,7 +1435,7 @@ const GB = Object.assign({}, GB0, ({
 const STARS = +new URLSearchParams(location.search).get('st') || 0;
 const starList = (() => { if (!STARS) return []; let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647; const n = STARS === 1 ? 90 : 260;
   return Array.from({ length: n }, () => { const big = rnd() > .93, band = STARS > 1 && rnd() < .38; const x = rnd(), y = band ? Math.min(1, Math.max(0, .78 - x * .55 + (rnd() - .5) * .22)) : rnd();
-    return { x, y, r: big ? 1.15 + rnd() * .6 : .45 + rnd() * .55, a: .25 + rnd() * .6, ph: rnd() * 6.28, sp: .4 + rnd() * 1.2, warm: rnd() > .82, d: .15 + rnd() * .85 }; }); })();
+    return { x, y, r: big ? 1.6 + rnd() * 1.2 : .8 + rnd() * .9, a: .45 + rnd() * .55, ph: rnd() * 6.28, sp: .4 + rnd() * 1.2, warm: rnd() > .82, d: .15 + rnd() * .85 }; }); })();
 function drawStars(now) {
   if (!STARS) return;
   if (STARS > 1) { const g = ctx.createLinearGradient(0, H * .85, W, H * .1); g.addColorStop(0, 'rgba(120,130,170,0)'); g.addColorStop(.5, 'rgba(150,160,200,.055)'); g.addColorStop(1, 'rgba(120,130,170,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
