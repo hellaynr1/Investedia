@@ -145,7 +145,7 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
 <script>
 // PREVIEW ONLY (?hbg=1|2|3): decorative hero backgrounds to compare; illustrative curves, not market data.
 (function () {
-  var v = new URLSearchParams(location.search).get('hbg') || (innerWidth > 900 ? '10' : ''); if (!v) return;  // desktop: the G star logo (angle a1, dimmed d3) sits above the Updated badge; phones unchanged
+  var v = new URLSearchParams(location.search).get('hbg') || '';  // no decorative hero background by default (previews via ?hbg=) if (!v) return;  
   var hero = document.querySelector('.hn-hero'); if (!hero) return;
   var W = 1000, H = 600, seed = 11; function r() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
   function line(amp, base, n, drift) { var pts = [], y = base; for (var i = 0; i <= n; i++) { y += (r() - .5) * amp + drift; pts.push((i / n * W).toFixed(1) + ',' + Math.max(40, Math.min(H - 40, y)).toFixed(1)); } return pts.join(' '); }
