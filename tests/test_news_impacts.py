@@ -102,7 +102,7 @@ class NewsImpacts(unittest.TestCase):
     def test_failed_gemini_does_not_mark_candidates_judged_and_empty_feed_not_published(self):
         def boom(prompt): raise RuntimeError('quota')
         writes, seen = self._run('priority', self._cand(), boom)
-        self.assertFalse(seen); self.assertNotIn('last_success', writes['news-status.json']['tiers']['priority'])
+        self.assertFalse(seen); self.assertNotEqual(writes['news-status.json']['tiers']['priority'].get('last_success'), robot.ISO_NOW)  # a failed run never counts as a success
         self.assertTrue(all(v for v in [writes['news-live.json']['stories']]) if 'news-live.json' in writes else True)
 
     def test_no_candidates_keeps_feed_untouched_in_priority(self):
