@@ -1431,6 +1431,22 @@ const GB = Object.assign({}, GB0, ({
   D: { rim: .8, rimRGB: '196,190,182', rimW: 1.5, glow: '230,222,210,.22', blur: 12, atm: .08, atmRGB: '210,204,194' },   // titanium: warm silver
   E: { rim: .5, rimRGB: '255,255,255', rimW: 1, glow: '255,255,255,.18', blur: 16, atm: .05, atmRGB: '235,240,255' },       // glass: white hairline
   F: { rim: .9, rimRGB: '120,124,134', rimW: 2, glow: '0,0,0,0', blur: 0, atm: .04, atmRGB: '120,124,134' } })[new URLSearchParams(location.search).get('gb')], (g => g === null ? {} : { grid: +g })(new URLSearchParams(location.search).get('gr')));  // ?gr=0..2 previews the grid strength
+// Star field behind the globe (preview: ?st=1 sparse, 2 dense with a soft galaxy band, 3 dense + slow twinkle and parallax). Off by default.
+const STARS = +new URLSearchParams(location.search).get('st') || 0;
+const starList = (() => { if (!STARS) return []; let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647; const n = STARS === 1 ? 90 : 260;
+  return Array.from({ length: n }, () => { const big = rnd() > .93, band = STARS > 1 && rnd() < .38; const x = rnd(), y = band ? Math.min(1, Math.max(0, .78 - x * .55 + (rnd() - .5) * .22)) : rnd();
+    return { x, y, r: big ? 1.15 + rnd() * .6 : .45 + rnd() * .55, a: .25 + rnd() * .6, ph: rnd() * 6.28, sp: .4 + rnd() * 1.2, warm: rnd() > .82, d: .15 + rnd() * .85 }; }); })();
+function drawStars(now) {
+  if (!STARS) return;
+  if (STARS > 1) { const g = ctx.createLinearGradient(0, H * .85, W, H * .1); g.addColorStop(0, 'rgba(120,130,170,0)'); g.addColorStop(.5, 'rgba(150,160,200,.055)'); g.addColorStop(1, 'rgba(120,130,170,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+  const par = STARS === 3 ? lon0 * .6 : 0;
+  for (const st of starList) {
+    const tw = STARS === 3 ? .65 + .35 * Math.sin(now / 1000 * st.sp + st.ph) : 1;
+    const x = ((st.x * W - par * st.d) % W + W) % W, y = st.y * H;
+    ctx.fillStyle = st.warm ? `rgba(255,214,170,${(st.a * tw).toFixed(3)})` : `rgba(225,232,255,${(st.a * tw).toFixed(3)})`;
+    ctx.beginPath(); ctx.arc(x, y, st.r, 0, 7); ctx.fill();
+  }
+}
 let last = performance.now();
 function frame(t) {
   const dt = Math.min(50, t - last); last = t;
@@ -1444,6 +1460,7 @@ function frame(t) {
 
   ctx.clearRect(0, 0, W, H);
   ctx.save(); // no hard clip: when zoomed in, the map runs softly behind the controls (markers still stay inside the free area)
+  drawStars(performance.now());
   // atmosphere + sphere
   const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, `rgba(${GB.atmRGB},${GB.atm})`); at.addColorStop(.25, `rgba(${GB.atmRGB},${GB.atm / 3})`); at.addColorStop(1, `rgba(${GB.atmRGB},0)`);
   ctx.fillStyle = at; ctx.beginPath(); ctx.arc(cx, cy, R * 1.22, 0, 7); ctx.fill();
