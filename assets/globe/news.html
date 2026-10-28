@@ -1395,7 +1395,9 @@ function arcPts(a, b, n = 56) {
   for (let i = 0; i <= n; i++) {
     const k = i / n, f1 = Math.sin((1 - k) * om) / so, f2 = Math.sin(k * om) / so, v = [A[0] * f1 + B[0] * f2, A[1] * f1 + B[1] * f2, A[2] * f1 + B[2] * f2];
     const h = 1 + Math.sin(Math.PI * k) * Math.min(.22, .08 + om * .12), p = proj(Math.asin(v[2]), Math.atan2(v[1], v[0]), h);
-    out.push([p[0], p[1], p[2] > 0]);
+    // an arc may lift off the surface, but never into the sky: a point that would sit outside the globe's outline is not drawn
+    const off = Math.hypot(p[0] - cx, p[1] - cy) > R * .995;
+    out.push([p[0], p[1], p[2] > 0 && !off]);
   }
   return out;
 }
