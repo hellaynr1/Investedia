@@ -98,7 +98,7 @@ function fitTitle() { const h = hnTitle, lim = innerWidth > 900 ? 540 : Math.min
   for (let f = 60; f >= 22; f--) { h.style.fontSize = f + 'px'; if (Math.max(...[...h.children].map(c => c.offsetWidth)) <= lim) break; } }
 const isPhone = () => innerWidth <= 900;
 document.querySelector('.hn-hero').classList.add('hv-a');
-hnGlobe.src = 'assets/globe/news.html?embed=1&' + (isPhone() ? 'cx=.5&cy=.64&r=.58' : 'cx=.7&cy=.5&r=.4');
+hnGlobe.src = 'assets/globe/news.html?embed=1&' + (isPhone() ? 'cx=.5&cy=.6&r=.5' : 'cx=.7&cy=.5&r=.4');
 // phone: the globe glides up a little faster than the page as you scroll, then the news follows
 const glide = () => { if (!isPhone()) { hnGlobe.style.transform = ''; return; } const y = Math.min(scrollY, 600); hnGlobe.style.transform = `translateY(${-y * .18}px) scale(${1 - y / 3000})`; hnGlobe.style.opacity = Math.max(.25, 1 - y / 700); };
 if (!matchMedia('(prefers-reduced-motion: reduce)').matches) addEventListener('scroll', () => requestAnimationFrame(glide), { passive: true });
