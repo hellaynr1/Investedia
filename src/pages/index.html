@@ -159,6 +159,17 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
   if (v === '8') {  // galaxy photo (desktop only), dimmed and faded at the edges, above the headline
     hero.insertAdjacentHTML('afterbegin', '<div aria-hidden="true" style="position:absolute;left:-8%;top:-10%;width:44%;height:62%;pointer-events:none;z-index:0;background:url(assets/galaxy-hero.jpg) center/cover no-repeat;opacity:.42;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 45% 45%,#000 28%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 45% 45%,#000 28%,transparent 100%)"></div>');
     return; }
+  if (v === '9') {  // preview: a Milky Way star band traced into the shape of a G (top-left corner)
+    var gx = W * .05, gy = H * .05, gw = W * .26, gh = H * .5, pts = [], N = 260;
+    function arcP(cx0, cy0, rx, ry, a0, a1, n) { var o = []; for (var i = 0; i <= n; i++) { var a = a0 + (a1 - a0) * i / n; o.push([cx0 + Math.cos(a) * rx, cy0 + Math.sin(a) * ry]); } return o; }
+    var cxG = gx + gw / 2, cyG = gy + gh / 2, rx = gw / 2, ry = gh / 2;
+    var top = arcP(cxG, cyG, rx, ry, -.55, -Math.PI * 1.02, 60).concat(arcP(cxG, cyG, rx, ry, Math.PI, Math.PI * 1.55, 60));
+    var g1 = arcP(cxG, cyG, rx, ry, -.6, -Math.PI * .98, 1);
+    var bar = []; for (var j = 0; j <= 20; j++) bar.push([cxG + rx * .05 + rx * .95 * j / 20, cyG + ry * .05]);
+    var path = arcP(cxG, cyG, rx, ry, -.5, -Math.PI * 1.85, 90).concat(bar.slice(0, 1)).concat(arcP(cxG, cyG, rx, ry, .15, -.5, 0));
+    var sv = ''; var n2 = 0;
+    for (var k = 0; k < N; k++) { var t = r(), idx = Math.floor(t * (path.length - 1)); var q = path[idx]; var sp = (r() + r() + r() - 1.5) * 16; var x = q[0] + sp, y = q[1] + (r() - .5) * 20; var rad = r() > .95 ? 1.4 : .5 + r() * .6; var a = .2 + r() * .55; sv += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + rad.toFixed(2) + '" fill="#fff" fill-opacity="' + a.toFixed(2) + '"/>'; n2++; }
+    svg += sv; }
   if (v === '6' || v === '7') {  // Milky Way made of stars: a diagonal band of tiny white points, denser toward the centre of the band
     var st = ''; var n = v === '6' ? 420 : 700;
     for (var i = 0; i < n; i++) { var t = r(), spread = (r() + r() + r() - 1.5) * (v === '6' ? 150 : 110); var x = t * W, y = H * .62 - x * .62 * .9 + spread * 1.1; var rad = r() > .97 ? 1.6 : .5 + r() * .7; var a = .18 + r() * .5; if (y < 0 || y > H) continue; st += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + rad.toFixed(2) + '" fill="#fff" fill-opacity="' + a.toFixed(2) + '"/>'; }
