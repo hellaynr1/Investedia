@@ -360,7 +360,7 @@ h1 span{color:var(--fg-3)}
 @media (prefers-reduced-motion:reduce){html[data-panel] .panel{transition:none}}
 .embed body,.embed{background:transparent}
 .embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom,.embed .dock,.embed .peek,.embed .fsheet,.embed .fs-back,.embed .layers,.embed .ddrow{display:none!important}
-.embed #cv{touch-action:pan-y}
+.embed #cv{touch-action:none}  /* a finger that lands on the globe spins it first; the page scrolls from anywhere else */
 
 /* Atlas-style floating glass: segmented category + region bars, richer news panel */
 .chips{display:inline-flex;flex-wrap:nowrap;gap:2px;padding:4px;border-radius:999px;background:rgba(24,24,27,.62);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border:1px solid rgba(255,255,255,.1);box-shadow:0 12px 40px rgba(0,0,0,.35);max-width:100%;overflow-x:auto;scrollbar-width:none}
@@ -1010,7 +1010,7 @@ function setZ(z, x, y, anchor) {
 // ===== Interaction state =====
 let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
 // pointer: drag to rotate, pinch / wheel / double-click / buttons to zoom, tap to select
-const touches = new Map(); let pinch = null, drag = null;
+const touches = new Map(); let pinch = null, drag = null, spin = null;  // spin: momentum after a drag is released (degrees per ms)
 // In the homepage embed a pinch must zoom the globe only: the page behind must not scroll with it. Two fingers cancel the browser's scrolling,
 // and the parent page is asked to hold its scroll position for the length of the gesture (some browsers start scrolling before the second finger lands).
 const gestureLock = on => { if (!EMBED) return; try { parent.postMessage({ inv: 'globe-gesture', on }, location.origin); } catch {} };
@@ -1019,15 +1019,20 @@ cv.addEventListener('touchstart', twoFingers, { passive: false }); cv.addEventLi
 cv.addEventListener('pointerdown', e => {
   touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); cv.setPointerCapture(e.pointerId);
   if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), z: Zt, anchor: inv((a.x + b.x) / 2, (a.y + b.y) / 2) }; drag = null; gestureLock(true); return; }
-  drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false };
+  spin = null; drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false, t: performance.now(), vx: 0, vy: 0, touch: e.pointerType !== 'mouse' };
 });
 cv.addEventListener('pointermove', e => {
   if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pinch && touches.size === 2) { const [a, b] = [...touches.values()]; setZ(pinch.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2, pinch.anchor); return; }
   if (drag) {
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-    if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; fly = null; zoomAnchor = null; Zt = Z; cv.classList.add('drag'); hideHover(); }
-    if (drag.moved) { lon0 = drag.lon - dx * .3 / Z; lat0 = Math.max(-70, Math.min(70, drag.lat + dy * .26 / Z)); }
+    if (!drag.moved && Math.abs(dx) + Math.abs(dy) > (drag.touch ? 2 : 4)) { drag.moved = true; fly = null; zoomAnchor = null; Zt = Z; cv.classList.add('drag'); hideHover(); }
+    if (drag.moved) {
+      const gain = drag.touch ? 1.45 : 1;  // fingers cover less distance than a mouse: more rotation per pixel on a phone
+      const pl = lon0, pa = lat0, now = performance.now(), dt = Math.max(1, now - drag.t); drag.t = now;
+      lon0 = drag.lon - dx * .3 * gain / Z; lat0 = Math.max(-70, Math.min(70, drag.lat + dy * .26 * gain / Z));
+      drag.vx = drag.vx * .6 + ((lon0 - pl) / dt) * .4; drag.vy = drag.vy * .6 + ((lat0 - pa) / dt) * .4;  // smoothed velocity, for the glide
+    }
     return;
   }
   if (fine) { lastX = e.clientX; lastY = e.clientY; hoverAt(e.clientX, e.clientY); }
@@ -1036,6 +1041,7 @@ function endPointer(e) {
   touches.delete(e.pointerId);
   if (pinch) { if (touches.size < 2) { pinch = null; gestureLock(false); } drag = null; return; }
   if (drag && !drag.moved && e.type === 'pointerup') tap(e.clientX, e.clientY, e.pointerType !== 'mouse');
+  if (drag && drag.moved && e.type === 'pointerup' && !reduce && performance.now() - drag.t < 90 && Math.hypot(drag.vx, drag.vy) > .005) spin = { vx: Math.max(-.6, Math.min(.6, drag.vx)), vy: Math.max(-.3, Math.min(.3, drag.vy)) };
   drag = null; cv.classList.remove('drag');
 }
 cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
@@ -1377,7 +1383,8 @@ function countryShape(c, fill, stroke, lw = 1) {
 let last = performance.now();
 function frame(t) {
   const dt = Math.min(50, t - last); last = t;
-  if (fly) { const k = Math.min(1, (t - fly.t0) / fly.dur), e = ease(k); lon0 = fly.from[0] + fly.dl * e; lat0 = fly.from[1] + (fly.la - fly.from[1]) * e; Zt = fly.from[2] + (fly.z - fly.from[2]) * e; if (k >= 1) fly = null; }
+  if (fly) { spin = null; const k = Math.min(1, (t - fly.t0) / fly.dur), e = ease(k); lon0 = fly.from[0] + fly.dl * e; lat0 = fly.from[1] + (fly.la - fly.from[1]) * e; Zt = fly.from[2] + (fly.z - fly.from[2]) * e; if (k >= 1) fly = null; }
+  else if (spin) { lon0 += spin.vx * dt; lat0 = Math.max(-70, Math.min(70, lat0 + spin.vy * dt)); const f = Math.exp(-dt / 380); spin.vx *= f; spin.vy *= f; if (Math.hypot(spin.vx, spin.vy) < .004) spin = null; }  // friction: glides to a stop in about a second
   else if (!drag && !pinch && !reduce && !sel && !selCountry && !hoverC && !hoverCountry && view.k === 'top' && F.region === 'global' && Zt < 1.05 && !zoomAnchor) lon0 -= dt * .0022;
   Z += (Zt - Z) * (reduce ? 1 : .18); if (Math.abs(Zt - Z) < .0001) Z = Zt; R = R0 * Z;
   lon0 = ((lon0 + 540) % 360) - 180; cy += (cyT - cy) * (reduce ? 1 : .12);
