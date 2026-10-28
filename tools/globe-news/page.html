@@ -1499,7 +1499,11 @@ function frame(t) {
     ctx.strokeStyle = `rgba(255,255,255,${(.045 * GB.grid * (1 - (Z - 1) / 1.6)).toFixed(3)})`; ctx.lineWidth = .6; ctx.stroke(); }
   // land: dots fade out as you zoom in, country shapes take over
   const da = Math.max(0, 1.25 - Z * .25), ds = Math.max(1.1, Math.min(2.2, R / 230));
-  if (da > .02) for (const [phi, lam] of pts) { const [x, y, z] = proj(phi, lam); if (z <= 0) continue; ctx.fillStyle = `rgba(${GB.rgb},${Math.min(1, (.08 + z * .42) * da * GB.dot).toFixed(3)})`; ctx.fillRect(x - ds / 2, y - ds / 2, ds, ds); }
+  if (da > .02) {  // dots are batched by brightness: 12 fills per frame instead of one fill per dot (the main per-frame cost on PC)
+    const B = 12, buckets = Array.from({ length: B }, () => []);
+    for (const [phi, lam] of pts) { const [x, y, z] = proj(phi, lam); if (z <= 0) continue; const a = Math.min(1, (.08 + z * .42) * da * GB.dot); buckets[Math.min(B - 1, Math.floor(a * B))].push(x - ds / 2, y - ds / 2); }
+    for (let i = 0; i < B; i++) { const q = buckets[i]; if (!q.length) continue; ctx.fillStyle = `rgba(${GB.rgb},${((i + .5) / B).toFixed(3)})`; ctx.beginPath(); for (let j = 0; j < q.length; j += 2) ctx.rect(q[j], q[j + 1], ds, ds); ctx.fill(); }
+  }
   if (!EMBED && MKTON) { const n = nightPath(); ctx.save(); ctx.fillStyle = 'rgba(2,2,5,.46)'; if (n.wholeDisc) { const all = new Path2D(); all.arc(cx, cy, R, 0, 7); all.addPath(n.path); ctx.fill(all, 'evenodd'); } else ctx.fill(n.path); ctx.strokeStyle = 'rgba(255,160,100,.22)'; ctx.lineWidth = 1; ctx.stroke(n.path); ctx.restore(); }
   const la = Math.min(.07, .012 + (Z - 1) * .02) + GB.land;
   const map = Z >= 1.8 ? countries : overview;
