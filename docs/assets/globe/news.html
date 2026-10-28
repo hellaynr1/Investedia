@@ -1380,6 +1380,11 @@ function countryShape(c, fill, stroke, lw = 1) {
   ctx.beginPath(); for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = fill; ctx.fill('evenodd'); if (!stroke) return;
   ctx.beginPath(); for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke();
 }
+// globe brightness presets (?gb=A|B|C previews them; the default is the current look)
+const GB = ({ A: { s0: '#26262c', s1: '#101014', atm: .30, dot: 1.35, rgb: '161,161,170', land: .015, line: .04, grid: 1.5, rim: .45 },
+  B: { s0: '#2e2823', s1: '#121012', atm: .42, dot: 1.5, rgb: '205,190,175', land: .02, line: .05, grid: 1.8, rim: .6 },
+  C: { s0: '#34343c', s1: '#16161b', atm: .34, dot: 1.9, rgb: '190,190,202', land: .03, line: .08, grid: 2.2, rim: .5 } })[new URLSearchParams(location.search).get('gb')]
+  || { s0: '#1a1a1e', s1: '#09090b', atm: .22, dot: 1, rgb: '161,161,170', land: 0, line: 0, grid: 1, rim: .35 };
 let last = performance.now();
 function frame(t) {
   const dt = Math.min(50, t - last); last = t;
@@ -1394,26 +1399,26 @@ function frame(t) {
   ctx.clearRect(0, 0, W, H);
   ctx.save(); // no hard clip: when zoomed in, the map runs softly behind the controls (markers still stay inside the free area)
   // atmosphere + sphere
-  const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, 'rgba(255,122,26,.22)'); at.addColorStop(.25, 'rgba(255,122,26,.07)'); at.addColorStop(1, 'rgba(255,122,26,0)');
+  const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, `rgba(255,122,26,${GB.atm})`); at.addColorStop(.25, `rgba(255,122,26,${GB.atm / 3})`); at.addColorStop(1, 'rgba(255,122,26,0)');
   ctx.fillStyle = at; ctx.beginPath(); ctx.arc(cx, cy, R * 1.22, 0, 7); ctx.fill();
-  const sg = ctx.createRadialGradient(cx - R * .4, cy - R * .45, R * .05, cx, cy, R); sg.addColorStop(0, '#1a1a1e'); sg.addColorStop(1, '#09090b');
-  ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill(); ctx.strokeStyle = 'rgba(255,160,100,.35)'; ctx.lineWidth = 1; ctx.stroke();
+  const sg = ctx.createRadialGradient(cx - R * .4, cy - R * .45, R * .05, cx, cy, R); sg.addColorStop(0, GB.s0); sg.addColorStop(1, GB.s1);
+  ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill(); ctx.strokeStyle = `rgba(255,160,100,${GB.rim})`; ctx.lineWidth = 1; ctx.stroke();
   ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.clip();
   // faint latitude / longitude lines
   if (Z < 2.6) { ctx.beginPath(); for (let lo = -180; lo < 180; lo += 30) { let pen = false; for (let la = -80; la <= 80; la += 4) { const [x, y, z] = proj(la * rad, lo * rad); if (z <= 0) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } }
     for (let la = -60; la <= 60; la += 30) { let pen = false; for (let lo = -180; lo <= 180; lo += 4) { const [x, y, z] = proj(la * rad, lo * rad); if (z <= 0) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } }
-    ctx.strokeStyle = `rgba(255,255,255,${(.045 * (1 - (Z - 1) / 1.6)).toFixed(3)})`; ctx.lineWidth = .6; ctx.stroke(); }
+    ctx.strokeStyle = `rgba(255,255,255,${(.045 * GB.grid * (1 - (Z - 1) / 1.6)).toFixed(3)})`; ctx.lineWidth = .6; ctx.stroke(); }
   // land: dots fade out as you zoom in, country shapes take over
   const da = Math.max(0, 1.25 - Z * .25), ds = Math.max(1.1, Math.min(2.2, R / 230));
-  if (da > .02) for (const [phi, lam] of pts) { const [x, y, z] = proj(phi, lam); if (z <= 0) continue; ctx.fillStyle = `rgba(161,161,170,${((.08 + z * .42) * da).toFixed(3)})`; ctx.fillRect(x - ds / 2, y - ds / 2, ds, ds); }
+  if (da > .02) for (const [phi, lam] of pts) { const [x, y, z] = proj(phi, lam); if (z <= 0) continue; ctx.fillStyle = `rgba(${GB.rgb},${Math.min(1, (.08 + z * .42) * da * GB.dot).toFixed(3)})`; ctx.fillRect(x - ds / 2, y - ds / 2, ds, ds); }
   if (!EMBED && MKTON) { const n = nightPath(); ctx.save(); ctx.fillStyle = 'rgba(2,2,5,.46)'; if (n.wholeDisc) { const all = new Path2D(); all.arc(cx, cy, R, 0, 7); all.addPath(n.path); ctx.fill(all, 'evenodd'); } else ctx.fill(n.path); ctx.strokeStyle = 'rgba(255,160,100,.22)'; ctx.lineWidth = 1; ctx.stroke(n.path); ctx.restore(); }
-  const la = Math.min(.07, .012 + (Z - 1) * .02);
+  const la = Math.min(.07, .012 + (Z - 1) * .02) + GB.land;
   const map = Z >= 1.8 ? countries : overview;
   ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = `rgba(255,255,255,${la})`; ctx.fill('evenodd');
   const impactFocus = sel || arcHover?.article || (hoverC && drawn.find(d => d.key === hoverC)?.list.length === 1 ? drawn.find(d => d.key === hoverC).list[0] : null);
   // countries with news in the current filters get a soft orange tint
   for (const c of map) { const n = activity[c.name]; if (n) countryShape(c, `rgba(255,122,26,${(.035 + .025 * Math.min(4, n)).toFixed(3)})`); }
-  ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = `rgba(255,255,255,${Math.min(.2, .07 + (Z - 1) * .04)})`; ctx.lineWidth = .7; ctx.stroke();
+  ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = `rgba(255,255,255,${Math.min(.2, .07 + (Z - 1) * .04) + GB.line})`; ctx.lineWidth = .7; ctx.stroke();
   for (const { impact, country } of impactTargets(impactFocus)) countryShape(country, `rgba(${IMPACT_COLOR[impact.direction]},.10)`);
   if (hoverCountry && hoverCountry !== selCountry) countryShape(hoverCountry, 'rgba(255,255,255,.05)', 'rgba(255,255,255,.35)');
   if (selCountry) countryShape(selCountry, 'rgba(255,122,26,.10)', 'rgba(255,122,26,.75)', 1.2);
