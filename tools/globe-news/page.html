@@ -933,7 +933,7 @@ function refresh() {
 }
 
 // ===== Globe =====
-const cv = $('cv'), ctx = cv.getContext('2d');
+const cv = $('cv'); let ctx = cv.getContext('2d');
 const BOTTOM_DOCK = 90; let peekH = 140;
 let sheetState = 'closed', sheetVisible = 84, sheetGesture = null, phoneMapTop = 0;
 // Sheet model: the open sheet has ONE continuous height (sheetVisible, in px) between SHEET_MIN and SHEET_MAX. There are no detents.
@@ -1462,6 +1462,16 @@ function drawGalaxy() {
   }
   ctx.drawImage(galaxyCv, 0, 0, W, H);
 }
+let skyCv = null, skyKey = '';
+function drawSky() {
+  const key = W + 'x' + H + ':' + GALAXY + ':' + STARS + ':' + STAR_DIM + ':' + GB.s0;
+  if (key !== skyKey) {
+    skyKey = key; skyCv = document.createElement('canvas'); skyCv.width = W; skyCv.height = H;
+    const real = ctx; ctx = skyCv.getContext('2d');
+    try { drawGalaxy(); drawStars(0); } finally { ctx = real; }
+  }
+  ctx.drawImage(skyCv, 0, 0, W, H);
+}
 function drawStars(now) {
   if (!STARS) return;
   if (false) { const g = ctx.createLinearGradient(0, H * .85, W, H * .1); g.addColorStop(0, 'rgba(120,130,170,0)'); g.addColorStop(.5, 'rgba(150,160,200,.055)'); g.addColorStop(1, 'rgba(120,130,170,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
@@ -1486,8 +1496,7 @@ function frame(t) {
 
   ctx.clearRect(0, 0, W, H);
   ctx.save(); // no hard clip: when zoomed in, the map runs softly behind the controls (markers still stay inside the free area)
-  drawStars(performance.now());
-  drawGalaxy();
+  drawSky();  // galaxy and stars: built once per size, then one copy per frame
   // atmosphere + sphere
   const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, `rgba(${GB.atmRGB},${GB.atm})`); at.addColorStop(.25, `rgba(${GB.atmRGB},${GB.atm / 3})`); at.addColorStop(1, `rgba(${GB.atmRGB},0)`);
   ctx.fillStyle = at; ctx.beginPath(); ctx.arc(cx, cy, R * 1.22, 0, 7); ctx.fill();
