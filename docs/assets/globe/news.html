@@ -1429,6 +1429,7 @@ const GB = Object.assign({}, GB0, ({
   B: { rim: .75, rimRGB: '150,150,160', rimW: 1.6, glow: '0,0,0,0', blur: 0, atm: .06, atmRGB: '170,170,180' },
   C: { rim: .65, rimRGB: '255,168,104', rimW: 1.4, glow: '255,160,90,.35', blur: 10, atm: .12, atmRGB: '255,160,90' },
   D: { rim: .8, rimRGB: '196,190,182', rimW: 1.5, glow: '230,222,210,.22', blur: 12, atm: .08, atmRGB: '210,204,194' },   // titanium: warm silver
+  M: { rim: .85, rimRGB: '140,144,154', rimW: 1.8, glow: '255,122,26,.42', blur: 16, atm: .14, atmRGB: '255,122,26' },   // graphite rim with an orange glow (mixed)
   E: { rim: .5, rimRGB: '255,255,255', rimW: 1, glow: '255,255,255,.18', blur: 16, atm: .05, atmRGB: '235,240,255' },       // glass: white hairline
   F: { rim: .9, rimRGB: '120,124,134', rimW: 2, glow: '0,0,0,0', blur: 0, atm: .04, atmRGB: '120,124,134' } })[new URLSearchParams(location.search).get('gb')], (g => g === null ? {} : { grid: +g })(new URLSearchParams(location.search).get('gr')));  // ?gr=0..2 previews the grid strength
 // Star field behind the globe (preview: ?st=1 sparse, 2 dense with a soft galaxy band, 3 dense + slow twinkle and parallax). Off by default.
@@ -1436,6 +1437,22 @@ const STARS = +new URLSearchParams(location.search).get('st') || 0;
 const starList = (() => { if (!STARS) return []; let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647; const n = STARS === 1 ? 90 : 260;
   return Array.from({ length: n }, () => { const big = rnd() > .93, band = STARS > 1 && rnd() < .38; const x = rnd(), y = band ? Math.min(1, Math.max(0, .78 - x * .55 + (rnd() - .5) * .22)) : rnd();
     return { x, y, r: big ? 1.6 + rnd() * 1.2 : .8 + rnd() * .9, a: .45 + rnd() * .55, ph: rnd() * 6.28, sp: .4 + rnd() * 1.2, warm: rnd() > .82, d: .15 + rnd() * .85 }; }); })();
+// Galaxy preview (?gx=1 violet band, 2 warm nebula, 3 spiral galaxy). Drawn once into an offscreen canvas per size, then copied each frame: cheap for scrolling and dragging.
+const GALAXY = +new URLSearchParams(location.search).get('gx') || 0;
+let galaxyCv = null, galaxyKey = '';
+function drawGalaxy() {
+  if (!GALAXY) return;
+  const key = W + 'x' + H + ':' + GALAXY;
+  if (key !== galaxyKey) {
+    galaxyKey = key; galaxyCv = document.createElement('canvas'); galaxyCv.width = W; galaxyCv.height = H; const g2 = galaxyCv.getContext('2d');
+    if (GALAXY === 1) { const gr = g2.createLinearGradient(0, H * .95, W, H * .05); gr.addColorStop(0, 'rgba(90,70,160,0)'); gr.addColorStop(.45, 'rgba(110,90,190,.13)'); gr.addColorStop(.6, 'rgba(70,110,200,.10)'); gr.addColorStop(1, 'rgba(90,70,160,0)'); g2.fillStyle = gr; g2.fillRect(0, 0, W, H); }
+    if (GALAXY === 2) { [[.12, .2, .45], [.9, .78, .35]].forEach(([x, y, r]) => { const gr = g2.createRadialGradient(W * x, H * y, 0, W * x, H * y, Math.max(W, H) * r); gr.addColorStop(0, 'rgba(255,122,26,.10)'); gr.addColorStop(.5, 'rgba(255,90,40,.04)'); gr.addColorStop(1, 'rgba(255,90,40,0)'); g2.fillStyle = gr; g2.fillRect(0, 0, W, H); }); }
+    if (GALAXY === 3) { g2.save(); g2.translate(W * .18, H * .18); g2.rotate(-.5); g2.scale(1, .34); const R = Math.max(W, H) * .32;
+      for (let arm = 0; arm < 2; arm++) for (let i = 0; i < 90; i++) { const t = i / 90, a = t * 4.2 + arm * Math.PI, rr = R * t; g2.fillStyle = `rgba(200,210,255,${(.10 * (1 - t) + .02).toFixed(3)})`; g2.beginPath(); g2.arc(Math.cos(a) * rr, Math.sin(a) * rr, 2 + 10 * t, 0, 7); g2.fill(); }
+      const core = g2.createRadialGradient(0, 0, 0, 0, 0, R * .25); core.addColorStop(0, 'rgba(255,240,220,.22)'); core.addColorStop(1, 'rgba(255,240,220,0)'); g2.fillStyle = core; g2.fillRect(-R, -R, R * 2, R * 2); g2.restore(); }
+  }
+  ctx.drawImage(galaxyCv, 0, 0, W, H);
+}
 function drawStars(now) {
   if (!STARS) return;
   if (STARS > 1) { const g = ctx.createLinearGradient(0, H * .85, W, H * .1); g.addColorStop(0, 'rgba(120,130,170,0)'); g.addColorStop(.5, 'rgba(150,160,200,.055)'); g.addColorStop(1, 'rgba(120,130,170,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
@@ -1461,6 +1478,7 @@ function frame(t) {
   ctx.clearRect(0, 0, W, H);
   ctx.save(); // no hard clip: when zoomed in, the map runs softly behind the controls (markers still stay inside the free area)
   drawStars(performance.now());
+  drawGalaxy();
   // atmosphere + sphere
   const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, `rgba(${GB.atmRGB},${GB.atm})`); at.addColorStop(.25, `rgba(${GB.atmRGB},${GB.atm / 3})`); at.addColorStop(1, `rgba(${GB.atmRGB},0)`);
   ctx.fillStyle = at; ctx.beginPath(); ctx.arc(cx, cy, R * 1.22, 0, 7); ctx.fill();
