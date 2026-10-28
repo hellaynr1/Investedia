@@ -1190,6 +1190,12 @@ function sheetEnd(e) {
   placeSheet('open', h);
 }
 grab.addEventListener('pointerup', sheetEnd); grab.addEventListener('pointercancel', sheetEnd);
+// On-device check: open the globe page with ?debugsheet=1 and a small readout shows what the sheet receives (touch events, finger Y, height in px).
+if (new URLSearchParams(location.search).has('debugsheet')) {
+  const d = Object.assign(document.createElement('div'), { id: 'dbgsheet' }); d.style.cssText = 'position:fixed;left:8px;top:96px;z-index:99999;font:11px/1.35 ui-monospace,monospace;color:#9f9;background:rgba(0,0,0,.7);padding:6px 8px;border-radius:8px;pointer-events:none;white-space:pre'; document.body.appendChild(d);
+  const n = { down: 0, move: 0, up: 0, cancel: 0 }; const show = (t, e) => { d.textContent = `pointer events  down ${n.down}  move ${n.move}  up ${n.up}  cancel ${n.cancel}\nlast ${t}  y ${Math.round(e.clientY)}  type ${e.pointerType}\nsheet ${Math.round(sheetVisible)} px  (${Math.round(sheetVisible / H * 100)}%)  state ${sheetState}  dragging ${!!sheetGesture}`; };
+  for (const [t, k] of [['pointerdown', 'down'], ['pointermove', 'move'], ['pointerup', 'up'], ['pointercancel', 'cancel']]) grab.addEventListener(t, e => { n[k]++; show(t, e); });
+}
 grab.addEventListener('lostpointercapture', sheetEnd);
 pbody.addEventListener('click', e => { const b = e.target.closest('[data-share]'); if (b && window.ShareLink) { e.preventDefault(); ShareLink.share(b.dataset.share, (pbody.querySelector('h2') || {}).textContent || 'Investedia', b); } });
 pbody.addEventListener('click', e => { if (phone() && sheetState === 'closed' && !e.target.closest('a,button,input')) setSheet('peek'); });
