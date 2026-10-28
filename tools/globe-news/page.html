@@ -1394,10 +1394,11 @@ function arcPts(a, b, n = 56) {
   if (om < .00001) { const p=proj(a.phi,a.lam,1); return [[p[0],p[1],p[2]>0],[p[0],p[1],p[2]>0]]; }
   for (let i = 0; i <= n; i++) {
     const k = i / n, f1 = Math.sin((1 - k) * om) / so, f2 = Math.sin(k * om) / so, v = [A[0] * f1 + B[0] * f2, A[1] * f1 + B[1] * f2, A[2] * f1 + B[2] * f2];
-    const h = 1 + Math.sin(Math.PI * k) * Math.min(.22, .08 + om * .12), p = proj(Math.asin(v[2]), Math.atan2(v[1], v[0]), h);
-    // an arc may lift off the surface, but never into the sky: a point that would sit outside the globe's outline is not drawn
-    const off = Math.hypot(p[0] - cx, p[1] - cy) > R * .995;
-    out.push([p[0], p[1], p[2] > 0 && !off]);
+    // The lift follows the surface: it is full in the middle of the front face and flattens to zero as the arc nears the edge of the globe,
+    // so the line runs down onto the rim and carries on over it instead of ending in the sky.
+    const phi = Math.asin(v[2]), lam = Math.atan2(v[1], v[0]), zS = proj(phi, lam, 1)[2], f = Math.max(0, Math.min(1, zS / .3));
+    const h = 1 + Math.sin(Math.PI * k) * Math.min(.22, .08 + om * .12) * f, p = proj(phi, lam, h);
+    out.push([p[0], p[1], zS > 0]);
   }
   return out;
 }
