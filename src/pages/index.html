@@ -145,7 +145,7 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
 <script>
 // PREVIEW ONLY (?hbg=1|2|3): decorative hero backgrounds to compare; illustrative curves, not market data.
 (function () {
-  var v = new URLSearchParams(location.search).get('hbg') || (innerWidth > 900 ? '9' : ''); if (!v) return;  // desktop: the Milky Way traced as a G is the live hero background; phones unchanged
+  var v = new URLSearchParams(location.search).get('hbg') || (innerWidth > 900 ? '10' : ''); if (!v) return;  // desktop: the G star logo (angle a1, dimmed d3) sits above the Updated badge; phones unchanged
   var hero = document.querySelector('.hn-hero'); if (!hero) return;
   var W = 1000, H = 600, seed = 11; function r() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
   function line(amp, base, n, drift) { var pts = [], y = base; for (var i = 0; i <= n; i++) { y += (r() - .5) * amp + drift; pts.push((i / n * W).toFixed(1) + ',' + Math.max(40, Math.min(H - 40, y)).toFixed(1)); } return pts.join(' '); }
@@ -163,7 +163,7 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
     var cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
     cv.style.cssText = 'display:block;width:150px;height:150px;margin:0 0 6px -8px;pointer-events:none';
     var badge = document.getElementById('hnLive'); if (badge && badge.parentNode) badge.parentNode.insertBefore(cv, badge); else hero.insertBefore(cv, hero.firstChild);  // right above the Updated badge, in the text column
-    var cfg = { '10': { tilt: .55, roll: .35, sz: 1, br: .45 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
+    var cfg = { '10': { tilt: .3, roll: 0, sz: 1, br: .22 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
     var qp = new URLSearchParams(location.search);  // preview overrides: ?tilt= &roll= &br= &sz=
     if (qp.has('tilt')) cfg.tilt = +qp.get('tilt'); if (qp.has('roll')) cfg.roll = +qp.get('roll'); if (qp.has('br')) cfg.br = +qp.get('br'); if (qp.has('sz')) cfg.sz = +qp.get('sz');
     fetch('assets/g-stars.json').then(function (r) { return r.json(); }).then(function (pts) {
