@@ -323,9 +323,10 @@ h1 span{color:var(--fg-3)}
 @media(max-width:760px){
   html[data-panel] .panel{height:92vh;height:92dvh;max-height:none;transform:translate3d(0,var(--sheet-offset,calc(100% - 84px)),0);transition:transform .32s cubic-bezier(.2,.8,.2,1);will-change:transform}
   html[data-panel].panel-top .panel:not(.open){transform:translate3d(0,var(--sheet-offset,calc(100% - 84px)),0)}
-  html[data-panel] .panel.sheet-dragging{transition:none;user-select:none}
+  html[data-panel] .panel.sheet-dragging,html[data-panel] .panel.sheet-dragging .pbody{transition:none!important;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  html[data-panel] .panel:not([data-sheet=closed]){contain:layout style}
   .grab{height:40px;min-height:40px;touch-action:none;cursor:ns-resize}
-  .grab::after{top:13px;width:38px;height:4px}
+  .grab::after{top:13px;width:80px;height:5px;margin-left:-40px;background:rgba(255,255,255,.32)}
   .grab:focus-visible{outline:1px solid var(--accent);outline-offset:-5px;border-radius:18px}
   .sheet-actions{display:flex;position:absolute;right:10px;top:4px;gap:3px}
   .sheet-actions button{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;color:var(--fg-2)}
@@ -340,9 +341,13 @@ h1 span{color:var(--fg-3)}
   html[data-panel] .panel:not([data-sheet=closed]){left:12px;right:12px;top:auto;bottom:calc(var(--dock-gap,90px) + env(safe-area-inset-bottom));height:calc(var(--sheet-visible,84px) - var(--dock-gap,90px));border-radius:22px;border:1px solid rgba(255,255,255,.16);transform:none;transition:height .32s cubic-bezier(.2,.8,.2,1)}
   html[data-panel] .panel:not([data-sheet=closed]) .grab{height:18px;min-height:18px}
   html[data-panel] .panel:not([data-sheet=closed]) .grab::after{top:7px}
+  html[data-panel] .panel:not([data-sheet=closed]) .grab{touch-action:none;position:relative;z-index:2}
+  /* invisible drag zone: the top 56 px of the sheet. touch-action:none here means the browser never waits for a scroll decision (no touch slop), so even 5 px moves the sheet */
+  html[data-panel] .panel:not([data-sheet=closed]) .grab::before{content:'';position:absolute;left:0;right:0;top:0;height:56px}
+  html[data-panel] .panel:not([data-sheet=closed]) .sheet-actions{z-index:4}
   html[data-panel] .panel:not([data-sheet=closed]) .sheet-actions{top:0}
   html[data-panel] .panel:not([data-sheet=closed]) .sheet-actions button{min-width:44px;min-height:44px;width:44px;height:44px}
-  html[data-panel] .panel:not([data-sheet=closed]) .pbody{height:calc(var(--sheet-visible,84px) - var(--dock-gap,90px) - 18px);padding-bottom:24px}
+  html[data-panel] .panel:not([data-sheet=closed]) .pbody{height:calc(var(--sheet-visible,84px) - var(--dock-gap,90px) - 18px);padding-bottom:24px;transition:height .32s cubic-bezier(.2,.8,.2,1)}
   html[data-panel] .panel:not([data-sheet=closed]) .pbody:has(.back){padding-top:44px}
   html[data-panel] .panel:not([data-sheet=closed]) .pbody .back{position:absolute;left:12px;top:0;margin:0;min-height:44px;z-index:3;color:#fff;font-size:15px;font-weight:600;background:none}
   .panel[data-sheet=closed] .pbody{cursor:pointer}
@@ -1097,7 +1102,9 @@ $('hover').addEventListener('click', e => { const n = $('hover').dataset.country
 
 // ===== Panel =====
 const panel = $('panel'), pbody = $('pbody'); size(); new MutationObserver(() => { if (!phone()) size(); }).observe(panel, { attributes: true, attributeFilter: ['class'] }); let view = { k: 'top' }, hist = [];
-function sheetHeight(state) { return state === 'closed' ? 84 : H * ({ peek: .30, half: .55, full: .92 }[state] || .30); }
+let sheetFrac = .55;  // height of a freely placed sheet as a fraction of the viewport (survives rotation and the keyboard)
+const SHEET_MIN = () => H * .30, SHEET_MAX = () => H * .92;
+function sheetHeight(state) { return state === 'closed' ? 84 : state === 'free' ? Math.max(SHEET_MIN(), Math.min(SHEET_MAX(), sheetFrac * H)) : H * ({ peek: .30, half: .55, full: .92 }[state] || .30); }
 function phoneMapArea() {
   const pk = $('peek').getBoundingClientRect(); if (pk.height) peekH = pk.height;
   const bottom = sheetState === 'closed' ? (pk.height ? pk.top : H - BOTTOM_DOCK - peekH - 20) - 10 : H - sheetVisible - 12;
@@ -1107,11 +1114,11 @@ function phoneMapArea() {
 }
 function setSheet(state) {
   if (!phone() || EMBED) return;
-  sheetState = state; sheetVisible = sheetHeight(state);
+  sheetState = state; sheetVisible = sheetHeight(state); if (state !== 'closed') sheetFrac = sheetVisible / H;
   panel.dataset.sheet = state; panel.classList.toggle('open', state !== 'closed');
   panel.style.setProperty('--sheet-offset', (H * .92 - sheetVisible) + 'px');
   panel.style.setProperty('--sheet-visible', sheetVisible + 'px');
-  $('grab').setAttribute('aria-label', state === 'full' ? 'Show news panel at peek height' : state === 'half' ? 'Show full news panel' : state === 'peek' ? 'Show news panel at half height' : 'Open Top articles');
+  $('grab').setAttribute('aria-label', state === 'full' ? 'Show news panel at peek height' : state === 'closed' ? 'Open Top articles' : state === 'peek' ? 'Show news panel at half height' : 'Show full news panel');
   $('grab').setAttribute('aria-expanded', String(state !== 'closed'));
   phoneMapArea(); peekUpdate(); dockUpdate();
 }
@@ -1119,7 +1126,7 @@ let sheetDraggedAt = -1000;
 $('grab').onclick = () => {
   if (!phone()) return panel.classList.toggle('open');
   if (performance.now() - sheetDraggedAt < 400) return;
-  setSheet({ closed: 'peek', peek: 'half', half: 'full', full: 'peek' }[sheetState]);
+  setSheet({ closed: 'peek', peek: 'half', half: 'full', full: 'peek', free: sheetVisible > H * .6 ? 'peek' : 'full' }[sheetState]);
 };
 $('sheet-expand').onclick = () => setSheet('full');
 $('sheet-close').onclick = () => {
@@ -1127,38 +1134,60 @@ $('sheet-close').onclick = () => {
   setMarketsLayer(false);
   sel = null; selCountry = null; hist = []; view = { k: 'top' }; render(); pbody.scrollTop = 0; setSheet('closed');
 };
-// Only the handle and heading drag the sheet. Links retain their native taps;
-// the body scrolls independently and never passes a gesture through to the map.
-panel.addEventListener('pointerdown', e => {
-  if (!phone() || e.button !== 0 || !e.target.closest('.grab,.story-heading') || e.target.closest('a,button:not(.grab),input')) return;
-  sheetGesture = { id: e.pointerId, y: e.clientY, height: sheetVisible, lastY: e.clientY, lastT: performance.now(), velocity: 0, moved: false, target: e.target };
-  e.target.setPointerCapture(e.pointerId);
-});
-panel.addEventListener('pointermove', e => {
-  const g = sheetGesture; if (!g || g.id !== e.pointerId) return;
-  const now = performance.now(), delta = g.y - e.clientY;
-  if (!g.moved && Math.abs(delta) < 5) return;
-  g.moved = true; g.velocity = (g.lastY - e.clientY) / Math.max(1, now - g.lastT); g.lastY = e.clientY; g.lastT = now;
-  panel.classList.add('sheet-dragging');
-  sheetVisible = Math.max(sheetHeight('peek'), Math.min(sheetHeight('full'), g.height + delta));
-  panel.style.setProperty('--sheet-offset', (H * .92 - sheetVisible) + 'px');
-  phoneMapArea();
-});
-function endSheetGesture(e) {
-  const g = sheetGesture; if (!g || g.id !== e.pointerId) return;
-  sheetGesture = null; panel.classList.remove('sheet-dragging');
+// Sheet drag: the top 56 px of the sheet (header row, grabber and the space around them) resizes it; the article list below scrolls; the map outside moves the globe.
+// While the finger is down the sheet follows it 1:1 (no thresholds, no stages, no transition); one requestAnimationFrame per frame writes one CSS variable.
+// After release it stays where it was left, with a gentle magnet only within 28 px of the smallest or largest height and a short glide from the release velocity.
+const DRAG_ZONE = 56, MAGNET = 28;
+let sheetRaf = 0, sheetWant = 0;
+const sheetApply = () => {
+  sheetRaf = 0; sheetVisible = sheetWant;
+  panel.style.setProperty('--sheet-visible', sheetVisible + 'px');
+  globeBox.bottom = H - sheetVisible - 12; cyT = phoneMapTop + Math.max(0, globeBox.bottom - phoneMapTop) / 2;  // writes only: no layout reads while dragging
+  document.querySelector('.zoom').style.top = Math.max(phoneMapTop, globeBox.bottom - 96) + 'px';
+};
+const inZone = (e, y) => phone() && !EMBED && sheetState !== 'closed' && y - panel.getBoundingClientRect().top < DRAG_ZONE && !e.target.closest('a,button:not(.grab),input,select,textarea');
+function sheetStart(y, id) {
+  sheetGesture = { id, y, height: sheetVisible, lastY: y, lastT: performance.now(), velocity: 0, moved: false };
+}
+function sheetMove(y) {
+  const g = sheetGesture; if (!g) return false;
+  const now = performance.now(), delta = g.y - y;
+  if (!g.moved && Math.abs(delta) < 2) return false;  // 2 px of jitter tolerance so a tap stays a tap; beyond it the sheet follows the finger exactly
+  if (!g.moved) { g.moved = true; panel.classList.add('sheet-dragging'); }
+  const v = (g.lastY - y) / Math.max(1, now - g.lastT); g.velocity = g.velocity * .6 + v * .4; g.lastY = y; g.lastT = now;  // px per ms, only used after release
+  sheetWant = Math.max(SHEET_MIN(), Math.min(SHEET_MAX(), g.height + delta));
+  if (!sheetRaf) sheetRaf = requestAnimationFrame(sheetApply);
+  return true;
+}
+function sheetEnd(cancelled) {
+  const g = sheetGesture; if (!g) return; sheetGesture = null;
+  if (sheetRaf) { cancelAnimationFrame(sheetRaf); sheetApply(); }
+  panel.classList.remove('sheet-dragging');
   if (!g.moved) return;
   sheetDraggedAt = performance.now();
-  const velocity = performance.now() - g.lastT < 100 && e.type !== 'pointercancel' ? g.velocity : 0;
-  const projected = sheetVisible + Math.max(-1.5, Math.min(1.5, velocity)) * 160;
-  const state = ['peek','half','full'].sort((a,b) => Math.abs(sheetHeight(a) - projected) - Math.abs(sheetHeight(b) - projected))[0];
-  setSheet(state);
+  const fresh = performance.now() - g.lastT < 90 && !cancelled;
+  let end = sheetVisible + (fresh ? Math.max(-1.6, Math.min(1.6, g.velocity)) * 90 : 0);  // a flick adds at most ~140 px of glide
+  end = Math.max(SHEET_MIN(), Math.min(SHEET_MAX(), end));
+  if (end - SHEET_MIN() < MAGNET) end = SHEET_MIN(); else if (SHEET_MAX() - end < MAGNET) end = SHEET_MAX();
+  sheetFrac = end / H; sheetState = end === SHEET_MIN() ? 'peek' : end === SHEET_MAX() ? 'full' : 'free';
+  sheetVisible = end; panel.dataset.sheet = sheetState;
+  panel.style.setProperty('--sheet-visible', end + 'px'); panel.style.setProperty('--sheet-offset', (H * .92 - end) + 'px');
+  $('grab').setAttribute('aria-label', sheetState === 'full' ? 'Show news panel at peek height' : sheetState === 'peek' ? 'Show news panel at half height' : 'Show full news panel');
+  phoneMapArea(); peekUpdate(); dockUpdate();
 }
-panel.addEventListener('pointerup', endSheetGesture);
-panel.addEventListener('pointercancel', endSheetGesture);
+// Touch (iPhone Safari): non-passive listeners so a drag that starts in the zone is never taken over by the browser's own scrolling
+panel.addEventListener('touchstart', e => { if (e.touches.length === 1 && inZone(e, e.touches[0].clientY)) sheetStart(e.touches[0].clientY, 'touch'); else sheetGesture = null; }, { passive: false });
+panel.addEventListener('touchmove', e => { if (sheetGesture && sheetGesture.id === 'touch') { if (sheetMove(e.touches[0].clientY) || e.cancelable) e.preventDefault(); } }, { passive: false });
+panel.addEventListener('touchend', e => { if (sheetGesture && sheetGesture.id === 'touch') { if (!sheetGesture.moved && e.changedTouches[0]) sheetMove(e.changedTouches[0].clientY); sheetEnd(false); } });  // browsers may swallow the first few px of movement (touch slop): count them at release
+panel.addEventListener('touchcancel', () => { if (sheetGesture && sheetGesture.id === 'touch') sheetEnd(true); });
+// Mouse and pen (desktop browser narrowed to phone width)
+panel.addEventListener('pointerdown', e => { if (e.pointerType === 'touch' || e.button !== 0 || !inZone(e, e.clientY)) return; sheetStart(e.clientY, e.pointerId); e.target.setPointerCapture?.(e.pointerId); });
+panel.addEventListener('pointermove', e => { if (sheetGesture && sheetGesture.id === e.pointerId) sheetMove(e.clientY); });
+panel.addEventListener('pointerup', e => { if (sheetGesture && sheetGesture.id === e.pointerId) sheetEnd(false); });
+panel.addEventListener('pointercancel', e => { if (sheetGesture && sheetGesture.id === e.pointerId) sheetEnd(true); });
 pbody.addEventListener('click', e => { const b = e.target.closest('[data-share]'); if (b && window.ShareLink) { e.preventDefault(); ShareLink.share(b.dataset.share, (pbody.querySelector('h2') || {}).textContent || 'Investedia', b); } });
 pbody.addEventListener('click', e => { if (phone() && sheetState === 'closed' && !e.target.closest('a,button,input')) setSheet('peek'); });
-const layoutObserver = new ResizeObserver(size); [document.querySelector('.top'), $('tl'), panel, $('peek')].forEach(e => layoutObserver.observe(e));
+const layoutObserver = new ResizeObserver(() => { if (!sheetGesture) size(); }); [document.querySelector('.top'), $('tl'), panel, $('peek')].forEach(e => layoutObserver.observe(e));
 document.fonts.ready.then(size);
 function go(v, push = true) { if (push && view.k !== v.k || push && view.id !== v.id) hist.push(view); view = v; render(); pbody.scrollTop = 0; if (phone()) setSheet('peek'); }
 function back() { view = hist.pop() || { k: 'top' }; if (view.k === 'top') { sel = null; selCountry = null; } else if (view.k === 'country') { sel = null; selCountry = byName[view.id]; } else if (view.k === 'article') { sel = byId[view.id]; } render(); }
