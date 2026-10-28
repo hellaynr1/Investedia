@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=88e28d7777">
-<script src="assets/consent.js?v=88e28d7777"></script>
+<link rel="stylesheet" href="assets/consent.css?v=ad5d9bd1fd">
+<script src="assets/consent.js?v=ad5d9bd1fd"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia</title>
 <meta name="description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=88e28d7777">
-<link rel="stylesheet" href="assets/skin.css?v=88e28d7777">
+<link rel="stylesheet" href="assets/app.css?v=ad5d9bd1fd">
+<link rel="stylesheet" href="assets/skin.css?v=ad5d9bd1fd">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,20 +46,20 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=88e28d7777"></script>
-<script src="assets/legal-owner.js?v=88e28d7777"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=88e28d7777">
-<script src="assets/live-config.js?v=88e28d7777"></script>
-<script src="assets/live-data.js?v=88e28d7777" defer></script>
-<script src="assets/prefs.js?v=88e28d7777"></script>
-<script src="assets/peek.js?v=88e28d7777"></script>
-<script src="assets/sectors.js?v=88e28d7777"></script>
-<script src="assets/news-menu.js?v=88e28d7777"></script>
-<script src="assets/ui.js?v=88e28d7777"></script>
-<script src="assets/news-alerts.js?v=88e28d7777" defer></script>
-<script src="assets/since-news.js?v=88e28d7777"></script>
-<script src="assets/implications.js?v=88e28d7777"></script>
-<script src="assets/home-news.js?v=88e28d7777"></script>
+<script src="assets/mock.js?v=ad5d9bd1fd"></script>
+<script src="assets/legal-owner.js?v=ad5d9bd1fd"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=ad5d9bd1fd">
+<script src="assets/live-config.js?v=ad5d9bd1fd"></script>
+<script src="assets/live-data.js?v=ad5d9bd1fd" defer></script>
+<script src="assets/prefs.js?v=ad5d9bd1fd"></script>
+<script src="assets/peek.js?v=ad5d9bd1fd"></script>
+<script src="assets/sectors.js?v=ad5d9bd1fd"></script>
+<script src="assets/news-menu.js?v=ad5d9bd1fd"></script>
+<script src="assets/ui.js?v=ad5d9bd1fd"></script>
+<script src="assets/news-alerts.js?v=ad5d9bd1fd" defer></script>
+<script src="assets/since-news.js?v=ad5d9bd1fd"></script>
+<script src="assets/implications.js?v=ad5d9bd1fd"></script>
+<script src="assets/home-news.js?v=ad5d9bd1fd"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -223,14 +223,14 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
     return; }
   if (v === '10' || v === '11' || v === '12') {  // Guidify G as a 3D star field, top-left: 10 = tilt back (design 3), 11 = larger stars (5), 12 = soft roll (4)
     var cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
-    cv.style.cssText = 'position:absolute;left:0;top:0;width:52%;height:78%;pointer-events:none;z-index:0';
-    hero.insertBefore(cv, hero.firstChild);
+    cv.style.cssText = 'display:block;width:150px;height:150px;margin:0 0 6px -8px;pointer-events:none';
+    var badge = document.getElementById('hnLive'); if (badge && badge.parentNode) badge.parentNode.insertBefore(cv, badge); else hero.insertBefore(cv, hero.firstChild);  // right above the Updated badge, in the text column
     var cfg = { '10': { tilt: .55, roll: .35, sz: 1, br: .45 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
     fetch('assets/g-stars.json').then(function (r) { return r.json(); }).then(function (pts) {
       var dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr;
       var x = cv.getContext('2d'); x.scale(dpr, dpr);
-      var g = x.createRadialGradient(w * .5, h * .45, 40, w * .5, h * .45, Math.max(w, h) * .55); g.addColorStop(0, 'rgba(255,255,255,.07)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, w, h);
-      var S = Math.min(w, h) * 1.05, seed = 5; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+      
+      var S = Math.min(w, h) * 1.0, seed = 5; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
       var cA = Math.cos(cfg.tilt), sA = Math.sin(cfg.tilt), cR = Math.cos(cfg.roll), sR = Math.sin(cfg.roll);
       pts.forEach(function (q) {
         var X = (q[0] - .5) * S, Y = (q[1] - .5) * S, z0 = (rnd() - .5) * 80, size = (.8 + rnd() * .9) * cfg.sz;
