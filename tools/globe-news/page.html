@@ -1445,7 +1445,7 @@ const BW = { A: { s0: '#1b1b1e', s1: '#050506', atm: .03, atmRGB: '255,255,255',
 if (BW && innerWidth > 760) Object.assign(GB, BW);
 const STAR_DIM = BW && innerWidth > 760 ? .55 : 1;  // black-and-white previews: stars a little dimmer
 // Galaxy preview (?gx=1 violet band, 2 warm nebula, 3 spiral galaxy, 4 nebula + spiral). Drawn once into an offscreen canvas per size, then copied each frame: cheap for scrolling and dragging.
-const GALAXY = 4;  // chosen: nebula + spiral mix
+const GALAXY = innerWidth > 760 ? 4 : 0;  // desktop: nebula + spiral mix. Phones: no galaxy or Milky Way, only the thin stars
 let galaxyCv = null, galaxyKey = '';
 function drawGalaxy() {
   if (!GALAXY) return;
