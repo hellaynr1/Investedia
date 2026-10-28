@@ -46,7 +46,7 @@ class LegalPages(unittest.TestCase):
         self.assertNotIn('about.html#terms',ui);self.assertNotIn('about.html#contact',ui)
         parser=Links();parser.feed(footer)
         for href in parser.hrefs:
-            if href.startswith(('http','${')):continue
+            if href.startswith(('http','${','mailto:','tel:')):continue  # not files on this site
             self.assertTrue((ROOT/href.split('#')[0]).exists(),href)
 
     def test_storage_inventory_covers_real_literal_keys(self):

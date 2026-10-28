@@ -78,7 +78,7 @@ async function loadNews() {
   return { stories, top: [...stories].sort(rank), latest: [...stories].sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at)), updated: n.updated_at,
     moved: (() => { const all = [...stories].filter(s => s.market_moving || s.importance === 3).sort(rank), seen = new Set(), out = []; for (const s of all) { const m = primary(s); if (m && !seen.has(m.a.s)) { seen.add(m.a.s); out.push(s); } } for (const s of all) if (!out.includes(s) && !primary(s)) out.push(s); return out; })(), asof: mk.asof, calls: window.Implications ? Implications.collect({ stories, markets: MARKETS, track: TRACK, ledger: LEDGER }) : [] };
 }
-const updatedText = t => 'Live · updated ' + new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+const updatedText = t => 'Latest news · updated ' + new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
 // "Articles the market confirmed" (homepage): only calls the market bore out are featured; every other call is one click away on implications.html.
 const sgn = v => (v > 0 ? '↑ ' : v < 0 ? '↓ ' : '↔ ') + Math.abs(v).toFixed(2) + '%';

@@ -1,12 +1,13 @@
 // Investedia app: offline support and instant repeat visits.
 // Pages and market data: network first, saved copy when offline. Code, images, fonts: saved copy first, refreshed in the background.
-const VERSION = '6afc605ec7', CACHE = 'inv-' + VERSION;
+const VERSION = '25940eb230', CACHE = 'inv-' + VERSION;
 const CORE = ['index.html', 'dashboard.html', 'markets.html', 'watchlist.html', 'assets/app.css', 'assets/ui.js', 'assets/mock.js', 'assets/quotes.js', 'assets/profiles.js', 'assets/favicon.svg', 'assets/app/icon-192.png'];
 
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('inv-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 
-const isData = u => /\/assets\/(quotes\.js|intraday\.json|news\.js|hist\/|news\/)/.test(u.pathname);
+// Fast-changing data is network first (a saved copy only when offline): quotes, article feeds, the calendar and the globe news files.
+const isData = u => /\/assets\/(quotes\.js|intraday\.json|news\.js|hist\/|news\/|calendar-live\.json|globe\/(news-[\w-]+\.json|markets\.json|news-prices\.json|news-track\.json))/.test(u.pathname);
 async function networkFirst(req, fallback) {
   const c = await caches.open(CACHE);
   try { const r = await fetch(req, { cache: 'no-cache' }); if (r.ok) c.put(req, r.clone()); return r; }

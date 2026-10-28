@@ -25,13 +25,14 @@ investedia.com: **investing media for everyone**. A news-first website: the worl
 - **Homepage** `src/pages/index.html` + `assets/home-news.js` + `assets/home-news.css` (classes prefixed `hn-` so they never clash with app.css): globe hero, top stories, why it moved, countries, markets open now, upcoming events + earnings, free-resources strip.
 - **Globe News page** `assets/globe/news.html`, source in `tools/globe-news/` (`page.html`, `build.py`). Build: `python3 tools/globe-news/build.py && python3 build.py`. `?embed=1` gives the globe alone (used by the homepage).
 - **Robots (GitHub Actions):**
-  - `update-globe-news.yml` every 30 min: `update_globe_news.py` (GDELT + ECB/Fed/BoE feeds, Gemini picks and summarises, Pixabay topic photos) → `assets/globe/news-live.json`; `update_calendar.py` (ForexFactory events, Nasdaq earnings) → `assets/calendar-live.json`.
+  - **Two-tier news** (see **NEWS-PIPELINE.md** and **DATA-LICENSING.md**): `priority-news.yml` about every 10 min (official central-bank/regulator feeds + MarketWatch, keyword gate, at most 12 items to Gemini, writes the live feed only); `update-globe-news.yml` every 30 min (`update_globe_news.py` with `TIER=broad`: GDELT + publisher and regional feeds, Gemini picks and summarises, Pixabay topic photos, rebuilds the 30-day archive) → `assets/globe/news-live.json` and `news-archive.json`; `update_calendar.py` (ForexFactory events, Nasdaq earnings) → `assets/calendar-live.json`.
+  - Health for the admin: `assets/globe/news-status.json` (last successful runs, article count, failed sources). Items already sent to Gemini are remembered 3 days in `assets/globe/news-seen.json`.
   - `update-economy.yml` weekly: `update_economy.py` (World Bank) → `assets/globe/economy.json`.
   - `update-market.yml`: old price data (still used by Tools pages).
   - Secrets in GitHub: `GEMINI_API_KEY`, `PIXABAY_KEY`. Brandfetch logo Client ID is public, in `tools/globe-news/page.html`.
 - Robots commit to `main` often: **always `git pull --rebase origin main` before you push.**
 - Preview locally: `cd docs && python3 -m http.server 8765` then open http://localhost:8765.
-- News rules: never copy articles or photos; every story keeps source name, link and time; AI summaries are labelled "AI-assisted"; topic photos are labelled "Illustration". No Wikimedia images.
+- News rules (full detail in DATA-LICENSING.md): never copy articles or photos; every story keeps source name, link and time; AI summaries are labelled "AI-assisted"; topic photos are labelled "Illustration". No Wikimedia images.
 
 ## Accounts, emails, analytics (Supabase project `lfjyoeusblhfpmgwbrhj`)
 - Login popup: Google + email/password (Supabase Auth). Header account menu with Log out; `profile.html` saves to the account (user metadata).

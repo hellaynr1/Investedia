@@ -1578,7 +1578,7 @@ placeFilters(phone()); addEventListener('resize', () => placeFilters(phone()));
 let LIVE = null;
 const load = u => fetch(u, { cache: 'no-cache' }).then(r => { if (!r.ok) throw 0; return r.json(); });
 load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return d; }).catch(() => load(DEMO_URL)).then(raw => {
-  if (!raw.demo) { LIVE = raw; const b = $('badge'); b.className = 'demo live'; b.title = raw.notice || ''; b.innerHTML = '<i></i>Live news · updated ' + new Date(raw.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  if (!raw.demo) { LIVE = raw; const b = $('badge'); b.className = 'demo live'; b.title = raw.notice || ''; b.innerHTML = '<i></i>Latest news · updated ' + new Date(raw.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
   stories = normalize(raw); byId = Object.fromEntries(stories.map(s => [s.id, s])); incoming = {};
   for (const s of stories) for (const l of s.links) if (byId[l]) incoming[l] = s.id;
   refresh();

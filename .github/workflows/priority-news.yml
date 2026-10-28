@@ -1,0 +1,42 @@
+name: Priority market news (every ~10 min)
+# Tier A of the news system: official central-bank, statistics and regulator feeds (plus MarketWatch headlines) every ~10 minutes.
+# Keyword gate first, then at most 12 new items go to Gemini. Writes only the live file (news-live.json) and the status/seen files.
+# The broad tier (update-globe-news.yml, every 30 min) rebuilds the archive and fills in the rest of the coverage.
+# GitHub's scheduler is best-effort: a run can start late, so this is "about every 10 minutes", never a guaranteed time.
+on:
+  schedule:
+    - cron: "4,14,24,34,44,54 * * * *"   # off the hour: avoids GitHub's busiest minute
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: market-data          # shared with the broad tier and the price robots, so two robots never rewrite the same JSON at once
+  cancel-in-progress: false
+jobs:
+  priority:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Fetch priority news
+        env:
+          TIER: priority
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PIXABAY_KEY: ${{ secrets.PIXABAY_KEY }}
+        run: python3 update_globe_news.py
+        timeout-minutes: 8
+      - name: Publish
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          # Commit only what readers use: the live feed and the seen-ledger. The status file is refreshed by the broad tier (every 30 min),
+          # so a quiet ten-minute run creates no commit. Restore it locally so the rebase below starts clean.
+          git checkout -- assets/globe/news-status.json docs/assets/globe/news-status.json 2>/dev/null || true
+          git add assets/globe/news-live.json docs/assets/globe/news-live.json assets/globe/news-seen.json docs/assets/globe/news-seen.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Update priority news"
+          for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep 5; done
+          exit 1

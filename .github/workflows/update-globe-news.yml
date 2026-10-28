@@ -1,6 +1,7 @@
 name: Update globe news
-# Live news for the Globe News page (update_globe_news.py): free sources (GDELT, official press releases), Gemini for selection + short summaries,
-# Pixabay for topic photos. Every 30 minutes; visitors only read the saved file, so traffic never uses the free limits.
+# Broad tier of the news system (update_globe_news.py, TIER=broad): every free source (GDELT, official feeds, publisher feeds), Gemini for selection +
+# short summaries, Pixabay for topic photos, and the 30-day archive. Every 30 minutes. The priority tier is priority-news.yml (every ~10 minutes).
+# Visitors only read the saved files, so traffic never uses the free limits.
 on:
   schedule:
     - cron: "7,37 * * * *"
@@ -28,6 +29,7 @@ jobs:
       - run: pip install -q pillow
       - name: Fetch news
         env:
+          TIER: broad
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PIXABAY_KEY: ${{ secrets.PIXABAY_KEY }}
           BACKFILL_DAYS: ${{ inputs.backfill_days || '0' }}

@@ -248,7 +248,7 @@
   };
   const saveRead = () => { try { localStorage.setItem('inv-notif-ids',JSON.stringify([...readIds].slice(-1000))); } catch {} };
   paintNotif();
-  fetch('assets/globe/news-live.json').then(r=>r.json()).then(n=>{NOTIFS=(n.stories || []).sort((a,b)=>Date.parse(b.published_at)-Date.parse(a.published_at));paintNotif();}).catch(()=>{});
+  fetch('assets/globe/news-live.json', { cache: 'no-cache' }).then(r=>r.json()).then(n=>{NOTIFS=(n.stories || []).sort((a,b)=>Date.parse(b.published_at)-Date.parse(a.published_at));paintNotif();}).catch(()=>{});
   window.addEventListener('inv-user',paintNotif);
   nb.onclick = e => { e.stopPropagation(); const o = !nd.classList.contains('open'); closeAll(); paintNotif(); nd.classList.toggle('open', o); nb.setAttribute('aria-expanded', o); };
   document.addEventListener('click', e => { if (!e.target.closest('.notif-wrap')) { nd.classList.remove('open'); nb.setAttribute('aria-expanded', 'false'); } });

@@ -1,5 +1,9 @@
 """Live news for the Globe News page -> assets/globe/news-live.json (+ photos, + news-status.json)
-Runs every 30 minutes in GitHub Actions (update-globe-news.yml). Free sources only:
+Two tiers, chosen with the TIER environment variable:
+  - priority (priority-news.yml, every ~10 min): official feeds + MarketWatch only, no GDELT, a keyword gate
+    before any AI call, at most PRIORITY_MAX_NEW new candidates to Gemini, writes the live file only
+  - broad (update-globe-news.yml, every 30 min): all sources, backfill, writes the live file AND the archive
+Free sources only:
   - GDELT DOC 2.0 (open, no key): business / economy headlines from around the world
   - Official press releases (ECB, Federal Reserve, Bank of England RSS)
   - Gemini (GEMINI_API_KEY): picks the financially relevant stories, merges duplicates, finds the place, category,
@@ -21,8 +25,13 @@ UA = 'InvestediaNews/1.0 (+https://investedia.com; info@investedia.com)'
 NOW = datetime.now(timezone.utc); ISO_NOW = NOW.strftime('%Y-%m-%dT%H:%M:%SZ')
 KEEP_DAYS, MAX_STORIES, MAX_NEW = 30, 160, 45  # live file: newest 160 (globe, home); archive file: up to ARCHIVE_MAX over KEEP_DAYS (News page)
 ARCHIVE_MAX, ARCHIVE, LIVE_DAYS = 600, 'news-archive.json', 7
+TIER = os.environ.get('TIER', 'broad').strip().lower()
+if TIER not in ('priority', 'broad'): TIER = 'broad'
+PRIORITY_MAX_NEW, PRIORITY_MIN_SCORE = 12, 3  # priority tier: at most 12 new candidates per run, and only those scoring 3+ on the keyword gate
+SEEN_FILE, SEEN_DAYS = 'news-seen.json', 3  # candidates already sent to the editor (kept 3 days), so rejected items are not sent again
+SEEN = {}
 GEMINI = os.environ.get('GEMINI_API_KEY', '').strip(); PIXABAY = os.environ.get('PIXABAY_KEY', '').strip()
-status = {'ran_at': ISO_NOW, 'errors': []}
+status = {'ran_at': ISO_NOW, 'tier': TIER, 'errors': []}
 CATS = ['markets', 'companies', 'economy', 'technology', 'crypto', 'commodities', 'geopolitics']
 REGION = {}  # iso2 -> region key, filled from the World Bank country list
 PHOTO_TOPICS = ['oil refinery', 'oil tanker ship', 'container port', 'semiconductor chip', 'data center servers', 'bank building', 'stock market trading screen',
@@ -45,9 +54,15 @@ def get(url, data=None, headers=None, timeout=40, raw=False):
 
 
 def save(name, obj):
+    """Atomic write: validate the JSON, write a temporary file, then swap it in, so the site never reads a half-written file.
+    A feed with no stories is never written: the previous working file stays online."""
+    if 'stories' in obj and not obj['stories']: return log(f'{name}: no stories, keeping the previous file')
     s = json.dumps(obj, ensure_ascii=False, separators=(',', ':'))
+    json.loads(s)  # round-trip check
     for d in (G, D):
-        os.makedirs(d, exist_ok=True); open(os.path.join(d, name), 'w', encoding='utf-8').write(s)
+        os.makedirs(d, exist_ok=True); path = os.path.join(d, name); tmp = path + '.tmp'
+        with open(tmp, 'w', encoding='utf-8') as f: f.write(s)
+        os.replace(tmp, path)
 
 
 # ---------- reference data: map countries, codes, bounding boxes, price symbols ----------
@@ -213,8 +228,15 @@ def balance(cands, limit=140):
     return reserved + rest[:max(0, limit - len(reserved))]
 
 
-def rss():
-    srcs = [(u, n, h, None) for u, n, h in FEEDS] + [(u, n, '', None) for u, n in NEWS_FEEDS] + [(u, n, '', r) for u, n, r in REGION_FEEDS]
+PRIORITY_NEWS = {'https://feeds.content.dowjones.io/public/rss/mw_topstories'}  # market-wide headlines, included in the priority tier
+
+
+def rss(priority=False):
+    """Priority tier: official feeds plus MarketWatch only (small, fast). Broad tier: every feed."""
+    if priority:
+        srcs = [(u, n, h, None) for u, n, h in FEEDS] + [(u, n, '', None) for u, n in NEWS_FEEDS if u in PRIORITY_NEWS]
+    else:
+        srcs = [(u, n, h, None) for u, n, h in FEEDS] + [(u, n, '', None) for u, n in NEWS_FEEDS] + [(u, n, '', r) for u, n, r in REGION_FEEDS]
 
     def one(src):
         url, name, hint, region = src
@@ -254,7 +276,10 @@ def describe(c):  # the article's own short description (meta tag), used only as
 NOISE = re.compile(r'\b(stock to buy|stocks to buy|price target|horoscope|celebrity|football|soccer)\b', re.I)  # junk headlines, never sent to Gemini
 
 
-def norm(t): return set(w for w in re.sub(r'[^a-z0-9 ]', ' ', t.lower()).split() if len(w) > 2)
+STOP = set('the and for with from that this have has was were are its into over after says said amid new more than will would could about their they what when where which while also just'.split())
+
+
+def norm(t): return set(w for w in re.sub(r'[^a-z0-9 ]', ' ', t.lower()).split() if len(w) > 2 and w not in STOP)
 
 
 def canon(u):
@@ -273,6 +298,35 @@ def dedupe(items, known_titles):
         if any(len(w & s) / max(1, len(w | s)) > .55 for s in seen): continue
         seen.append(w); urls.add(canon(c['url'])); out.append(c)
     return out
+
+
+# ---------- cheap relevance gate and seen-ledger (decided before any AI call) ----------
+HIGH_TERMS = re.compile(r'\b(rate (?:cut|hike|decision)s?|interest rates?|inflation|cpi|gdp|payrolls?|unemployment|jobs report|monetary policy|quantitative (?:easing|tightening)|bond yields?|treasur(?:y|ies)|sanctions?|defaults?|bankrupt(?:cy)?|merger|acquisition|takeover|tariffs?|earnings|guidance|opec|recession|bailout|downgrade|stimulus|central banks?|federal reserve|ecb|bank of england|bank of japan|sec charges?|enforcement)\b', re.I)
+MID_TERMS = re.compile(r'\b(shares?|stocks?|markets?|currenc(?:y|ies)|oil|gold|copper|gas|bitcoin|ethereum|crypto|stablecoins?|semiconductors?|chips?|banks?|lenders?|insurers?|regulat\w*|trade|exports?|imports?|deficit|surplus|dollars?|euros?|yen|pounds?|yuan)\b', re.I)
+
+
+def relevance(c):
+    """Deterministic market-relevance score, 0-8: high-impact terms count 3 each (max two), market terms 1 each (max two), official sources +2."""
+    text = f"{c['title']} {c.get('desc', '')}"
+    if NOISE.search(text): return 0
+    score = 3 * min(2, len(HIGH_TERMS.findall(text))) + min(2, len(MID_TERMS.findall(text)))
+    return score + (2 if c.get('kind') == 'official' else 0)
+
+
+def seen_key(url): return hashlib.md5(canon(url).encode()).hexdigest()[:12]
+
+
+def load_seen():
+    global SEEN
+    try:
+        with open(os.path.join(G, SEEN_FILE)) as f: raw = json.load(f).get('seen', {})
+        cut = NOW - timedelta(days=SEEN_DAYS)
+        SEEN = {k: v for k, v in raw.items() if datetime.fromisoformat(v.replace('Z', '+00:00')) > cut}
+    except Exception: SEEN = {}  # missing or unreadable: start empty, at worst one extra editor pass
+
+
+def save_seen():
+    save(SEEN_FILE, {'schema': 'investedia.globe.seen/v1', 'updated_at': ISO_NOW, 'seen': SEEN})
 
 
 # ---------- Gemini ----------
@@ -331,7 +385,7 @@ def gemini(prompt):
             except urllib.error.HTTPError as e:
                 tried.append(f'{model}: HTTP {e.code}')
                 if e.code in (400, 401, 403): raise RuntimeError(f'{tried[-1]} {e.read()[:200]!r}')
-                if e.code in (404, 503): break  # retired or overloaded: try the next model
+                if e.code in (404, 429, 503): break  # retired, over this model's free quota or overloaded: next model at once, no waiting
                 time.sleep(20)
             except Exception as e:
                 tried.append(f'{model}: {e}'); time.sleep(5)
@@ -467,6 +521,7 @@ def pick_stories(cands, box, by_iso, sym, known_iso, n, online_stories=None):
         try:
             picked = gemini(PROMPT.format(n=n, cats=', '.join(CATS), topics=', '.join(PHOTO_TOPICS), cands=listing))
             status['gemini_ok'] = True
+            SEEN.update({seen_key(c['url']): ISO_NOW for c in cands})  # sent once: not sent again for SEEN_DAYS, even if rejected
         except Exception as e:
             err(f'Gemini: {e}'); picked = []
         ids = []
@@ -512,6 +567,10 @@ def pick_stories(cands, box, by_iso, sym, known_iso, n, online_stories=None):
 def main():
     box, by_iso, sym = load_ref()
     known_iso = set(by_iso)
+    load_seen()
+    prev_status = json.load(open(os.path.join(G, STATUS))) if os.path.exists(os.path.join(G, STATUS)) else {}
+    live_before = json.load(open(os.path.join(G, OUT))).get('stories', []) if os.path.exists(os.path.join(G, OUT)) else []
+    archive_before = json.load(open(os.path.join(G, ARCHIVE))).get('stories', []) if os.path.exists(os.path.join(G, ARCHIVE)) else []
     prev_path = os.path.join(G, OUT)
     prev = json.load(open(prev_path)).get('stories', []) if os.path.exists(prev_path) else []
     arc_path = os.path.join(G, ARCHIVE)
@@ -523,7 +582,7 @@ def main():
         if s['published_at'] > s.get('retrieved_at', s['published_at']): s['published_at'] = s['retrieved_at']
     prev = [s for s in prev if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > cutoff]
     known_urls = {canon(u['url']) for s in prev for u in s.get('sources', [])}
-    days = max(0, min(KEEP_DAYS, int(os.environ.get('BACKFILL_DAYS') or 0)))
+    days = max(0, min(KEEP_DAYS, int(os.environ.get('BACKFILL_DAYS') or 0))) if TIER == 'broad' else 0  # backfill belongs to the broad tier only
     for d in range(days, 0, -1):  # oldest day first; real publication dates and sources are kept
         start = (NOW - timedelta(days=d)).replace(minute=0, second=0, microsecond=0); end = start + timedelta(days=1)
         day_raw = [c for c in gdelt(start, end) if canon(c['url']) not in known_urls]
@@ -536,37 +595,53 @@ def main():
             save(OUT, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW,
                        'notice': 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.',
                        'stories': sorted(prev, key=lambda s: s['published_at'], reverse=True)[:MAX_STORIES]})
-    raw = gdelt() + rss()
+    priority = TIER == 'priority'
+    raw = rss(priority=True) if priority else gdelt() + rss()
     status['fetched'] = len(raw)
-    fresh = [c for c in raw if canon(c['url']) not in known_urls]
+    fresh = [c for c in raw if canon(c['url']) not in known_urls and seen_key(c['url']) not in SEEN]
     fresh = [c for c in fresh if not NOISE.search(c['title'])]  # skip junk before it reaches Gemini
-    cands = balance(dedupe(fresh, [s['headline'] for s in prev]), 140)
+    if priority:  # keyword gate: only the most market-relevant new items go to the editor, highest score first
+        gated = sorted([c for c in fresh if relevance(c) >= PRIORITY_MIN_SCORE], key=relevance, reverse=True)
+        cands = dedupe(gated, [s['headline'] for s in prev])[:PRIORITY_MAX_NEW]
+        status['gated_out'] = len(fresh) - len(gated)
+    else:
+        cands = balance(dedupe(fresh, [s['headline'] for s in prev]), 140)
     status['candidates'] = len(cands)
-    log(f'{len(raw)} fetched, {len(cands)} new candidates')
-    new = pick_stories(cands, box, by_iso, sym, known_iso, MAX_NEW, prev)
+    log(f'{len(raw)} fetched, {len(cands)} new candidates ({TIER} tier)')
+    new = pick_stories(cands, box, by_iso, sym, known_iso, PRIORITY_MAX_NEW if priority else MAX_NEW, prev)
     status['new_stories'] = len(new)
     every = sorted(new + prev, key=lambda s: s['published_at'], reverse=True)[:ARCHIVE_MAX]
     live_cut = NOW - timedelta(days=LIVE_DAYS)
     stories = [s for s in every if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > live_cut][:MAX_STORIES]
-    status['impacts_backfilled'] = backfill_impacts(stories, known_iso)
+    status['impacts_backfilled'] = backfill_impacts(stories, known_iso, limit=10 if priority else 40)
     # flags, used sparingly: breaking = major and under 90 minutes old; trending = 4+ sources; market moving = flagged by the editor step
     for s in stories: s['flag'] = None
     age = lambda s: (NOW - datetime.fromisoformat(s['published_at'].replace('Z', '+00:00'))).total_seconds() / 60
     for s in [s for s in stories if s['importance'] == 3 and age(s) < 90][:2]: s['flag'] = 'breaking'
     for s in [s for s in stories if not s['flag'] and len(s.get('sources', [])) >= 4][:2]: s['flag'] = 'trending'
     for s in [s for s in stories if not s['flag'] and s.get('market_moving') and age(s) < 1440][:2]: s['flag'] = 'moving'
+    notice = 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.'
+    # Rewrite a file only when its stories changed: an unchanged feed must not create a commit every run.
     if not stories:
         status['note'] = 'No stories yet: keeping the page on demo content'
+    elif stories == live_before:
+        status['note'] = 'Live feed unchanged, file not rewritten'
     else:
-        save(OUT, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW,
-                   'notice': 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.',
-                   'stories': stories})
-        save(ARCHIVE, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW,
-                       'notice': 'Headlines and short summaries written with AI from each source\'s own headline and description. Every story links to its original source. Not investment advice.',
-                       'stories': every})
+        save(OUT, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW, 'notice': notice, 'stories': stories})
+    if stories and not priority and every != archive_before:  # the archive is rebuilt by the broad tier only; priority stories join it at the next broad run
+        save(ARCHIVE, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW, 'notice': notice, 'stories': every})
+    # "last successful" = the editor step worked (or had nothing to do); a Gemini outage leaves the old marker visible
+    if stories and (not cands or status.get('gemini_ok')):
+        status[f'{TIER}NewsLastSuccessfulRun'] = ISO_NOW
+    status.update({k: prev_status[k] for k in ('priorityNewsLastSuccessfulRun', 'broadNewsLastSuccessfulRun') if k in prev_status and k not in status})
     status['stories_online'] = len(stories); status['archive'] = len(every)
+    save_seen()
+    # health summary for the (private) admin view: never includes keys, URLs or raw errors
+    status.update({'version': 2, 'articleCount': len(stories), 'newestPublishedAt': max((s['published_at'] for s in stories), default=None),
+                   'oldestPublishedAt': min((s['published_at'] for s in stories), default=None), 'failedSources': len(status['errors'])})
     save(STATUS, status)
-    log(json.dumps(status, indent=1))
+    log(json.dumps({k: v for k, v in status.items() if k != 'errors'}, indent=1))
+    log(f"{TIER} tier: {len(new)} new, {len(cands)} sent to editor, {status.get('gated_out', 0)} gated out, {len(stories)} online, {len(status['errors'])} errors")
 
 
 if __name__ == '__main__':
