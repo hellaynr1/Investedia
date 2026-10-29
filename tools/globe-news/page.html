@@ -874,7 +874,7 @@ function drawConnections(t, focus, country) {
   const S = STYLE.news, extra = focus ? newsAll.filter(e => e.article === focus) : iso ? newsAll.filter(e => e.article.location.country === country.name).slice(0, 10) : [];
   const xs = new Set(extra.map(e => e.article.id + e.asset.s)), list = (CONNON || focus || iso ? network : []).filter(e => !xs.has(e.article.id + e.asset.s));
   const draw = (e, i, on, points = arcPts(e.article, e.target, 32)) => {
-    const col = dirCol(e.dir), tier = on ? 1 : e.tier, [al, w] = S[tier - 1];
+    const col = EMBED && e.via !== 'impact' ? BLUE : dirCol(e.dir), tier = on ? 1 : e.tier, [al, w] = S[tier - 1];
     if (strokeArc(points, col, on ? al : al * fade, on ? w + .2 : w, tier === 1 && !(fade < 1 && !on), tier === 1 ? ph(i) : null)) visibleArcs++;
     if (on && focus && !EMBED && e.impact) {
       const seen = points.filter(p => p[2] && p[0] > globeBox.left + 34 && p[0] < globeBox.right - 34 && p[1] > globeBox.top + 30 && p[1] < globeBox.bottom - 30);
@@ -886,9 +886,9 @@ function drawConnections(t, focus, country) {
   const vis = [], ncap = cappedBy(EMBED ? 2 : 3); for (const e of list) { if (vis.length >= B.news) break; const pts = arcPts(e.article, e.target, 32); if (onFront(pts) && ncap(['a' + e.article.location.country, 't' + geoKey(e.target)])) vis.push([e, pts]); }
   const sec = B.primary + Math.ceil((vis.length - B.primary) * .4); vis.forEach(([e], i) => e.tier = i < B.primary ? 1 : i < sec ? 2 : 3);
   for (const tier of [3, 2, 1]) vis.forEach(([e, pts], i) => { if (e.tier === tier) draw(e, i, false, pts); });
-  // Homepage: follow-up articles and strong market moves join the same orange news-and-markets set when there is room
+  // Homepage: follow-up articles and strong market moves fill the remaining room in blue (only the original article → asset lines are orange)
   if (EMBED && CONNON) { let n = vis.length;
-    for (const l of [...relLines, ...storyLines.map(x => ({ a: x.a, b: x.b }))]) { if (n >= B.news) break; const pts = arcPts(l.a, l.b, 30); if (!onFront(pts) || !ncap(['t' + geoKey(l.a), 't' + geoKey(l.b)])) continue; const [al, w] = S[n < B.primary + 3 ? 1 : 2]; if (strokeArc(pts, ORANGE, al * fade, w, false, null)) { visibleArcs++; n++; } } }
+    for (const l of [...relLines, ...storyLines.map(x => ({ a: x.a, b: x.b }))]) { if (n >= B.news) break; const pts = arcPts(l.a, l.b, 30); if (!onFront(pts) || !ncap(['t' + geoKey(l.a), 't' + geoKey(l.b)])) continue; const [al, w] = S[n < B.primary + 3 ? 1 : 2]; if (strokeArc(pts, BLUE, al * fade, w, false, null)) { visibleArcs++; n++; } } }
   extra.forEach((e, i) => draw(e, i, true));
   cv.dataset.arcCount = String(visibleArcs);
 }
