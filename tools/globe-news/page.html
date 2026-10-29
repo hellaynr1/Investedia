@@ -790,14 +790,15 @@ let TRADE = [], ISO_NAME = {};
 for (const [n, c] of Object.entries(ISO)) if (!ISO_NAME[c]) ISO_NAME[c] = n;
 fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; updateNetwork(); }).catch(() => {});
 const ctryPt = iso2 => { const c = byName[ISO_NAME[iso2]]; return c && c.c ? { phi: c.c[1] * rad, lam: c.c[0] * rad } : null; };
-const ORANGE = '255,122,26', BLUE = '45,125,255';
+const ORANGE = '255,122,26', BLUE = '45,125,255', BL = EMBED ? (+QS.get('bl') || 0) : 0;  // homepage blue arcs: how far they rise past the outline
 const dirCol = dir => EMBED ? ORANGE : dir === 'up' ? IMPACT_COLOR.up : dir === 'down' ? IMPACT_COLOR.down : ORANGE;
 // [alpha, width] per tier (1, 2, 3)
-const STYLE = EMBED ? { news: [[.78, 1.6], [.44, 1.05], [.26, .75]], trade: [[.6, 1.2], [.45, .95], [.3, .7]] }
+const STYLE = EMBED ? { news: [[.85, 1.6], [.55, 1.05], [.4, .75]], trade: [[.7, 1.2], [.55, .95], [.42, .7]] }
                     : { news: [[.9, 1.8], [.5, 1.15], [.28, .85]], trade: [[.6, 1.4], [.42, 1], [.26, .75]] };
 const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { news: ph ? 8 : 12, trade: ph ? 16 : 24, primary: ph ? 3 : 4 } : { news: ph ? 12 : 20, trade: ph ? 18 : 30, primary: ph ? 4 : 5 }; };
 const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells: arcs that start and end in the same cells count as one
 function strokeArc(pts, col, alpha, width, glow, phase) {
+  if (EMBED) { width = 1.1; glow = false; }  // homepage: all lines equally thin
   ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha.toFixed(3)})`; ctx.lineCap = 'round';
   if (glow) { ctx.shadowColor = `rgba(${col},.55)`; ctx.shadowBlur = EMBED ? 6 : 8; }
   ctx.beginPath(); let pen = false; for (const [x, y, v] of pts) { if (!v) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } ctx.stroke(); ctx.restore();
@@ -862,7 +863,7 @@ function drawConnections(t, focus, country) {
     const hot = iso ? tradeAll.filter(r => r.from === iso || r.to === iso).slice(0, 10) : fiso ? tradeAll.filter(r => r.from === fiso || r.to === fiso).slice(0, 5) : [];
     const hs = new Set(hot), S = STYLE.trade, pick = [];
     const cap = cappedBy(EMBED ? 3 : 4);  // geographic balance among the lines actually in view
-    for (const r of tradeShown) { if (pick.length >= B.trade) break; if (hs.has(r)) continue; const pts = arcPts(ctryPt(r.from), ctryPt(r.to), 30); if (onFront(pts) && cap([r.from, r.to])) pick.push([r, pts]); }
+    for (const r of tradeShown) { if (pick.length >= B.trade) break; if (hs.has(r)) continue; const pts = arcPts(ctryPt(r.from), ctryPt(r.to), 30, BL); if (onFront(pts) && cap([r.from, r.to])) pick.push([r, pts]); }
     pick.forEach(([r, pts], i) => { const [al, w] = S[i < 4 ? 1 : 2], k = .6 + .4 * r.w; strokeArc(pts, BLUE, al * k * fade, w * (.85 + .3 * r.w), false, null); });
     hot.forEach((r, k) => strokeArc(arcPts(ctryPt(r.from), ctryPt(r.to), 30), BLUE, S[0][0], S[0][1], false, ph(k)));
   }
@@ -883,12 +884,12 @@ function drawConnections(t, focus, country) {
     }
     if (!EMBED && e.impact) arcHits.push({ ...e, points });
   };
-  const vis = [], ncap = cappedBy(EMBED ? 2 : 3); for (const e of list) { if (vis.length >= B.news) break; const pts = arcPts(e.article, e.target, 32); if (onFront(pts) && ncap(['a' + e.article.location.country, 't' + geoKey(e.target)])) vis.push([e, pts]); }
+  const vis = [], ncap = cappedBy(EMBED ? 2 : 3); for (const e of list) { if (vis.length >= B.news) break; const pts = arcPts(e.article, e.target, 32, e.via !== 'impact' ? BL : 0); if (onFront(pts) && ncap(['a' + e.article.location.country, 't' + geoKey(e.target)])) vis.push([e, pts]); }
   const sec = B.primary + Math.ceil((vis.length - B.primary) * .4); vis.forEach(([e], i) => e.tier = i < B.primary ? 1 : i < sec ? 2 : 3);
   for (const tier of [3, 2, 1]) vis.forEach(([e, pts], i) => { if (e.tier === tier) draw(e, i, false, pts); });
   // Homepage: follow-up articles and strong market moves fill the remaining room in blue (only the original article → asset lines are orange)
   if (EMBED && CONNON) { let n = vis.length;
-    for (const l of [...relLines, ...storyLines.map(x => ({ a: x.a, b: x.b }))]) { if (n >= B.news) break; const pts = arcPts(l.a, l.b, 30); if (!onFront(pts) || !ncap(['t' + geoKey(l.a), 't' + geoKey(l.b)])) continue; const [al, w] = S[n < B.primary + 3 ? 1 : 2]; if (strokeArc(pts, BLUE, al * fade, w, false, null)) { visibleArcs++; n++; } } }
+    for (const l of [...relLines, ...storyLines.map(x => ({ a: x.a, b: x.b }))]) { if (n >= B.news) break; const pts = arcPts(l.a, l.b, 30, BL); if (!onFront(pts) || !ncap(['t' + geoKey(l.a), 't' + geoKey(l.b)])) continue; const [al, w] = S[n < B.primary + 3 ? 1 : 2]; if (strokeArc(pts, BLUE, al * fade, w, false, null)) { visibleArcs++; n++; } } }
   extra.forEach((e, i) => draw(e, i, true));
   cv.dataset.arcCount = String(visibleArcs);
 }
@@ -1501,7 +1502,7 @@ $('play').onclick = () => { F.win = '7d'; press($('wins'), '7d'); play = { start
 
 // ===== Draw =====
 function vec(phi, lam) { return [Math.cos(phi) * Math.cos(lam), Math.cos(phi) * Math.sin(lam), Math.sin(phi)]; }
-function arcPts(a, b, n = 56) {
+function arcPts(a, b, n = 56, lift = 0) {  // lift > 0: a taller arc that rises out past the globe's outline (homepage blue lines)
   const A = vec(a.phi, a.lam), B = vec(b.phi, b.lam), dot = Math.max(-1, Math.min(1, A[0] * B[0] + A[1] * B[1] + A[2] * B[2])), om = Math.acos(dot), so = Math.sin(om) || 1, out = [];
   if (om < .00001) { const p=proj(a.phi,a.lam,1); return [[p[0],p[1],p[2]>0],[p[0],p[1],p[2]>0]]; }
   for (let i = 0; i <= n; i++) {
@@ -1509,8 +1510,8 @@ function arcPts(a, b, n = 56) {
     // The lift follows the surface: it is full in the middle of the front face and flattens to zero as the arc nears the edge of the globe,
     // so the line runs down onto the rim and carries on over it instead of ending in the sky.
     const phi = Math.asin(v[2]), lam = Math.atan2(v[1], v[0]), zS = proj(phi, lam, 1)[2], f = Math.max(0, Math.min(1, zS / .3));
-    const h = 1 + Math.sin(Math.PI * k) * Math.min(.15, .05 + om * .09) * f, p = proj(phi, lam, h);
-    out.push([p[0], p[1], zS > 0]);
+    const h = 1 + Math.sin(Math.PI * k) * (lift ? lift * Math.min(1, .35 + om * .8) : Math.min(.15, .05 + om * .09) * f), p = proj(phi, lam, h);
+    out.push([p[0], p[1], zS > 0 || (lift > 0 && p[2] > -.2 && Math.hypot(p[0] - cx, p[1] - cy) > R)]);
   }
   return out;
 }
