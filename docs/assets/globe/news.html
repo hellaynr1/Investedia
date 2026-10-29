@@ -504,13 +504,13 @@ h1 span{color:var(--fg-3)}
   <div class="lay-pop glass" id="lay-pop" role="group" aria-label="Map layers" hidden>
     <div id="lay-switches">
       <button type="button" class="lay-sw" id="sw-conn" role="switch" aria-checked="true"><span><b>News &amp; Markets</b><small id="connection-count"></small></span><i class="tg"></i></button>
-      <button type="button" class="lay-sw" id="sw-trade" role="switch" aria-checked="true"><span><b>Trade</b><small>Biggest exports between countries (2023). Hover a blue line for details</small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-trade" role="switch" aria-checked="false"><span><b>Trade</b><small>Biggest exports between countries (2023)</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-rel" role="switch" aria-checked="false"><span><b>Market relationships</b><small>Assets moving strongly together today</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-story" role="switch" aria-checked="false"><span><b>Story timeline</b><small>Earlier → later articles on the same asset</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-up" role="switch" aria-checked="false"><span><b>Upcoming</b><small id="up-sub">Releases in the next 7 days</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-mkt" role="switch" aria-checked="false"><span><b>Market hours</b><small>Night shade, open exchanges</small></span><i class="tg"></i></button>
     </div>
-    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span style="color:rgb(34,197,94)">↑ Up</span><span style="color:rgb(240,68,68)">↓ Down</span><span style="color:rgb(45,125,255)">— Trade</span></div>
+    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span style="color:rgb(34,197,94)">↑ Up</span><span style="color:rgb(240,68,68)">↓ Down</span><span style="color:rgb(60,130,255)">— Ripple</span><span style="color:rgb(125,195,255)">○ Sector</span></div>
   </div>
   <button type="button" class="lay-btn glass" id="lay-btn" aria-expanded="false" aria-controls="lay-pop" aria-haspopup="true" aria-label="Layers, 1 on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>Layers <b id="lay-n">1</b></button>
 </div>
@@ -778,30 +778,36 @@ function assetTarget(a) {
   return Number.isFinite(la) && Number.isFinite(lo) ? {phi:la*rad,lam:lo*rad} : null;
 }
 let network = [], arcHits = [], arcHover = null, pillRects = [];
-// ---- Connections: one ranked system for every line on the globe. Real data only; the default view is curated, detail comes from interaction.
-//  News & Markets (on)       article → affected asset (impacts) and article → named asset (entities with a ticker)
-//  Trade (on)                biggest export routes between economies (UN Comtrade, trade.json)
-//  Market relationships (off) assets with strong moves in the same direction today
-//  Story timeline (off)      earlier → later article about the same asset (always shown for a selected article)
-// Every line gets a tier: 1 primary (a few, brightest), 2 secondary, 3 background. Hovering or selecting reveals more and fades the rest.
-// Homepage: solid orange (news and markets) and blue (trade) only. Globe page: green up, red down, orange neutral/story, blue trade.
+// ---- Connections. Real data only; when a rule is not met, nothing is drawn (no lines to make the globe look fuller).
+//  Orange (primary): main article → the asset it affects (the article's own impacts).
+//  Blue (supporting evidence), exactly two kinds, each tied to a main line and carrying a reason and a label:
+//    Ripple           another article (within 24h of the main one) that affects the same asset; the asset moved ≥1% today.
+//    Sector reaction  the affected company → companies in the same sector (markets.json group) that moved the same way ≥1% today;
+//                     at most 3 per article, ranked by size of move, same country first.
+//  Blue is always thinner, dimmer and lower than orange. Homepage: orange 5–8, blue 5–10, no trade.
+//  Globe page: orange ~10–15, blue ~15, more as you zoom in; a selected article shows all its blue lines and fades the rest.
+//  Trade (Globe page only, off by default) is a separate layer in its own muted colour. Market relationships and Story timeline stay optional layers.
 const QS = new URLSearchParams(location.search);
-let TRADEON = QS.get('trade') !== '0', RELON = QS.get('rel') === '1', STORYON = QS.get('story') === '1';
+let TRADEON = QS.get('trade') === '1', RELON = QS.get('rel') === '1', STORYON = QS.get('story') === '1';
 let TRADE = [], ISO_NAME = {};
 for (const [n, c] of Object.entries(ISO)) if (!ISO_NAME[c]) ISO_NAME[c] = n;
-fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; updateNetwork(); }).catch(() => {});
+if (!EMBED) fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; updateNetwork(); }).catch(() => {});
 const ctryPt = iso2 => { const c = byName[ISO_NAME[iso2]]; return c && c.c ? { phi: c.c[1] * rad, lam: c.c[0] * rad } : null; };
-const ORANGE = '255,122,26', BLUE = '45,125,255', BL = EMBED ? (QS.has('bl') ? +QS.get('bl') : .42) : 0;  // homepage blue arcs: how far they rise past the outline
+const ORANGE = '255,122,26', RIPPLE = '60,130,255', SECTOR = '125,195,255', TRADEC = '150,160,190';
+const SECTORS = new Set(['Finance', 'Technology', 'Consumer', 'Industrials', 'Utilities', 'Healthcare', 'Energy', 'Materials', 'Real Estate', 'Communication']);
 const dirCol = dir => EMBED ? ORANGE : dir === 'up' ? IMPACT_COLOR.up : dir === 'down' ? IMPACT_COLOR.down : ORANGE;
-// [alpha, width] per tier (1, 2, 3)
-const STYLE = EMBED ? { news: [[.85, 1.6], [.55, 1.05], [.4, .75]], trade: [[.7, 1.2], [.55, .95], [.42, .7]] }
-                    : { news: [[.9, 1.8], [.5, 1.15], [.28, .85]], trade: [[.6, 1.4], [.42, 1], [.26, .75]] };
-const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { news: ph ? 8 : 12, trade: ph ? 16 : 24, primary: ph ? 3 : 4 } : { news: ph ? 12 : 20, trade: ph ? 18 : 30, primary: ph ? 4 : 5 }; };
-const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells: arcs that start and end in the same cells count as one
+const BUDGET = () => { const ph = innerWidth <= 760, z = EMBED ? 1 : Math.min(2.5, Math.max(1, Z));  // zooming in reveals lower-ranked lines
+  return EMBED ? { main: ph ? 5 : 8, blue: ph ? 5 : 8 } : { main: Math.round((ph ? 10 : 14) * Math.min(1.5, z)), blue: Math.round((ph ? 10 : 15) * z), trade: ph ? 14 : 24 }; };
+const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells
+const cappedBy = cap => { const n = {}; return ks => { if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; }; };
+// Visible: both ends on the visible face, most of the arc in front, long enough on screen to read.
+const faces = pts => { const v = pts.filter(p => p[2]); return pts[0][2] && pts.at(-1)[2] && v.length >= pts.length * .92; };
+const long = pts => { const v = pts.filter(p => p[2]), a = v[0], b = v[v.length - 1], m = v[v.length >> 1]; return Math.hypot(a[0] - b[0], a[1] - b[1]) + Math.hypot(a[0] - m[0], a[1] - m[1]) > R * .1; };
+const onFront = pts => faces(pts) && long(pts);
+const inView = pts => pts.every(p => !p[2] || (p[0] > globeBox.left && p[0] < globeBox.right && p[1] > globeBox.top && p[1] < globeBox.bottom));
 function strokeArc(pts, col, alpha, width, glow, phase) {
-  if (EMBED) { width = 1.1; glow = false; }  // homepage: all lines equally thin
   ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha.toFixed(3)})`; ctx.lineCap = 'round';
-  if (glow) { ctx.shadowColor = `rgba(${col},.55)`; ctx.shadowBlur = EMBED ? 6 : 8; }
+  if (glow) { ctx.shadowColor = `rgba(${col},.55)`; ctx.shadowBlur = 8; }
   ctx.beginPath(); let pen = false; for (const [x, y, v] of pts) { if (!v) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } ctx.stroke(); ctx.restore();
   if (phase != null) { const q = pts[Math.round(phase * (pts.length - 1))]; if (q && q[2]) { ctx.fillStyle = `rgba(${col},${Math.min(1, alpha * 1.3).toFixed(3)})`; ctx.beginPath(); ctx.arc(q[0], q[1], glow ? 2 : 1.4, 0, 7); ctx.fill(); } }
   return pts.some(p => p[2]);
@@ -812,96 +818,123 @@ function assetsNamed(s) {  // impacts and entities that map to a real asset with
   for (const e of s.entities || []) { const t = e && (e.ticker || e.sym); if (!t) continue; const a = assetForImpact({ ticker: t }); if (a && !out.has(a.s)) out.set(a.s, { a, via: 'entity' }); }
   return [...out.values()];
 }
-function spread(items, keys, cap) {  // keep the biggest first, but no country more than `cap` times, so the lines reach every region
-  const n = {}; return items.filter(x => { const ks = keys(x).filter(Boolean); if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; });
-}
-let tradeHits = [], tradeHover = null;
+let lineHits = [], lineHover = null;
 const bn = v => v >= 1e12 ? `$${(v / 1e12).toFixed(2)} trillion` : v >= 1e9 ? `$${Math.round(v / 1e9)} billion` : `$${Math.round(v / 1e6)} million`;
-function tradeCardHTML(r) {  // what a blue line means, in plain words
-  const from = nm(ISO_NAME[r.from] || r.from), to = nm(ISO_NAME[r.to] || r.to), rank = TRADE.indexOf(r) + 1;
-  return `<div class="eyebrow">Trade route · ${r.year}</div><h3>${esc(from)} → ${esc(to)}</h3>`
-    + `<p class="hv-why">${esc(from)} sold ${bn(r.usd)} of goods to ${esc(to)} in ${r.year}. It is one of ${esc(from)}'s biggest export markets.</p>`
-    + `<div class="meta">#${rank} largest of ${TRADE.length} routes · Thicker, brighter line = more trade · Source: UN Comtrade</div>`;
+const pctTxt = d => `${d > 0 ? '↑' : d < 0 ? '↓' : '↔'}${Math.abs(d).toFixed(1)}%`;
+function lineCardHTML(l) {  // why a blue (or trade) line exists, in plain words
+  if (l.kind === 'trade') { const r = l.r, from = nm(ISO_NAME[r.from] || r.from), to = nm(ISO_NAME[r.to] || r.to);
+    return `<div class="eyebrow">Trade route · ${r.year}</div><h3>${esc(from)} → ${esc(to)}</h3><p class="hv-why">${esc(from)} sold ${bn(r.usd)} of goods to ${esc(to)} in ${r.year}.</p><div class="meta">#${TRADE.indexOf(r) + 1} largest of ${TRADE.length} routes · Source: UN Comtrade</div>`; }
+  const main = l.parent.article;
+  if (l.kind === 'ripple') return `<div class="eyebrow" style="color:rgb(${RIPPLE})">Ripple · ${esc(l.label)}</div><h3>${esc(l.article.headline)}</h3>`
+    + `<p class="hv-why">This article also affects <b>${esc(l.asset.n)}</b> (${pctTxt(l.asset.d)} today), the same asset as the main article “${esc(main.headline)}”.</p>`
+    + `<div class="meta">${esc(l.article.source?.name || '')} · ${esc(l.article.location.place.split(',')[0])} · ${ago(l.article.t)}</div>`;
+  return `<div class="eyebrow" style="color:rgb(${SECTOR})">Sector reaction · ${esc(l.asset.g)}</div><h3>${esc(l.asset.n)} ${pctTxt(l.asset.d)}</h3>`
+    + `<p class="hv-why">${esc(l.src.n)} moved ${pctTxt(l.src.d)} after “${esc(main.headline)}”. ${esc(l.asset.n)}, in the same sector, moved the same way today.</p>`
+    + `<div class="meta">Same sector · same direction · move of 1% or more</div>`;
 }
-let newsAll = [], tradeAll = [], tradeShown = [], relLines = [], storyLines = [];
-function newsScore(article, asset, via) {  // importance, size of the move, freshness, direct impact vs mention, market-moving flag
+let newsAll = [], tradeAll = [], relLines = [], storyLines = [];
+function newsScore(article, asset) {  // importance, size of the move, freshness, market-moving flag
   const fresh = Math.max(0, 1 - (Date.now() - article.t) / 864e5);
-  return article.importance * 1.2 + Math.min(3, Math.abs(asset.d || 0)) * .6 + fresh + (via === 'impact' ? 1 : 0) + (article.flag ? .5 : 0);
+  return article.importance * 1.2 + Math.min(3, Math.abs(asset.d || 0)) * .6 + fresh + (article.flag ? .5 : 0);
 }
-function storyPairs(list, max) {  // earlier → later article naming the same asset
+function storyPairs(list, max) {  // earlier → later article naming the same asset (Story timeline layer)
   const by = new Map(); for (const s of list) for (const { a } of assetsNamed(s)) (by.get(a.s) || by.set(a.s, []).get(a.s)).push(s);
   const out = [], done = new Set();
   for (const arts of by.values()) { arts.sort((x, y) => x.t - y.t);
     for (let i = 1; i < arts.length && out.length < max; i++) { const a = arts[i - 1], b = arts[i], k = a.id + '>' + b.id; if (a === b || done.has(k) || geoKey(a) === geoKey(b)) continue; done.add(k); out.push({ a, b }); } }
   return out;
 }
-// A line counts as visible when most of it is on the front of the globe and it is long enough on screen to read (not a same-city blob).
-const cappedBy = cap => { const n = {}; return ks => { if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; }; };
-function onFront(pts) { const v = pts.filter(p => p[2]); if (!pts[0][2] || !pts.at(-1)[2] || v.length < pts.length * .92) return false;  // both ends on the visible face: no arcs disappearing into space
-  const a = v[0], b = v[v.length - 1], m = v[v.length >> 1]; return Math.hypot(a[0] - b[0], a[1] - b[1]) + Math.hypot(a[0] - m[0], a[1] - m[1]) > R * .1; }
 function updateNetwork() {
-  const B = BUDGET();
   newsAll = [];
   for (const article of shown) for (const { a: asset, via, impact } of assetsNamed(article)) {
-    const target = assetTarget(asset); if (!target) continue;
-    const dir = impact ? impact.direction : asset.d > 0 ? 'up' : asset.d < 0 ? 'down' : 'mixed';
-    newsAll.push({ article, impact, asset, target, via, dir, score: newsScore(article, asset, via) });
+    if (via !== 'impact') continue; const target = assetTarget(asset); if (!target) continue;
+    newsAll.push({ article, impact, asset, target, dir: impact.direction, score: newsScore(article, asset) });
   }
   newsAll.sort((a, b) => b.score - a.score);
-  const seen = new Set(), uniq = newsAll.filter(e => { const k = geoKey(e.article) + '>' + geoKey(e.target); if (seen.has(k)) return false; seen.add(k); return true; });
-  network = uniq;
-  tradeAll = TRADE.filter(r => ctryPt(r.from) && ctryPt(r.to));
-  const lo = Math.log(tradeAll.at(-1)?.usd || 1), span = Math.log(tradeAll[0]?.usd || 2) - lo || 1;
-  tradeAll.forEach(r => r.w = (Math.log(r.usd) - lo) / span);
-  // rank: trade value first, then reach (intercontinental routes say more about a connected world than short hops between neighbours)
-  const gc = r => { const A = ctryPt(r.from), Bp = ctryPt(r.to); return Math.acos(Math.max(-1, Math.min(1, Math.sin(A.phi) * Math.sin(Bp.phi) + Math.cos(A.phi) * Math.cos(Bp.phi) * Math.cos(A.lam - Bp.lam)))); };
-  tradeShown = tradeAll.map(r => [r, r.w + .45 * Math.min(1, gc(r) / 1.1)]).sort((x, y) => y[1] - x[1]).map(x => x[0]);
-  // Market relationships: only strong moves (≥2%), each joined to the next biggest move in the same direction
-  const m = new Map(); for (const e of newsAll) if (Math.abs(e.asset.d) >= 2) m.set(e.asset.s, e);
-  const big = [...m.values()].sort((x, y) => Math.abs(y.asset.d) - Math.abs(x.asset.d)); relLines = [];
-  for (const sg of [1, -1]) { const g = big.filter(e => Math.sign(e.asset.d) === sg).slice(0, 6); for (let i = 1; i < g.length; i++) if (geoKey(g[i - 1].target) !== geoKey(g[i].target)) relLines.push({ a: g[i - 1].target, b: g[i].target, dir: sg > 0 ? 'up' : 'down' }); }
-  storyLines = storyPairs([...shown].sort(sortTop).slice(0, 80), 12);
-  const count = $('connection-count'); if (count) count.textContent = `Top connections of ${newsAll.length} · ${WLABEL[F.win]}`;
+  const seen = new Set(); network = newsAll.filter(e => { const k = geoKey(e.article) + '>' + geoKey(e.target); if (seen.has(k)) return false; seen.add(k); return true; });
+  // Blue evidence for every main line
+  const byAsset = new Map(); for (const s of shown) for (const { a } of assetsNamed(s)) (byAsset.get(a.s) || byAsset.set(a.s, []).get(a.s)).push(s);
+  const perArticle = {};
+  for (const e of network) {
+    e.blue = [];
+    if (Number.isFinite(e.asset.d) && Math.abs(e.asset.d) >= 1) {
+      for (const s of byAsset.get(e.asset.s) || []) {
+        if (s === e.article || Math.abs(s.t - e.article.t) > 864e5) continue;
+        if (geoKey(s) === geoKey(e.target) || geoKey(s) === geoKey(e.article)) continue;  // would have no length, or sit on top of the main line
+        const h = Math.round((s.t - e.article.t) / 36e5);
+        e.blue.push({ kind: 'ripple', a: s, b: e.target, article: s, asset: e.asset, parent: e, reason: `ripple:${e.asset.s}:${s.id}`,
+          label: `Also affects ${e.asset.n} · ${h === 0 ? 'same hour' : `${Math.abs(h)}h ${h > 0 ? 'later' : 'earlier'}`}`,
+          score: s.importance * 1.2 + Math.max(0, 1 - (Date.now() - s.t) / 864e5) });
+      }
+      if (e.asset.t === 'stocks' && SECTORS.has(e.asset.g)) {
+        const names = new Set([e.asset.n]), id = e.article.id;
+        const peers = (MKT.all || []).filter(p => p.t === 'stocks' && p.g === e.asset.g && p.s !== e.asset.s && Number.isFinite(p.d) && Math.abs(p.d) >= 1 && Math.abs(p.d) < 30 && Math.sign(p.d) === Math.sign(e.asset.d) && assetTarget(p) && geoKey(assetTarget(p)) !== geoKey(e.target))
+          .map(p => [p, Math.abs(p.d) + (p.k === e.asset.k ? 1.5 : 0) + (p.m ? .5 : 0)]).sort((x, y) => y[1] - x[1]);
+        for (const [p, sc] of peers) { if ((perArticle[id] || 0) >= 3) break; if (names.has(p.n)) continue; names.add(p.n); perArticle[id] = (perArticle[id] || 0) + 1;
+          e.blue.push({ kind: 'sector', a: e.target, b: assetTarget(p), asset: p, src: e.asset, parent: e, reason: `sector:${e.asset.g}:${e.asset.s}>${p.s}`,
+            label: `Sector reaction · ${p.n} ${pctTxt(p.d)}`, score: sc }); }
+      }
+    }
+  }
+  if (!EMBED) {
+    tradeAll = TRADE.filter(r => ctryPt(r.from) && ctryPt(r.to));
+    const lo = Math.log(tradeAll.at(-1)?.usd || 1), span = Math.log(tradeAll[0]?.usd || 2) - lo || 1; tradeAll.forEach(r => r.w = (Math.log(r.usd) - lo) / span);
+    const m = new Map(); for (const e of newsAll) if (Math.abs(e.asset.d) >= 2) m.set(e.asset.s, e);
+    const big = [...m.values()].sort((x, y) => Math.abs(y.asset.d) - Math.abs(x.asset.d)); relLines = [];
+    for (const sg of [1, -1]) { const g = big.filter(e => Math.sign(e.asset.d) === sg).slice(0, 6); for (let i = 1; i < g.length; i++) if (geoKey(g[i - 1].target) !== geoKey(g[i].target)) relLines.push({ a: g[i - 1].target, b: g[i].target, dir: sg > 0 ? 'up' : 'down' }); }
+    storyLines = storyPairs([...shown].sort(sortTop).slice(0, 80), 12);
+  }
+  const count = $('connection-count'); if (count) count.textContent = `${network.length} main lines, ${network.reduce((n, e) => n + e.blue.length, 0)} supporting · ${WLABEL[F.win]}`;
 }
 // Draw every line for this frame. focus: the hovered or selected article; country: the selected country.
 function drawConnections(t, focus, country) {
-  arcHits = []; pillRects = []; let visibleArcs = 0; const B = BUDGET();
-  const iso = country && ISO[country.name], fiso = focus && ISO[focus.location.country], fade = focus || iso ? .25 : 1;
+  arcHits = []; pillRects = []; lineHits = []; const B = BUDGET(), n = { orange: 0, ripple: 0, sector: 0, trade: 0 };
+  const iso = country && ISO[country.name], selOn = !!(focus || iso), fade = selOn ? .15 : 1;
   const ph = k => reduce ? null : (t / 4200 + k * .17) % 1;
-  if (TRADEON && tradeAll.length) {
-    const hot = iso ? tradeAll.filter(r => r.from === iso || r.to === iso).slice(0, 10) : fiso ? tradeAll.filter(r => r.from === fiso || r.to === fiso).slice(0, 5) : [];
-    const hs = new Set(hot), S = STYLE.trade, pick = [];
-    const cap = cappedBy(EMBED ? 3 : 4);  // geographic balance among the lines actually in view
-    for (const r of tradeShown) { if (pick.length >= B.trade) break; if (hs.has(r)) continue; const pts = arcPts(ctryPt(r.from), ctryPt(r.to), 30, BL); if (onFront(pts) && cap([r.from, r.to])) pick.push([r, pts]); }
-    tradeHits = [];
-    pick.forEach(([r, pts], i) => { const on = tradeHover === r, [al, w] = S[on ? 0 : i < 4 ? 1 : 2], k = on ? 1 : .6 + .4 * r.w; strokeArc(pts, BLUE, on ? al : al * k * fade, on ? w + .6 : w * (.85 + .3 * r.w), on, null); tradeHits.push({ r, pts }); });
-    hot.forEach((r, k) => { const pts = arcPts(ctryPt(r.from), ctryPt(r.to), 30); strokeArc(pts, BLUE, S[0][0], tradeHover === r ? S[0][1] + .6 : S[0][1], tradeHover === r, ph(k)); tradeHits.push({ r, pts }); });
+  const related = e => focus ? e.article === focus : iso ? e.article.location.country === country.name : false;
+  if (!EMBED && TRADEON && tradeAll.length) { const cap = cappedBy(4), pick = [];
+    for (const r of tradeAll) { if (pick.length >= B.trade) break; const pts = arcPts(ctryPt(r.from), ctryPt(r.to), 30, 0, .7); if (onFront(pts) && cap([r.from, r.to])) pick.push([r, pts]); }
+    pick.forEach(([r, pts]) => { const on = lineHover?.r === r; if (strokeArc(pts, TRADEC, (on ? .8 : .18 + .2 * r.w) * (on ? 1 : fade), on ? 1.3 : .7, false, null)) n.trade++; lineHits.push({ kind: 'trade', r, pts }); });
   }
-  if (!EMBED && RELON) relLines.forEach((l, k) => strokeArc(arcPts(l.a, l.b, 28), dirCol(l.dir), .5 * fade, 1.1, false, ph(k)));
-  if (!EMBED && STORYON) storyLines.forEach(({ a, b }, k) => strokeArc(arcPts(a, b, 28), ORANGE, .45 * fade, 1.1, false, ph(k)));
-  if (focus) storyPairs([...shown].filter(s => s === focus || assetsNamed(s).some(x => assetsNamed(focus).some(y => y.a === x.a))), 6)
-    .filter(p => p.a === focus || p.b === focus).forEach(({ a, b }, k) => strokeArc(arcPts(a, b, 28), ORANGE, .6, 1.3, false, ph(k)));
-  // news: the curated set, plus every line of the focused article (including ones hidden by default) or of the selected country
-  const S = STYLE.news, extra = focus ? newsAll.filter(e => e.article === focus) : iso ? newsAll.filter(e => e.article.location.country === country.name).slice(0, 10) : [];
-  const xs = new Set(extra.map(e => e.article.id + e.asset.s)), list = (CONNON || focus || iso ? network : []).filter(e => !xs.has(e.article.id + e.asset.s));
-  const draw = (e, i, on, points = arcPts(e.article, e.target, 32)) => {
-    const col = EMBED && e.via !== 'impact' ? BLUE : dirCol(e.dir), tier = on ? 1 : e.tier, [al, w] = S[tier - 1];
-    if (strokeArc(points, col, on ? al : al * fade, on ? w + .2 : w, tier === 1 && !(fade < 1 && !on), tier === 1 ? ph(i) : null)) visibleArcs++;
+  if (!EMBED && RELON) relLines.forEach((l, k) => strokeArc(arcPts(l.a, l.b, 28, 0, .7), dirCol(l.dir), .45 * fade, .9, false, ph(k)));
+  if (!EMBED && STORYON) storyLines.forEach(({ a, b }, k) => strokeArc(arcPts(a, b, 28, 0, .7), ORANGE, .4 * fade, .9, false, ph(k)));
+  // Main lines: the strongest visible ones, spread across countries; zoomed in, the ones in view come first.
+  const cand = !EMBED && Z > 1.4 ? network.map(e => [e, arcPts(e.article, e.target, 32)]).sort((x, y) => inView(y[1]) - inView(x[1])) : network.map(e => [e, null]);
+  // A main connection whose article and company are in the same city has no line to draw (the marker is the connection), but it still
+  // counts as a main connection, so its Ripple and Sector evidence can start from that marker.
+  const vis = [], local = [], cap = cappedBy(EMBED ? 2 : 3);
+  if (CONNON) for (const [e, p] of cand) { if (vis.length >= B.main) break; if (related(e)) continue; const pts = p || arcPts(e.article, e.target, 32); if (!faces(pts)) continue; if (!long(pts)) { if (local.length < B.main) local.push([e, pts]); continue; } if (cap(['a' + e.article.location.country, 't' + geoKey(e.target)])) vis.push([e, pts]); }
+  const hot = selOn ? network.filter(related).map(e => [e, arcPts(e.article, e.target, 32)]) : [];
+  // Blue: evidence of the drawn main lines; strongest first, spread across places, never more than the budget (all of them for a selection).
+  const blueOf = (list, budget, highlight) => { const out = [], bc = cappedBy(EMBED ? 2 : 3);
+    const all = list.flatMap(([e]) => e.blue).sort((x, y) => y.score - x.score);
+    for (const l of all) { if (out.length >= budget) break; const pts = arcPts(l.a, l.b, 28, 0, .55); if (!onFront(pts)) continue; if (!highlight && !bc([geoKey(l.a), geoKey(l.b)])) continue; out.push([l, pts]); }
+    return out; };
+  const blueVis = blueOf([...vis, ...local], B.blue, false), blueHot = blueOf(hot, 99, true);
+  const drawBlue = ([l, pts], k, on) => { const col = l.kind === 'ripple' ? RIPPLE : SECTOR, hov = lineHover === l;
+    const al = hov ? .9 : on ? .7 : (EMBED ? .45 : .4) * fade, w = hov ? 1.4 : on ? 1.1 : .9;
+    if (strokeArc(pts, col, al, w, false, on || hov ? ph(k) : null)) n[l.kind]++;
+    if (l.kind === 'sector') { const q = pts.at(-1); if (q[2]) { ctx.strokeStyle = `rgba(${col},${Math.min(1, al + .2).toFixed(3)})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(q[0], q[1], on || hov ? 4 : 3, 0, 7); ctx.stroke(); } }  // sector reaction ends on a ring: the other company
+    lineHits.push({ ...l, pts }); };
+  const drawMain = ([e, points], i, on) => {
+    const col = dirCol(e.dir), primary = !EMBED && !selOn && i < 3;
+    const al = on ? .95 : EMBED ? .85 : (primary ? .9 : .6) * fade, w = on ? 1.8 : EMBED ? 1.3 : primary ? 1.7 : 1.25;
+    if (strokeArc(points, col, al, w, (primary || on) && !EMBED, primary || on ? ph(i) : null)) n.orange++;
     if (on && focus && !EMBED && e.impact) {
       const seen = points.filter(p => p[2] && p[0] > globeBox.left + 34 && p[0] < globeBox.right - 34 && p[1] > globeBox.top + 30 && p[1] < globeBox.bottom - 30);
-      if (seen.length > 2) { const m = seen[Math.floor(seen.length / 2)], d = e.asset.d, nm = e.asset.n.length > 17 ? e.asset.n.slice(0, 16) + '…' : e.asset.n, pt = Number.isFinite(d) ? `${d > 0 ? '↑' : d < 0 ? '↓' : '↔'} ${Math.abs(d).toFixed(2)}%` : IMPACT_ARROW[e.impact.direction]; ctx.font = '650 12px Inter,sans-serif'; const w1 = ctx.measureText(nm).width, w2 = ctx.measureText(pt).width, W = w1 + w2 + 32, H = 26; let x = m[0] - W / 2, y = m[1] - H / 2; for (let n = 0; n < 8 && pillRects.some(r => x < r.x + r.w + 4 && x + W + 4 > r.x && y < r.y + r.h + 4 && y + H + 4 > r.y); n++) y += H + 4;
+      if (seen.length > 2) { const m = seen[Math.floor(seen.length / 2)], d = e.asset.d, nm = e.asset.n.length > 17 ? e.asset.n.slice(0, 16) + '…' : e.asset.n, pt = Number.isFinite(d) ? `${d > 0 ? '↑' : d < 0 ? '↓' : '↔'} ${Math.abs(d).toFixed(2)}%` : IMPACT_ARROW[e.impact.direction]; ctx.font = '650 12px Inter,sans-serif'; const w1 = ctx.measureText(nm).width, w2 = ctx.measureText(pt).width, W = w1 + w2 + 32, H = 26; let x = m[0] - W / 2, y = m[1] - H / 2; for (let k = 0; k < 8 && pillRects.some(r => x < r.x + r.w + 4 && x + W + 4 > r.x && y < r.y + r.h + 4 && y + H + 4 > r.y); k++) y += H + 4;
         pillRects.push({ x, y, w: W, h: H, nm, pt, w1, d, edge: { ...e, points, pill: { x, y, w: W, h: H } } }); }
     }
     if (!EMBED && e.impact) arcHits.push({ ...e, points });
   };
-  const vis = [], ncap = cappedBy(EMBED ? 2 : 3); for (const e of list) { if (vis.length >= B.news) break; const pts = arcPts(e.article, e.target, 32, e.via !== 'impact' ? BL : 0); if (onFront(pts) && ncap(['a' + e.article.location.country, 't' + geoKey(e.target)])) vis.push([e, pts]); }
-  const sec = B.primary + Math.ceil((vis.length - B.primary) * .4); vis.forEach(([e], i) => e.tier = i < B.primary ? 1 : i < sec ? 2 : 3);
-  for (const tier of [3, 2, 1]) vis.forEach(([e, pts], i) => { if (e.tier === tier) draw(e, i, false, pts); });
-  // Homepage: follow-up articles and strong market moves fill the remaining room in blue (only the original article → asset lines are orange)
-  if (EMBED && CONNON) { let n = vis.length;
-    for (const l of [...relLines, ...storyLines.map(x => ({ a: x.a, b: x.b }))]) { if (n >= B.news) break; const pts = arcPts(l.a, l.b, 30, BL); if (!onFront(pts) || !ncap(['t' + geoKey(l.a), 't' + geoKey(l.b)])) continue; const [al, w] = S[n < B.primary + 3 ? 1 : 2]; if (strokeArc(pts, BLUE, al * fade, w, false, null)) { visibleArcs++; n++; } } }
-  extra.forEach((e, i) => draw(e, i, true));
-  cv.dataset.arcCount = String(visibleArcs);
+  // order: supporting lines under main lines; the selection on top
+  blueVis.forEach((b, k) => drawBlue(b, k, false));
+  vis.forEach((e, i) => drawMain(e, i, false));
+  blueHot.forEach((b, k) => drawBlue(b, k, true));
+  hot.forEach((e, i) => drawMain(e, i, true));
+  cv.dataset.arcCount = String(n.orange); cv.dataset.lines = JSON.stringify(n);
+  if (QS.has('lines')) { const mid = pts => { const v = pts.filter(p => p[2]); return v[v.length >> 1]; };  // previews: where each drawn line is, for labelling screenshots
+    window.__lines = [...vis.map(([e, p]) => ({ kind: 'orange', label: `${e.article.location.place.split(',')[0]} → ${e.asset.n}`, at: mid(p) })), ...blueVis.map(([l, p]) => ({ kind: l.kind, label: l.label, at: mid(p) }))]; }
 }
 function arcPick(x,y) { const pr=pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h); if(pr) return pr.edge; return arcHits.find(h=>h.points.some(p=>p[2] && Math.hypot(p[0]-x,p[1]-y)<10)); }
 function impactTargets(s) { return impactsOf(s).map(i => ({ impact: i, country: impactCountry(i) })).filter(x => x.country); }
@@ -1200,9 +1233,9 @@ function hoverAt(x, y) {
   cv.style.cursor = !EMBED || onGlobe(x, y) ? 'grab' : 'default';  // full Globe page: hand everywhere; homepage: only over the globe
   const ex = !EMBED && (exPick(x, y) || upPick(x, y)); if (ex) { $('hover').classList.remove('on'); return; }
   const edge=arcPick(x,y); arcHover=edge || null;
-  const tr = !edge && TRADEON && tradeHits.find(h => h.pts.some(p => p[2] && Math.hypot(p[0] - x, p[1] - y) < 7));
-  tradeHover = tr ? tr.r : null;
-  if (tr && !pick(x, y, 16)) { const hv = $('hover'); hv.className = 'hover glass solo tr on'; hv.innerHTML = tradeCardHTML(tr.r); placeTrade(x, y); return; }
+  const ln = !edge && !pick(x, y, 16) && lineHits.findLast(h => h.pts.some(p => p[2] && Math.hypot(p[0] - x, p[1] - y) < 7));
+  lineHover = ln || null;
+  if (ln) { const hv = $('hover'); hv.className = 'hover glass solo tr on'; hv.innerHTML = lineCardHTML(ln); placeTrade(x, y); return; }
   if(edge){const hv=$('hover');hv.className='hover glass solo hv-b on';hv.innerHTML=hoverCardHTML(edge);edge.pill?placeHover(edge.pill.x+edge.pill.w+4,edge.pill.y+edge.pill.h/2):placeHover(x,y);return;}
 
   const d = pick(x, y, 16);
@@ -1231,14 +1264,14 @@ function placeTrade(x, y) {  // phones: full-width card just below the tapped li
   if (innerWidth > 760) return placeHover(x, y);
   const hv = $('hover'), h = hv.offsetHeight, t = Math.max(cy - R, Math.min(cy + R - h, y + 18)); hv.style.setProperty('top', t + 'px', 'important');
 }
-function hideHover() { delete $('hover').dataset.country; arcHover=null; tradeHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
+function hideHover() { delete $('hover').dataset.country; arcHover=null; lineHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
 function tap(x, y, touch) {
   if (touch) hideHover();
   const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
   const ex = !EMBED && exPick(x, y); if (ex) { window.InvPeek?.open(ex.e.ix); return; }
   const edge=arcPick(x,y);if(edge){arcHover=null;openStory(edge.article);return;}
-  const tr = TRADEON && !pick(x, y, 16) && tradeHits.find(h => h.pts.some(p => p[2] && Math.hypot(p[0] - x, p[1] - y) < 10));  // tap a blue line: explain it
-  if (tr) { tradeHover = tr.r; const hv = $('hover'); hv.className = 'hover glass solo tr on'; hv.innerHTML = tradeCardHTML(tr.r); placeTrade(x, y); return; }
+  const ln = !pick(x, y, 16) && lineHits.findLast(h => h.pts.some(p => p[2] && Math.hypot(p[0] - x, p[1] - y) < 10));  // a supporting line: explain it (touch), or open its article (mouse)
+  if (ln) { if (!touch && !EMBED && ln.kind !== 'trade') { openStory(ln.kind === 'ripple' ? ln.article : ln.parent.article); return; } lineHover = ln; const hv = $('hover'); hv.className = 'hover glass solo tr on'; hv.innerHTML = lineCardHTML(ln); placeTrade(x, y); return; }
 
   const d = pick(x, y, touch ? 26 : 16);
   if (d) { hideHover(); if (d.list.length === 1) return openStory(d.list[0]); if (d.same || Z >= ZMAX - .2) return openPlace(d.list); return flyTo(d.lo, d.la, Math.min(ZMAX, Z * 2.2)); }
@@ -1521,7 +1554,7 @@ $('play').onclick = () => { F.win = '7d'; press($('wins'), '7d'); play = { start
 
 // ===== Draw =====
 function vec(phi, lam) { return [Math.cos(phi) * Math.cos(lam), Math.cos(phi) * Math.sin(lam), Math.sin(phi)]; }
-function arcPts(a, b, n = 56, lift = 0) {  // lift > 0: a taller arc that rises out past the globe's outline (homepage blue lines)
+function arcPts(a, b, n = 56, lift = 0, low = 1) {  // lift > 0: a taller arc that rises out past the globe's outline (homepage blue lines)
   const A = vec(a.phi, a.lam), B = vec(b.phi, b.lam), dot = Math.max(-1, Math.min(1, A[0] * B[0] + A[1] * B[1] + A[2] * B[2])), om = Math.acos(dot), so = Math.sin(om) || 1, out = [];
   if (om < .00001) { const p=proj(a.phi,a.lam,1); return [[p[0],p[1],p[2]>0],[p[0],p[1],p[2]>0]]; }
   for (let i = 0; i <= n; i++) {
@@ -1529,7 +1562,7 @@ function arcPts(a, b, n = 56, lift = 0) {  // lift > 0: a taller arc that rises 
     // The lift follows the surface: it is full in the middle of the front face and flattens to zero as the arc nears the edge of the globe,
     // so the line runs down onto the rim and carries on over it instead of ending in the sky.
     const phi = Math.asin(v[2]), lam = Math.atan2(v[1], v[0]), zS = proj(phi, lam, 1)[2], f = Math.max(0, Math.min(1, zS / .3));
-    const h = 1 + Math.sin(Math.PI * k) * (lift ? lift * Math.min(1, .35 + om * .8) : Math.min(.15, .05 + om * .09) * f), p = proj(phi, lam, h);
+    const h = 1 + Math.sin(Math.PI * k) * (lift ? lift * Math.min(1, .35 + om * .8) : Math.min(.15, .05 + om * .09) * f * low), p = proj(phi, lam, h);
     out.push([p[0], p[1], zS > 0 || (lift > 0 && p[2] > -.2 && Math.hypot(p[0] - cx, p[1] - cy) > R)]);
   }
   return out;
