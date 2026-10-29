@@ -774,6 +774,39 @@ function assetTarget(a) {
   return Number.isFinite(la) && Number.isFinite(lo) ? {phi:la*rad,lam:lo*rad} : null;
 }
 let network = [], arcHits = [], arcHover = null, pillRects = [];
+// ---- More connections (preview: ?lx=1,2,3,4,6). Real data only; each layer has its own colour and line style.
+//  1 article → every asset it names (entities with a known ticker)   2 assets that moved together (same article, same direction, ≥1%)
+//  3 article → article chains (leads_to)                              4 company → its home index
+//  6 trade routes: biggest export flows between major economies (UN Comtrade, assets/globe/trade.json)
+const LX = new Set((new URLSearchParams(location.search).get('lx') || '').split(',').filter(Boolean));
+let TRADE = [], ISO_NAME = {};
+for (const [n, c] of Object.entries(ISO)) if (!ISO_NAME[c]) ISO_NAME[c] = n;
+if (LX.has('6')) fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; }).catch(() => {});
+const ctryPt = iso2 => { const c = byName[ISO_NAME[iso2]]; return c && c.c ? { phi: c.c[1] * rad, lam: c.c[0] * rad } : null; };
+const moveCol = d => d > 0 ? IMPACT_COLOR.up : d < 0 ? IMPACT_COLOR.down : IMPACT_COLOR.mixed;
+function layerArc(a, b, col, alpha, width, dash, phase, n = 28) {
+  const pts = arcPts(a, b, n); ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha})`; if (dash) ctx.setLineDash(dash);
+  ctx.beginPath(); let pen = false; for (const [x, y, v] of pts) { if (!v) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } ctx.stroke(); ctx.restore();
+  if (phase != null) { const q = pts[Math.round(phase * (pts.length - 1))]; if (q && q[2]) { ctx.fillStyle = `rgba(${col},${Math.min(1, alpha * 2.4)})`; ctx.beginPath(); ctx.arc(q[0], q[1], 1.6, 0, 7); ctx.fill(); } }
+}
+function assetsNamed(s) {  // impacts and entities that map to a real asset with a price move
+  const out = new Map();
+  for (const i of impactsOf(s)) { const a = assetForImpact(i); if (a) out.set(a.s, { a, via: 'impact' }); }
+  for (const e of s.entities || []) { const t = e && (e.ticker || e.sym); if (!t) continue; const a = assetForImpact({ ticker: t }); if (a && !out.has(a.s)) out.set(a.s, { a, via: 'entity' }); }
+  return [...out.values()];
+}
+function drawLayers(t) {
+  if (!LX.size) return;
+  const list = [...shown].sort(sortTop).slice(0, 40), ph = k => reduce ? null : (t / 4200 + k * .13) % 1;
+  if (LX.has('6') && TRADE.length) { const max = TRADE[0].usd; TRADE.slice(0, 40).forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to); if (a && b) layerArc(a, b, '120,170,255', .26, .5 + 2.2 * r.usd / max, null, ph(k), 34); }); }
+  if (LX.has('4')) { const seen = new Set(); for (const s of list) for (const { a } of assetsNamed(s)) { if (a.t !== 'stocks' || a.g === 'Index' || seen.has(a.s)) continue; seen.add(a.s);
+    const idx = (MKT.all || []).find(x => x.g === 'Index' && x.k === a.k), ta = assetTarget(a), ti = idx && assetTarget(idx); if (ta && ti && idx.s !== a.s) layerArc(ta, ti, '230,230,240', .2, .6, [2, 4], null, 16); } }
+  if (LX.has('1')) list.forEach((s, k) => assetsNamed(s).filter(x => x.via === 'entity').forEach(({ a }) => { const ta = assetTarget(a); if (ta) layerArc(s, ta, moveCol(a.d), .3, .8, null, ph(k)); }));
+  if (LX.has('2')) { let n = 0; for (const s of list) { const m = assetsNamed(s).map(x => x.a).filter(a => Number.isFinite(a.d) && Math.abs(a.d) >= 1);
+    for (let i = 0; i < m.length && n < 30; i++) for (let j = i + 1; j < m.length && n < 30; j++) if (Math.sign(m[i].d) === Math.sign(m[j].d)) { const A = assetTarget(m[i]), B = assetTarget(m[j]); if (A && B) { layerArc(A, B, moveCol(m[i].d), .45, 1.1, [5, 4], ph(n), 24); n++; } } } }
+  if (LX.has('3')) list.forEach((s, k) => { const nx = s.links && s.links[0] && byId[s.links[0]]; if (nx) layerArc(s, nx, '255,122,26', .6, 1.4, null, ph(k)); });
+}
+
 function updateNetwork() {
   network = [...shown].sort(sortTop).flatMap(article => impactsOf(article).flatMap(impact => {
     const asset=assetForImpact(impact), target=asset && assetTarget(asset);
@@ -1556,6 +1589,7 @@ function frame(t) {
     if(!EMBED)arcHits.push({...edge,points});
   }
   cv.dataset.arcCount=String(visibleArcs);
+  drawLayers(t);
 
   // lens active: stories outside the lens stay on the map as faint dots
   for (const s of dimmed) { const [x, y, z] = proj(s.phi, s.lam); if (z <= .04) continue; ctx.fillStyle = `rgba(161,161,170,${(.1 + .22 * z).toFixed(3)})`; ctx.beginPath(); ctx.arc(x, y, 1.7, 0, 7); ctx.fill(); }
