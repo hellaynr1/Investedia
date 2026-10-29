@@ -791,12 +791,12 @@ let TRADE = [], ISO_NAME = {};
 for (const [n, c] of Object.entries(ISO)) if (!ISO_NAME[c]) ISO_NAME[c] = n;
 fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; updateNetwork(); }).catch(() => {});
 const ctryPt = iso2 => { const c = byName[ISO_NAME[iso2]]; return c && c.c ? { phi: c.c[1] * rad, lam: c.c[0] * rad } : null; };
-const ORANGE = '255,122,26', BLUE = '45,125,255', BL = EMBED ? (QS.has('bl') ? +QS.get('bl') : .42) : 0;  // homepage blue arcs: how far they rise past the outline
+const ORANGE = '255,122,26', BLUE = '45,125,255', BL = EMBED ? (+QS.get('bl') || 0) : 0;  // blue arcs stay on the globe (preview only: ?bl= lets them rise past the outline)
 const dirCol = dir => EMBED ? ORANGE : dir === 'up' ? IMPACT_COLOR.up : dir === 'down' ? IMPACT_COLOR.down : ORANGE;
 // [alpha, width] per tier (1, 2, 3)
 const STYLE = EMBED ? { news: [[.85, 1.6], [.55, 1.05], [.4, .75]], trade: [[.7, 1.2], [.55, .95], [.42, .7]] }
                     : { news: [[.9, 1.8], [.5, 1.15], [.28, .85]], trade: [[.6, 1.4], [.42, 1], [.26, .75]] };
-const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { news: ph ? 8 : 12, trade: ph ? 16 : 24, primary: ph ? 3 : 4 } : { news: ph ? 12 : 20, trade: ph ? 18 : 30, primary: ph ? 4 : 5 }; };
+const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { news: ph ? 8 : 12, trade: ph ? 26 : 40, primary: ph ? 3 : 4 } : { news: ph ? 12 : 20, trade: ph ? 18 : 30, primary: ph ? 4 : 5 }; };
 const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells: arcs that start and end in the same cells count as one
 function strokeArc(pts, col, alpha, width, glow, phase) {
   if (EMBED) { width = 1.1; glow = false; }  // homepage: all lines equally thin
@@ -871,7 +871,7 @@ function drawConnections(t, focus, country) {
   if (TRADEON && tradeAll.length) {
     const hot = iso ? tradeAll.filter(r => r.from === iso || r.to === iso).slice(0, 10) : fiso ? tradeAll.filter(r => r.from === fiso || r.to === fiso).slice(0, 5) : [];
     const hs = new Set(hot), S = STYLE.trade, pick = [];
-    const cap = cappedBy(EMBED ? 3 : 4);  // geographic balance among the lines actually in view
+    const cap = cappedBy(EMBED ? 5 : 4);  // geographic balance among the lines actually in view
     for (const r of tradeShown) { if (pick.length >= B.trade) break; if (hs.has(r)) continue; const pts = arcPts(ctryPt(r.from), ctryPt(r.to), 30, BL); if (onFront(pts) && cap([r.from, r.to])) pick.push([r, pts]); }
     tradeHits = [];
     pick.forEach(([r, pts], i) => { const on = tradeHover === r, [al, w] = S[on ? 0 : i < 4 ? 1 : 2], k = on ? 1 : .6 + .4 * r.w; strokeArc(pts, BLUE, on ? al : al * k * fade, on ? w + .6 : w * (.85 + .3 * r.w), on, null); tradeHits.push({ r, pts }); });
