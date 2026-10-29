@@ -113,8 +113,8 @@ function globeParams() {
   return 'cx=.5&cy=' + (mid / hr.height).toFixed(4) + '&r=' + (radius / base).toFixed(4);
 }
 // Popular searches under the search bar: well-known assets people look up most; each chip opens that asset (pop-up sheet when available).
-const POPULAR = [{ s: '^GSPC', n: 'S&P 500', t: 'stocks', g: 'Index', cc: 'us' }, { s: 'AAPL', n: 'Apple', t: 'stocks' },
-  { s: 'BZ=F', n: 'Oil', t: 'cmd', ic: 'oil' }, { s: 'GC=F', n: 'Gold', t: 'cmd', ic: 'gold' }, { s: 'EURUSD', n: 'EUR', t: 'fx', ic: 'eur' }];
+const POPULAR = [{ s: 'NVDA', n: 'Nvidia', t: 'stocks' }, { s: 'AAPL', n: 'Apple', t: 'stocks' }, { s: 'MSFT', n: 'Microsoft', t: 'stocks' },
+  { s: 'TSLA', n: 'Tesla', t: 'stocks' }, { s: 'BTC-USD', n: 'Bitcoin', t: 'crypto' }];
 const POP_IC = {  // small chip icons for commodities and currencies (the asset tiles are drawn for larger cards)
   oil: '<span class="pi"><svg viewBox="0 0 24 24"><path d="M12 3c3.5 4.6 6 8 6 11a6 6 0 0 1-12 0c0-3 2.5-6.4 6-11Z" fill="#FF8A1F"/></svg></span>',
   gold: '<span class="pi"><svg viewBox="0 0 24 24"><path d="M3 18 6 11h12l3 7H3Z" fill="#E8A92C"/><path d="M8 11 9.5 6h5L16 11" fill="#F4C451"/></svg></span>',
