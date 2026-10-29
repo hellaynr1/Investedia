@@ -63,7 +63,7 @@ const sinceOf = (s, m) => { if (!m || !window.SinceNews || !TRACK || !TRACK.s) r
 const whyFeatured = (s, asof) => { const m = primary(s), t = s.why_moved || s.summary;
   const since = sinceOf(s, m), body = since || (m ? `<div class="hn-wrow"><div class="hn-wbig"><span class="hn-wl">${esc(m.a.n)} · today</span><strong class="${m.a.d > 0 ? 'up' : m.a.d < 0 ? 'down' : 'flat'}">${m.a.d > 0 ? '↑' : m.a.d < 0 ? '↓' : '↔'} ${Math.abs(m.a.d).toFixed(2)}%</strong><span class="hn-wl">7 days ${sign(m.a.w)}</span></div><div class="hn-wchart">${spark(m.a, markIndex(s, m.a, asof), m.a.w >= 0)}<div class="hn-wcap"><span>22 sessions ago</span><span class="hn-wmk">● article published</span><span>now</span></div></div></div>` : '');
   return `<a class="hn-wf" href="${url(s)}"><div class="hn-wtop">${tags(s)}${m ? implies(m.i) : ''}</div><h3>${esc(s.headline)}</h3><p>${esc(t)}</p>${body}${impactChips(s)}</a>`; };
-const whySmall = s => { const m = primary(s); return `<a class="hn-wc" href="${url(s)}"><div class="hn-wtop">${tags(s)}</div><h4>${esc(s.headline)}</h4>${m ? `<div class="hn-wasset"><b>${esc(m.a.n)}</b>${pctPill(m.a.d)}${implies(m.i)}</div>` : impactChips(s)}</a>`; };
+const whySmall = s => { const m = primary(s); return `<a class="hn-wc" href="${url(s)}"><div class="hn-wtop">${tags(s)}</div><h4>${esc(s.headline)}</h4>${m ? `<div class="hn-wasset"><b>${esc(m.a.n)}</b>${pctPill(m.a.d)}${implies(m.i)}</div>` : ''}${impactChips(s)}</a>`; };
 const whySection = (list, asof) => list.length ? whyFeatured(list[0], asof) + `<div class="hn-wside">${list.slice(1, 3).map(whySmall).join('')}</div>` : '';
 function countries(list) {
   const c = {}; for (const s of list) c[s.location.country] = (c[s.location.country] || 0) + 1;
@@ -88,7 +88,7 @@ function confirmedFeatured(c) {
   const s = c.story, card = window.SinceNews ? SinceNews.card({ story: s, impact: c.impact, asset: c.asset, series: c.series, now: Date.now() }) : '';
   return `<a class="hn-wf" href="${url(s)}"><div class="hn-wtop">${tags(s)}</div>${confirmedChip(c)}<h3>${esc(s.headline)}</h3><p>${esc(s.why_moved || s.summary)}</p>${card}${impactChips(s)}</a>`;
 }
-const confirmedSmall = c => `<a class="hn-wc" href="${url(c.story)}"><div class="hn-wtop">${tags(c.story)}</div><h4>${esc(c.story.headline)}</h4><div class="hn-wasset"><span class="hn-conf sm">✓ ${esc(c.asset.n)} ${sgn(c.move)}</span></div></a>`;
+const confirmedSmall = c => `<a class="hn-wc" href="${url(c.story)}"><div class="hn-wtop">${tags(c.story)}</div><h4>${esc(c.story.headline)}</h4><div class="hn-wasset"><span class="hn-conf sm">✓ ${esc(c.asset.n)} ${sgn(c.move)}</span></div>${impactChips(c.story)}</a>`;
 function confirmedSection(d) {
   const calls = d.calls || [], C = window.Implications ? Implications.counts(calls) : { hit: 0, miss: 0, flat: 0 }, judged = C.hit + C.miss + C.flat;
   const hits = calls.filter(c => c.res === 'hit' && c.judged === 'live').sort((a, b) => (b.story.importance - a.story.importance) || (b.pub - a.pub));
