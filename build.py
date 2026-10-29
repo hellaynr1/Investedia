@@ -53,7 +53,6 @@ HEAD = """<!doctype html>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
 <script src="assets/mock.js?v={ver}"></script>
-<script src="assets/legal-owner.js?v={ver}"></script>
 <link rel="stylesheet" href="assets/news-menu.css?v={ver}">
 <script src="assets/live-config.js?v={ver}"></script>
 <script src="assets/live-data.js?v={ver}" defer></script>
@@ -98,7 +97,7 @@ def build(release=False):
                     f'<p>This page has moved. <a href="{target}">Continue to {"Home" if target == "index.html" else "Markets"}</a>.</p>'
                     f'<script>location.replace({json.dumps(target)})</script></main></body></html>')
         (ROOT / p.name).write_text(html)
-    (ROOT / 'assets/legal-owner.js').write_text('window.InvLegal=' + json.dumps(values).replace('<', '\\u003c') + ';\n')
+    # Owner details are no longer shipped to every page as a script (they appear only on the legal pages that need them).
     security = legal_check.render((ROOT/'src/security.txt').read_text(), values, styled=False)
     if values.get('security_email'): security = security.replace('mailto:info@investedia.com', 'mailto:'+str(values['security_email']))
     (ROOT / '.well-known/security.txt').write_text(security)

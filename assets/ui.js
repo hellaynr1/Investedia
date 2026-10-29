@@ -439,9 +439,9 @@
     <div><h6>Learn</h6><ul><li><a href="education.html">Education</a></li></ul></div>
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
     <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our background</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="contact.html">Contact</a></li><li><a href="mailto:info@investedia.com">info@investedia.com</a></li></ul></div>
-    <div class="ftr-legal"><h6>Legal</h6><ul><li><a href="legal.html">Legal hub</a></li><li><a href="terms.html">Terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="cookies.html">Cookies</a></li><li><a href="disclaimer.html">Disclaimer</a></li><li><a href="ai-disclosure.html">AI use</a></li><li><a href="sources.html">Sources</a></li><li><a href="copyright.html">Copyright & takedown</a></li><li><a href="editorial-policy.html">Editorial policy</a></li><li><a href="corrections.html">Corrections</a></li><li><a href="affiliate-disclosure.html">Advertising & affiliates</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="contact.html">Contact</a></li><li><button type="button" data-cookie-settings>Cookie settings</button></li></ul></div>
+    <div class="ftr-legal"><h6>Legal</h6><ul><li><a href="legal.html">Legal hub</a></li><li><a href="legal-notice.html">Legal notice</a></li><li><a href="terms.html">Terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="cookies.html">Cookies</a></li><li><a href="disclaimer.html">Disclaimer</a></li><li><a href="ai-disclosure.html">AI use</a></li><li><a href="sources.html">Sources</a></li><li><a href="copyright.html">Copyright & takedown</a></li><li><a href="editorial-policy.html">Editorial policy</a></li><li><a href="corrections.html">Corrections</a></li><li><a href="affiliate-disclosure.html">Advertising & affiliates</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="contact.html">Contact</a></li><li><button type="button" data-cookie-settings>Cookie settings</button></li></ul></div>
   </div>
-  <div class="ftr-bottom"><span>© ${new Date().getFullYear()} Investedia · ${window.InvLegal?.legal_name ? String(window.InvLegal.legal_name).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;") : '<mark class="owner-placeholder">[OWNER: legal name]</mark>'}. <a href="disclaimer.html">Not investment advice.</a></span><span>Data: Yahoo Finance, FRED & Coinbase. <a href="sources.html">Sources & attributions</a>.</span></div></div>`;
+  <div class="ftr-bottom"><span>© ${new Date().getFullYear()} Investedia · <a href="legal-notice.html">Legal notice</a> · <a href="disclaimer.html">Not investment advice.</a></span><span>Data: Yahoo Finance, FRED & Coinbase. <a href="sources.html">Sources & attributions</a>.</span></div></div>`;
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
 
   // ---------- charts ----------
@@ -629,7 +629,9 @@
   const sbLoad = () => sb ? Promise.resolve(sb) : new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'; s.onload = () => ok(sb = window.supabase.createClient(SB_URL, SB_KEY)); s.onerror = no; document.head.append(s); });
   window.invSB = sbLoad;
   // ---------- optional first-party usage events, gated by analytics consent ----------
-  const OWNERS = ['adonaykabeya10@gmail.com', 'info@investedia.com'];
+  // Owner accounts are recognised by a SHA-256 hash of their email, so no address appears in this public file. This only changes which buttons show; access to data is enforced by Supabase.
+  const OWNER_HASHES = ["264b0fd1279e8a878bb289abf5411178fe468ea4bb1a0f87331618413d05144e", "f1b59c964027b7263946e880de371f9f61738244628d1acc3a98744be74decde"];
+  const isOwnerEmail = async (e) => { try { const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(e || '').toLowerCase())); return OWNER_HASHES.includes([...new Uint8Array(d)].map(b => b.toString(16).padStart(2, '0')).join('')); } catch { return false; } };
   const track = (type, detail) => { try {
     if (!window.InvConsent?.allows('analytics')) return;
     if (navigator.webdriver || /bot|crawl|spider|headless|lighthouse/i.test(navigator.userAgent) || !/investedia\.com$/.test(location.hostname) || store('inv-owner') === '1') return;
@@ -695,7 +697,7 @@
   if (gated) document.documentElement.classList.add('auth-gate');
   const paintUser = u => { if (gated && u) document.documentElement.classList.remove('auth-gate');
     const av = hdr.querySelector('#hdr-avatar'), lb = hdr.querySelector('#hdr-login'); if (!lb) return;
-    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); const owner = !!u && OWNERS.includes(String(u.email || '').toLowerCase()); document.documentElement.classList.toggle('is-owner', owner); if (owner) store('inv-owner', '1'); INVWATCH.login(u); window.invUser = u || null; window.dispatchEvent(new CustomEvent('inv-user', { detail: u || null })); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
+    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); document.documentElement.classList.remove('is-owner'); if (u) isOwnerEmail(u.email).then(owner => { document.documentElement.classList.toggle('is-owner', owner); if (owner) store('inv-owner', '1'); }); INVWATCH.login(u); window.invUser = u || null; window.dispatchEvent(new CustomEvent('inv-user', { detail: u || null })); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
     av.textContent = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase(); paintAvatar();
     if (u.app_metadata && u.app_metadata.provider === 'google' && store('inv-news-optin') === '1' && !u.user_metadata.newsletter) { sb.auth.updateUser({ data: { newsletter: true } }); store('inv-news-optin', '0'); } };
   {

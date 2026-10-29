@@ -44,7 +44,7 @@ investedia.com: **investing media for everyone**. A news-first website: the worl
 - Google Auth Platform → Branding: after 24 h, "J'ai corrigé les problèmes" (domain verified in Search Console).
 - Search Console: submit `sitemap.xml`.
 - Forward `info@investedia.com` to the owner's Gmail (Spaceship email forwarding or ImprovMX) so replies arrive.
-- Delete the test users `adonaykabeya10+invtest1…5@gmail.com` in Supabase (ask first).
+- Delete the five `+invtest` test users (aliases of the owner's mailbox) in Supabase (ask first).
 - Globe: place oil/mining stocks at their real mines and oil fields (only where relevant).
 - Later: news on the globe (Pro feature); weekly analytics summary into the owner's Second Brain.
 - Before making money from the site: move prices to a licensed data source (Yahoo's free feed is not for commercial use).
