@@ -797,14 +797,20 @@ function assetsNamed(s) {  // impacts and entities that map to a real asset with
 }
 function drawLayers(t) {
   if (!LX.size) return;
-  const list = [...shown].sort(sortTop).slice(0, 40), ph = k => reduce ? null : (t / 4200 + k * .13) % 1;
+  const list = [...shown].sort(sortTop), ph = k => reduce ? null : (t / 4200 + k * .13) % 1;
   if (LX.has('6') && TRADE.length) { const max = TRADE[0].usd; TRADE.slice(0, 40).forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to); if (a && b) layerArc(a, b, '120,170,255', .5, .8 + 2.6 * r.usd / max, null, ph(k), 34); }); }
   if (LX.has('4')) { const seen = new Set(); for (const s of list) for (const { a } of assetsNamed(s)) { if (a.t !== 'stocks' || a.g === 'Index' || seen.has(a.s)) continue; seen.add(a.s);
-    const idx = (MKT.all || []).find(x => x.g === 'Index' && x.k === a.k), ta = assetTarget(a), ti = idx && assetTarget(idx); if (ta && ti && idx.s !== a.s) layerArc(ta, ti, '230,230,240', .5, 1, [2, 4], null, 16); } }
+    const idx = (MKT.all || []).find(x => x.g === 'Index' && x.k === a.k), ta = assetTarget(a), ti = idx && assetTarget(idx); if (ta && ti && idx.s !== a.s) { const A = proj(ta.phi, ta.lam), B = proj(ti.phi, ti.lam); if (A[2] < 0 || B[2] < 0) continue; const h = 22 + 7 * (seen.size % 5);  // company and index share a city: a small loop rising above it
+      ctx.save(); ctx.strokeStyle = 'rgba(230,230,240,.7)'; ctx.lineWidth = 1.1; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.bezierCurveTo(A[0] - h * .6, A[1] - h * 1.6, B[0] + h * .6, B[1] - h * 1.6, B[0], B[1]); ctx.stroke(); ctx.restore(); } } }
   if (LX.has('1')) list.forEach((s, k) => assetsNamed(s).filter(x => x.via === 'entity').forEach(({ a }) => { const ta = assetTarget(a); if (ta) layerArc(s, ta, moveCol(a.d), .6, 1.2, null, ph(k)); }));
-  if (LX.has('2')) { let n = 0; for (const s of list) { const m = assetsNamed(s).map(x => x.a).filter(a => Number.isFinite(a.d) && Math.abs(a.d) >= 1);
-    for (let i = 0; i < m.length && n < 30; i++) for (let j = i + 1; j < m.length && n < 30; j++) if (Math.sign(m[i].d) === Math.sign(m[j].d)) { const A = assetTarget(m[i]), B = assetTarget(m[j]); if (A && B) { layerArc(A, B, moveCol(m[i].d), .75, 1.5, [5, 4], ph(n), 24); n++; } } } }
-  if (LX.has('3')) list.forEach((s, k) => { const nx = s.links && s.links[0] && byId[s.links[0]]; if (nx) layerArc(s, nx, '255,122,26', .85, 1.8, null, ph(k)); });
+  if (LX.has('2')) {  // assets that moved the same way today, across all articles: biggest moves first, each joined to the next one in its direction
+    const m = new Map(); for (const s of list) for (const { a } of assetsNamed(s)) if (Number.isFinite(a.d) && Math.abs(a.d) >= .5 && assetTarget(a)) m.set(a.s, a);
+    const all = [...m.values()].sort((x, y) => Math.abs(y.d) - Math.abs(x.d)); let n = 0;
+    for (const sg of [1, -1]) { const g = all.filter(a => Math.sign(a.d) === sg).slice(0, 16); for (let i = 1; i < g.length; i++) layerArc(assetTarget(g[i - 1]), assetTarget(g[i]), moveCol(sg), .75, 1.5, [5, 4], ph(n++), 24); } }
+  if (LX.has('3')) {  // follow-up articles: an earlier article and a later one about the same asset
+    const by = new Map(); for (const s of list) for (const { a } of assetsNamed(s)) (by.get(a.s) || by.set(a.s, []).get(a.s)).push(s);
+    let n = 0, done = new Set(); for (const arts of by.values()) { arts.sort((x, y) => x.t - y.t);
+      for (let i = 1; i < arts.length && n < 30; i++) { const a = arts[i - 1], b = arts[i], k = a.id + '>' + b.id; if (a === b || done.has(k) || (a.phi === b.phi && a.lam === b.lam)) continue; done.add(k); layerArc(a, b, '255,122,26', .85, 1.8, null, ph(n++)); } } }
 }
 
 function updateNetwork() {
