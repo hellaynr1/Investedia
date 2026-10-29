@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=55a8a1e0bc">
-<script src="assets/consent.js?v=55a8a1e0bc"></script>
+<link rel="stylesheet" href="assets/consent.css?v=9244042b3e">
+<script src="assets/consent.js?v=9244042b3e"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia Track record</title>
 <meta name="description" content="How often the direction an Investedia article implied matched what the asset did over the next 24 hours. Every judged call, hits and misses.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="How often the direction an Investedia article implied matched what the asset did over the next 24 hours. Every judged call, hits and misses.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=55a8a1e0bc">
-<link rel="stylesheet" href="assets/skin.css?v=55a8a1e0bc">
+<link rel="stylesheet" href="assets/app.css?v=9244042b3e">
+<link rel="stylesheet" href="assets/skin.css?v=9244042b3e">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,16 +46,16 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=55a8a1e0bc"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=55a8a1e0bc">
-<script src="assets/live-config.js?v=55a8a1e0bc"></script>
-<script src="assets/live-data.js?v=55a8a1e0bc" defer></script>
-<script src="assets/prefs.js?v=55a8a1e0bc"></script>
-<script src="assets/peek.js?v=55a8a1e0bc"></script>
-<script src="assets/sectors.js?v=55a8a1e0bc"></script>
-<script src="assets/news-menu.js?v=55a8a1e0bc"></script>
-<script src="assets/ui.js?v=55a8a1e0bc"></script>
-<script src="assets/news-alerts.js?v=55a8a1e0bc" defer></script>
+<script src="assets/mock.js?v=9244042b3e"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=9244042b3e">
+<script src="assets/live-config.js?v=9244042b3e"></script>
+<script src="assets/live-data.js?v=9244042b3e" defer></script>
+<script src="assets/prefs.js?v=9244042b3e"></script>
+<script src="assets/peek.js?v=9244042b3e"></script>
+<script src="assets/sectors.js?v=9244042b3e"></script>
+<script src="assets/news-menu.js?v=9244042b3e"></script>
+<script src="assets/ui.js?v=9244042b3e"></script>
+<script src="assets/news-alerts.js?v=9244042b3e" defer></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <link rel="stylesheet" href="assets/track-record.css">
 <nav class="subnav" id="news-nav"></nav>
@@ -94,7 +94,7 @@
   const recent = [...calls].sort((a, b) => b.pub - a.pub).slice(0, 20);
   const back = calls.filter(c => c.basis === 'daily').length;
   const chip = r => r === 'hit' ? '<span class="tr-chip ok">✓ hit</span>' : r === 'miss' ? '<span class="tr-chip no">✗ miss</span>' : '<span class="tr-chip na">– no clear move</span>';
-  const row = c => `<a class="tr-row" href="story.html?id=${encodeURIComponent(c.id)}"><span class="tr-dir ${c.dir}" aria-label="Article implied ${c.dir}">${c.dir === 'up' ? '↑' : '↓'}</span><span class="tr-t"><b>${esc(c.name)}${c.basis === 'daily' ? ' <em class="tr-b" title="Judged on the next session\'s close, for an article from before live price recording">daily close</em>' : ''}</b><small>${esc(c.h || 'Article')} · ${new Date(c.pub * 60000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</small></span><span class="tr-mv ${c.move > 0 ? 'up' : c.move < 0 ? 'dn' : ''}">${c.move > 0 ? '+' : ''}${c.move.toFixed(2)}%</span>${chip(c.res)}</a>`;
+  const row = c => `<a class="tr-row" href="story.html?id=${encodeURIComponent(c.id)}"><span class="tr-dir ${c.dir}" aria-label="Article implied ${c.dir}">${c.dir === 'up' ? '↑' : '↓'}</span><span class="tr-t"><b>${esc(c.name)}${c.basis === 'daily' ? ' <em class="tr-b" title="Judged on the next session\'s close, for an article from before live price recording">daily close</em>' : ''}</b><small>${esc(c.h || 'Article')} · ${new Date(c.pub * 60000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</small></span>${(() => { const r = c.move == null ? null : c.move * (c.dir === 'down' ? -1 : 1); /* result of the call: a fall after "down" is a gain */ return `<span class="tr-mv ${r > 0 ? 'up' : r < 0 ? 'dn' : ''}" title="${c.move == null ? '' : 'Asset moved ' + (c.move > 0 ? '+' : '') + c.move.toFixed(2) + '%'}">${r == null ? '–' : (r > 0 ? '+' : '') + r.toFixed(2) + '%'}</span>`; })()}${chip(c.res)}</a>`;
   root.innerHTML = `<div class="tr-score">${big}<div class="tr-stats">${stat(hit, 'hits', 'ok')}${stat(miss, 'misses', 'no')}${stat(flat, 'no clear move', 'na')}</div></div>`
     + (calls.length ? `<ul class="tr-dirs">${dirLine(up, '↑ Up calls')}${dirLine(dn, '↓ Down calls')}</ul><h2>Recent calls</h2><div class="tr-list">${recent.map(row).join('')}</div>`
       : `<p class="tr-wait">${since ? `Recording started ${esc(since)}. ` : ''}The first calls are judged 24 hours after their article. Nothing is shown until there are real results.</p>`)
