@@ -1521,7 +1521,8 @@
   "telecom tower 5g",
   "hotel tourism",
   "beer brewery",
-  "freight train"
+  "freight train",
+  "luxury fashion"
  ],
  "airplane airport": [
   {
@@ -1924,6 +1925,36 @@
    "file": "photos/luxury-fashion-3091031.jpg",
    "credit": "PIRO4D",
    "source_url": "https://pixabay.com/photos/time-clock-wrist-watch-chronometer-3091031/",
+   "alt": "luxury fashion"
+  },
+  {
+   "file": "photos/luxury-fashion-1485984.jpg",
+   "credit": "maya_7966",
+   "source_url": "https://pixabay.com/photos/wedding-dress-bride-extravagant-1485984/",
+   "alt": "luxury fashion"
+  },
+  {
+   "file": "photos/luxury-fashion-1028398.jpg",
+   "credit": "haidi2002",
+   "source_url": "https://pixabay.com/photos/woman-fashion-jewelry-makeup-1028398/",
+   "alt": "luxury fashion"
+  },
+  {
+   "file": "photos/luxury-fashion-1869928.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/analog-watch-time-watch-wrist-watch-1869928/",
+   "alt": "luxury fashion"
+  },
+  {
+   "file": "photos/luxury-fashion-2538424.jpg",
+   "credit": "eloigomez_",
+   "source_url": "https://pixabay.com/photos/shoes-heels-woman-female-fashion-2538424/",
+   "alt": "luxury fashion"
+  },
+  {
+   "file": "photos/luxury-fashion-1284496.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/fashion-high-heels-shoes-pumps-1284496/",
    "alt": "luxury fashion"
   }
  ],
