@@ -2,8 +2,9 @@
 Each route: exporter ISO2 -> partner ISO2, value in US dollars, year. Only real reported totals (HS TOTAL); no estimates.
 Run once a year: python3 tools/gen-trade-routes.py"""
 import json, time, urllib.request
-YEAR, TOP = 2023, 3
-REPORTERS = [842, 156, 276, 392, 826, 251, 699, 410, 528, 124, 484, 76, 36, 682, 380, 702, 757, 724, 56, 710, 566, 818, 764, 360, 784]  # US, China, Germany, Japan, UK, France, India, S.Korea, Netherlands, Canada, Mexico, Brazil, Australia, Saudi, Italy, Singapore, Switzerland, Spain, Belgium, South Africa, Nigeria, Egypt, Thailand, Indonesia, UAE
+YEAR, TOP = 2023, 5
+REPORTERS = [842, 156, 276, 392, 826, 251, 699, 410, 528, 124, 484, 76, 36, 682, 380, 702, 757, 724, 56, 710, 566, 818, 764, 360, 784,
+             792, 616, 752, 578, 704, 458, 608, 32, 152, 170, 604, 376, 634, 398, 586, 50, 404, 504, 288, 231, 24, 12, 554, 372, 40, 208, 246, 203, 620, 300, 348, 642, 368, 414, 344, 384, 834, 218, 643, 862]  # + Turkey, Poland, Sweden, Norway, Vietnam, Malaysia, Philippines, Argentina, Chile, Colombia, Peru, Israel, Qatar, Kazakhstan, Pakistan, Bangladesh, Kenya, Morocco, Ghana, Ethiopia, Angola, Algeria, New Zealand, Ireland, Austria, Denmark, Finland, Czechia, Portugal, Greece, Hungary, Romania, Iraq, Kuwait, Hong Kong, Côte d'Ivoire, Tanzania, Ecuador, Russia, Venezuela  # US, China, Germany, Japan, UK, France, India, S.Korea, Netherlands, Canada, Mexico, Brazil, Australia, Saudi, Italy, Singapore, Switzerland, Spain, Belgium, South Africa, Nigeria, Egypt, Thailand, Indonesia, UAE
 UA = {'User-Agent': 'Investedia/1.0 (+https://investedia.com)'}
 get = lambda u: json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=40).read())
 ref = get('https://comtradeapi.un.org/files/v1/app/reference/partnerAreas.json')

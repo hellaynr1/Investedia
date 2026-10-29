@@ -779,14 +779,14 @@ let network = [], arcHits = [], arcHover = null, pillRects = [];
 //  1 article → every asset it names (entities with a known ticker)   2 assets that moved together (same article, same direction, ≥1%)
 //  3 article → article chains (leads_to)                              4 company → its home index
 //  6 trade routes: biggest export flows between major economies (UN Comtrade, assets/globe/trade.json)
-const LX = new Set((new URLSearchParams(location.search).get('lx') ?? '6').split(',').filter(Boolean)), LX_ONLY = new URLSearchParams(location.search).has('only');  // ?only: hide today's lines to compare a layer on its own
+const LX = new Set((new URLSearchParams(location.search).get('lx') ?? (EMBED ? '1,2,6' : '1,2,3,6')).split(',').filter(Boolean)), LX_ONLY = new URLSearchParams(location.search).has('only');  // ?only: hide today's lines to compare a layer on its own
 let TRADE = [], ISO_NAME = {};
 for (const [n, c] of Object.entries(ISO)) if (!ISO_NAME[c]) ISO_NAME[c] = n;
 fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; }).catch(() => {});
 const ctryPt = iso2 => { const c = byName[ISO_NAME[iso2]]; return c && c.c ? { phi: c.c[1] * rad, lam: c.c[0] * rad } : null; };
-const moveCol = d => d > 0 ? IMPACT_COLOR.up : d < 0 ? IMPACT_COLOR.down : IMPACT_COLOR.mixed;
+const moveCol = d => EMBED ? '255,122,26' : d > 0 ? IMPACT_COLOR.up : d < 0 ? IMPACT_COLOR.down : IMPACT_COLOR.mixed;
 function layerArc(a, b, col, alpha, width, dash, phase, n = 28) {
-  const pts = arcPts(a, b, n); ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha})`; if (dash) ctx.setLineDash(dash);
+  const pts = arcPts(a, b, n); if (EMBED && col !== '120,170,255') { alpha *= .45; width *= .8; } ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha})`; if (dash) ctx.setLineDash(dash);
   ctx.beginPath(); let pen = false; for (const [x, y, v] of pts) { if (!v) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } ctx.stroke(); ctx.restore();
   if (phase != null) { const q = pts[Math.round(phase * (pts.length - 1))]; if (q && q[2]) { ctx.fillStyle = `rgba(${col},${Math.min(1, alpha * 2.4)})`; ctx.beginPath(); ctx.arc(q[0], q[1], 1.6, 0, 7); ctx.fill(); } }
 }
@@ -796,10 +796,15 @@ function assetsNamed(s) {  // impacts and entities that map to a real asset with
   for (const e of s.entities || []) { const t = e && (e.ticker || e.sym); if (!t) continue; const a = assetForImpact({ ticker: t }); if (a && !out.has(a.s)) out.set(a.s, { a, via: 'entity' }); }
   return [...out.values()];
 }
-function drawTrade(t) {  // background trade routes (UN Comtrade): the biggest flows are brighter and thicker; on the homepage fewer, fainter and thinner
+function spread(items, keys, cap) {  // keep the biggest first, but no country more than `cap` times, so the lines reach every region
+  const n = {}; return items.filter(x => { const ks = keys(x).filter(Boolean); if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; });
+}
+let TRADE_HOME = null;
+function drawTrade(t) {  // background trade routes (UN Comtrade): bigger flows brighter and thicker; on the homepage fainter, thinner and spread across countries
   if (!LX.has('6') || !TRADE.length) return;
-  const max = TRADE[0].usd, n = EMBED ? 15 : 40;
-  TRADE.slice(0, n).forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to), w = r.usd / max; if (a && b) layerArc(a, b, '120,170,255', EMBED ? .1 + .22 * w : .22 + .33 * w, EMBED ? .5 + .8 * w : .7 + 2.2 * w, null, reduce ? null : (t / 4200 + k * .13) % 1, 34); });
+  const routes = EMBED ? (TRADE_HOME ||= spread(TRADE, r => [r.from, r.to], 4).slice(0, 70)) : TRADE;
+  const lo = Math.log(TRADE.at(-1).usd || 1), span = Math.log(TRADE[0].usd) - lo || 1;
+  routes.forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to), w = (Math.log(r.usd) - lo) / span; if (a && b) layerArc(a, b, '120,170,255', EMBED ? .13 + .25 * w : .1 + .34 * w, EMBED ? .45 + .8 * w : .5 + 2 * w, null, reduce ? null : (t / 4200 + k * .13) % 1, 34); });
 }
 function drawLayers(t) {
   if (!LX.size) return;
@@ -815,14 +820,16 @@ function drawLayers(t) {
   if (LX.has('3')) {  // follow-up articles: an earlier article and a later one about the same asset
     const by = new Map(); for (const s of list) for (const { a } of assetsNamed(s)) (by.get(a.s) || by.set(a.s, []).get(a.s)).push(s);
     let n = 0, done = new Set(); for (const arts of by.values()) { arts.sort((x, y) => x.t - y.t);
-      for (let i = 1; i < arts.length && n < 30; i++) { const a = arts[i - 1], b = arts[i], k = a.id + '>' + b.id; if (a === b || done.has(k) || (a.phi === b.phi && a.lam === b.lam)) continue; done.add(k); layerArc(a, b, '255,122,26', .85, 1.8, null, ph(n++)); } } }
+      for (let i = 1; i < arts.length && n < 30; i++) { const a = arts[i - 1], b = arts[i], k = a.id + '>' + b.id; if (a === b || done.has(k) || (a.phi === b.phi && a.lam === b.lam)) continue; done.add(k); layerArc(a, b, '255,122,26', .6, 1.3, null, ph(n++)); } } }
 }
 
 function updateNetwork() {
   network = [...shown].sort(sortTop).flatMap(article => impactsOf(article).flatMap(impact => {
     const asset=assetForImpact(impact), target=asset && assetTarget(asset);
     return target ? [{article,impact,asset,target}] : [];
-  })).slice(0,EMBED ? 10 : 40);
+  }));
+  // Spread across the world: no single news country or asset location may take more than its share of the lines.
+  network = spread(network, e => ['a' + e.article.location.country, 't' + Math.round(e.target.phi * 9) + ',' + Math.round(e.target.lam * 9)], EMBED ? 2 : 6).slice(0, EMBED ? 20 : 80);
   const count=$('connection-count');if(count) count.textContent=`Show all ${network.length} ${network.length === 1 ? 'connection' : 'connections'} from ${WLABEL[F.win]}`;
 }
 function arcPick(x,y) { const pr=pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h); if(pr) return pr.edge; return arcHits.find(h=>h.points.some(p=>p[2] && Math.hypot(p[0]-x,p[1]-y)<10)); }
