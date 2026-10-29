@@ -145,7 +145,7 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
 <script>
 // PREVIEW ONLY (?hbg=1|2|3): decorative hero backgrounds to compare; illustrative curves, not market data.
 (function () {
-  var v = new URLSearchParams(location.search).get('hbg') || (innerWidth > 900 ? '13' : '');  // desktop: the 3D Guidify G as a large background behind the headline (no layout change); phones unchanged if (!v) return;  
+  var v = new URLSearchParams(location.search).get('hbg') || (innerWidth > 900 ? '14' : '');  // desktop: the 3D Guidify G as a large background behind the headline (no layout change); phones unchanged if (!v) return;  
   var hero = document.querySelector('.hn-hero'); if (!hero) return;
   var W = 1000, H = 600, seed = 11; function r() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
   function line(amp, base, n, drift) { var pts = [], y = base; for (var i = 0; i <= n; i++) { y += (r() - .5) * amp + drift; pts.push((i / n * W).toFixed(1) + ',' + Math.max(40, Math.min(H - 40, y)).toFixed(1)); } return pts.join(' '); }
@@ -165,9 +165,9 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
     if (v === '13') { cv.style.cssText = 'position:absolute;left:40px;top:0;width:360px;height:300px;pointer-events:none;z-index:0'; hero.insertBefore(cv, hero.firstChild); }  // live version, unchanged
     else if (v === '14') { cv.style.cssText = 'position:absolute;left:150px;top:0;width:380px;height:200px;pointer-events:none;z-index:1'; hero.insertBefore(cv, hero.firstChild); }  // variations in review: in the circled spot, above the dark gradient, behind the text  // background in the top-left of the hero, above the headline; no layout change
     else { var badge = document.getElementById('hnLive'); if (badge && badge.parentNode) badge.parentNode.insertBefore(cv, badge); else hero.insertBefore(cv, hero.firstChild); }  // above the Updated badge
-    var cfg = { '13': { tilt: .3, roll: 0, sz: 1, br: .22 }, '14': { tilt: .3, roll: 0, sz: 1, br: .22 }, '10': { tilt: .3, roll: 0, sz: 1, br: .22 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
+    var cfg = { '13': { tilt: .3, roll: 0, sz: 1, br: .22 }, '14': { tilt: .3, roll: .15, sz: .68, br: .36, n: .9, haze: .1, ring: 1 }, '10': { tilt: .3, roll: 0, sz: 1, br: .22 }, '11': { tilt: .7, roll: .5, sz: 1.15, br: .45 }, '12': { tilt: .45, roll: .2, sz: .9, br: .45 } }[v];
     var qp = new URLSearchParams(location.search);  // preview overrides: ?tilt= &roll= &br= &sz=
-    if (qp.has('tilt')) cfg.tilt = +qp.get('tilt'); cfg.n = qp.has('n') ? +qp.get('n') : 1; cfg.haze = qp.has('haze') ? +qp.get('haze') : (v === '14' ? .04 : .07); if (qp.has('roll')) cfg.roll = +qp.get('roll'); if (qp.has('br')) cfg.br = +qp.get('br'); if (qp.has('sz')) cfg.sz = +qp.get('sz');
+    if (qp.has('tilt')) cfg.tilt = +qp.get('tilt'); cfg.n = qp.has('n') ? +qp.get('n') : (cfg.n || 1); cfg.haze = qp.has('haze') ? +qp.get('haze') : (cfg.haze != null ? cfg.haze : .07); if (qp.has('ring')) cfg.ring = +qp.get('ring'); if (qp.has('roll')) cfg.roll = +qp.get('roll'); if (qp.has('br')) cfg.br = +qp.get('br'); if (qp.has('sz')) cfg.sz = +qp.get('sz');
     fetch('assets/g-stars.json').then(function (r) { return r.json(); }).then(function (pts) {
       var dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr;
       var x = cv.getContext('2d'); x.scale(dpr, dpr);
@@ -176,6 +176,16 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
       var cA = Math.cos(cfg.tilt), sA = Math.sin(cfg.tilt), cR = Math.cos(cfg.roll), sR = Math.sin(cfg.roll);
       pts = pts.slice(0, Math.round(pts.length * cfg.n));
       if (cfg.haze > 0) { var hz = x.createRadialGradient(w * .5, h * .5, 6, w * .5, h * .5, (v === '14' ? Math.min(w, h) * .5 : Math.max(w, h) * .6)); hz.addColorStop(0, 'rgba(230,236,255,' + cfg.haze + ')'); hz.addColorStop(1, 'rgba(230,236,255,0)'); x.fillStyle = hz; x.fillRect(0, 0, w, h); }
+      // optional 3D ring around the G (a thin band of particles, tilted like a planet's ring): the far half is drawn behind the G, the near half in front
+      var ring = [];
+      if (cfg.ring) { var RR = S * .66, ra = .3, rr = -.3, cra = Math.cos(ra), sra = Math.sin(ra), crr = Math.cos(rr), srr = Math.sin(rr);
+        for (var k = 0; k < 360; k++) { var t = rnd() * Math.PI * 2, rad0 = RR * (1 + (rnd() - .5) * .07);
+          var rx = Math.cos(t) * rad0, ry0 = (rnd() - .5) * 3, rz0 = Math.sin(t) * rad0;
+          var ry = ry0 * cra - rz0 * sra, rz = ry0 * sra + rz0 * cra;
+          var qx = rx * crr - ry * srr, qy = rx * srr + ry * crr, ff = 800 / (800 - rz);
+          ring.push({ x: w * .5 + qx * ff, y: h * .5 + qy * ff, front: rz > 0, a: (.22 + rnd() * .45) * Math.min(1, cfg.br * ff * 1.3), r: Math.max(.35, (.5 + rnd() * .6) * ff * cfg.sz) }); } }
+      function dots(front) { ring.forEach(function (d) { if (d.front !== front) return; x.fillStyle = 'rgba(230,236,255,' + d.a.toFixed(3) + ')'; x.beginPath(); x.arc(d.x, d.y, d.r, 0, 7); x.fill(); }); }
+      dots(false);
       pts.forEach(function (q) {
         var X = (q[0] - .5) * S, Y = (q[1] - .5) * S, z0 = (rnd() - .5) * (v === '14' ? 26 : 80), size = (.8 + rnd() * .9) * cfg.sz;
         var y2 = Y * cA - z0 * sA, z2 = Y * sA + z0 * cA; Y = y2; var Z = z2;
@@ -185,6 +195,7 @@ document.getElementById('res-track').innerHTML = resItems + '<span class="res-se
         x.fillStyle = 'rgba(230,236,255,' + ((.22 + rnd() * .5) * bright).toFixed(3) + ')';
         x.beginPath(); x.arc(px, py, Math.max(.4, size * .75), 0, 7); x.fill();
       });
+      dots(true);
     }).catch(function () { cv.remove(); });
     return; }
   if (v === '9') {  // preview: a Milky Way star band traced into the shape of a G (top-left corner)
