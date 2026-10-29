@@ -507,7 +507,7 @@ h1 span{color:var(--fg-3)}
       <button type="button" class="lay-sw" id="sw-trade" role="switch" aria-checked="true"><span><b>Trade routes</b><small>Biggest export flows, UN Comtrade 2023</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-mkt" role="switch" aria-checked="false"><span><b>Market hours</b><small>Night shade, open exchanges</small></span><i class="tg"></i></button>
     </div>
-    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span>↑ Asset</span><span>↓ Asset</span><span style="color:rgb(120,170,255)">— Trade</span></div>
+    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span>↑ Asset</span><span>↓ Asset</span><span style="color:rgb(45,125,255)">— Trade</span></div>
   </div>
   <button type="button" class="lay-btn glass" id="lay-btn" aria-expanded="false" aria-controls="lay-pop" aria-haspopup="true" aria-label="Layers, 1 on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>Layers <b id="lay-n">1</b></button>
 </div>
@@ -786,7 +786,7 @@ fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; }).c
 const ctryPt = iso2 => { const c = byName[ISO_NAME[iso2]]; return c && c.c ? { phi: c.c[1] * rad, lam: c.c[0] * rad } : null; };
 const moveCol = d => EMBED ? '255,122,26' : d > 0 ? IMPACT_COLOR.up : d < 0 ? IMPACT_COLOR.down : IMPACT_COLOR.mixed;
 function layerArc(a, b, col, alpha, width, dash, phase, n = 28) {
-  const pts = arcPts(a, b, n); if (EMBED && col !== '120,170,255') { alpha *= .45; width *= .8; } ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha})`; if (dash) ctx.setLineDash(dash);
+  const pts = arcPts(a, b, n); if (EMBED && col !== '45,125,255') { alpha *= .45; width *= .8; } ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha})`; if (dash) ctx.setLineDash(dash);
   ctx.beginPath(); let pen = false; for (const [x, y, v] of pts) { if (!v) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } ctx.stroke(); ctx.restore();
   if (phase != null) { const q = pts[Math.round(phase * (pts.length - 1))]; if (q && q[2]) { ctx.fillStyle = `rgba(${col},${Math.min(1, alpha * 2.4)})`; ctx.beginPath(); ctx.arc(q[0], q[1], 1.6, 0, 7); ctx.fill(); } }
 }
@@ -804,7 +804,7 @@ function drawTrade(t) {  // background trade routes (UN Comtrade): bigger flows 
   if (!LX.has('6') || !TRADE.length) return;
   const routes = EMBED ? (TRADE_HOME ||= spread(TRADE, r => [r.from, r.to], 7).slice(0, 140)) : TRADE;
   const lo = Math.log(TRADE.at(-1).usd || 1), span = Math.log(TRADE[0].usd) - lo || 1;
-  routes.forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to), w = (Math.log(r.usd) - lo) / span; if (a && b) layerArc(a, b, '120,170,255', EMBED ? .2 + .3 * w : .1 + .34 * w, EMBED ? .55 + .9 * w : .5 + 2 * w, null, reduce ? null : (t / 4200 + k * .13) % 1, 34); });
+  routes.forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to), w = (Math.log(r.usd) - lo) / span; if (a && b) layerArc(a, b, '45,125,255', EMBED ? .2 + .3 * w : .1 + .34 * w, EMBED ? .55 + .9 * w : .5 + 2 * w, null, reduce ? null : (t / 4200 + k * .13) % 1, 34); });
 }
 function drawLayers(t) {
   if (!LX.size) return;
