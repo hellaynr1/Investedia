@@ -504,9 +504,10 @@ h1 span{color:var(--fg-3)}
     <div id="lay-switches">
       <button type="button" class="lay-sw" id="sw-conn" role="switch" aria-checked="true"><span><b>Connections</b><small id="connection-count"></small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-up" role="switch" aria-checked="false"><span><b>Upcoming</b><small id="up-sub">Releases in the next 7 days</small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-trade" role="switch" aria-checked="true"><span><b>Trade routes</b><small>Biggest export flows, UN Comtrade 2023</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-mkt" role="switch" aria-checked="false"><span><b>Market hours</b><small>Night shade, open exchanges</small></span><i class="tg"></i></button>
     </div>
-    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span>↑ Asset</span><span>↓ Asset</span></div>
+    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span>↑ Asset</span><span>↓ Asset</span><span style="color:rgb(120,170,255)">— Trade</span></div>
   </div>
   <button type="button" class="lay-btn glass" id="lay-btn" aria-expanded="false" aria-controls="lay-pop" aria-haspopup="true" aria-label="Layers, 1 on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>Layers <b id="lay-n">1</b></button>
 </div>
@@ -778,10 +779,10 @@ let network = [], arcHits = [], arcHover = null, pillRects = [];
 //  1 article → every asset it names (entities with a known ticker)   2 assets that moved together (same article, same direction, ≥1%)
 //  3 article → article chains (leads_to)                              4 company → its home index
 //  6 trade routes: biggest export flows between major economies (UN Comtrade, assets/globe/trade.json)
-const LX = new Set((new URLSearchParams(location.search).get('lx') || '').split(',').filter(Boolean)), LX_ONLY = new URLSearchParams(location.search).has('only');  // ?only: hide today's lines to compare a layer on its own
+const LX = new Set((new URLSearchParams(location.search).get('lx') ?? '6').split(',').filter(Boolean)), LX_ONLY = new URLSearchParams(location.search).has('only');  // ?only: hide today's lines to compare a layer on its own
 let TRADE = [], ISO_NAME = {};
 for (const [n, c] of Object.entries(ISO)) if (!ISO_NAME[c]) ISO_NAME[c] = n;
-if (LX.has('6')) fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; }).catch(() => {});
+fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; }).catch(() => {});
 const ctryPt = iso2 => { const c = byName[ISO_NAME[iso2]]; return c && c.c ? { phi: c.c[1] * rad, lam: c.c[0] * rad } : null; };
 const moveCol = d => d > 0 ? IMPACT_COLOR.up : d < 0 ? IMPACT_COLOR.down : IMPACT_COLOR.mixed;
 function layerArc(a, b, col, alpha, width, dash, phase, n = 28) {
@@ -795,10 +796,14 @@ function assetsNamed(s) {  // impacts and entities that map to a real asset with
   for (const e of s.entities || []) { const t = e && (e.ticker || e.sym); if (!t) continue; const a = assetForImpact({ ticker: t }); if (a && !out.has(a.s)) out.set(a.s, { a, via: 'entity' }); }
   return [...out.values()];
 }
+function drawTrade(t) {  // background trade routes (UN Comtrade): the biggest flows are brighter and thicker; on the homepage fewer, fainter and thinner
+  if (!LX.has('6') || !TRADE.length) return;
+  const max = TRADE[0].usd, n = EMBED ? 15 : 40;
+  TRADE.slice(0, n).forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to), w = r.usd / max; if (a && b) layerArc(a, b, '120,170,255', EMBED ? .1 + .22 * w : .22 + .33 * w, EMBED ? .5 + .8 * w : .7 + 2.2 * w, null, reduce ? null : (t / 4200 + k * .13) % 1, 34); });
+}
 function drawLayers(t) {
   if (!LX.size) return;
   const list = [...shown].sort(sortTop), ph = k => reduce ? null : (t / 4200 + k * .13) % 1;
-  if (LX.has('6') && TRADE.length) { const max = TRADE[0].usd; TRADE.slice(0, 40).forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to); if (a && b) layerArc(a, b, '120,170,255', .5, .8 + 2.6 * r.usd / max, null, ph(k), 34); }); }
   if (LX.has('4')) { const seen = new Set(); for (const s of list) for (const { a } of assetsNamed(s)) { if (a.t !== 'stocks' || a.g === 'Index' || seen.has(a.s)) continue; seen.add(a.s);
     const idx = (MKT.all || []).find(x => x.g === 'Index' && x.k === a.k), ta = assetTarget(a), ti = idx && assetTarget(idx); if (ta && ti && idx.s !== a.s) { const A = proj(ta.phi, ta.lam), B = proj(ti.phi, ti.lam); if (A[2] < 0 || B[2] < 0) continue; const h = 22 + 7 * (seen.size % 5);  // company and index share a city: a small loop rising above it
       ctx.save(); ctx.strokeStyle = 'rgba(230,230,240,.7)'; ctx.lineWidth = 1.1; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.bezierCurveTo(A[0] - h * .6, A[1] - h * 1.6, B[0] + h * .6, B[1] - h * 1.6, B[0], B[1]); ctx.stroke(); ctx.restore(); } } }
@@ -850,8 +855,8 @@ const isOpenAt = (e, ms) => { const l = localMin(e, ms); return l.wd !== 'Sat' &
 let UPON = new URLSearchParams(location.search).get('upcoming') === '1', MKTON = new URLSearchParams(location.search).get('markets') === '1', CONNON = new URLSearchParams(location.search).get('connections') !== '0';
 function syncLayers() {
   $('sw-conn').setAttribute('aria-checked', String(CONNON)); $('sw-mkt').setAttribute('aria-checked', String(MKTON));
-  $('sw-up').setAttribute('aria-checked', String(UPON));
-  const n = (CONNON ? 1 : 0) + (MKTON ? 1 : 0) + (UPON ? 1 : 0); $('lay-n').textContent = n; $('lay-btn').setAttribute('aria-label', `Layers, ${n} on`);
+  $('sw-up').setAttribute('aria-checked', String(UPON)); $('sw-trade').setAttribute('aria-checked', String(LX.has('6')));
+  const n = (CONNON ? 1 : 0) + (MKTON ? 1 : 0) + (UPON ? 1 : 0) + (LX.has('6') ? 1 : 0); $('lay-n').textContent = n; $('lay-btn').setAttribute('aria-label', `Layers, ${n} on`);
 }
 const CAPS = { US: [38.9, -77.04], GB: [51.5, -.13], JP: [35.68, 139.69], EU: [50.11, 8.68], AU: [-33.87, 151.21], CA: [45.42, -75.7], NZ: [-41.29, 174.78], CH: [46.95, 7.45], CN: [39.9, 116.4] };
 // High-impact releases in the next 7 days (assets/calendar-live.json), soonest first.
@@ -1579,11 +1584,12 @@ function frame(t) {
   }
 
   // Option C: a calm network; the selected article reveals its complete asset links.
+  drawTrade(t);
   arcHits = []; pillRects = []; let visibleArcs=0;
   for (const [i, edge] of (!LX_ONLY && (CONNON || focus) ? network : []).entries()) {
     const {article,impact,asset,target}=edge, active=focus?.id === article.id;
     if (focus && !active) continue;
-    const points=arcPts(article,target,32), col=IMPACT_COLOR[impact.direction];
+    const points=arcPts(article,target,32), col=EMBED ? '255,122,26' : IMPACT_COLOR[impact.direction];
     ctx.lineWidth=active ? 1.3 + article.importance*.35 : .6 + article.importance*.18;
     ctx.strokeStyle=`rgba(${col},${EMBED ? ARC_A : active ? .8 : .20})`;ctx.beginPath();let pen=false;
     for(const [x,y,v] of points){if(!v){pen=false;continue;}pen?ctx.lineTo(x,y):ctx.moveTo(x,y);pen=true;}ctx.stroke();
@@ -1724,6 +1730,7 @@ $('dock').onclick = e => {
 };
 pbody.addEventListener('click', e => { const u = e.target.closest('[data-up]'); if (u && CAPS[u.dataset.up]) flyTo(CAPS[u.dataset.up][1], CAPS[u.dataset.up][0], 1.6); });
 $('sw-conn').onclick = () => { CONNON = !CONNON; syncLayers(); };
+$('sw-trade').onclick = () => { LX.has('6') ? LX.delete('6') : LX.add('6'); syncLayers(); };
 $('sw-up').onclick = () => {
   const on = !UPON; setUpcomingLayer(on);
   if (on && !phone()) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; panelExpanded = false; }
