@@ -791,7 +791,7 @@ let TRADE = [], ISO_NAME = {};
 for (const [n, c] of Object.entries(ISO)) if (!ISO_NAME[c]) ISO_NAME[c] = n;
 fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; updateNetwork(); }).catch(() => {});
 const ctryPt = iso2 => { const c = byName[ISO_NAME[iso2]]; return c && c.c ? { phi: c.c[1] * rad, lam: c.c[0] * rad } : null; };
-const ORANGE = '255,122,26', BLUE = '45,125,255', BL = EMBED ? (QS.has('bl') ? +QS.get('bl') : .7) : 0;  // homepage blue arcs: how far they rise past the outline
+const ORANGE = '255,122,26', BLUE = '45,125,255', BL = EMBED ? (QS.has('bl') ? +QS.get('bl') : .42) : 0;  // homepage blue arcs: how far they rise past the outline
 const dirCol = dir => EMBED ? ORANGE : dir === 'up' ? IMPACT_COLOR.up : dir === 'down' ? IMPACT_COLOR.down : ORANGE;
 // [alpha, width] per tier (1, 2, 3)
 const STYLE = EMBED ? { news: [[.85, 1.6], [.55, 1.05], [.4, .75]], trade: [[.7, 1.2], [.55, .95], [.42, .7]] }
