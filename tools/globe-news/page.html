@@ -503,7 +503,7 @@ h1 span{color:var(--fg-3)}
   <div class="lay-pop glass" id="lay-pop" role="group" aria-label="Map layers" hidden>
     <div id="lay-switches">
       <button type="button" class="lay-sw" id="sw-conn" role="switch" aria-checked="true"><span><b>News &amp; Markets</b><small id="connection-count"></small></span><i class="tg"></i></button>
-      <button type="button" class="lay-sw" id="sw-trade" role="switch" aria-checked="true"><span><b>Trade</b><small>Major global trade routes</small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-trade" role="switch" aria-checked="true"><span><b>Trade</b><small>Biggest exports between countries (2023). Hover a blue line for details</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-rel" role="switch" aria-checked="false"><span><b>Market relationships</b><small>Assets moving strongly together today</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-story" role="switch" aria-checked="false"><span><b>Story timeline</b><small>Earlier → later articles on the same asset</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-up" role="switch" aria-checked="false"><span><b>Upcoming</b><small id="up-sub">Releases in the next 7 days</small></span><i class="tg"></i></button>
@@ -814,6 +814,14 @@ function assetsNamed(s) {  // impacts and entities that map to a real asset with
 function spread(items, keys, cap) {  // keep the biggest first, but no country more than `cap` times, so the lines reach every region
   const n = {}; return items.filter(x => { const ks = keys(x).filter(Boolean); if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; });
 }
+let tradeHits = [], tradeHover = null;
+const bn = v => v >= 1e12 ? `$${(v / 1e12).toFixed(2)} trillion` : v >= 1e9 ? `$${Math.round(v / 1e9)} billion` : `$${Math.round(v / 1e6)} million`;
+function tradeCardHTML(r) {  // what a blue line means, in plain words
+  const from = nm(ISO_NAME[r.from] || r.from), to = nm(ISO_NAME[r.to] || r.to), rank = TRADE.indexOf(r) + 1;
+  return `<div class="eyebrow">Trade route · ${r.year}</div><h3>${esc(from)} → ${esc(to)}</h3>`
+    + `<p class="hv-why">${esc(from)} sold ${bn(r.usd)} of goods to ${esc(to)} in ${r.year}. It is one of ${esc(from)}'s biggest export markets.</p>`
+    + `<div class="meta">#${rank} largest of ${TRADE.length} routes · Thicker, brighter line = more trade · Source: UN Comtrade</div>`;
+}
 let newsAll = [], tradeAll = [], tradeShown = [], relLines = [], storyLines = [];
 function newsScore(article, asset, via) {  // importance, size of the move, freshness, direct impact vs mention, market-moving flag
   const fresh = Math.max(0, 1 - (Date.now() - article.t) / 864e5);
@@ -864,8 +872,9 @@ function drawConnections(t, focus, country) {
     const hs = new Set(hot), S = STYLE.trade, pick = [];
     const cap = cappedBy(EMBED ? 3 : 4);  // geographic balance among the lines actually in view
     for (const r of tradeShown) { if (pick.length >= B.trade) break; if (hs.has(r)) continue; const pts = arcPts(ctryPt(r.from), ctryPt(r.to), 30, BL); if (onFront(pts) && cap([r.from, r.to])) pick.push([r, pts]); }
-    pick.forEach(([r, pts], i) => { const [al, w] = S[i < 4 ? 1 : 2], k = .6 + .4 * r.w; strokeArc(pts, BLUE, al * k * fade, w * (.85 + .3 * r.w), false, null); });
-    hot.forEach((r, k) => strokeArc(arcPts(ctryPt(r.from), ctryPt(r.to), 30), BLUE, S[0][0], S[0][1], false, ph(k)));
+    tradeHits = [];
+    pick.forEach(([r, pts], i) => { const on = tradeHover === r, [al, w] = S[on ? 0 : i < 4 ? 1 : 2], k = on ? 1 : .6 + .4 * r.w; strokeArc(pts, BLUE, on ? al : al * k * fade, on ? w + .6 : w * (.85 + .3 * r.w), on, null); if (!EMBED) tradeHits.push({ r, pts }); });
+    hot.forEach((r, k) => { const pts = arcPts(ctryPt(r.from), ctryPt(r.to), 30); strokeArc(pts, BLUE, S[0][0], tradeHover === r ? S[0][1] + .6 : S[0][1], tradeHover === r, ph(k)); if (!EMBED) tradeHits.push({ r, pts }); });
   }
   if (!EMBED && RELON) relLines.forEach((l, k) => strokeArc(arcPts(l.a, l.b, 28), dirCol(l.dir), .5 * fade, 1.1, false, ph(k)));
   if (!EMBED && STORYON) storyLines.forEach(({ a, b }, k) => strokeArc(arcPts(a, b, 28), ORANGE, .45 * fade, 1.1, false, ph(k)));
@@ -1190,6 +1199,9 @@ function hoverAt(x, y) {
   cv.style.cursor = !EMBED || onGlobe(x, y) ? 'grab' : 'default';  // full Globe page: hand everywhere; homepage: only over the globe
   const ex = !EMBED && (exPick(x, y) || upPick(x, y)); if (ex) { $('hover').classList.remove('on'); return; }
   const edge=arcPick(x,y); arcHover=edge || null;
+  const tr = !edge && !EMBED && TRADEON && tradeHits.find(h => h.pts.some(p => p[2] && Math.hypot(p[0] - x, p[1] - y) < 7));
+  tradeHover = tr ? tr.r : null;
+  if (tr && !pick(x, y, 16)) { const hv = $('hover'); hv.className = 'hover glass solo on'; hv.innerHTML = tradeCardHTML(tr.r); placeHover(x, y); return; }
   if(edge){const hv=$('hover');hv.className='hover glass solo hv-b on';hv.innerHTML=hoverCardHTML(edge);edge.pill?placeHover(edge.pill.x+edge.pill.w+4,edge.pill.y+edge.pill.h/2):placeHover(x,y);return;}
 
   const d = pick(x, y, 16);
@@ -1214,12 +1226,14 @@ function showHover(d) {
   }
 }
 function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.offsetHeight; let l = x + 16, t = y - h / 2; if (l + w > innerWidth - 12) l = x - w - 16; t = Math.max(12, Math.min(innerHeight - h - 12, t)); hv.style.left = l + 'px'; hv.style.top = t + 'px'; }
-function hideHover() { delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
+function hideHover() { delete $('hover').dataset.country; arcHover=null; tradeHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
 function tap(x, y, touch) {
   if (touch) hideHover();
   const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
   const ex = !EMBED && exPick(x, y); if (ex) { window.InvPeek?.open(ex.e.ix); return; }
   const edge=arcPick(x,y);if(edge){arcHover=null;openStory(edge.article);return;}
+  const tr = !EMBED && TRADEON && !pick(x, y, 16) && tradeHits.find(h => h.pts.some(p => p[2] && Math.hypot(p[0] - x, p[1] - y) < 10));  // tap a blue line: explain it
+  if (tr) { tradeHover = tr.r; const hv = $('hover'); hv.className = 'hover glass solo on'; hv.innerHTML = tradeCardHTML(tr.r); placeHover(x, y); return; }
 
   const d = pick(x, y, touch ? 26 : 16);
   if (d) { hideHover(); if (d.list.length === 1) return openStory(d.list[0]); if (d.same || Z >= ZMAX - .2) return openPlace(d.list); return flyTo(d.lo, d.la, Math.min(ZMAX, Z * 2.2)); }
