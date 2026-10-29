@@ -28,6 +28,17 @@ class NewsImpacts(unittest.TestCase):
         self.assertTrue(all(i['country'] in ISO for i in result['impacts']))
         self.assertIsNone(robot.validate_analysis(raw, False, ISO)['why_moved'])
 
+    def test_implications_are_stamped_once_and_backfill_is_not_scorable(self):
+        raw = copy.deepcopy(FIXTURE[0]); raw['impacts'][0].update(direction='up', ticker='AAPL', confidence='high')
+        live = robot.validate_analysis(raw, True, ISO, created_at='2026-10-29T12:00:00Z')['impacts'][0]
+        for k in ('created_at', 'version', 'confidence', 'horizon', 'baseline_rule', 'scorable'): self.assertIn(k, live)
+        self.assertEqual(live['confidence'], 'high')
+        self.assertTrue(live['scorable'])
+        late = robot.validate_analysis(raw, True, ISO, created_at='2026-10-29T12:00:00Z', backfill=True)['impacts'][0]
+        self.assertFalse(late['scorable'])
+        raw['impacts'][0]['confidence'] = 'certain'
+        self.assertEqual(robot.validate_analysis(raw, True, ISO, created_at='x')['impacts'][0]['confidence'], 'low')
+
     def test_missing_or_malformed_analysis(self):
         for raw in (None, [], {}, {'impacts': 'bad'}, {'impacts': [7, {}]}):
             self.assertEqual(robot.validate_analysis(raw, False, ISO), {'impacts': [], 'why_moved': None})

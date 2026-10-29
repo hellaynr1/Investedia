@@ -1,4 +1,8 @@
-"""One-off honest backfill of the track record from articles we already published and from daily closes in assets/hist.
+"""Daily-close fallback for the live track record (schema 2). It no longer creates calls from archived articles: implications read
+after the fact cannot prove when they were made. It only judges frozen pending calls that the 24-hour recorder missed.
+(Earlier versions back-filled calls from archived articles; those rows stay in the ledger marked legacy.)
+
+Old description, kept for reference:
 
 For every archived article (news-archive.json) that implied up or down for an asset with daily history, the call is judged as:
   base = close of the session on the article's own day (never before the article's day), end = close of the NEXT session.
@@ -54,39 +58,31 @@ def judge_daily(pub_ts, direction, bars):
 
 
 def run(write=True, now=None):
+    """Finish frozen calls (schema 2) that the live recorder could not judge in time (price series trimmed after 72 h), on daily closes.
+    It never creates calls: predictions come only from the frozen ledger entries, never from story implications read afterwards."""
     now = now or datetime.now(timezone.utc)
-    stories = load(os.path.join(G, 'news-archive.json'), {}).get('stories') or []
     markets = load(os.path.join(G, 'markets.json'), {}).get('assets') or []
     by = {a['s'].upper(): a for a in markets if a.get('s')}
     ledger = load(os.path.join(G, 'news-ledger.json'), {})
-    if not isinstance(ledger, dict) or ledger.get('schema') != 1:
-        ledger = {'schema': 1, 'since': datetime.now(timezone.utc).strftime('%Y-%m-%d'), 'horizon_h': 24, 'calls': []}
-    done = {(c.get('id'), c.get('sym')) for c in ledger.get('calls', [])}
+    if not isinstance(ledger, dict): return 0, {'calls': []}
     cache, added = {}, 0
-    for s in sorted(stories, key=lambda s: s.get('published_at', '')):
+    for c in ledger.get('calls', []):
+        if c.get('res') != 'pending' or c.get('legacy'):
+            continue
         try:
-            pub = datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')).timestamp()
+            pub = datetime.fromisoformat(str(c['created']).replace('Z', '+00:00')).timestamp()
         except Exception:
             continue
         if now.timestamp() - pub < MIN_AGE.total_seconds():
             continue
-        for i in s.get('impacts') or []:
-            d, t = (i or {}).get('direction'), str((i or {}).get('ticker') or '').upper()
-            if d not in ('up', 'down') or not t:
-                continue
-            a = by.get(t) or by.get(t + '-USD') or by.get(t[:-2] if t.endswith('=X') else t)
-            site = a and a.get('site')
-            if not site or (s.get('id'), a['s']) in done:
-                continue
-            if site not in cache:
-                cache[site] = (load(os.path.join(HIST, f'{site}.json'), {}).get('daily')) or []
-            r = judge_daily(pub, d, cache[site])
-            if not r:
-                continue
-            ledger.setdefault('calls', []).append({'id': s.get('id'), 'sym': a['s'], 'name': (i.get('name') or a.get('n') or a['s'])[:60], 'dir': d, 'pub': int(pub // 60),
-                                                   'move': r[0], 'res': r[1], 'cat': s.get('category'), 'h': str(s.get('headline') or '')[:140], 'basis': 'daily'})
-            done.add((s.get('id'), a['s']))
-            added += 1
+        a = by.get(str(c.get('sym') or '').upper()); site = a and a.get('site')
+        if not site: continue
+        if site not in cache:
+            cache[site] = (load(os.path.join(HIST, f'{site}.json'), {}).get('daily')) or []
+        r = judge_daily(pub, c['dir'], cache[site])
+        if not r: continue
+        c.update(move=r[0], res=r[1], basis='daily', judged=now.strftime('%Y-%m-%dT%H:%M:%SZ'))
+        added += 1
     if write and added:
         for base in (G, os.path.join(ROOT, 'docs', 'assets', 'globe')):
             if os.path.isdir(base):
