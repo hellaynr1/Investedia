@@ -802,9 +802,9 @@ function spread(items, keys, cap) {  // keep the biggest first, but no country m
 let TRADE_HOME = null;
 function drawTrade(t) {  // background trade routes (UN Comtrade): bigger flows brighter and thicker; on the homepage fainter, thinner and spread across countries
   if (!LX.has('6') || !TRADE.length) return;
-  const routes = EMBED ? (TRADE_HOME ||= spread(TRADE, r => [r.from, r.to], 4).slice(0, 70)) : TRADE;
+  const routes = EMBED ? (TRADE_HOME ||= spread(TRADE, r => [r.from, r.to], 7).slice(0, 140)) : TRADE;
   const lo = Math.log(TRADE.at(-1).usd || 1), span = Math.log(TRADE[0].usd) - lo || 1;
-  routes.forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to), w = (Math.log(r.usd) - lo) / span; if (a && b) layerArc(a, b, '120,170,255', EMBED ? .13 + .25 * w : .1 + .34 * w, EMBED ? .45 + .8 * w : .5 + 2 * w, null, reduce ? null : (t / 4200 + k * .13) % 1, 34); });
+  routes.forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to), w = (Math.log(r.usd) - lo) / span; if (a && b) layerArc(a, b, '120,170,255', EMBED ? .2 + .3 * w : .1 + .34 * w, EMBED ? .55 + .9 * w : .5 + 2 * w, null, reduce ? null : (t / 4200 + k * .13) % 1, 34); });
 }
 function drawLayers(t) {
   if (!LX.size) return;
