@@ -778,7 +778,7 @@ let network = [], arcHits = [], arcHover = null, pillRects = [];
 //  1 article → every asset it names (entities with a known ticker)   2 assets that moved together (same article, same direction, ≥1%)
 //  3 article → article chains (leads_to)                              4 company → its home index
 //  6 trade routes: biggest export flows between major economies (UN Comtrade, assets/globe/trade.json)
-const LX = new Set((new URLSearchParams(location.search).get('lx') || '').split(',').filter(Boolean));
+const LX = new Set((new URLSearchParams(location.search).get('lx') || '').split(',').filter(Boolean)), LX_ONLY = new URLSearchParams(location.search).has('only');  // ?only: hide today's lines to compare a layer on its own
 let TRADE = [], ISO_NAME = {};
 for (const [n, c] of Object.entries(ISO)) if (!ISO_NAME[c]) ISO_NAME[c] = n;
 if (LX.has('6')) fetch('trade.json').then(r => r.json()).then(d => { TRADE = d.routes || []; }).catch(() => {});
@@ -798,13 +798,13 @@ function assetsNamed(s) {  // impacts and entities that map to a real asset with
 function drawLayers(t) {
   if (!LX.size) return;
   const list = [...shown].sort(sortTop).slice(0, 40), ph = k => reduce ? null : (t / 4200 + k * .13) % 1;
-  if (LX.has('6') && TRADE.length) { const max = TRADE[0].usd; TRADE.slice(0, 40).forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to); if (a && b) layerArc(a, b, '120,170,255', .26, .5 + 2.2 * r.usd / max, null, ph(k), 34); }); }
+  if (LX.has('6') && TRADE.length) { const max = TRADE[0].usd; TRADE.slice(0, 40).forEach((r, k) => { const a = ctryPt(r.from), b = ctryPt(r.to); if (a && b) layerArc(a, b, '120,170,255', .5, .8 + 2.6 * r.usd / max, null, ph(k), 34); }); }
   if (LX.has('4')) { const seen = new Set(); for (const s of list) for (const { a } of assetsNamed(s)) { if (a.t !== 'stocks' || a.g === 'Index' || seen.has(a.s)) continue; seen.add(a.s);
-    const idx = (MKT.all || []).find(x => x.g === 'Index' && x.k === a.k), ta = assetTarget(a), ti = idx && assetTarget(idx); if (ta && ti && idx.s !== a.s) layerArc(ta, ti, '230,230,240', .2, .6, [2, 4], null, 16); } }
-  if (LX.has('1')) list.forEach((s, k) => assetsNamed(s).filter(x => x.via === 'entity').forEach(({ a }) => { const ta = assetTarget(a); if (ta) layerArc(s, ta, moveCol(a.d), .3, .8, null, ph(k)); }));
+    const idx = (MKT.all || []).find(x => x.g === 'Index' && x.k === a.k), ta = assetTarget(a), ti = idx && assetTarget(idx); if (ta && ti && idx.s !== a.s) layerArc(ta, ti, '230,230,240', .5, 1, [2, 4], null, 16); } }
+  if (LX.has('1')) list.forEach((s, k) => assetsNamed(s).filter(x => x.via === 'entity').forEach(({ a }) => { const ta = assetTarget(a); if (ta) layerArc(s, ta, moveCol(a.d), .6, 1.2, null, ph(k)); }));
   if (LX.has('2')) { let n = 0; for (const s of list) { const m = assetsNamed(s).map(x => x.a).filter(a => Number.isFinite(a.d) && Math.abs(a.d) >= 1);
-    for (let i = 0; i < m.length && n < 30; i++) for (let j = i + 1; j < m.length && n < 30; j++) if (Math.sign(m[i].d) === Math.sign(m[j].d)) { const A = assetTarget(m[i]), B = assetTarget(m[j]); if (A && B) { layerArc(A, B, moveCol(m[i].d), .45, 1.1, [5, 4], ph(n), 24); n++; } } } }
-  if (LX.has('3')) list.forEach((s, k) => { const nx = s.links && s.links[0] && byId[s.links[0]]; if (nx) layerArc(s, nx, '255,122,26', .6, 1.4, null, ph(k)); });
+    for (let i = 0; i < m.length && n < 30; i++) for (let j = i + 1; j < m.length && n < 30; j++) if (Math.sign(m[i].d) === Math.sign(m[j].d)) { const A = assetTarget(m[i]), B = assetTarget(m[j]); if (A && B) { layerArc(A, B, moveCol(m[i].d), .75, 1.5, [5, 4], ph(n), 24); n++; } } } }
+  if (LX.has('3')) list.forEach((s, k) => { const nx = s.links && s.links[0] && byId[s.links[0]]; if (nx) layerArc(s, nx, '255,122,26', .85, 1.8, null, ph(k)); });
 }
 
 function updateNetwork() {
@@ -1574,7 +1574,7 @@ function frame(t) {
 
   // Option C: a calm network; the selected article reveals its complete asset links.
   arcHits = []; pillRects = []; let visibleArcs=0;
-  for (const [i, edge] of (CONNON || focus ? network : []).entries()) {
+  for (const [i, edge] of (!LX_ONLY && (CONNON || focus) ? network : []).entries()) {
     const {article,impact,asset,target}=edge, active=focus?.id === article.id;
     if (focus && !active) continue;
     const points=arcPts(article,target,32), col=IMPACT_COLOR[impact.direction];
