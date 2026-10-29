@@ -101,9 +101,25 @@ def build(release=False):
     security = legal_check.render((ROOT/'src/security.txt').read_text(), values, styled=False)
     if values.get('security_email'): security = security.replace('mailto:info@investedia.com', 'mailto:'+str(values['security_email']))
     (ROOT / '.well-known/security.txt').write_text(security)
+    write_companies()
     write_sw(pages)
     print(f"Built {len(pages)} pages: " + ", ".join(p.name for p in pages))
     mirror_docs()
+
+def write_companies():
+    """Clean company addresses on a static host: /companies and /companies/<slug> are copies of companies.html and company.html
+    with <base href="/"> so their relative links resolve from the site root. Data: data/companies.json (tools/gen-companies.py)."""
+    src = ROOT / "data" / "companies.json"
+    if not src.exists() or not (ROOT / "company.html").exists(): return
+    out = ROOT / "companies"; out.mkdir(exist_ok=True)
+    base = lambda h, url: h.replace("<head>", '<head>\n<base href="/">', 1).replace('<meta property="og:url" content="https://investedia.com/company.html">', f'<meta property="og:url" content="https://investedia.com/{url}">').replace("</title>", f'</title>\n<link rel="canonical" href="https://investedia.com/{url}">', 1)
+    (out / "index.html").write_text(base((ROOT / "companies.html").read_text(), "companies"))
+    page, keep = (ROOT / "company.html").read_text(), {"index.html"}
+    for c in json.loads(src.read_text())["companies"]:
+        name = c["slug"] + ".html"; keep.add(name)
+        (out / name).write_text(base(page, "companies/" + c["slug"]).replace("<title>Company · Investedia</title>", f"<title>{html.escape(c['name'])}: company profile · Investedia</title>", 1))
+    for f in out.glob("*.html"):
+        if f.name not in keep: f.unlink()
 
 def code_version(pages):
     """Short hash of the site's code and pages (not the price/news data), used to bust phone caches."""
@@ -132,6 +148,7 @@ def mirror_docs():
     shutil.copytree(ROOT / "assets", docs / "assets", dirs_exist_ok=True, ignore=ignore_copies)
     shutil.copytree(ROOT / "data", docs / "data", dirs_exist_ok=True, ignore=ignore_copies)
     shutil.copytree(ROOT / ".well-known", docs / ".well-known", dirs_exist_ok=True, ignore=ignore_copies)
+    if (ROOT / "companies").exists(): shutil.copytree(ROOT / "companies", docs / "companies", dirs_exist_ok=True, ignore=ignore_copies)
 
 if __name__ == "__main__":
     import argparse
