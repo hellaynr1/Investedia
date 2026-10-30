@@ -35,17 +35,39 @@ CRYPTOS = {'BTC-USD': 'Bitcoin', 'ETH-USD': 'Ethereum', 'SOL-USD': 'Solana', 'XR
 EXTRA_INDICES = {'^NDX': 'Nasdaq 100', '^RUT': 'Russell 2000', '^VIX': 'VIX'}
 
 
+def fred(series):
+    """Daily closes of a FRED series (public domain, no key), oldest first."""
+    try:
+        txt = urllib.request.urlopen(urllib.request.Request(f'https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}', headers=UA), timeout=30).read().decode()
+        c = [float(r.split(',')[1]) for r in txt.strip().split('\n')[1:] if r.split(',')[1] not in ('', '.')]
+        return c[-30:] if len(c) >= 6 else None
+    except Exception:
+        return None
+
+
+def wanted_assets(news, mk):
+    """Price symbol -> (name, class) for every canonical asset the news resolved to that markets.json does not price.
+    Rows without a registry stamp (stories written before the registry) fall back to their raw ticker until the robot stamps them."""
+    want = {}
+    for s in news:
+        for i in (s.get('impacts') or []) + (s.get('entities') or []):
+            a = i.get('asset')
+            if a and a.get('px') and a['px'] not in mk and a.get('freq') != 'monthly': want.setdefault(a['px'], (a.get('n') or a['px'], a.get('c')))
+            elif not a and 'unresolved' not in i:
+                t = (i.get('ticker') or '').strip()
+                if t and i.get('kind') != 'country' and not alias_known(t, mk): want.setdefault(t, (i.get('name') or t, None))
+    return want
+
+
 def alias_known(t, known):
     return t in known or t.replace('-USD', '') in known or t.replace('=X', '') in known
 
 def main():
     news = json.load(open(os.path.join(G, 'news-live.json'), encoding='utf-8'))['stories']
     mk = {a['s'] for a in json.load(open(os.path.join(G, 'markets.json'), encoding='utf-8'))['assets']}
+    classes = {}
     want = {}
-    for s in news:
-        for i in s.get('impacts') or []:
-            t = (i.get('ticker') or '').strip()
-            if t and i.get('kind') != 'country' and not alias_known(t, mk): want.setdefault(t, i.get('name') or t)
+    for t, (nm, c) in wanted_assets(news, mk).items(): want[t] = nm; classes[t] = c
     for nm, t in SECTORS.items(): want[t] = nm  # sector ETFs always fetched
     for t, nm in {**CRYPTOS, **EXTRA_INDICES}.items(): want[t] = nm
     path = os.path.join(G, 'news-prices.json')
@@ -54,11 +76,14 @@ def main():
     except Exception: pass
     syms = list(want)
     sector_syms = set(SECTORS.values())
-    with cf.ThreadPoolExecutor(8) as ex: res = list(ex.map(fetch, syms))
+    with cf.ThreadPoolExecutor(8) as ex: res = list(ex.map(lambda t: fred(t[5:]) if t.startswith('FRED:') else fetch(t), syms))
     out = {}
     for t, c in zip(syms, res):
         if not c: 
             if t in old: out[t] = old[t]
+            continue
+        if classes.get(t) == 'rate':  # yields: change in basis points, not percent of the yield
+            out[t] = {'s': t, 'n': want[t], 't': 'rate', 'u': 'bp', 'p': round(c[-1], 4), 'd': round((c[-1] - c[-2]) * 100, 1), 'w': round((c[-1] - c[-6]) * 100, 1), 'sp': [round(x, 4) for x in c[-22:]]}
             continue
         out[t] = {'s': t, 'n': want[t], **({'sector': True} if t in sector_syms else {}), **({'g': 'Index', 'cc': 'us'} if t in EXTRA_INDICES else {}), 't': 'crypto' if t.endswith(CRYPTO) else 'fx' if t.endswith('=X') else 'stocks',
                   'p': round(c[-1], 6), 'd': round((c[-1] / c[-2] - 1) * 100, 2), 'w': round((c[-1] / c[-6] - 1) * 100, 2), 'sp': [round(x, 6) for x in c[-22:]]}

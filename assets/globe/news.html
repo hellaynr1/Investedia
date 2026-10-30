@@ -644,9 +644,9 @@ function entityChip(e, country) {
   return `<span class="ent"${e.ticker ? ` title="${esc(e.ticker)}"` : ''}>${image}<span>${esc(e.name)}</span></span>`;
 }
 
-let MKT = { by: {}, intra: {}, list: [] };
+let MKT = { by: {}, np: {}, reg: {}, intra: {}, list: [] };
 Promise.all([fetch('markets.json').then(r => r.json()), fetch('news-prices.json').then(r => r.json()).catch(() => ({ assets: {} })), fetch('../intraday.json').then(r => r.json()).catch(() => ({ s: {} }))]).then(([m, np, i]) => {
-  MKT.intra = i.s || {}; MKT.by = Object.fromEntries((m.assets || []).map(a => [a.s, a]));
+  MKT.intra = i.s || {}; MKT.by = Object.fromEntries((m.assets || []).map(a => [a.s, a])); MKT.np = (np && np.assets) || {}; MKT.reg = {};
   const known = a => !/[.\d]/.test(a.s.replace(/[=^-]/g, '')) && a.t !== 'fx' && Math.abs(a.d) < 20 && (a.m || a.t === 'crypto' || a.t === 'cmd' || MKT.intra[a.s]);
   MKT.list = (m.assets || []).filter(known).sort((x, y) => Math.abs(y.d) - Math.abs(x.d)).slice(0, 12);
   MKT.all = m.assets || [];
@@ -745,16 +745,21 @@ function sinceHTML(s, rows) {
 function impactHTML(s) {
   const rows = impactsOf(s), moved = s.market_moving && typeof s.why_moved === 'string' ? s.why_moved : '';
   if (!rows.length && !moved) return '';
-  return `<section class="impact-section" aria-label="Affected assets">${sinceHTML(s, rows)}${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">Affected assets</div><div class="impact-list">${rows.map(i => `<div><div class="impact-head" ${assetForImpact(i) ? `data-asset="${esc(assetForImpact(i).s)}" role="button" tabindex="0"` : ''}>${impactVisual(i)}<span>${esc(i.name)}</span>${assetForImpact(i) && Number.isFinite(assetForImpact(i).d) ? pctPill(assetForImpact(i).d) : ''}<span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p></div>`).join('')}</div></section>`;
+  return `<section class="impact-section" aria-label="Affected assets">${sinceHTML(s, rows)}${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">Affected assets</div><div class="impact-list">${rows.map(i => `<div><div class="impact-head" ${assetForImpact(i) ? `data-asset="${esc(assetForImpact(i).s)}" role="button" tabindex="0"` : ''}>${impactVisual(i)}<span>${esc(i.name)}</span>${assetForImpact(i) && Number.isFinite(assetForImpact(i).d) ? movePill(assetForImpact(i)) : ''}<span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p></div>`).join('')}</div></section>`;
 }
+// Only an asset the canonical registry verified can draw a line or show a price: the news robot stamps each impact/entity with
+// `asset` (id, name, class, price symbol, place) or `unresolved` (why not). Raw ticker strings are never looked up here.
+const T_OF = { equity: 'stocks', fund: 'stocks', index: 'stocks', fx: 'fx', commodity: 'cmd', crypto: 'crypto', rate: 'rate' };
 function assetForImpact(i) {
-  if (!i.ticker) return null;
-  const ticker = i.ticker.toUpperCase();
-  return MKT.by[ticker] || MKT.by[ticker+'-USD'] || MKT.by[ticker.replace(/=X$/, '')] || null;
+  const r = i && i.asset; if (!r || !Number.isFinite(r.la) || !Number.isFinite(r.lo)) return null;
+  if (MKT.reg[r.id]) return MKT.reg[r.id];
+  const p = MKT.by[r.px] || MKT.np[r.px] || {};
+  return MKT.reg[r.id] = { ...p, s: r.px || r.id, id: r.id, n: r.n, la: r.la, lo: r.lo, t: T_OF[r.c] || 'stocks', c: r.c, site: r.site || p.site };
 }
+const movePill = a => a && a.u === 'bp' ? `<span class="pct ${a.d > 0 ? 'up' : a.d < 0 ? 'down' : 'flat'}">${a.d > 0 ? '↑' : a.d < 0 ? '↓' : '↔'} ${Math.abs(a.d).toFixed(1)} bp</span>` : pctPill(a.d);
 const pctPill = v => `<span class="pct ${v > 0 ? 'up' : v < 0 ? 'down' : 'flat'}">${v > 0 ? '↑' : v < 0 ? '↓' : '↔'} ${Math.abs(v).toFixed(2)}%</span>`;
 const dirWord = v => v > 0 ? 'up' : v < 0 ? 'down' : 'flat';
-function money(a) { try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: a.cur || 'USD', maximumFractionDigits: a.p < 10 ? 3 : 2 }).format(a.p); } catch { return String(a.p); } }
+function money(a) { if (a.u === 'bp') return Number(a.p).toFixed(2) + '%'; try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: a.cur || 'USD', maximumFractionDigits: a.p < 10 ? 3 : 2 }).format(a.p); } catch { return String(a.p); } }
 function sparkSvg(sp, col) {
   if (!Array.isArray(sp) || sp.length < 2) return '';
   const mn = Math.min(...sp), mx = Math.max(...sp), X = k => k / (sp.length - 1) * 300, Y = v => 40 - (v - mn) / ((mx - mn) || 1) * 34 - 3;
@@ -765,7 +770,7 @@ function sparkSvg(sp, col) {
 function hoverCardHTML(edge) {
   const rows = impactsOf(edge.article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && Number.isFinite(x.a.d)).sort((a, b) => (b.i === edge.impact) - (a.i === edge.impact)).slice(0, 3);
   return `<div class="eyebrow">Affected assets · ${rows.length}</div><h3>${esc(edge.article.headline)}</h3><div class="meta">${esc(edge.article.source?.name || '')}${edge.article.location?.place ? ' · ' + esc(edge.article.location.place.split(',')[0]) : ''} · ${ago(edge.article.t)}</div>`
-    + rows.map(({ i, a }) => `<div class="hv-row"><div class="hv-top">${impactVisual(i)}<div class="hv-name"><b>${esc(a.n)}</b><span>${esc(a.s.replace(/-USD$/, ''))} · ${esc(money(a))}</span></div><div class="hv-pct">${pctPill(a.d)}<small>7 days ${a.w > 0 ? '+' : ''}${Number(a.w).toFixed(2)}%</small></div></div><div class="hv-impl">Article implies <b class="${i.direction === 'up' ? 'up' : i.direction === 'down' ? 'down' : 'flat'}">${IMPACT_ARROW[i.direction]} ${i.direction === 'mixed' || i.direction === 'unclear' ? i.direction : i.direction}</b> · price today <b class="${dirWord(a.d)}">${a.d > 0 ? '↑ up' : a.d < 0 ? '↓ down' : '↔ flat'}</b></div>${sparkSvg(a.sp, a.d >= 0 ? '#34d399' : '#f87171')}`).join('')
+    + rows.map(({ i, a }) => `<div class="hv-row"><div class="hv-top">${impactVisual(i)}<div class="hv-name"><b>${esc(a.n)}</b><span>${esc(a.s.replace(/-USD$/, ''))} · ${esc(money(a))}</span></div><div class="hv-pct">${movePill(a)}<small>7 days ${a.w > 0 ? '+' : ''}${Number(a.w).toFixed(a.u === 'bp' ? 1 : 2)}${a.u === 'bp' ? ' bp' : '%'}</small></div></div><div class="hv-impl">Article implies <b class="${i.direction === 'up' ? 'up' : i.direction === 'down' ? 'down' : 'flat'}">${IMPACT_ARROW[i.direction]} ${i.direction === 'mixed' || i.direction === 'unclear' ? i.direction : i.direction}</b> · price today <b class="${dirWord(a.d)}">${a.d > 0 ? '↑ up' : a.d < 0 ? '↓ down' : '↔ flat'}</b></div>${sparkSvg(a.sp, a.d >= 0 ? '#34d399' : '#f87171')}`).join('')
     + `<p class="hv-why">${esc(edge.impact.why.slice(0, 170))}</p>`;
 }
 function assetTarget(a) {
@@ -800,8 +805,8 @@ function strokeArc(pts, col, alpha, width, glow, phase) {
 }
 function assetsNamed(s) {  // impacts and entities that map to a real asset with a price move
   const out = new Map();
-  for (const i of impactsOf(s)) { const a = assetForImpact(i); if (a) out.set(a.s, { a, via: 'impact', impact: i }); }
-  for (const e of s.entities || []) { const t = e && (e.ticker || e.sym); if (!t) continue; const a = assetForImpact({ ticker: t }); if (a && !out.has(a.s)) out.set(a.s, { a, via: 'entity' }); }
+  for (const i of impactsOf(s)) { const a = assetForImpact(i); if (a) out.set(a.id, { a, via: 'impact', impact: i }); }
+  for (const e of s.entities || []) { const a = assetForImpact(e); if (a && !out.has(a.id)) out.set(a.id, { a, via: 'entity' }); }
   return [...out.values()];
 }
 function spread(items, keys, cap) {  // keep the biggest first, but no country more than `cap` times, so the lines reach every region
@@ -858,7 +863,7 @@ function drawConnections(t, focus, country) {
     if (strokeArc(points, col, on ? al : al * fade, on ? w + .2 : w, tier === 1 && !(fade < 1 && !on), tier === 1 ? ph(i) : null)) visibleArcs++;
     if (on && focus && !EMBED && e.impact) {
       const seen = points.filter(p => p[2] && p[0] > globeBox.left + 34 && p[0] < globeBox.right - 34 && p[1] > globeBox.top + 30 && p[1] < globeBox.bottom - 30);
-      if (seen.length > 2) { const m = seen[Math.floor(seen.length / 2)], d = e.asset.d, nm = e.asset.n.length > 17 ? e.asset.n.slice(0, 16) + '…' : e.asset.n, pt = Number.isFinite(d) ? `${d > 0 ? '↑' : d < 0 ? '↓' : '↔'} ${Math.abs(d).toFixed(2)}%` : IMPACT_ARROW[e.impact.direction]; ctx.font = '650 12px Inter,sans-serif'; const w1 = ctx.measureText(nm).width, w2 = ctx.measureText(pt).width, W = w1 + w2 + 32, H = 26; let x = m[0] - W / 2, y = m[1] - H / 2; for (let n = 0; n < 8 && pillRects.some(r => x < r.x + r.w + 4 && x + W + 4 > r.x && y < r.y + r.h + 4 && y + H + 4 > r.y); n++) y += H + 4;
+      if (seen.length > 2) { const m = seen[Math.floor(seen.length / 2)], d = e.asset.d, nm = e.asset.n.length > 17 ? e.asset.n.slice(0, 16) + '…' : e.asset.n, pt = Number.isFinite(d) ? `${d > 0 ? '↑' : d < 0 ? '↓' : '↔'} ${e.asset.u === 'bp' ? Math.abs(d).toFixed(1) + ' bp' : Math.abs(d).toFixed(2) + '%'}` : IMPACT_ARROW[e.impact.direction]; ctx.font = '650 12px Inter,sans-serif'; const w1 = ctx.measureText(nm).width, w2 = ctx.measureText(pt).width, W = w1 + w2 + 32, H = 26; let x = m[0] - W / 2, y = m[1] - H / 2; for (let n = 0; n < 8 && pillRects.some(r => x < r.x + r.w + 4 && x + W + 4 > r.x && y < r.y + r.h + 4 && y + H + 4 > r.y); n++) y += H + 4;
         pillRects.push({ x, y, w: W, h: H, nm, pt, w1, d, edge: { ...e, points, pill: { x, y, w: W, h: H } } }); }
     }
     if (!EMBED && e.impact) arcHits.push({ ...e, points });

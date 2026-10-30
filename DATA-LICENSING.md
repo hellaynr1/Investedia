@@ -10,6 +10,9 @@
 | Yahoo Finance prices | delayed quotes | **Not licensed for commercial use.** Needs a licensed provider before revenue. |
 | Coinbase public WebSocket/ticker | live crypto | Public market data; keep attribution. |
 | faireconomy / ForexFactory calendar | economic calendar | **Uncertain**; FRED + official calendars preferred. |
+| SEC EDGAR (company_tickers_exchange.json, submissions) | canonical registry: ticker → CIK, registrant name, exchange, HQ address | US government work, public domain; SEC fair-access rules (≤10 req/s, named User-Agent). |
+| GeoNames cities1000 | HQ city → coordinates in `data/registry.json` | **CC BY 4.0: credit required** (on `sources.html`). |
+| Yahoo Finance chart meta | registry: official security name/exchange for non-US symbols | Same caveat as Yahoo prices (unofficial, personal use). Only the identity facts are stored. |
 | Pixabay | topic photos | Pixabay Content License (OK for commercial use, no hotlinking required; we self-host). |
 | Brandfetch logos | company logos | Check Brandfetch terms; fallback to initials. |
 | Gemini | AI summaries | Our output is generated from headline + description only; keep "AI-assisted" labelling. |

@@ -47,6 +47,17 @@ def resolve(ticker, known):
     return None
 
 
+def resolve_row(row, known):
+    """Price symbol of an implication's CANONICAL asset (registry stamp). A row the registry could not resolve is never priced:
+    a raw ticker string can name another company (e.g. MC = Moelis & Company, not LVMH). Rows written before the registry
+    (no stamp at all) keep the old symbol aliasing so already-frozen behaviour does not change."""
+    row = row or {}
+    a = row.get('asset')
+    if a: return a.get('px') if a.get('px') in known and a.get('freq') != 'monthly' else None
+    if 'unresolved' in row: return None
+    return resolve(row.get('ticker'), known)
+
+
 def tracked_symbols(stories, known, now):
     out = set()
     for s in stories:
@@ -56,7 +67,7 @@ def tracked_symbols(stories, known, now):
         except Exception:
             continue
         for i in s.get('impacts') or []:
-            sym = resolve((i or {}).get('ticker'), known)
+            sym = resolve_row(i, known)
             if sym:
                 out.add(sym)
     return out
@@ -72,14 +83,14 @@ def freeze(stories, series, ledger, now):
             i = i or {}
             if not i.get('scorable') or not i.get('created_at') or i.get('direction') not in ('up', 'down'):
                 continue
-            sym = resolve(i.get('ticker'), known)
+            sym = resolve_row(i, known)
             if not sym or (s.get('id'), sym) in done:
                 continue
             try:
                 created = parse(i['created_at'])
             except Exception:
                 continue
-            ledger.setdefault('calls', []).append({'id': s.get('id'), 'sym': sym, 'name': (i.get('name') or sym)[:60], 'dir': i['direction'], 'conf': i.get('confidence'),
+            ledger.setdefault('calls', []).append({'id': s.get('id'), 'sym': sym, **({'aid': i['asset']['id']} if i.get('asset') else {}), 'name': (i.get('name') or sym)[:60], 'dir': i['direction'], 'conf': i.get('confidence'),
                                                    'created': i['created_at'], 'ver': i.get('version'), 'model': i.get('model'), 'horizon': i.get('horizon'),
                                                    'baseline_rule': i.get('baseline_rule'), 'pub': int(created.timestamp() // 60), 'res': 'pending',
                                                    'frozen': now.strftime('%Y-%m-%dT%H:%M:%SZ'), 'cat': s.get('category'), 'h': str(s.get('headline') or '')[:140]})

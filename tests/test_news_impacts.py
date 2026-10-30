@@ -16,12 +16,12 @@ FIXTURE = json.loads((ROOT / 'tests/fixtures/impacts-response.json').read_text()
 
 class NewsImpacts(unittest.TestCase):
     def test_typed_bounded_fields(self):
-        robot.PROMPT.format(n=1, cats='markets', topics='oil', cands='[]')
+        robot.PROMPT.format(n=1, cats='markets', topics='oil', cands='[]', event_types='earnings', relations='subject')
         raw = copy.deepcopy(FIXTURE[0])
         raw['impacts'] = [None, {'kind': []}, {**raw['impacts'][0], 'country': 'ZZ'},
             {**raw['impacts'][0], 'direction': ['bad'], 'why': 'x' * 300, 'ticker': '<script>'}] + raw['impacts'] * 3
         result = robot.validate_analysis(raw, True, ISO)
-        self.assertEqual(len(result['impacts']), 4)
+        self.assertEqual(len(result['impacts']), robot.MAX_IMPACTS)
         self.assertEqual(result['impacts'][0]['direction'], 'unclear')
         self.assertEqual(len(result['impacts'][0]['why']), 200)
         self.assertIsNone(result['impacts'][0]['ticker'])
@@ -79,7 +79,7 @@ class NewsImpacts(unittest.TestCase):
             return [{**copy.deepcopy(FIXTURE[0]), 'id': s['id']} for s in inputs]
         latest = max(robot.datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) for s in FEED['stories'])
         before = (ROOT / 'assets/globe/news-live.json').read_bytes()
-        with patch.object(robot, 'gdelt', return_value=[]), patch.object(robot, 'rss', return_value=[]), \
+        with patch.object(robot.EV, 'upsert', return_value=0), patch.object(robot.EV, 'write_threads', return_value=0), patch.object(robot, 'save_seen'), patch.object(robot, 'gdelt', return_value=[]), patch.object(robot, 'rss', return_value=[]), \
              patch.object(robot, 'gemini', side_effect=fake), patch.object(robot, 'save', side_effect=lambda n,v,feed=False:writes.update({n:v})), \
              patch.object(robot, 'NOW', latest):
             robot.main()
@@ -91,7 +91,7 @@ class NewsImpacts(unittest.TestCase):
     def _run(self, tier, raw, gemini):
         writes, seen = {}, {}
         latest = robot.datetime.fromisoformat(max(s['published_at'] for s in FEED['stories']).replace('Z', '+00:00'))
-        with patch.object(robot, 'TIER', tier), patch.object(robot, 'gdelt', return_value=[]), patch.object(robot, 'rss', return_value=raw), \
+        with patch.object(robot.EV, 'upsert', return_value=0), patch.object(robot.EV, 'write_threads', return_value=0), patch.object(robot, 'TIER', tier), patch.object(robot, 'gdelt', return_value=[]), patch.object(robot, 'rss', return_value=raw), \
              patch.object(robot, 'gemini', side_effect=gemini), patch.object(robot, 'backfill_impacts', return_value=0), patch.object(robot, 'load_seen', return_value={}), \
              patch.object(robot, 'save_seen', side_effect=lambda x: seen.update(x)), patch.object(robot, 'NOW', latest), \
              patch.object(robot, 'save', side_effect=lambda n, v, feed=False: writes.update({n: v})):

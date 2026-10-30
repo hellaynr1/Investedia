@@ -12,7 +12,19 @@ UA = {'User-Agent': 'Mozilla/5.0'}
 # Listings whose site symbol is not a Yahoo symbol keep the last known price; their currency follows the country of the listing.
 CUR_BY_CC = {'de': 'EUR', 'fr': 'EUR', 'it': 'EUR', 'es': 'EUR', 'nl': 'EUR', 'ie': 'EUR', 'ch': 'CHF', 'gb': 'GBP', 'kr': 'KRW', 'in': 'INR', 'sg': 'SGD', 'au': 'AUD', 'nz': 'NZD', 'za': 'ZAR', 'eg': 'EGP', 'sa': 'SAR', 'qa': 'QAR', 'ae': 'AED', 'pe': 'PEN', 'us': 'USD', 'jp': 'JPY', 'cn': 'CNY', 'hk': 'HKD'}
 
+def registry_listing():
+    """Globe symbol -> verified Yahoo symbol for Globe stocks whose symbol is a site code (MC = LVMH -> MC.PA, AIR = Airbus -> AIR.PA).
+    Without this, the bare code is priced as whichever US company has those letters (MC = Moelis & Company)."""
+    try:
+        reg = json.load(open('data/registry.json', encoding='utf-8'))['assets']
+        return {a['globe_symbol']: a['px'] for a in reg.values() if a.get('globe_symbol') and a.get('px')}
+    except Exception:
+        return {}
+
+LISTING = registry_listing()
+
 def ysym(m):
+    if m['t'] == 'stocks' and m['s'] in LISTING: return LISTING[m['s']]
     return m['s'] + '=X' if m['t'] == 'fx' else m['s'] + '-USD' if m['t'] == 'crypto' else m['s']
 
 def fetch(sym):
