@@ -60,7 +60,7 @@ jobs:
   # GitHub's cron is best effort: measured on 2026-10-29/30 the 30-minute schedule ran on average only every 58 minutes.
   # Each run therefore queues its successor itself, 30 minutes after it started (workflow_dispatch is allowed with the built-in
   # token). This job holds no lock, so the waiting never blocks the other news tier. The cron above stays as a safety net that restarts
-  # the chain if a run is lost. Duplicate chains die out: a run is only queued when no other run of this workflow is waiting.
+  # the chain if a run is lost. Only the newest run continues the chain, so duplicate chains stop by themselves.
   next:
     needs: update
     if: always() && github.ref == 'refs/heads/main'
@@ -74,5 +74,7 @@ jobs:
           start=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .run_started_at)
           wait=$(( $(date -d "$start" +%s) + 1800 - $(date +%s) ))
           [ "$wait" -gt 0 ] && sleep "$wait"
-          waiting=$(gh run list -R "${{ github.repository }}" --workflow broad-news.yml --json status --jq '[.[] | select(.status=="queued" or .status=="waiting" or .status=="pending")] | length')
-          if [ "$waiting" = "0" ]; then gh workflow run broad-news.yml -R "${{ github.repository }}" --ref main; else echo "a run is already waiting: not queuing another"; fi
+          # one chain only: if a newer run of this workflow already exists (cron or another chain), it carries on and this one stops
+          mine=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .created_at)
+          newer=$(gh run list -R "${{ github.repository }}" --workflow broad-news.yml --limit 20 --json createdAt --jq "[.[] | select(.createdAt > \"$mine\")] | length")
+          if [ "$newer" = "0" ]; then gh workflow run broad-news.yml -R "${{ github.repository }}" --ref main; else echo "a newer run exists: it continues the chain"; fi
