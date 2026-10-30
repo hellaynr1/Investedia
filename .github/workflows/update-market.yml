@@ -15,11 +15,12 @@ on:
         default: true
 permissions:
   contents: write
-concurrency:
-  group: market-data
-  cancel-in-progress: false
+  actions: write   # lets the run schedule its successor (see the "next" job)
 jobs:
   update:
+    concurrency:
+      group: market-data
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -60,3 +61,23 @@ jobs:
           git commit -q -m "Update market data and news"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q && exit 0; sleep 5; done
           exit 1
+  # GitHub's cron is best effort: measured 2026-10-29/30 the 15-minute market-hours schedule ran on average only every 49 minutes
+  # (gaps up to 2.7 h), which left Globe prices and the Live Track Record's price recorder stale. During weekday market hours each
+  # run queues its successor 15 minutes after it started; outside those hours the cron above is enough. Holds no lock.
+  next:
+    needs: update
+    if: always() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Queue the next price run 15 minutes after this one started (weekdays 06-21 UTC)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          start=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .run_started_at)
+          wait=$(( $(date -d "$start" +%s) + 900 - $(date +%s) ))
+          [ "$wait" -gt 0 ] && sleep "$wait"
+          dow=$(date -u +%u); hour=$(date -u +%H)
+          if [ "$dow" -gt 5 ] || [ $((10#$hour)) -lt 6 ] || [ $((10#$hour)) -ge 21 ]; then echo "outside market hours: the cron takes over"; exit 0; fi
+          waiting=$(gh run list -R "${{ github.repository }}" --workflow update-market.yml --json status --jq '[.[] | select(.status=="queued" or .status=="waiting" or .status=="pending")] | length')
+          if [ "$waiting" = "0" ]; then gh workflow run update-market.yml -R "${{ github.repository }}" --ref main -f full=false; else echo "a run is already waiting"; fi

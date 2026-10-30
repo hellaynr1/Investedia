@@ -28,6 +28,8 @@ def ysym(m):
     if m['t'] == 'stocks' and m['s'] in LISTING: return LISTING[m['s']]
     return m['s'] + '=X' if m['t'] == 'fx' else m['s'] + '-USD' if m['t'] == 'crypto' else m['s']
 
+MINOR = {'GBp': ('GBP', .01), 'GBX': ('GBP', .01), 'ZAc': ('ZAR', .01), 'USX': ('USD', .01), 'ILA': ('ILS', .01), 'KWF': ('KWD', .001)}  # pence, cents, agorot, fils
+
 def fetch(sym):
     for i in range(2):
         try:
@@ -36,7 +38,9 @@ def fetch(sym):
             c = [x for x in r['indicators']['quote'][0]['close'] if x is not None]
             live = r['meta'].get('regularMarketPrice')
             if live: c[-1] = live
-            if len(c) >= 6 and c[-1]: return c, r['meta'].get('currency')
+            cur = r['meta'].get('currency')
+            if cur in MINOR: cur, k = MINOR[cur]; c = [x * k for x in c]  # quoted in minor units: show the main currency (HSBC 1292.6 GBp -> 12.926 GBP)
+            if len(c) >= 6 and c[-1]: return c, cur
         except Exception:
             time.sleep(1 + i)
     return None
