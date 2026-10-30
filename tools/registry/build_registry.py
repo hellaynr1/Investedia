@@ -393,6 +393,11 @@ def build(history_paths=(), online=True):
         if g:
             a['country'] = g.pop('cc')
             if g['la'] is not None: a['geo'] = g
+    # official industry (SEC SIC code) for SEC registrants: used for Sector Spread peers (same 4-digit SIC only)
+    sec_listed = [a for a in assets.values() if a.get('cik')]
+    with ThreadPoolExecutor(4) as ex: subs = list(ex.map(lambda a: S.sec_submission(a['cik']) if online or os.path.exists(os.path.join(S.CACHE, 'sec', a['cik'] + '.json')) else None, sec_listed))
+    for a, sub in zip(sec_listed, subs):
+        if sub and sub.get('sic'): a['sic'] = str(sub['sic']); a['industry'] = sub.get('sicDescription')
     # companies: SEC CIK, or the listing itself; listings of one company are linked only when their official names are the same name
     by_key = defaultdict(list)
     for a in assets.values():
@@ -461,5 +466,14 @@ if __name__ == '__main__':
     reg = build(a.history, online=not a.offline)
     os.makedirs(os.path.join(ROOT, 'data'), exist_ok=True)
     with open(R.PATH, 'w', encoding='utf-8') as f: json.dump(reg, f, ensure_ascii=False, separators=(',', ':'))
+    # Globe Sector Spread: verified listings with an official industry and a place, keyed by price symbol and Globe symbol
+    ind = {}
+    for a in reg['assets'].values():
+        # catch-all codes ("... NEC" = not elsewhere classified, blank-check shells, non-operating) say nothing about real peers
+        if a.get('sic') and a.get('geo') and a['geo'].get('la') is not None and not re.search(r'\bNEC\b', a.get('industry') or '') and a['sic'] not in ('6770', '9995', '8900', '8999'):
+            for k in {a.get('px'), a.get('globe_symbol')} - {None}: ind[k] = {'id': a['id'], 'sic': a['sic'], 'industry': a.get('industry')}
+    for d in ('assets/globe', 'docs/assets/globe'):
+        with open(os.path.join(ROOT, d, 'industries.json'), 'w', encoding='utf-8') as f:
+            json.dump({'source': 'SEC EDGAR SIC codes of registry-verified listings (data/registry.json)', 'count': len(ind), 'by': dict(sorted(ind.items()))}, f, separators=(',', ':'))
     print(reg['counts'], 'aliases', len(reg['alias']), 'names', len(reg['names']), 'patterns', len(reg['patterns']), 'conflicts', len(reg['conflicts']),
           f"{os.path.getsize(R.PATH) / 1e6:.2f} MB")
