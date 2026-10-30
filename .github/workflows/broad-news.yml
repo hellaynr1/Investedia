@@ -14,11 +14,12 @@ on:
     paths: [update_globe_news.py, news_core.py, registry.py, events.py, data/registry.json, .github/workflows/broad-news.yml]
 permissions:
   contents: write
-concurrency:
-  group: news-data
-  cancel-in-progress: false
+  actions: write   # lets the run schedule its successor (workflow_dispatch), see the "next" job
 jobs:
   update:
+    concurrency:
+      group: news-data
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 75
     steps:
@@ -56,3 +57,22 @@ jobs:
           git commit -q -m "Update globe news"
           for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep 5; done
           exit 1
+  # GitHub's cron is best effort: measured on 2026-10-29/30 the 30-minute schedule ran on average only every 58 minutes.
+  # Each run therefore queues its successor itself, 30 minutes after it started (workflow_dispatch is allowed with the built-in
+  # token). This job holds no lock, so the waiting never blocks the other news tier. The cron above stays as a safety net that restarts
+  # the chain if a run is lost. Duplicate chains die out: a run is only queued when no other run of this workflow is waiting.
+  next:
+    needs: update
+    if: always() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Queue the next run 30 minutes after this one started
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          start=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .run_started_at)
+          wait=$(( $(date -d "$start" +%s) + 1800 - $(date +%s) ))
+          [ "$wait" -gt 0 ] && sleep "$wait"
+          waiting=$(gh run list -R "${{ github.repository }}" --workflow broad-news.yml --json status --jq '[.[] | select(.status=="queued" or .status=="waiting" or .status=="pending")] | length')
+          if [ "$waiting" = "0" ]; then gh workflow run broad-news.yml -R "${{ github.repository }}" --ref main; else echo "a run is already waiting: not queuing another"; fi
