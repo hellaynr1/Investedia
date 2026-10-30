@@ -795,6 +795,10 @@ const QS = new URLSearchParams(location.search);
 let SECTORON = QS.get('sector') === '1', STORYON = QS.get('story') === '1';
 const MAIN = '255,122,26', RIPPLE = '255,150,64', SECTOR = '255,190,110';
 let IND = {}; fetch('industries.json').then(r => r.json()).then(d => { IND = d.by || {}; updateNetwork(); }).catch(() => {});
+// Canonical identity: a stock takes part in relationships only when its symbol is verified to be the company we name (asset-trust.json,
+// built by tools/gen-asset-trust.py from SEC and exchange records). Known-bad and unverified symbols are excluded; nothing is guessed.
+let TRUST = null; fetch('asset-trust.json').then(r => r.json()).then(d => { TRUST = d.by || {}; updateNetwork(); }).catch(() => { TRUST = {}; updateNetwork(); });
+const trusted = a => !!a && (a.t !== 'stocks' || a.g === 'Index' || a.g === 'Country ETF' || /^verified/.test((TRUST && TRUST[a.s] || {}).status || ''));
 const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { main: ph ? 5 : 8, ripple: ph ? 2 : 4 } : { main: ph ? 10 : 15, ripple: ph ? 5 : 10 }; };
 const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells
 function strokeArc(pts, col, alpha, width, glow, phase, dash) {
@@ -837,7 +841,7 @@ let events = [], storyLines = [];
 function newsScore(article, asset) { const fresh = Math.max(0, 1 - (Date.now() - article.t) / 864e5); return article.importance * 1.2 + Math.min(3, Math.abs(asset.d || 0)) * .6 + fresh + (article.flag ? .5 : 0); }
 function storyPairs(list, max, only) {  // same company + same event family, 1–96 h apart
   const by = new Map();
-  for (const s of list) { const m = impactsOf(s).map(i => assetForImpact(i)).find(Boolean); if (m && (!only || m.s === only)) (by.get(m.s) || by.set(m.s, []).get(m.s)).push(s); }
+  for (const s of list) { const m = impactsOf(s).map(i => assetForImpact(i)).find(trusted); if (m && (!only || m.s === only)) (by.get(m.s) || by.set(m.s, []).get(m.s)).push(s); }
   const out = [];
   for (const [sym, arts] of by) { arts.sort((x, y) => x.t - y.t);
     for (let i = 1; i < arts.length && out.length < max; i++) { const a = arts[i - 1], b = arts[i], ta = topicOf(a), tb = topicOf(b), gap = (b.t - a.t) / 36e5;
@@ -847,18 +851,19 @@ function storyPairs(list, max, only) {  // same company + same event family, 1�
   return out;
 }
 const cappedBy = cap => { const n = {}; return ks => { if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; }; };
-function onFront(pts) { const v = pts.filter(p => p[2]); if (!pts[0][2] || !pts.at(-1)[2] || v.length < pts.length * .92) return false;
+function onFront(pts) { const v = pts.filter(p => p[2]); if (v.length < pts.length) return false;
+  if (pts[0][3] != null && (Math.min(pts[0][3], pts.at(-1)[3]) < .25 || Math.min(...pts.map(p => p[3])) < .12)) return false;  // ends clearly on the front, arc never skimming the horizon  // both ends and the whole arc on the visible face: never a line running into the horizon
   const a = v[0], b = v[v.length - 1], m = v[v.length >> 1]; return Math.hypot(a[0] - b[0], a[1] - b[1]) + Math.hypot(a[0] - m[0], a[1] - m[1]) > R * .1; }
 function updateNetwork() {
   events = [];
   for (const article of shown) {
-    const imp = impactsOf(article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && assetTarget(x.a));
+    const imp = impactsOf(article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && trusted(x.a) && assetTarget(x.a));
     const main = imp[0]; if (!main) continue;
     const ripples = imp.slice(1).map(x => ({ a: x.a, impact: x.i, target: assetTarget(x.a), dir: x.i.direction, score: rippleScore(x.i, x.a) }))
       .filter(r => r.score >= RIPPLE_MIN && r.a.s !== main.a.s).sort((x, y) => y.score - x.score).slice(0, 5)
       .map(r => ({ ...r, why: `explicitly affected secondary asset (relevance ${r.score.toFixed(2)})` }));
     const pa = main.a, sectors = pa.t === 'stocks' && Math.abs(pa.d || 0) >= 1 ? (MKT.all || [])
-      .filter(p => p.t === 'stocks' && p.s !== pa.s && Number.isFinite(p.d) && Math.abs(p.d) >= 1 && Math.abs(p.d) < 30 && Math.sign(p.d) === Math.sign(pa.d) && assetTarget(p))
+      .filter(p => p.t === 'stocks' && p.s !== pa.s && trusted(p) && Number.isFinite(p.d) && Math.abs(p.d) >= 1 && Math.abs(p.d) < 30 && Math.sign(p.d) === Math.sign(pa.d) && assetTarget(p))
       .map(p => { const [sc, why] = peerScore(pa, p); return { a: p, target: assetTarget(p), score: sc, why: why && `${why} + same-direction move ${p.d > 0 ? '+' : ''}${p.d.toFixed(1)}%` }; })
       .filter(x => x.score >= PEER_MIN).sort((x, y) => y.score - x.score || Math.abs(y.a.d) - Math.abs(x.a.d)).slice(0, 3) : [];
     events.push({ article, impact: main.i, asset: main.a, target: assetTarget(main.a), dir: main.i.direction, ripples, sectors, score: newsScore(article, main.a) });
@@ -882,7 +887,7 @@ function drawConnections(t, focus, country) {
   const ripples = [];  // default: only the single strongest ripple per event, and only for the strongest events
   if (CONNON || sel) for (const [e] of mains) { if (ripples.length >= B.ripple) break; const r = e.ripples[0]; if (!r) continue; const pts = arcPts(e.article, r.target, 28); if (onFront(pts)) ripples.push([r, pts]); }
   if (!EMBED && SECTORON) mains.forEach(([e]) => e.sectors.forEach(s => { const pts = arcPts(e.target, s.target, 26); if (onFront(pts)) strokeArc(pts, SECTOR, .42 * fade, 1, false, null, [3, 4]); }));
-  if (!EMBED && STORYON) storyLines.forEach(({ a, b }) => strokeArc(arcPts(a, b, 28), MAIN, .2 * fade, .9, false, null));
+  if (!EMBED && STORYON) storyLines.forEach(({ a, b }) => { const pts = arcPts(a, b, 28); if (onFront(pts)) strokeArc(pts, MAIN, .2 * fade, .9, false, null); });
   const label = (e, points, a, sel2) => {  // price label (green/red live here, not in the line); clicking it selects the asset
     if (EMBED || !sel) return;
     const seen = points.filter(p => p[2] && p[0] > globeBox.left + 34 && p[0] < globeBox.right - 34 && p[1] > globeBox.top + 30 && p[1] < globeBox.bottom - 30);
@@ -903,13 +908,13 @@ function drawConnections(t, focus, country) {
   for (const e of chosen) {
     const pts = arcPts(e.article, e.target, 32), isMain = !sym || e.asset.s === sym;
     if (focus || sym) {
-      e.sectors.filter(s => !sym || e.asset.s === sym || s.a.s === sym).forEach(s => { const sp = arcPts(e.target, s.target, 26); strokeArc(sp, SECTOR, .7, 1.2, false, null, [3, 4]); label(e, sp, s.a, true); lineWhy.push(['Sector spread', `${e.asset.n} → ${s.a.n}`, s.why]); });
-      e.ripples.filter(r => !sym || e.asset.s === sym || r.a.s === sym).forEach((r, k) => { const rp = arcPts(e.article, r.target, 28); strokeArc(rp, RIPPLE, .75, 1.3, false, ph(k)); label(e, rp, r.a); lineWhy.push(['Ripple', `${e.article.headline.slice(0, 48)}… → ${r.a.n}`, r.why]); if (!EMBED) arcHits.push({ ...e, impact: r.impact, asset: r.a, target: r.target, points: rp }); });
+      e.sectors.filter(s => !sym || e.asset.s === sym || s.a.s === sym).forEach(s => { const sp = arcPts(e.target, s.target, 26); if (!onFront(sp)) return; strokeArc(sp, SECTOR, .7, 1.2, false, null, [3, 4]); label(e, sp, s.a, true); lineWhy.push(['Sector spread', `${e.asset.n} → ${s.a.n}`, s.why]); });
+      e.ripples.filter(r => !sym || e.asset.s === sym || r.a.s === sym).forEach((r, k) => { const rp = arcPts(e.article, r.target, 28); if (!onFront(rp)) return; strokeArc(rp, RIPPLE, .75, 1.3, false, ph(k)); label(e, rp, r.a); lineWhy.push(['Ripple', `${e.article.headline.slice(0, 48)}… → ${r.a.n}`, r.why]); if (!EMBED) arcHits.push({ ...e, impact: r.impact, asset: r.a, target: r.target, points: rp }); });
     }
-    if (isMain) { if (strokeArc(pts, MAIN, 1, 2.4, true, ph(0))) visibleArcs++; label(e, pts, e.asset); lineWhy.push(['Main impact', `${e.article.headline.slice(0, 48)}… → ${e.asset.s}`, 'primary affected asset of the article']); if (!EMBED && e.impact) arcHits.push({ ...e, points: pts }); }
+    if (isMain && onFront(pts)) { if (strokeArc(pts, MAIN, 1, 2.4, true, ph(0))) visibleArcs++; label(e, pts, e.asset); lineWhy.push(['Main impact', `${e.article.headline.slice(0, 48)}… → ${e.asset.s}`, 'primary affected asset of the article']); if (!EMBED && e.impact) arcHits.push({ ...e, points: pts }); }
   }
   if (focus || sym) storyPairs([...shown], 6, sym || (events.find(e => e.article === focus) || {}).asset?.s).filter(p => sym || p.a === focus || p.b === focus)
-    .forEach(({ a, b, why }) => { strokeArc(arcPts(a, b, 28), MAIN, .3, 1, false, null); lineWhy.push(['Story thread', `${a.headline.slice(0, 30)}… → ${b.headline.slice(0, 30)}…`, why]); });
+    .forEach(({ a, b, why }) => { const sp = arcPts(a, b, 28); if (!onFront(sp)) return; strokeArc(sp, MAIN, .3, 1, false, null); lineWhy.push(['Story thread', `${a.headline.slice(0, 30)}… → ${b.headline.slice(0, 30)}…`, why]); });
   if (sym) { const a = MKT.by[sym], tg = a && assetTarget(a); if (tg) { const [x, y, z] = proj(tg.phi, tg.lam); if (z > 0) {  // contextual asset marker, only while selected
     ctx.save(); ctx.strokeStyle = 'rgba(255,122,26,.95)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 9, 0, 7); ctx.stroke(); ctx.fillStyle = 'rgba(255,122,26,.25)'; ctx.fill(); ctx.restore(); } } }
   cv.dataset.arcCount = String(visibleArcs); cv.dataset.why = JSON.stringify(lineWhy);
@@ -1555,7 +1560,7 @@ function arcPts(a, b, n = 56, lift = 0) {  // lift > 0: a taller arc that rises 
     // so the line runs down onto the rim and carries on over it instead of ending in the sky.
     const phi = Math.asin(v[2]), lam = Math.atan2(v[1], v[0]), zS = proj(phi, lam, 1)[2], f = Math.max(0, Math.min(1, zS / .3));
     const h = 1 + Math.sin(Math.PI * k) * (lift ? lift * Math.min(1, .35 + om * .8) : Math.min(.15, .05 + om * .09) * f), p = proj(phi, lam, h);
-    out.push([p[0], p[1], zS > 0 || (lift > 0 && p[2] > -.2 && Math.hypot(p[0] - cx, p[1] - cy) > R)]);
+    out.push([p[0], p[1], zS > 0 || (lift > 0 && p[2] > -.2 && Math.hypot(p[0] - cx, p[1] - cy) > R), zS]);
   }
   return out;
 }
