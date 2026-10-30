@@ -269,14 +269,15 @@ def build(history_paths=(), online=True):
                      'verify': {'method': 'fixed-table'}})
     for t in ('DXY', 'DX-Y.NYB', 'DX=F', 'USDX', '^DXY'): al(t, 'FX:DXY')
     for p in (r'(the )?(us|u ?s) dollar index', r'dxy', r'(ice )?dollar index'): pat(p, 'FX:DXY')
-    # crypto: the site's coin list (priced as <SYM>-USD), drawn at the Globe's crypto hub; stablecoins keep the issuer place the Globe already uses
+    # crypto: the site's coin list (priced as <SYM>-USD). Crypto assets have no legitimate geographic endpoint, so they carry no place:
+    # they resolve, price, score and thread like any verified asset, but never draw a line on the Globe (no artificial "hub").
     coins = {s: n for s, (n, c) in site.items() if c == 'crypto'}; coins.update(CRYPTO_EXTRA)
     for m in markets:
         if m['t'] == 'crypto': coins.setdefault(m['s'], m['n'])
     for sym, n in coins.items():
         aid = f'CR:{sym}'; y = YAHOO.get(sym, sym + '-USD')
         add(aid, **{'class': 'crypto', 'name': n, 'px': y, 'site': sym if sym in site else None,
-                    'geo': mgeo(sym) or {'la': 0, 'lo': -30, 'src': 'hub', 'city': None}, 'verify': {'method': 'fixed-table'}})
+                    'geo': None, 'geo_note': 'non-geographic', 'verify': {'method': 'fixed-table'}})
         for t in {sym, y, sym + '-USD', sym + 'USD', sym + '-USDT', sym + 'USDT', sym + '/USD'}: al(t, aid)
         for p in CRYPTO_NAMES.get(sym, [re.escape(R.ascii_lower(n))]): pat(p, aid)
     al('XBT', 'CR:BTC'); al('XBTUSD', 'CR:BTC')

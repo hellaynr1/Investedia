@@ -749,9 +749,10 @@ function impactHTML(s) {
 }
 // Only an asset the canonical registry verified can draw a line or show a price: the news robot stamps each impact/entity with
 // `asset` (id, name, class, price symbol, place) or `unresolved` (why not). Raw ticker strings are never looked up here.
+// An asset without a place (crypto) is still returned for cards and prices; assetTarget() then gives it no line.
 const T_OF = { equity: 'stocks', fund: 'stocks', index: 'stocks', fx: 'fx', commodity: 'cmd', crypto: 'crypto', rate: 'rate' };
 function assetForImpact(i) {
-  const r = i && i.asset; if (!r || !Number.isFinite(r.la) || !Number.isFinite(r.lo)) return null;
+  const r = i && i.asset; if (!r || !r.id) return null;
   if (MKT.reg[r.id]) return MKT.reg[r.id];
   const p = MKT.by[r.px] || MKT.np[r.px] || {};
   return MKT.reg[r.id] = { ...p, s: r.px || r.id, id: r.id, n: r.n, la: r.la, lo: r.lo, t: T_OF[r.c] || 'stocks', c: r.c, site: r.site || p.site };
@@ -776,8 +777,8 @@ function hoverCardHTML(edge) {
 function assetTarget(a) {
   let la=a.la, lo=a.lo;
   if (a.t === 'cmd') [la,lo] = a.s === 'BZ=F' ? [51.507,-.128] : [40.71,-74];
-  // Crypto is geographically neutral; the Atlantic hub is a display convention.
-  if (a.t === 'crypto') [la,lo] = [0,-30];
+  // Crypto has no legitimate geographic endpoint: no place, so no line (it still shows in cards, prices and implications).
+  if (a.t === 'crypto') return null;
   return Number.isFinite(la) && Number.isFinite(lo) ? {phi:la*rad,lam:lo*rad} : null;
 }
 let network = [], arcHits = [], arcHover = null, pillRects = [];

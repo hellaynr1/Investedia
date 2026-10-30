@@ -53,6 +53,12 @@ def stats(stories, reg):
         for i in (s.get('impacts') or []) + (s.get('entities') or []):
             if i.get('ticker'): tick.add(R.norm_ticker(i['ticker']))
         b = before_assets(s); a = after_assets(s, reg)
+        ver = set()
+        for i in (s.get('impacts') or []) + [dict(e, kind='company') for e in s.get('entities') or []]:
+            r = copy.deepcopy(i); R.stamp(r, reg)
+            if r.get('asset'): ver.add(r['asset']['id'])
+        if ver: A['verified_any'] += 1
+        if any(v.startswith('CR:') for v in ver): A['with_crypto'] += 1
         loc = (s.get('location') or {}).get('country')
         for k, (lst, C, syms, cty, cls) in {'b': (b, B, b_syms, b_cty, b_cls), 'a': (list(a.items()), A, a_ids, a_cty, a_cls)}.items():
             C['articles'] += 1
@@ -101,7 +107,7 @@ if __name__ == '__main__':
     st = json.load(open(a.stories)); st = st if isinstance(st, list) else st['stories']
     res = stats(st, R.Registry())
     for k in ('before', 'after'):
-        x = res[k]; print(k.upper(), {kk: x.get(kk) for kk in ('articles', 'drawable', '2plus', 'ripple', 'ripple_geo', 'edges', 'distinct_lines', 'assets', 'countries', 'story_threads', 'threads_any_family')},
+        x = res[k]; print(k.upper(), {kk: x.get(kk) for kk in ('articles', 'verified_any', 'with_crypto', 'drawable', '2plus', 'ripple', 'ripple_geo', 'edges', 'distinct_lines', 'assets', 'countries', 'story_threads', 'threads_any_family')},
                                  f"{100 * x.get('drawable', 0) / max(1, x['articles']):.1f}% drawable", x['classes'])
     print('tickers discovered', res['tickers_discovered']); print('before-matches the registry rejects:', len(res['before_matches_rejected']))
     for w in res['before_matches_rejected'][:25]: print('  ', w)
