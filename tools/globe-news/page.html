@@ -795,10 +795,9 @@ const QS = new URLSearchParams(location.search);
 let SECTORON = QS.get('sector') === '1', STORYON = QS.get('story') === '1';
 const MAIN = '255,122,26', RIPPLE = '255,150,64', SECTOR = '255,190,110';
 let IND = {}; fetch('industries.json').then(r => r.json()).then(d => { IND = d.by || {}; updateNetwork(); }).catch(() => {});
-// Canonical identity: a stock takes part in relationships only when its symbol is verified to be the company we name (asset-trust.json,
-// built by tools/gen-asset-trust.py from SEC and exchange records). Known-bad and unverified symbols are excluded; nothing is guessed.
-let TRUST = null; fetch('asset-trust.json').then(r => r.json()).then(d => { TRUST = d.by || {}; updateNetwork(); }).catch(() => { TRUST = {}; updateNetwork(); });
-const trusted = a => !!a && (a.t !== 'stocks' || a.g === 'Index' || a.g === 'Country ETF' || /^verified/.test((TRUST && TRUST[a.s] || {}).status || ''));
+// Canonical identity: the registry is the single source of truth. An impact asset is usable only when the robot stamped it with a
+// registry id (assetForImpact); a Globe stock can be a sector peer only when industries.json (built from the registry) lists it.
+const trusted = a => !!a && !!(a.id || (IND[a.s] && IND[a.s].id));
 const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { main: ph ? 5 : 8, ripple: ph ? 2 : 4 } : { main: ph ? 10 : 15, ripple: ph ? 5 : 10 }; };
 const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells
 function strokeArc(pts, col, alpha, width, glow, phase, dash) {
@@ -833,21 +832,25 @@ function peerScore(a, p) {
   return [0, null];
 }
 const PEER_MIN = 1;  // exact SEC industry only: the 3-digit group was too broad (e.g. search vs. enterprise software)
-const FAMILY = [['earnings', /\b(earnings|results|quarter|q[1-4]\b|revenue|profit|eps|sales)\b/i], ['guidance', /\b(guidance|outlook|forecast)\b/i], ['analyst', /\b(upgrade|downgrade|price target|analyst|rating)\b/i],
-  ['deal', /\b(acquire|acquisition|merger|takeover|buyout|bid)\b/i], ['legal', /\b(lawsuit|probe|fine|regulator|antitrust|court|ruling|settle)\b/i], ['product', /\b(launch|unveil|approval|fda|recall)\b/i]];
-const EVENT_CHAIN = { earnings: ['earnings', 'guidance', 'analyst'], guidance: ['earnings', 'guidance', 'analyst'], analyst: ['earnings', 'guidance', 'analyst'] };
-const topicOf = s => (FAMILY.find(([, rx]) => rx.test(s.headline)) || [])[0] || null;
 let events = [], storyLines = [];
 function newsScore(article, asset) { const fresh = Math.max(0, 1 - (Date.now() - article.t) / 864e5); return article.importance * 1.2 + Math.min(3, Math.abs(asset.d || 0)) * .6 + fresh + (article.flag ? .5 : 0); }
-function storyPairs(list, max, only) {  // same company + same event family, 1–96 h apart
-  const by = new Map();
-  for (const s of list) { const m = impactsOf(s).map(i => assetForImpact(i)).find(trusted); if (m && (!only || m.s === only)) (by.get(m.s) || by.set(m.s, []).get(m.s)).push(s); }
-  const out = [];
-  for (const [sym, arts] of by) { arts.sort((x, y) => x.t - y.t);
-    for (let i = 1; i < arts.length && out.length < max; i++) { const a = arts[i - 1], b = arts[i], ta = topicOf(a), tb = topicOf(b), gap = (b.t - a.t) / 36e5;
-      if (!ta || !tb || gap < 1 || gap > 96 || geoKey(a) === geoKey(b)) continue;
-      if (!(ta === tb || (EVENT_CHAIN[ta] || []).includes(tb))) continue;
-      out.push({ a, b, sym, why: `same company + ${ta === tb ? 'same ' + ta + ' event' : ta + ' → ' + tb}` }); } }
+// Story threads come from the event archive (threads.json: same canonical affected asset + same event family, 1–96 h apart,
+// computed by the news robot over 30 days), not from the 160 articles loaded here. Ends that are not in the live feed are drawn
+// from the archive's own place.
+let THREADS = []; fetch('threads.json').then(r => r.json()).then(d => { THREADS = d.threads || []; updateNetwork(); }).catch(() => {});
+const assetBy = sym => MKT.by[sym] || Object.values(MKT.reg).find(a => a.s === sym) || null;
+const idOfSym = sym => (assetBy(sym) || {}).id || null;
+function archiveThreads(max, onlyId, focus) {
+  const byId = new Map(stories.map(s => [s.id, s])), out = [];
+  const end = x => byId.get(x.id) || (Number.isFinite(x.la) && Number.isFinite(x.lo) ? { id: x.id, headline: x.title || '', phi: x.la * rad, lam: x.lo * rad, t: Date.parse(x.at), location: { country: x.country } } : null);
+  for (const th of THREADS) {
+    if (out.length >= max) break;
+    const tb = Date.parse(th.b.at); if (!(play ? tb <= play.cur : Date.now() - tb <= winMin() * 60000)) continue;
+    if (onlyId && th.asset !== onlyId) continue;
+    if (focus && th.a.id !== focus.id && th.b.id !== focus.id) continue;
+    const a = end(th.a), b = end(th.b); if (!a || !b || geoKey(a) === geoKey(b)) continue;
+    out.push({ a, b, sym: th.asset, why: `same affected asset, same ${th.fam} story, ${Math.max(1, Math.round((tb - Date.parse(th.a.at)) / 36e5))} h later` });
+  }
   return out;
 }
 const cappedBy = cap => { const n = {}; return ks => { if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; }; };
@@ -871,7 +874,7 @@ function updateNetwork() {
   events.sort((a, b) => b.score - a.score);
   const seen = new Set(); events = events.filter(e => { const k = geoKey(e.article) + '>' + geoKey(e.target); if (seen.has(k)) return false; seen.add(k); return true; });
   network = events;
-  storyLines = storyPairs([...shown].sort(sortTop).slice(0, 120), 12);
+  storyLines = archiveThreads(12);
   const count = $('connection-count'); if (count) count.textContent = `${events.length} events · ${WLABEL[F.win]}`;
   if (!EMBED && view.k === 'asset') render();
 }
@@ -913,21 +916,21 @@ function drawConnections(t, focus, country) {
     }
     if (isMain && onFront(pts)) { if (strokeArc(pts, MAIN, 1, 2.4, true, ph(0))) visibleArcs++; label(e, pts, e.asset); lineWhy.push(['Main impact', `${e.article.headline.slice(0, 48)}… → ${e.asset.s}`, 'primary affected asset of the article']); if (!EMBED && e.impact) arcHits.push({ ...e, points: pts }); }
   }
-  if (focus || sym) storyPairs([...shown], 6, sym || (events.find(e => e.article === focus) || {}).asset?.s).filter(p => sym || p.a === focus || p.b === focus)
+  if (focus || sym) archiveThreads(6, sym ? idOfSym(sym) : null, sym ? null : focus)
     .forEach(({ a, b, why }) => { const sp = arcPts(a, b, 28); if (!onFront(sp)) return; strokeArc(sp, MAIN, .3, 1, false, null); lineWhy.push(['Story thread', `${a.headline.slice(0, 30)}… → ${b.headline.slice(0, 30)}…`, why]); });
-  if (sym) { const a = MKT.by[sym], tg = a && assetTarget(a); if (tg) { const [x, y, z] = proj(tg.phi, tg.lam); if (z > 0) {  // contextual asset marker, only while selected
+  if (sym) { const a = assetBy(sym), tg = a && assetTarget(a); if (tg) { const [x, y, z] = proj(tg.phi, tg.lam); if (z > 0) {  // contextual asset marker, only while selected
     ctx.save(); ctx.strokeStyle = 'rgba(255,122,26,.95)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 9, 0, 7); ctx.stroke(); ctx.fillStyle = 'rgba(255,122,26,.25)'; ctx.fill(); ctx.restore(); } } }
   cv.dataset.arcCount = String(visibleArcs); cv.dataset.why = JSON.stringify(lineWhy);
 }
 let lineWhy = [];
 function selectAsset(sym) {
-  if (EMBED || !MKT.by[sym]) return false;
+  if (EMBED || !assetBy(sym)) return false;
   sel = null; selCountry = null; go({ k: 'asset', id: sym });
-  const tg = assetTarget(MKT.by[sym]); if (tg) flyTo(tg.lam / rad - 20, Math.max(-30, Math.min(40, tg.phi / rad - 5)), Math.max(1, Math.min(Z, 1.4)));
+  const tg = assetTarget(assetBy(sym)); if (tg) flyTo(tg.lam / rad - 20, Math.max(-30, Math.min(40, tg.phi / rad - 5)), Math.max(1, Math.min(Z, 1.4)));
   return true;
 }
 function assetPanel(sym) {
-  const a = MKT.by[sym]; if (!a) return '<div class="empty">This asset is not in today’s price data.</div>';
+  const a = assetBy(sym); if (!a) return '<div class="empty">This asset is not in today’s price data.</div>';
   const rel = events.filter(e => touches_(e, sym)), arts = [...new Map(shown.filter(s => impactsOf(s).some(i => assetForImpact(i)?.s === sym) || (s.entities || []).some(x => (x.ticker || '').toUpperCase() === sym)).map(s => [s.id, s])).values()].sort(sortTop);
   const imps = arts.flatMap(s => impactsOf(s).filter(i => assetForImpact(i)?.s === sym && i.why).map(i => ({ s, i }))).slice(0, 4);
   const peers = (MKT.all || []).filter(p => p.s !== sym && p.t === 'stocks' && Number.isFinite(p.d)).map(p => [p, peerScore(a, p)]).filter(([, [sc]]) => sc >= PEER_MIN).sort((x, y) => y[1][0] - x[1][0] || Math.abs(y[0].d) - Math.abs(x[0].d)).slice(0, 5);
