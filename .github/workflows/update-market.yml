@@ -79,5 +79,6 @@ jobs:
           [ "$wait" -gt 0 ] && sleep "$wait"
           dow=$(date -u +%u); hour=$(date -u +%H)
           if [ "$dow" -gt 5 ] || [ $((10#$hour)) -lt 6 ] || [ $((10#$hour)) -ge 21 ]; then echo "outside market hours: the cron takes over"; exit 0; fi
-          waiting=$(gh run list -R "${{ github.repository }}" --workflow update-market.yml --json status --jq '[.[] | select(.status=="queued" or .status=="waiting" or .status=="pending")] | length')
-          if [ "$waiting" = "0" ]; then gh workflow run update-market.yml -R "${{ github.repository }}" --ref main -f full=false; else echo "a run is already waiting"; fi
+          mine=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .created_at)
+          newer=$(gh run list -R "${{ github.repository }}" --workflow update-market.yml --limit 20 --json createdAt --jq "[.[] | select(.createdAt > \"$mine\")] | length")
+          if [ "$newer" = "0" ]; then gh workflow run update-market.yml -R "${{ github.repository }}" --ref main -f full=false; else echo "a newer run exists: it continues the chain"; fi
