@@ -91,7 +91,11 @@ class Registry:
     def ids_for_ticker(self, t):
         return list(self.alias.get(norm_ticker(t), []))
 
+    def verified(self, aid):
+        return aid in self.assets
+
     def drawable(self, aid):
+        """Verified AND has a legitimate place (crypto never does)."""
         a = self.assets.get(aid)
         return bool(a and a.get('geo') and a['geo'].get('la') is not None)
 

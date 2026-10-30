@@ -116,8 +116,8 @@ def write_threads(days=30, now=None, base=None, out=None, reg=None):
     """assets/globe/threads.json: story threads over the last `days` days of the archive (both ends' places, the shared asset, the family)."""
     evs = load_days(days, now, base)
     by = {e['id']: e for e in evs}
-    drawable = (lambda a: reg.drawable(a['id'])) if reg else (lambda a: True)
-    th = threads(evs, drawable)
+    verified = (lambda a: reg.verified(a['id'])) if reg else (lambda a: True)  # threads join articles' places, so a non-geographic asset (crypto) threads too
+    th = threads(evs, verified)
     pick = lambda e: {'id': e['id'], 'at': e['at'], 'title': e.get('title'), 'la': (e.get('loc') or {}).get('lat'), 'lo': (e.get('loc') or {}).get('lon'),
                       'country': (e.get('loc') or {}).get('country')}
     rows = [{'a': pick(by[x]), 'b': pick(by[y]), 'asset': aid, 'fam': by[x]['fam']} for x, y, aid in th]

@@ -16,7 +16,8 @@ def registry_listing():
     """Globe symbol -> verified Yahoo symbol for Globe stocks whose symbol is a site code (MC = LVMH -> MC.PA, AIR = Airbus -> AIR.PA).
     Without this, the bare code is priced as whichever US company has those letters (MC = Moelis & Company)."""
     try:
-        reg = json.load(open('data/registry.json', encoding='utf-8'))['assets']
+        import os
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'registry.json'), encoding='utf-8') as f: reg = json.load(f)['assets']
         return {a['globe_symbol']: a['px'] for a in reg.values() if a.get('globe_symbol') and a.get('px')}
     except Exception:
         return {}

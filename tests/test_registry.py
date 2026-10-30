@@ -44,8 +44,29 @@ class Identity(unittest.TestCase):
         self.assertIsNone(rid('Oil', None, 'asset'))  # Brent or WTI: not guessed
 
     def test_drawable_assets_have_places(self):
-        for aid in ('CR:BTC', 'CR:ETH', 'RT:US10Y', 'RT:US02Y', 'FX:USDBRL', 'IX:SPX', 'EQ:XPAR:MC'):
+        for aid in ('RT:US10Y', 'RT:US02Y', 'FX:USDBRL', 'IX:SPX', 'EQ:XPAR:MC'):
             self.assertTrue(REG.drawable(aid), aid)
+
+    def test_crypto_is_verified_but_has_no_place(self):
+        for aid in [a for a in REG.assets if a.startswith('CR:')]:
+            self.assertTrue(REG.verified(aid)); self.assertFalse(REG.drawable(aid), aid)  # no artificial hub: no Globe line
+        row = R.stamp({'kind': 'asset', 'name': 'Bitcoin', 'ticker': 'BTC-USD', 'direction': 'up'})
+        self.assertEqual(row['asset']['id'], 'CR:BTC'); self.assertEqual(row['asset']['px'], 'BTC-USD')  # still priced
+        self.assertNotIn('la', row['asset'])
+        import update_news_track as T  # still eligible for the Live Track Record
+        self.assertEqual(T.resolve_row(row, {'BTC-USD'}), 'BTC-USD')
+
+    def test_known_collisions(self):
+        cases = {('LVMH', 'MC'): 'EQ:XPAR:MC', ('Airbus', 'AIR'): 'EQ:XPAR:AIR', ('Allianz', 'ALV'): 'EQ:XETR:ALV', ("L'Oréal", 'OR'): 'EQ:XPAR:OR',
+                 ('Roche', 'ROG'): 'EQ:XSWX:RO', ('CSL', 'CSL'): 'EQ:XASX:CSL', ('Wesfarmers', 'WES'): 'EQ:XASX:WES', ('MTN Group', 'MTN'): 'EQ:XJSE:MTN',
+                 ('Fisher & Paykel Healthcare', 'FPH'): 'EQ:XNZE:FPH', ('Saudi Telecom', 'STC'): 'EQ:XSAU:7010',
+                 ('Moelis & Company', 'MC'): 'EQ:XNYS:MC', ('AAR Corp', 'AIR'): 'EQ:XNYS:AIR', ('Autoliv', 'ALV'): 'EQ:XNYS:ALV', ('Carlisle Companies', 'CSL'): 'EQ:XNYS:CSL',
+                 ('Vail Resorts', 'MTN'): 'EQ:XNYS:MTN'}
+        for (name, t), want in cases.items():
+            self.assertEqual(rid(name, t), want, (name, t))
+        import update_globe as G  # Globe prices come from the intended listing, not the US letters
+        for g, y in {'MC': 'MC.PA', 'AIR': 'AIR.PA', 'ALV': 'ALV.DE', 'OR': 'OR.PA', 'ROG': 'RO.SW', 'CSL': 'CSL.AX', 'WES': 'WES.AX', 'MTN': 'MTN.JO', 'FPH': 'FPH.NZ', 'STC': '7010.SR'}.items():
+            self.assertEqual(G.ysym({'s': g, 't': 'stocks'}), y, g)
 
     def test_company_links_listings(self):
         a, b = REG.assets['EQ:XNYS:TM'], REG.assets['EQ:XTKS:7203']
