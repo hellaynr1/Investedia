@@ -28,6 +28,20 @@ That is why the UI says "Updated 12m ago" and never "LIVE" for news. Crypto pric
 6. **Atomic validated write** (`news_core.atomic_write`): temp file → re-read → validate (non-empty, unique ids, required fields, valid dates) → `os.replace`. Failure keeps the previous file; an empty feed is never published.
 7. **Status** `news-status.json` (v2): per-tier `last_run`, `last_success`, counts, failed sources; `newest_article`, `oldest_article`, `live_articles`.
 
+## Canonical assets (registry) and the event archive
+- **`data/registry.json`** (`registry.py`, built daily by `registry.yml` → `tools/registry/build_registry.py`): one stable id per asset
+  (`EQ:<MIC>:<SYM>`, `IX:`, `FX:`, `CR:`, `CM:`, `RT:`), with aliases (provider formats such as `BRL=X` = `USDBRL`), official name, company,
+  price symbol and place. Equities are verified against the SEC company-ticker file (US) or the Yahoo security record (exchange-suffixed);
+  fixed tables cover indices, currencies, crypto, commodities and rates. Nothing is guessed.
+- **Every impact and entity** is stamped by the robot with `asset` (compact copy: id, name, class, price symbol, place) or `unresolved`
+  (reason). Only a stamped `asset` can draw a Globe line, get a price, or enter the Live Track Record. Sectors and countries never draw.
+  A raw ticker string is never trusted: `MC` + "LVMH" → `EQ:XPAR:MC`; `MC` + "Moelis" → `EQ:XNYS:MC`; `MC` + anything else → none.
+- **Event archive** `assets/globe/events/YYYY-MM-DD.json` (`events.py`): one compact record per published article (title, source, link,
+  time, cluster, companies, canonical assets, implication directions, place, category, event family). No article text. Kept indefinitely
+  (≈200 KB/day); independent of the 160/600 feed caps. Seeded from git history (`tools/registry/seed_events_from_git.py`).
+- **Story threads** `assets/globe/threads.json`: from the archive, same canonical asset + same event family, 1–96 h apart.
+- Measure before/after: `python3 tools/registry/measure.py <stories.json>`.
+
 ## What we store and show (legal posture, see DATA-LICENSING.md)
 Headline (rewritten), source name, publication time, link to the original, **our own** AI summary and "why it matters". No full text, no
 paywall bypass, no hotlinked publisher images (topic photos are Pixabay, downloaded once; fallback is logos/flags/category visuals).

@@ -11,7 +11,7 @@ on:
         default: "0"
   push:
     branches: [preview/live-news]
-    paths: [update_globe_news.py, news_core.py, .github/workflows/broad-news.yml]
+    paths: [update_globe_news.py, news_core.py, registry.py, events.py, data/registry.json, .github/workflows/broad-news.yml]
 permissions:
   contents: write
 concurrency:
