@@ -343,7 +343,8 @@ def build(history_paths=(), online=True):
         sym = t.rsplit('.', 1)[0] if '.' in t and cc != 'US' else t  # exchange suffix off; US class shares (BRK.B) keep theirs
         aid = f'EQ:{mic}:{sym}'
         if aid in assets: al(t, aid); return aid
-        add(aid, **{'class': 'fund' if m['instrumentType'] != 'EQUITY' else 'equity', 'name': smart_title(m.get('shortName') or off) if not m.get('longName') else smart_title(off),
+        disp = smart_title(off) if m.get('longName') and len(smart_title(off)) <= 32 else smart_title(m.get('shortName') or off)
+        add(aid, **{'class': 'fund' if m['instrumentType'] != 'EQUITY' else 'equity', 'name': disp,
                     'official': off, 'names': [m['shortName']] if m.get('shortName') and m.get('shortName') != off else [], 'sym': sym, 'mic': mic, 'px': t,
                     'country': cc if mic != 'OTCM' else None, 'currency': m.get('currency'), 'geo': {'la': la, 'lo': lo, 'src': 'listing-venue', 'city': city} if la is not None else None,
                     'verify': {'method': 'yahoo-security-record', 'at': now}})
@@ -372,7 +373,7 @@ def build(history_paths=(), online=True):
         if CHECKED.get(y, ('',))[0] == m['n']: a['names'] = sorted(set(a['names']) | {m['n']}); a['checked'] = CHECKED[y][1]
         if not R.same_company(m['n'], a.get('official') or a['name']) and m['n'] not in a['names'] and not any(R.same_company(m['n'], x) for x in a['names']):
             conflicts.append({'globe': m['s'], 'name': m['n'], 'issue': 'name-mismatch', 'yahoo': y, 'official': a.get('official')}); continue
-        a['geo'] = mgeo(m['s']); a['names'] = sorted(set(a['names']) | {m['n']})
+        a['geo'] = mgeo(m['s']); a['names'] = sorted(set(a['names']) | {m['n']}); a['name'] = m['n']  # the Globe's curated display name
         if ISO.get(m.get('k')): a['country'] = ISO[m['k']]
         if m.get('site'): a['site'] = m['site']
         if y != m['s']: a.setdefault('globe_symbol', m['s'])
@@ -434,13 +435,24 @@ def build(history_paths=(), online=True):
 VENUE_CC = {v[0]: v[4] for v in VENUES.values()}
 VENUE_CC.update({'XNYS': 'US', 'XNAS': 'US', 'BATS': 'US', 'OTCM': 'US', 'XTXS': 'US'})
 
+SMALL = {'THE', 'AND', 'OF', 'DE', 'DO', 'DA', 'DEL', 'LA', 'EL', 'LE', 'DES', 'FOR', 'IN', 'ON', 'Y', 'E', 'ET', 'DI'}
+LEGAL = r'(,?\s+(Inc\.?|Incorporated|Corp\.?|Corporation|Co\.?|Company|Ltd\.?|Limited|Plc|PLC|p\.l\.c\.|L\.?P\.?|LLC|Holdings?,? Inc\.?|N\.?V\.?|S\.?A\.?B?\.?( de C\.?V\.?)?|S\.?p\.?A\.?|AG|SE|ASA|A/S|AB|Oyj|Sociedad An[oó]nima|/[A-Z]{2}/?|/))+$'
+
 def smart_title(n):
+    """Readable display name from an official name: SEC capitals become "Procter & Gamble", acronyms (YPF, BP, IBM) stay, legal forms go."""
     n = re.sub(r'\s+', ' ', str(n or '')).strip()
-    if n.isupper() or n.islower():
-        keep = {'ASA', 'ADR', 'NV', 'SA', 'AG', 'SE', 'PLC', 'LLC', 'LP', 'ETF', 'REIT', 'USA', 'US', 'UK', 'II', 'III', 'IBM', 'AT&T', 'NVIDIA', 'AMD', 'HSBC', 'BP', 'UBS', 'ING', 'ASML', 'SAP'}
-        n = ' '.join(w if w in keep else w.capitalize() for w in n.split())
-    n = re.sub(r'[,]?\s+(Inc\.?|Corp\.?|Corporation|Co\.?|Ltd\.?|Limited|Plc|PLC|Holdings,? Inc\.?|N\.?V\.?|S\.?A\.?|AG|SE|/[A-Z]{2}/?|/)$', '', n).strip(' ,/')
-    return n
+    n = re.sub(r'\s*/[A-Za-z]{0,3}/?\s*$', '', n)
+    letters = [c for c in n if c.isalpha()]
+    if letters and sum(c.isupper() for c in letters) / len(letters) > .6:
+        out = []
+        for w in n.split(' '):
+            core = re.sub(r'[^A-Za-z]', '', w)
+            if w.upper() in SMALL and out: out.append(w.lower())
+            elif '&' in w or (len(core) <= 3 and core.isupper() and not re.search(r'[AEIOU]', core) and w.upper() not in ('CO', 'CO.', 'INC', 'LTD')): out.append(w)
+            else: out.append('-'.join(p[:1].upper() + p[1:].lower() for p in w.split('-')))
+        n = ' '.join(out)
+    n = re.sub(LEGAL, '', n, flags=re.I).strip(' ,/-&')
+    return n or str(n)
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(); ap.add_argument('--history', action='append', default=[]); ap.add_argument('--offline', action='store_true')

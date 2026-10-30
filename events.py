@@ -25,7 +25,7 @@ FAMILIES = [
     ('energy-supply', r'\b(opec|oil (output|production|supply)|pipeline|refinery|lng|crude (stocks|inventories)|output cuts?)\b'),
     ('capital', r'\b(ipo|listing|share (sale|offering)|buyback|dividend|bond (sale|issue)|raises? \$|funding round|capital raise)\b'),
     ('crypto', r'\b(bitcoin|ethereum|crypto\w*|stablecoins?|token|etf inflows)\b'),
-    ('labor', r'\b(strike|layoffs?|job cuts|union|workers)\b'),
+    ('labor', r'\b(workers.? strike|on strike|strike action|walkouts?|layoffs?|job cuts|unions?|buyouts? to|voluntary (exit|redundanc)\w*|staff cuts|headcount)\b'),
     ('geopolitics', r'\b(war|attack|missile|ceasefire|election|coup|protest)\b'),
 ]
 FAMILIES = [(f, re.compile(p, re.I)) for f, p in FAMILIES]
@@ -100,8 +100,9 @@ def threads(events, drawable=lambda a: True, max_per_asset=None):
     """[(earlier, later, asset id)] for events naming the same canonical asset, same family, 1-96 h apart; each event links to the next one only."""
     by = {}
     for e in events:
+        if e.get('fam') in (None, 'other'): continue
         for a in e.get('assets', []):
-            if a.get('id') and drawable(a): by.setdefault((a['id'], e['fam']), {})[e['id']] = e
+            if a.get('id') and a.get('src', 'impact') == 'impact' and drawable(a): by.setdefault((a['id'], e['fam']), {})[e['id']] = e
     out = []
     for (aid, fam), evs in by.items():
         evs = sorted(evs.values(), key=_t)
