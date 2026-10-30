@@ -121,6 +121,11 @@ def judge(series, ledger, now):
         if not end or end[0][0] > pt + MAX_AGE.total_seconds() or end[0][0] == after[0][0]:
             continue
         move = (end[0][1] / after[0][1] - 1) * 100
+        if abs(move) > 50:  # a price-series break (unit change such as pence -> pounds, split, wrong instrument), never a real 24 h move
+            c.update(res='void', why='price series break (|move| > 50%)', base=[int(after[0][0] // 60), after[0][1]], end=[int(end[0][0] // 60), end[0][1]],
+                     judged=now.strftime('%Y-%m-%dT%H:%M:%SZ'))
+            judged += 1
+            continue
         c.update(move=round(move, 2), res='flat' if abs(move) < FLAT else 'hit' if (move > 0) == (c['dir'] == 'up') else 'miss',
                  base=[int(after[0][0] // 60), after[0][1]], end=[int(end[0][0] // 60), end[0][1]], judged=now.strftime('%Y-%m-%dT%H:%M:%SZ'))
         judged += 1

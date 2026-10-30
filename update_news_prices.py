@@ -11,6 +11,9 @@ G = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'globe')
 UA = {'User-Agent': 'Mozilla/5.0'}
 CRYPTO = ('-USD',)
 
+MINOR = {'GBp': ('GBP', .01), 'GBX': ('GBP', .01), 'ZAc': ('ZAR', .01), 'USX': ('USD', .01), 'ILA': ('ILS', .01), 'KWF': ('KWD', .001)}
+CUR = {}
+
 def fetch(sym):
     for i in range(2):
         try:
@@ -19,7 +22,9 @@ def fetch(sym):
             c = [x for x in r['indicators']['quote'][0]['close'] if x is not None]
             live = r['meta'].get('regularMarketPrice')
             if live: c[-1] = live
-            if len(c) >= 6 and c[-1]: return c
+            cur = r['meta'].get('currency')
+            if cur in MINOR: cur, k = MINOR[cur]; c = [x * k for x in c]  # pence/cents -> main currency
+            if len(c) >= 6 and c[-1]: CUR[sym] = cur; return c
         except Exception:
             time.sleep(1 + i)
     return None
@@ -86,7 +91,7 @@ def main():
             out[t] = {'s': t, 'n': want[t], 't': 'rate', 'u': 'bp', 'p': round(c[-1], 4), 'd': round((c[-1] - c[-2]) * 100, 1), 'w': round((c[-1] - c[-6]) * 100, 1), 'sp': [round(x, 4) for x in c[-22:]]}
             continue
         out[t] = {'s': t, 'n': want[t], **({'sector': True} if t in sector_syms else {}), **({'g': 'Index', 'cc': 'us'} if t in EXTRA_INDICES else {}), 't': 'crypto' if t.endswith(CRYPTO) else 'fx' if t.endswith('=X') else 'stocks',
-                  'p': round(c[-1], 6), 'd': round((c[-1] / c[-2] - 1) * 100, 2), 'w': round((c[-1] / c[-6] - 1) * 100, 2), 'sp': [round(x, 6) for x in c[-22:]]}
+                  **({'cur': CUR[t]} if CUR.get(t) else {}), 'p': round(c[-1], 6), 'd': round((c[-1] / c[-2] - 1) * 100, 2), 'w': round((c[-1] / c[-6] - 1) * 100, 2), 'sp': [round(x, 6) for x in c[-22:]]}
     print(f'news prices: {len([t for t in syms if t in out])}/{len(syms)} tickers')
     doc = json.dumps({'asof': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'), 'assets': out}, separators=(',', ':'), ensure_ascii=False)
     for d in (G, G.replace(os.sep + 'assets' + os.sep, os.sep + 'docs' + os.sep + 'assets' + os.sep)):
