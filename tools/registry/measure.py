@@ -61,11 +61,19 @@ def stats(stories, reg):
             C['edges'] += len(lst)
             dirs = [x for x in lst[1:] if (x[1][0] if k == 'a' else x[1]) and ((x[1][0] if k == 'a' else x[1]) or {}).get('direction') in ('up', 'down')]
             if len(lst) >= 2 and dirs: C['ripple'] += 1
+            # Globe-distinct: endpoints in different ~6-degree cells (the page draws one line per start/end cell pair)
+            cell = lambda la, lo: (round(la * 3.14159 / 180 * 9), round(lo * 3.14159 / 180 * 9))
+            pl = s.get('location') or {}
+            ends = {cell(v[1]['la'], v[1]['lo']) if k == 'a' else cell(MK[sym]['la'], MK[sym]['lo']) for sym, v in lst}
+            if pl.get('lat') is not None: ends.discard(cell(pl['lat'], pl['lon']))
+            C['distinct_lines'] += len(ends)
+            if len(ends) >= 2: C['ripple_geo'] += 1
             for sym, v in lst:
                 syms.add(sym)
                 cls[(v[1]['c'] if k == 'a' else {'stocks': 'equity/index', 'fx': 'fx', 'cmd': 'commodity', 'crypto': 'crypto'}.get(MK[sym]['t']))] += 1
         rec_b = {'id': s['id'], 'at': s['published_at'], 'fam': E.family(s.get('headline'), s.get('category')), 'cluster': s['id'], 'assets': [{'id': x} for x, _ in b]}
-        rec_a = {**rec_b, 'assets': [{'id': x} for x in a]}
+        rec_b['assets'] = [{'id': x, 'src': 'impact' if i is not None else 'entity'} for x, i in b]
+        rec_a = {**rec_b, 'assets': [{'id': x, 'src': 'impact' if v[0] is not None else 'entity'} for x, v in a.items()]}
         b_ev.append(rec_b); a_ev.append(rec_a)
         # what the registry did with each ticker the Globe matched before
         for sym, i in b:
@@ -75,10 +83,11 @@ def stats(stories, reg):
         for i in (s.get('impacts') or []) + [dict(e, kind='company') for e in s.get('entities') or []]:
             r = copy.deepcopy(i); R.stamp(r, reg)
             if r.get('unresolved'):
-                reasons[r['unresolved'].split(':')[0]] += 1
-                if i.get('ticker'): unres_arts[R.norm_ticker(i['ticker'])].add(s['id'])
-            elif not r['asset'].get('la') is not None:
-                reasons['verified-no-place'] += 1
+                why = r['unresolved'].split(':')[0]; reasons[why] += 1
+                if why in ('unknown-ticker', 'name-mismatch', 'ambiguous-ticker', 'ticker-without-name'): unres_arts[(R.norm_ticker(i['ticker']), i.get('name'), why)].add(s['id'])
+                elif why in ('no-ticker', 'unknown-name', 'ambiguous-name') and i.get('kind') in ('company', 'asset'): unres_arts[('(no ticker)', i.get('name'), why)].add(s['id'])
+            elif r['asset'].get('la') is None:
+                reasons['verified-no-place'] += 1; unres_arts[(r['asset']['id'], r['asset']['n'], 'verified-no-place')].add(s['id'])
     tb, ta = E.threads(b_ev), E.threads(a_ev)
     loose_b = len(E.threads([{**e, 'fam': 'x'} for e in b_ev])); loose_a = len(E.threads([{**e, 'fam': 'x'} for e in a_ev]))
     return {'stories': len(stories), 'tickers_discovered': len(tick),
@@ -92,7 +101,7 @@ if __name__ == '__main__':
     st = json.load(open(a.stories)); st = st if isinstance(st, list) else st['stories']
     res = stats(st, R.Registry())
     for k in ('before', 'after'):
-        x = res[k]; print(k.upper(), {kk: x.get(kk) for kk in ('articles', 'drawable', '2plus', 'ripple', 'edges', 'assets', 'countries', 'story_threads', 'threads_any_family')},
+        x = res[k]; print(k.upper(), {kk: x.get(kk) for kk in ('articles', 'drawable', '2plus', 'ripple', 'ripple_geo', 'edges', 'distinct_lines', 'assets', 'countries', 'story_threads', 'threads_any_family')},
                                  f"{100 * x.get('drawable', 0) / max(1, x['articles']):.1f}% drawable", x['classes'])
     print('tickers discovered', res['tickers_discovered']); print('before-matches the registry rejects:', len(res['before_matches_rejected']))
     for w in res['before_matches_rejected'][:25]: print('  ', w)
