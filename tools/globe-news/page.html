@@ -502,13 +502,13 @@ h1 span{color:var(--fg-3)}
 <div class="layers" id="layers">
   <div class="lay-pop glass" id="lay-pop" role="group" aria-label="Map layers" hidden>
     <div id="lay-switches">
-      <button type="button" class="lay-sw" id="sw-conn" role="switch" aria-checked="true"><span><b>News &amp; Markets</b><small id="connection-count"></small></span><i class="tg"></i></button>
-      <button type="button" class="lay-sw" id="sw-rel" role="switch" aria-checked="false"><span><b>Market relationships</b><small>Assets moving strongly together today</small></span><i class="tg"></i></button>
-      <button type="button" class="lay-sw" id="sw-story" role="switch" aria-checked="false"><span><b>Story timeline</b><small>Earlier → later articles on the same asset</small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-conn" role="switch" aria-checked="true"><span><b>News impact</b><small id="connection-count"></small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-rel" role="switch" aria-checked="false"><span><b>Sector spread</b><small>Same-sector companies moving the same way</small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-story" role="switch" aria-checked="false"><span><b>Story threads</b><small>Earlier → later articles on the same asset</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-up" role="switch" aria-checked="false"><span><b>Upcoming</b><small id="up-sub">Releases in the next 7 days</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-mkt" role="switch" aria-checked="false"><span><b>Market hours</b><small>Night shade, open exchanges</small></span><i class="tg"></i></button>
     </div>
-    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span style="color:rgb(34,197,94)">↑ Up</span><span style="color:rgb(240,68,68)">↓ Down</span></div>
+    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span style="color:rgb(255,122,26)">━ Main impact</span><span style="color:rgb(255,150,64)">─ Ripple</span><span style="color:rgb(255,190,110)">┄ Sector</span></div>
   </div>
   <button type="button" class="lay-btn glass" id="lay-btn" aria-expanded="false" aria-controls="lay-pop" aria-haspopup="true" aria-label="Layers, 1 on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>Layers <b id="lay-n">1</b></button>
 </div>
@@ -782,23 +782,26 @@ function assetTarget(a) {
   return Number.isFinite(la) && Number.isFinite(lo) ? {phi:la*rad,lam:lo*rad} : null;
 }
 let network = [], arcHits = [], arcHover = null, pillRects = [];
-// ---- Connections: one ranked system for every line on the globe. Real data only; the default view is curated, detail comes from interaction.
-//  News & Markets (on)       article → affected asset (impacts) and article → named asset (entities with a ticker)
-//  Market relationships (off) assets with strong moves in the same direction today
-//  Story timeline (off)      earlier → later article about the same asset (always shown for a selected article)
-// Every line gets a tier: 1 primary (a few, brightest), 2 secondary, 3 background. Hovering or selecting reveals more and fades the rest.
-// Homepage: only orange article → affected-asset lines (no trade routes, no blue lines). Globe page: green up, red down, orange neutral/story.
+// ---- Connections: one orange hierarchy, built only from relationships we can defend. Real data only; nothing is drawn to fill space.
+//  Main impact   (solid, bright)       article → its primary affected asset (the article's own first impact).
+//  Ripple        (solid, thinner)      the same article → another asset it explicitly affects (impacts only, never a passing mention),
+//                                      ranked by confidence, directness, importance of the asset and size of the move; weak ones are dropped.
+//  Sector spread (short dash, amber)   primary company → companies in the SAME SEC industry (SIC code) that moved the same way ≥1% today.
+//                                      Only the same 4-digit SIC qualifies (relevance 1.0); industry groups and sectors are too broad.
+//  Story thread  (faintest)            earlier → later article on the same company AND the same event family (earnings → guidance → analysts…).
+// Default: main lines + only the strongest ripple. Clicking an event or an asset reveals the rest; unrelated lines fade to ~15 %.
+// All lines are orange/amber; green and red appear only in price labels and cards.
 const QS = new URLSearchParams(location.search);
-let RELON = QS.get('rel') === '1', STORYON = QS.get('story') === '1';
-const ORANGE = '255,122,26';
-const dirCol = dir => EMBED ? ORANGE : dir === 'up' ? IMPACT_COLOR.up : dir === 'down' ? IMPACT_COLOR.down : ORANGE;
-// [alpha, width] per tier (1, 2, 3)
-const STYLE = EMBED ? { news: [[.85, 1.6], [.55, 1.05], [.4, .75]] } : { news: [[.9, 1.8], [.5, 1.15], [.28, .85]] };
-const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { news: ph ? 8 : 12, primary: ph ? 3 : 4 } : { news: ph ? 12 : 20, primary: ph ? 4 : 5 }; };
-const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells: arcs that start and end in the same cells count as one
-function strokeArc(pts, col, alpha, width, glow, phase) {
-  if (EMBED) { width = 1.1; glow = false; }  // homepage: all lines equally thin
-  ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha.toFixed(3)})`; ctx.lineCap = 'round';
+let SECTORON = QS.get('sector') === '1', STORYON = QS.get('story') === '1';
+const MAIN = '255,122,26', RIPPLE = '255,150,64', SECTOR = '255,190,110';
+let IND = {}; fetch('industries.json').then(r => r.json()).then(d => { IND = d.by || {}; updateNetwork(); }).catch(() => {});
+// Canonical identity: the registry is the single source of truth. An impact asset is usable only when the robot stamped it with a
+// registry id (assetForImpact); a Globe stock can be a sector peer only when industries.json (built from the registry) lists it.
+const trusted = a => !!a && !!(a.id || (IND[a.s] && IND[a.s].id));
+const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { main: ph ? 5 : 8, ripple: ph ? 2 : 4 } : { main: ph ? 10 : 15, ripple: ph ? 5 : 10 }; };
+const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells
+function strokeArc(pts, col, alpha, width, glow, phase, dash) {
+  ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha.toFixed(3)})`; ctx.lineCap = 'round'; if (dash) ctx.setLineDash(dash);
   if (glow) { ctx.shadowColor = `rgba(${col},.55)`; ctx.shadowBlur = EMBED ? 6 : 8; }
   ctx.beginPath(); let pen = false; for (const [x, y, v] of pts) { if (!v) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } ctx.stroke(); ctx.restore();
   if (phase != null) { const q = pts[Math.round(phase * (pts.length - 1))]; if (q && q[2]) { ctx.fillStyle = `rgba(${col},${Math.min(1, alpha * 1.3).toFixed(3)})`; ctx.beginPath(); ctx.arc(q[0], q[1], glow ? 2 : 1.4, 0, 7); ctx.fill(); } }
@@ -810,70 +813,134 @@ function assetsNamed(s) {  // impacts and entities that map to a real asset with
   for (const e of s.entities || []) { const a = assetForImpact(e); if (a && !out.has(a.id)) out.set(a.id, { a, via: 'entity' }); }
   return [...out.values()];
 }
-function spread(items, keys, cap) {  // keep the biggest first, but no country more than `cap` times, so the lines reach every region
-  const n = {}; return items.filter(x => { const ks = keys(x).filter(Boolean); if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; });
+// --- relevance scores (0..1); a line is drawn only above its threshold ---
+const CONF = { high: 1, medium: .75, low: .4 };
+function rippleScore(i, a) {
+  const conf = CONF[i.confidence] ?? .6;                                             // stamped confidence (older articles: neutral .6)
+  const direct = i.kind === 'company' || i.kind === 'asset' ? 1 : i.kind === 'sector' ? .6 : .4;
+  const dir = i.direction === 'up' || i.direction === 'down' ? 1 : .3;               // mixed / unclear are weak evidence
+  const imp = a.g === 'Index' || a.t === 'fx' || a.t === 'cmd' || a.m ? 1 : .7;     // major market vs smaller asset
+  const mv = Math.min(1, Math.abs(a.d || 0) / 2);
+  return +(conf * .35 + direct * .2 + dir * .2 + imp * .1 + mv * .15).toFixed(3);
 }
-let newsAll = [], relLines = [], storyLines = [];
-function newsScore(article, asset, via) {  // importance, size of the move, freshness, direct impact vs mention, market-moving flag
-  const fresh = Math.max(0, 1 - (Date.now() - article.t) / 864e5);
-  return article.importance * 1.2 + Math.min(3, Math.abs(asset.d || 0)) * .6 + fresh + (via === 'impact' ? 1 : 0) + (article.flag ? .5 : 0);
+const RIPPLE_MIN = .62;
+function peerScore(a, p) {
+  const x = IND[a.s], y = IND[p.s];
+  if (!x || !y) return [0, null];
+  if (x.sic === y.sic) return [1, `same industry (${y.industry})`];
+  if (x.sic.slice(0, 3) === y.sic.slice(0, 3)) return [.75, `same industry group (SIC ${y.sic.slice(0, 3)}x)`];
+  return [0, null];
 }
-function storyPairs(list, max) {  // earlier → later article naming the same asset
-  const by = new Map(); for (const s of list) for (const { a } of assetsNamed(s)) (by.get(a.s) || by.set(a.s, []).get(a.s)).push(s);
-  const out = [], done = new Set();
-  for (const arts of by.values()) { arts.sort((x, y) => x.t - y.t);
-    for (let i = 1; i < arts.length && out.length < max; i++) { const a = arts[i - 1], b = arts[i], k = a.id + '>' + b.id; if (a === b || done.has(k) || geoKey(a) === geoKey(b)) continue; done.add(k); out.push({ a, b }); } }
+const PEER_MIN = 1;  // exact SEC industry only: the 3-digit group was too broad (e.g. search vs. enterprise software)
+let events = [], storyLines = [];
+function newsScore(article, asset) { const fresh = Math.max(0, 1 - (Date.now() - article.t) / 864e5); return article.importance * 1.2 + Math.min(3, Math.abs(asset.d || 0)) * .6 + fresh + (article.flag ? .5 : 0); }
+// Story threads come from the event archive (threads.json: same canonical affected asset + same event family, 1–96 h apart,
+// computed by the news robot over 30 days), not from the 160 articles loaded here. Ends that are not in the live feed are drawn
+// from the archive's own place.
+let THREADS = []; fetch('threads.json').then(r => r.json()).then(d => { THREADS = d.threads || []; updateNetwork(); }).catch(() => {});
+const assetBy = sym => MKT.by[sym] || Object.values(MKT.reg).find(a => a.s === sym) || null;
+const idOfSym = sym => (assetBy(sym) || {}).id || null;
+function archiveThreads(max, onlyId, focus) {
+  const byId = new Map(stories.map(s => [s.id, s])), out = [];
+  const end = x => byId.get(x.id) || (Number.isFinite(x.la) && Number.isFinite(x.lo) ? { id: x.id, headline: x.title || '', phi: x.la * rad, lam: x.lo * rad, t: Date.parse(x.at), location: { country: x.country } } : null);
+  for (const th of THREADS) {
+    if (out.length >= max) break;
+    const tb = Date.parse(th.b.at); if (!(play ? tb <= play.cur : Date.now() - tb <= winMin() * 60000)) continue;
+    if (onlyId && th.asset !== onlyId) continue;
+    if (focus && th.a.id !== focus.id && th.b.id !== focus.id) continue;
+    const a = end(th.a), b = end(th.b); if (!a || !b || geoKey(a) === geoKey(b)) continue;
+    out.push({ a, b, sym: th.asset, why: `same affected asset, same ${th.fam} story, ${Math.max(1, Math.round((tb - Date.parse(th.a.at)) / 36e5))} h later` });
+  }
   return out;
 }
-// A line counts as visible when most of it is on the front of the globe and it is long enough on screen to read (not a same-city blob).
 const cappedBy = cap => { const n = {}; return ks => { if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; }; };
-function onFront(pts) { const v = pts.filter(p => p[2]); if (!pts[0][2] || !pts.at(-1)[2] || v.length < pts.length * .92) return false;  // both ends on the visible face: no arcs disappearing into space
+function onFront(pts) { const v = pts.filter(p => p[2]); if (v.length < pts.length) return false;
+  if (pts[0][3] != null && (Math.min(pts[0][3], pts.at(-1)[3]) < .25 || Math.min(...pts.map(p => p[3])) < .12)) return false;  // ends clearly on the front, arc never skimming the horizon  // both ends and the whole arc on the visible face: never a line running into the horizon
   const a = v[0], b = v[v.length - 1], m = v[v.length >> 1]; return Math.hypot(a[0] - b[0], a[1] - b[1]) + Math.hypot(a[0] - m[0], a[1] - m[1]) > R * .1; }
 function updateNetwork() {
-  const B = BUDGET();
-  newsAll = [];
-  for (const article of shown) for (const { a: asset, via, impact } of assetsNamed(article)) {
-    const target = assetTarget(asset); if (!target) continue;
-    const dir = impact ? impact.direction : asset.d > 0 ? 'up' : asset.d < 0 ? 'down' : 'mixed';
-    newsAll.push({ article, impact, asset, target, via, dir, score: newsScore(article, asset, via) });
+  events = [];
+  for (const article of shown) {
+    const imp = impactsOf(article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && trusted(x.a) && assetTarget(x.a));
+    const main = imp[0]; if (!main) continue;
+    const ripples = imp.slice(1).map(x => ({ a: x.a, impact: x.i, target: assetTarget(x.a), dir: x.i.direction, score: rippleScore(x.i, x.a) }))
+      .filter(r => r.score >= RIPPLE_MIN && r.a.s !== main.a.s).sort((x, y) => y.score - x.score).slice(0, 5)
+      .map(r => ({ ...r, why: `explicitly affected secondary asset (relevance ${r.score.toFixed(2)})` }));
+    const pa = main.a, sectors = pa.t === 'stocks' && Math.abs(pa.d || 0) >= 1 ? (MKT.all || [])
+      .filter(p => p.t === 'stocks' && p.s !== pa.s && trusted(p) && Number.isFinite(p.d) && Math.abs(p.d) >= 1 && Math.abs(p.d) < 30 && Math.sign(p.d) === Math.sign(pa.d) && assetTarget(p))
+      .map(p => { const [sc, why] = peerScore(pa, p); return { a: p, target: assetTarget(p), score: sc, why: why && `${why} + same-direction move ${p.d > 0 ? '+' : ''}${p.d.toFixed(1)}%` }; })
+      .filter(x => x.score >= PEER_MIN).sort((x, y) => y.score - x.score || Math.abs(y.a.d) - Math.abs(x.a.d)).slice(0, 3) : [];
+    events.push({ article, impact: main.i, asset: main.a, target: assetTarget(main.a), dir: main.i.direction, ripples, sectors, score: newsScore(article, main.a) });
   }
-  newsAll.sort((a, b) => b.score - a.score);
-  const seen = new Set(), uniq = newsAll.filter(e => { const k = geoKey(e.article) + '>' + geoKey(e.target); if (seen.has(k)) return false; seen.add(k); return true; });
-  network = uniq;
-  // Market relationships: only strong moves (≥2%), each joined to the next biggest move in the same direction
-  const m = new Map(); for (const e of newsAll) if (Math.abs(e.asset.d) >= 2) m.set(e.asset.s, e);
-  const big = [...m.values()].sort((x, y) => Math.abs(y.asset.d) - Math.abs(x.asset.d)); relLines = [];
-  for (const sg of [1, -1]) { const g = big.filter(e => Math.sign(e.asset.d) === sg).slice(0, 6); for (let i = 1; i < g.length; i++) if (geoKey(g[i - 1].target) !== geoKey(g[i].target)) relLines.push({ a: g[i - 1].target, b: g[i].target, dir: sg > 0 ? 'up' : 'down' }); }
-  storyLines = storyPairs([...shown].sort(sortTop).slice(0, 80), 12);
-  const count = $('connection-count'); if (count) count.textContent = `Top connections of ${newsAll.length} · ${WLABEL[F.win]}`;
+  events.sort((a, b) => b.score - a.score);
+  const seen = new Set(); events = events.filter(e => { const k = geoKey(e.article) + '>' + geoKey(e.target); if (seen.has(k)) return false; seen.add(k); return true; });
+  network = events;
+  storyLines = archiveThreads(12);
+  const count = $('connection-count'); if (count) count.textContent = `${events.length} events · ${WLABEL[F.win]}`;
+  if (!EMBED && view.k === 'asset') render();
 }
-// Draw every line for this frame. focus: the hovered or selected article; country: the selected country.
+const selAsset = () => !EMBED && view.k === 'asset' ? view.id : null;
+const touches_ = (e, sym) => e.asset.s === sym || e.ripples.some(r => r.a.s === sym) || e.sectors.some(s => s.a.s === sym);
 function drawConnections(t, focus, country) {
-  arcHits = []; pillRects = []; let visibleArcs = 0; const B = BUDGET();
-  const iso = country && ISO[country.name], fiso = focus && ISO[focus.location.country], fade = focus || iso ? .25 : 1;
+  arcHits = []; pillRects = []; lineWhy = []; let visibleArcs = 0; const B = BUDGET(), sym = selAsset();
+  const iso = country && ISO[country.name], sel = !!(focus || iso || sym), fade = sel ? .15 : 1;
   const ph = k => reduce ? null : (t / 4200 + k * .17) % 1;
-  if (!EMBED && RELON) relLines.forEach((l, k) => strokeArc(arcPts(l.a, l.b, 28), dirCol(l.dir), .5 * fade, 1.1, false, ph(k)));
-  if (!EMBED && STORYON) storyLines.forEach(({ a, b }, k) => strokeArc(arcPts(a, b, 28), ORANGE, .45 * fade, 1.1, false, ph(k)));
-  if (focus) storyPairs([...shown].filter(s => s === focus || assetsNamed(s).some(x => assetsNamed(focus).some(y => y.a === x.a))), 6)
-    .filter(p => p.a === focus || p.b === focus).forEach(({ a, b }, k) => strokeArc(arcPts(a, b, 28), ORANGE, .6, 1.3, false, ph(k)));
-  // news: the curated set, plus every line of the focused article (including ones hidden by default) or of the selected country
-  const S = STYLE.news, extra = focus ? newsAll.filter(e => e.article === focus) : iso ? newsAll.filter(e => e.article.location.country === country.name).slice(0, 10) : [];
-  const xs = new Set(extra.map(e => e.article.id + e.asset.s)), list = (CONNON || focus || iso ? network : []).filter(e => !xs.has(e.article.id + e.asset.s));
-  const draw = (e, i, on, points = arcPts(e.article, e.target, 32)) => {
-    const col = dirCol(e.dir), tier = on ? 1 : e.tier, [al, w] = S[tier - 1];
-    if (strokeArc(points, col, on ? al : al * fade, on ? w + .2 : w, tier === 1 && !(fade < 1 && !on), tier === 1 ? ph(i) : null)) visibleArcs++;
-    if (on && focus && !EMBED && e.impact) {
-      const seen = points.filter(p => p[2] && p[0] > globeBox.left + 34 && p[0] < globeBox.right - 34 && p[1] > globeBox.top + 30 && p[1] < globeBox.bottom - 30);
-      if (seen.length > 2) { const m = seen[Math.floor(seen.length / 2)], d = e.asset.d, nm = e.asset.n.length > 17 ? e.asset.n.slice(0, 16) + '…' : e.asset.n, pt = Number.isFinite(d) ? `${d > 0 ? '↑' : d < 0 ? '↓' : '↔'} ${e.asset.u === 'bp' ? Math.abs(d).toFixed(1) + ' bp' : Math.abs(d).toFixed(2) + '%'}` : IMPACT_ARROW[e.impact.direction]; ctx.font = '650 12px Inter,sans-serif'; const w1 = ctx.measureText(nm).width, w2 = ctx.measureText(pt).width, W = w1 + w2 + 32, H = 26; let x = m[0] - W / 2, y = m[1] - H / 2; for (let n = 0; n < 8 && pillRects.some(r => x < r.x + r.w + 4 && x + W + 4 > r.x && y < r.y + r.h + 4 && y + H + 4 > r.y); n++) y += H + 4;
-        pillRects.push({ x, y, w: W, h: H, nm, pt, w1, d, edge: { ...e, points, pill: { x, y, w: W, h: H } } }); }
-    }
-    if (!EMBED && e.impact) arcHits.push({ ...e, points });
+  const related = e => focus ? e.article === focus : sym ? touches_(e, sym) : iso ? e.article.location.country === country.name : false;
+  const mains = [], cap = cappedBy(EMBED ? 2 : 3);
+  if (CONNON || sel) for (const e of events) { if (mains.length >= B.main) break; if (related(e)) continue; const pts = arcPts(e.article, e.target, 32); if (onFront(pts) && cap(['a' + e.article.location.country, 't' + geoKey(e.target)])) mains.push([e, pts]); }
+  const ripples = [];  // default: only the single strongest ripple per event, and only for the strongest events
+  if (CONNON || sel) for (const [e] of mains) { if (ripples.length >= B.ripple) break; const r = e.ripples[0]; if (!r) continue; const pts = arcPts(e.article, r.target, 28); if (onFront(pts)) ripples.push([r, pts]); }
+  if (!EMBED && SECTORON) mains.forEach(([e]) => e.sectors.forEach(s => { const pts = arcPts(e.target, s.target, 26); if (onFront(pts)) strokeArc(pts, SECTOR, .42 * fade, 1, false, null, [3, 4]); }));
+  if (!EMBED && STORYON) storyLines.forEach(({ a, b }) => { const pts = arcPts(a, b, 28); if (onFront(pts)) strokeArc(pts, MAIN, .2 * fade, .9, false, null); });
+  const label = (e, points, a, sel2) => {  // price label (green/red live here, not in the line); clicking it selects the asset
+    if (EMBED || !sel) return;
+    const seen = points.filter(p => p[2] && p[0] > globeBox.left + 34 && p[0] < globeBox.right - 34 && p[1] > globeBox.top + 30 && p[1] < globeBox.bottom - 30);
+    if (seen.length < 3) return;
+    const m = seen[sel2 ? seen.length - 1 : Math.floor(seen.length / 2)], d = a.d, nm = a.n.length > 17 ? a.n.slice(0, 16) + '…' : a.n, pt = Number.isFinite(d) ? `${d > 0 ? '↑' : d < 0 ? '↓' : '↔'} ${a.u === 'bp' ? Math.abs(d).toFixed(1) + ' bp' : Math.abs(d).toFixed(2) + '%'}` : '↔';
+    ctx.font = '650 12px Inter,sans-serif'; const w1 = ctx.measureText(nm).width, w2 = ctx.measureText(pt).width, W = w1 + w2 + 32, H = 26; let x = m[0] - W / 2, y = m[1] - H / 2;
+    for (let n = 0; n < 8 && pillRects.some(r => x < r.x + r.w + 4 && x + W + 4 > r.x && y < r.y + r.h + 4 && y + H + 4 > r.y); n++) y += H + 4;
+    pillRects.push({ x, y, w: W, h: H, nm, pt, w1, d, asset: a, edge: { ...e, asset: a, points, pill: { x, y, w: W, h: H } } });
   };
-  const vis = [], ncap = cappedBy(EMBED ? 2 : 3); for (const e of list) { if (vis.length >= B.news) break; if (EMBED && e.via !== 'impact') continue; const pts = arcPts(e.article, e.target, 32); if (onFront(pts) && ncap(['a' + e.article.location.country, 't' + geoKey(e.target)])) vis.push([e, pts]); }
-  const sec = B.primary + Math.ceil((vis.length - B.primary) * .4); vis.forEach(([e], i) => e.tier = i < B.primary ? 1 : i < sec ? 2 : 3);
-  for (const tier of [3, 2, 1]) vis.forEach(([e, pts], i) => { if (e.tier === tier) draw(e, i, false, pts); });
-  extra.forEach((e, i) => draw(e, i, true));
-  cv.dataset.arcCount = String(visibleArcs);
+  ripples.forEach(([r, pts]) => { if (strokeArc(pts, RIPPLE, (EMBED ? .32 : .38) * fade, EMBED ? .8 : .95, false, null)) visibleArcs++; });
+  mains.forEach(([e, pts], i) => {
+    const top = !EMBED && !sel && i < 3;
+    if (strokeArc(pts, MAIN, (EMBED ? .85 : top ? .95 : .7) * fade, EMBED ? 1.4 : top ? 2 : 1.5, top, top ? ph(i) : null)) visibleArcs++;
+    if (!EMBED && e.impact) arcHits.push({ ...e, points: pts });
+  });
+  // the selection (an event or an asset): its main line brightest, then ripples, sector spread and story threads, each with its reason
+  const chosen = focus ? events.filter(related).slice(0, 1) : sym ? events.filter(related).slice(0, 8) : iso ? events.filter(related).slice(0, 8) : [];
+  for (const e of chosen) {
+    const pts = arcPts(e.article, e.target, 32), isMain = !sym || e.asset.s === sym;
+    if (focus || sym) {
+      e.sectors.filter(s => !sym || e.asset.s === sym || s.a.s === sym).forEach(s => { const sp = arcPts(e.target, s.target, 26); if (!onFront(sp)) return; strokeArc(sp, SECTOR, .7, 1.2, false, null, [3, 4]); label(e, sp, s.a, true); lineWhy.push(['Sector spread', `${e.asset.n} → ${s.a.n}`, s.why]); });
+      e.ripples.filter(r => !sym || e.asset.s === sym || r.a.s === sym).forEach((r, k) => { const rp = arcPts(e.article, r.target, 28); if (!onFront(rp)) return; strokeArc(rp, RIPPLE, .75, 1.3, false, ph(k)); label(e, rp, r.a); lineWhy.push(['Ripple', `${e.article.headline.slice(0, 48)}… → ${r.a.n}`, r.why]); if (!EMBED) arcHits.push({ ...e, impact: r.impact, asset: r.a, target: r.target, points: rp }); });
+    }
+    if (isMain && onFront(pts)) { if (strokeArc(pts, MAIN, 1, 2.4, true, ph(0))) visibleArcs++; label(e, pts, e.asset); lineWhy.push(['Main impact', `${e.article.headline.slice(0, 48)}… → ${e.asset.s}`, 'primary affected asset of the article']); if (!EMBED && e.impact) arcHits.push({ ...e, points: pts }); }
+  }
+  if (focus || sym) archiveThreads(6, sym ? idOfSym(sym) : null, sym ? null : focus)
+    .forEach(({ a, b, why }) => { const sp = arcPts(a, b, 28); if (!onFront(sp)) return; strokeArc(sp, MAIN, .3, 1, false, null); lineWhy.push(['Story thread', `${a.headline.slice(0, 30)}… → ${b.headline.slice(0, 30)}…`, why]); });
+  if (sym) { const a = assetBy(sym), tg = a && assetTarget(a); if (tg) { const [x, y, z] = proj(tg.phi, tg.lam); if (z > 0) {  // contextual asset marker, only while selected
+    ctx.save(); ctx.strokeStyle = 'rgba(255,122,26,.95)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 9, 0, 7); ctx.stroke(); ctx.fillStyle = 'rgba(255,122,26,.25)'; ctx.fill(); ctx.restore(); } } }
+  cv.dataset.arcCount = String(visibleArcs); cv.dataset.why = JSON.stringify(lineWhy);
+}
+let lineWhy = [];
+function selectAsset(sym) {
+  if (EMBED || !assetBy(sym)) return false;
+  sel = null; selCountry = null; go({ k: 'asset', id: sym });
+  const tg = assetTarget(assetBy(sym)); if (tg) flyTo(tg.lam / rad - 20, Math.max(-30, Math.min(40, tg.phi / rad - 5)), Math.max(1, Math.min(Z, 1.4)));
+  return true;
+}
+function assetPanel(sym) {
+  const a = assetBy(sym); if (!a) return '<div class="empty">This asset is not in today’s price data.</div>';
+  const rel = events.filter(e => touches_(e, sym)), arts = [...new Map(shown.filter(s => impactsOf(s).some(i => assetForImpact(i)?.s === sym) || (s.entities || []).some(x => (x.ticker || '').toUpperCase() === sym)).map(s => [s.id, s])).values()].sort(sortTop);
+  const imps = arts.flatMap(s => impactsOf(s).filter(i => assetForImpact(i)?.s === sym && i.why).map(i => ({ s, i }))).slice(0, 4);
+  const peers = (MKT.all || []).filter(p => p.s !== sym && p.t === 'stocks' && Number.isFinite(p.d)).map(p => [p, peerScore(a, p)]).filter(([, [sc]]) => sc >= PEER_MIN).sort((x, y) => y[1][0] - x[1][0] || Math.abs(y[0].d) - Math.abs(x[0].d)).slice(0, 5);
+  return `<button class="back" data-back>← Back</button><div class="eyebrow">Asset</div><h2>${esc(a.n)}</h2>
+    <div class="meta"><b>${esc(a.s.replace(/-USD$/, ''))}</b> · ${esc(money(a))} ${Number.isFinite(a.d) ? pctPill(a.d) : ''}${IND[sym] ? ` · ${esc(IND[sym].industry)}` : ''}</div>
+    <div class="stats"><div><b>${arts.length}</b>${arts.length === 1 ? 'article' : 'articles'}</div><div><b>${rel.length}</b>connections</div><div><b>${peers.length}</b>industry peers</div></div>
+    ${arts.length ? `<div class="sec-h">Latest articles affecting ${esc(a.n)}</div><div class="list">${arts.slice(0, 6).map(item).join('')}</div>` : '<div class="empty">No article in the current window names this asset.</div>'}
+    ${imps.length ? `<div class="sec-h">Recent Investedia implications</div>${imps.map(({ s, i }) => `<div class="why"><div class="eyebrow">${IMPACT_ARROW[i.direction] || ''} ${esc(i.direction)} · ${ago(s.t)}</div><p>${esc(i.why)}</p></div>`).join('')}` : ''}
+    ${peers.length ? `<div class="sec-h">Same industry today</div><div class="list">${peers.map(([p, [, why]]) => `<button class="item" data-asset="${esc(p.s)}"><span></span><span><h4>${esc(p.n)} ${pctPill(p.d)}</h4><span class="meta">${esc(why)}</span></span></button>`).join('')}</div>` : ''}
+    <p style="margin-top:18px"><a class="btn" href="../../asset.html?s=${encodeURIComponent(sym)}" style="color:var(--accent)">Open the full ${esc(a.s.replace(/-USD$/, ''))} page →</a></p>`;
 }
 function arcPick(x,y) { const pr=pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h); if(pr) return pr.edge; return arcHits.find(h=>h.points.some(p=>p[2] && Math.hypot(p[0]-x,p[1]-y)<10)); }
 function impactTargets(s) { return impactsOf(s).map(i => ({ impact: i, country: impactCountry(i) })).filter(x => x.country); }
@@ -905,8 +972,8 @@ const isOpenAt = (e, ms) => { const l = localMin(e, ms); return l.wd !== 'Sat' &
 let UPON = new URLSearchParams(location.search).get('upcoming') === '1', MKTON = new URLSearchParams(location.search).get('markets') === '1', CONNON = new URLSearchParams(location.search).get('connections') !== '0';
 function syncLayers() {
   $('sw-conn').setAttribute('aria-checked', String(CONNON)); $('sw-mkt').setAttribute('aria-checked', String(MKTON));
-  $('sw-up').setAttribute('aria-checked', String(UPON)); $('sw-rel').setAttribute('aria-checked', String(RELON)); $('sw-story').setAttribute('aria-checked', String(STORYON));
-  const n = [CONNON, RELON, STORYON, MKTON, UPON].filter(Boolean).length; $('lay-n').textContent = n; $('lay-btn').setAttribute('aria-label', `Layers, ${n} on`);
+  $('sw-up').setAttribute('aria-checked', String(UPON)); $('sw-rel').setAttribute('aria-checked', String(SECTORON)); $('sw-story').setAttribute('aria-checked', String(STORYON));
+  const n = [CONNON, SECTORON, STORYON, MKTON, UPON].filter(Boolean).length; $('lay-n').textContent = n; $('lay-btn').setAttribute('aria-label', `Layers, ${n} on`);
 }
 const CAPS = { US: [38.9, -77.04], GB: [51.5, -.13], JP: [35.68, 139.69], EU: [50.11, 8.68], AU: [-33.87, 151.21], CA: [45.42, -75.7], NZ: [-41.29, 174.78], CH: [46.95, 7.45], CN: [39.9, 116.4] };
 // High-impact releases in the next 7 days (assets/calendar-live.json), soonest first.
@@ -1201,6 +1268,7 @@ function tap(x, y, touch) {
   if (touch) hideHover();
   const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
   const ex = !EMBED && exPick(x, y); if (ex) { window.InvPeek?.open(ex.e.ix); return; }
+  const pr=!EMBED&&pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);if(pr&&pr.asset&&selectAsset(pr.asset.s)){arcHover=null;return;}  // a price label selects its asset
   const edge=arcPick(x,y);if(edge){arcHover=null;openStory(edge.article);return;}
 
   const d = pick(x, y, touch ? 26 : 16);
@@ -1318,7 +1386,7 @@ pbody.addEventListener('pointerover',e=>{const b=e.target.closest('[data-story]'
 pbody.addEventListener('pointerleave',()=>{arcHover=null;});
 pbody.addEventListener('change', e => { const t = e.target.closest('[data-topic]'); if (t) setTopic(t.dataset.c, t.dataset.topic, t.checked); });
 pbody.addEventListener('click', e => {
-  const asset=e.target.closest('[data-asset]');if(asset){window.InvPeek?.open(asset.dataset.asset);return;}
+  const asset=e.target.closest('[data-asset]');if(asset){if(!selectAsset(asset.dataset.asset))window.InvPeek?.open(asset.dataset.asset);return;}  // assets open their globe view
   const b = e.target.closest('[data-story],[data-back],[data-country],[data-follow]'); if (!b) return; if (b.tagName !== 'LABEL') e.preventDefault();
   if (b.dataset.follow) return toggleFollow(b.dataset.follow);
   if (b.dataset.back != null) return back();
@@ -1423,6 +1491,8 @@ function render() {
         ${groups.map(([l, g]) => `<div class="sec-h">${l}</div><div class="list">${g.map(item).join('')}</div>`).join('')}
         ${cos.length ? `<div class="sec-h">Companies & assets</div><div class="cos">${cos.map(x => entityChip(x, c.name)).join('')}</div>` : ''}`
       : `<div class="empty">${all.length ? `No ${F.cat === 'all' ? '' : esc(CAT[F.cat]).toLowerCase() + ' '}articles for ${esc(nm(c.name))} in ${WLABEL[F.win]}. ${all.length} in the last 7 days: switch the timeline to <b>7D</b>.` : `No financial or business articles for ${esc(nm(c.name))} right now. When live sources are connected, articles appear here as they are published. We never fill a country with invented news.`}</div>`}${noteHTML()}`;
+  } else if (view.k === 'asset') {
+    pbody.innerHTML = assetPanel(view.id);
   } else if (view.k === 'place') {
     const list = view.ids.map(i => byId[i]).sort(sortTop);
     pbody.innerHTML = `<button class="back" data-back>← Back</button><div class="eyebrow">${esc(nm(list[0].location.country))}</div><h2>${esc(list[0].location.place)}</h2><div class="stats"><div><b>${list.length}</b>articles here</div></div><div class="list">${list.map(item).join('')}</div>${noteHTML()}`;
@@ -1493,7 +1563,7 @@ function arcPts(a, b, n = 56, lift = 0) {  // lift > 0: a taller arc that rises 
     // so the line runs down onto the rim and carries on over it instead of ending in the sky.
     const phi = Math.asin(v[2]), lam = Math.atan2(v[1], v[0]), zS = proj(phi, lam, 1)[2], f = Math.max(0, Math.min(1, zS / .3));
     const h = 1 + Math.sin(Math.PI * k) * (lift ? lift * Math.min(1, .35 + om * .8) : Math.min(.15, .05 + om * .09) * f), p = proj(phi, lam, h);
-    out.push([p[0], p[1], zS > 0 || (lift > 0 && p[2] > -.2 && Math.hypot(p[0] - cx, p[1] - cy) > R)]);
+    out.push([p[0], p[1], zS > 0 || (lift > 0 && p[2] > -.2 && Math.hypot(p[0] - cx, p[1] - cy) > R), zS]);
   }
   return out;
 }
@@ -1762,7 +1832,7 @@ $('dock').onclick = e => {
 };
 pbody.addEventListener('click', e => { const u = e.target.closest('[data-up]'); if (u && CAPS[u.dataset.up]) flyTo(CAPS[u.dataset.up][1], CAPS[u.dataset.up][0], 1.6); });
 $('sw-conn').onclick = () => { CONNON = !CONNON; syncLayers(); };
-$('sw-rel').onclick = () => { RELON = !RELON; syncLayers(); };
+$('sw-rel').onclick = () => { SECTORON = !SECTORON; syncLayers(); };
 $('sw-story').onclick = () => { STORYON = !STORYON; syncLayers(); };
 $('sw-up').onclick = () => {
   const on = !UPON; setUpcomingLayer(on);
