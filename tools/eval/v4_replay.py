@@ -6,18 +6,25 @@ import json, os, sys, time
 from datetime import datetime, timezone
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))); sys.path.insert(0, ROOT)
 import registry, events as EV, update_globe_news as robot
-from engine import extract as X, run as RUN, context as C, prices as PX
+from engine import extract as X, run as RUN, context as C, prices as PX, shadow as SH
 
 OUT = os.path.join(ROOT, 'research', 'v4-replay.json'); BATCH = int(os.environ.get('V4_BATCH', 10)); N = int(os.environ.get('V4_N', 600))
 P = lambda s: datetime.fromisoformat(s.replace('Z', '+00:00')).timestamp()
 R = registry.get(); IND = json.load(open(os.path.join(ROOT, 'docs', 'assets', 'globe', 'industries.json'))).get('by', {})
 cal = json.load(open(os.path.join(ROOT, 'docs', 'assets', 'calendar-live.json')))
 cluster = {r['id']: r.get('cluster') or r['id'] for r in EV.load_days(30)}
-stories = sorted(json.load(open(os.path.join(ROOT, 'docs', 'assets', 'globe', 'news-archive.json')))['stories'], key=lambda s: s['published_at'])[-N:]
-res = {'note': 'DEVELOPMENT REPLAY: not performance evidence', 'stories': len(stories), 'done': [], 'records': [], 'errors': 0}
+FROM = os.environ.get('V4_FROM')  # e.g. 2026-10-21: every story since then, recovered from git history (the archive file keeps only 600)
+if FROM:
+    sys.path.insert(0, os.path.join(ROOT, 'tools', 'registry')); import seed_events_from_git as G
+    stories = sorted((s for s in G.history(os.environ.get('V4_REF', 'origin/main')) if s['published_at'] >= FROM), key=lambda s: s['published_at'])
+    cluster.update({r['id']: r.get('cluster') or r['id'] for r in EV.load_days(40)})
+else:
+    stories = sorted(json.load(open(os.path.join(ROOT, 'docs', 'assets', 'globe', 'news-archive.json')))['stories'], key=lambda s: s['published_at'])[-N:]
+res = {'note': 'V4 RE-RUN ON PAST NEWS (backtest): the frozen v4 rules applied to stories after the fact; not calls published at the time',
+       'from': FROM, 'policy_id': RUN.P.POLICY_ID if hasattr(RUN, 'P') else None, 'prompt_id': X.PROMPT_ID, 'stories': len(stories), 'done': [], 'records': [], 'errors': 0}
 try:
     old = json.load(open(OUT))
-    if old.get('stories') == len(stories): res = old
+    if (FROM and old.get('from') == FROM) or (not FROM and old.get('stories') == len(stories)): res = {**old, 'stories': len(stories)}
 except Exception: pass
 
 
@@ -43,17 +50,23 @@ def context_of(reg, t):
     return f
 
 
-seen = set()  # one View per event x asset x horizon across the whole replay
+seen = {(r.get('event_id'), r.get('asset_id'), r.get('horizon')) for r in res['records'] if r.get('view_tier') in ('standard', 'priority')}  # one View per event x asset x horizon, kept across resumed runs
+done = set(res['done']); t_end = time.time() + float(os.environ.get('V4_MINUTES', 270)) * 60
 for i in range(0, len(stories), BATCH):
-    batch = [s for s in stories[i:i + BATCH] if s['id'] not in res['done']]
+    if time.time() > t_end: print('time budget used; the next run resumes', flush=True); break
+    batch = [s for s in stories[i:i + BATCH] if s['id'] not in done]
     if not batch: continue
     try: ex = X.validate(robot.gemini(X.build_prompt(batch, cal)), len(batch))
     except Exception as e: res['errors'] += 1; print('batch error', e, flush=True); time.sleep(10); continue
     for k, s in enumerate(batch, 1):
-        res['done'].append(s['id'])
+        res['done'].append(s['id']); done.add(s['id'])
         if k not in ex: continue
         _, src = X.calendar_expectations(s, cal)
         res['records'] += RUN.records(s, ex[k], resolve, context_of, cluster.get(s['id'], s['id']), s['published_at'], P(s['published_at']), seen,
                                       model=robot.status.get('gemini_model'), calendar_sources=src)
     json.dump(res, open(OUT, 'w'), separators=(',', ':'))
     print(f"{len(res['done'])}/{len(stories)} stories, {len(res['records'])} records", flush=True)
+
+# judge every due Market View once with outcome-v4 (prices after the start time are read only here, for judging)
+print('judged', SH.judge(res, time.time()), flush=True)
+json.dump(res, open(OUT, 'w'), separators=(',', ':'))
