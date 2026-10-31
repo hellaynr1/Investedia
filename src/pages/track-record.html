@@ -1,46 +1,46 @@
-{"title":"Investedia Track record","desc":"How often the direction an Investedia article implied matched what the asset did over the next 24 hours. Every judged call, hits and misses.","key":"news"}
-<link rel="stylesheet" href="assets/track-record.css">
+{"title":"Investedia Track Record","desc":"How Investedia's calls turned out: the Live Prediction Track Record (frozen before the outcome) and, separately, the Historical Prediction Track Record (backtests). Every call, hits and misses.","key":"news","scripts":["assets/calls-ui.js"]}
+<link rel="stylesheet" href="assets/calls-ui.css">
 <nav class="subnav" id="news-nav"></nav>
-<div class="page-head">
-  <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="news.html">News</a><span>/</span><span>Track record</span></div>
-  <h1>Track record</h1>
-  <p class="tr-lede">When an article implies an asset will rise or fall, we check what it did over the next 24 hours. Every call is kept, hits and misses alike.</p>
+<div class="cx-wrap">
+  <h1 class="cx-h1">Track Record</h1>
+  <p class="cx-lede">When Investedia says an event matters for an asset, we freeze the call and check what the price did afterwards. Hits and misses are both shown.</p>
+  <div id="tr" aria-live="polite"><p class="muted">Loading…</p></div>
 </div>
-<section class="tr" id="tr" aria-live="polite"><p class="tr-wait">Loading…</p></section>
-<section class="tr-how" aria-labelledby="tr-how-h">
-  <h2 id="tr-how-h">How a call is counted</h2>
-  <ul>
-    <li><b>The call.</b> The direction (up or down) an article implies for an asset that has a market price. Mixed and unclear articles are not calls.</li>
-    <li><b>The check.</b> For live-recorded calls: the price change from the first price recorded after the article to the first price recorded at least 24 hours later (within 48 hours, so weekends and market holidays are handled honestly). Stocks are delayed 15–30 minutes.</li>
-    <li><b>Older articles.</b> Articles from before live recording are judged on daily closes instead: the close of the session on the article's day to the close of the next session. They are marked "daily close". Every qualifying article is counted; none are chosen by result.</li>
-    <li><b>Hit, miss, no clear move.</b> A hit moved at least 0.3% the way the article implied. A miss moved at least 0.3% the other way. Anything between is "no clear move" and is left out of the hit rate.</li>
-    <li><b>Hit rate</b> = hits ÷ (hits + misses). We show it only after 50 judged calls; before that a percentage would mean little.</li>
-  </ul>
-  <p class="tr-note">Article directions are written with the help of AI from each source's reporting. Past results do not predict future ones. Investedia is media, not advice: nothing here is a recommendation to buy or sell.</p>
-</section>
 <script>
 (async () => {
   if (window.UI && UI.newsNav) UI.newsNav('track');
-  const root = document.getElementById('tr'), NEED = 50;
-  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  let L = null; try { L = await (await fetch('assets/globe/news-ledger.json', { cache: 'no-cache' })).json(); } catch {}
-  const calls = (L && Array.isArray(L.calls) ? L.calls : []).filter(c => c && ['hit', 'miss', 'flat'].includes(c.res));
-  const hit = calls.filter(c => c.res === 'hit').length, miss = calls.filter(c => c.res === 'miss').length, flat = calls.filter(c => c.res === 'flat').length, judged = hit + miss;
-  const since = L && L.since ? new Date(L.since).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
-  const rate = judged >= NEED ? Math.round(hit / judged * 100) : null;
-  const big = rate !== null ? `<div class="tr-big"><strong>${rate}%</strong><span>hit rate · ${judged} judged calls</span></div>`
-    : `<div class="tr-big building"><strong>Building</strong><span>${judged} of ${NEED} judged calls before we show a hit rate</span><div class="tr-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${NEED}" aria-valuenow="${Math.min(judged, NEED)}"><i style="width:${Math.min(100, judged / NEED * 100)}%"></i></div></div>`;
-  const stat = (n, l, c) => `<div class="tr-stat ${c}"><strong>${n}</strong><span>${l}</span></div>`;
-  const up = calls.filter(c => c.dir === 'up'), dn = calls.filter(c => c.dir === 'down');
-  const dirLine = (arr, w) => { const h = arr.filter(c => c.res === 'hit').length, m = arr.filter(c => c.res === 'miss').length; return `<li><b>${w}</b> ${h} hits · ${m} misses · ${arr.length - h - m} no clear move</li>`; };
-  const recent = [...calls].sort((a, b) => b.pub - a.pub).slice(0, 20);
-  const back = calls.filter(c => c.basis === 'daily').length;
-  const chip = r => r === 'hit' ? '<span class="tr-chip ok">✓ hit</span>' : r === 'miss' ? '<span class="tr-chip no">✗ miss</span>' : '<span class="tr-chip na">– no clear move</span>';
-  const row = c => `<a class="tr-row" href="story.html?id=${encodeURIComponent(c.id)}"><span class="tr-dir ${c.dir}" aria-label="Article implied ${c.dir}">${c.dir === 'up' ? '↑' : '↓'}</span><span class="tr-t"><b>${esc(c.name)}${c.basis === 'daily' ? ' <em class="tr-b" title="Judged on the next session\'s close, for an article from before live price recording">daily close</em>' : ''}</b><small>${esc(c.h || 'Article')} · ${new Date(c.pub * 60000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</small></span>${(() => { const r = c.move == null ? null : c.move * (c.dir === 'down' ? -1 : 1); /* result of the call: a fall after "down" is a gain */ return `<span class="tr-mv ${r > 0 ? 'up' : r < 0 ? 'dn' : ''}" title="${c.move == null ? '' : 'Asset moved ' + (c.move > 0 ? '+' : '') + c.move.toFixed(2) + '%'}">${r == null ? '–' : (r > 0 ? '+' : '') + r.toFixed(2) + '%'}</span>`; })()}${chip(c.res)}</a>`;
-  root.innerHTML = `<div class="tr-score">${big}<div class="tr-stats">${stat(hit, 'hits', 'ok')}${stat(miss, 'misses', 'no')}${stat(flat, 'no clear move', 'na')}</div></div>`
-    + (calls.length ? `<ul class="tr-dirs">${dirLine(up, '↑ Up calls')}${dirLine(dn, '↓ Down calls')}</ul><h2>Recent calls</h2><div class="tr-list">${recent.map(row).join('')}</div>`
-      : `<p class="tr-wait">${since ? `Recording started ${esc(since)}. ` : ''}The first calls are judged 24 hours after their article. Nothing is shown until there are real results.</p>`)
-    + (back ? `<p class="tr-since">${back} of ${calls.length} calls were judged on the next session's close, for articles from before live price recording began; the rest on prices recorded 24 hours after the article.</p>` : '')
-    + (since ? `<p class="tr-since">Recording since ${esc(since)}.</p>` : '');
+  const U = window.CallsUI, root = document.getElementById('tr'), q = new URLSearchParams(location.search), concept = q.get('concept') === '1';
+  const { calls: all, live_since } = await U.load();
+  const WIN = [['7', '7D'], ['30', '30D'], ['90', '90D'], ['0', 'All']];
+  const F = [['all', 'All'], ['hit', 'Hits'], ['miss', 'Misses'], ['flat', 'No clear move'], ['pending', 'Pending'], ['up', 'Up calls'], ['down', 'Down calls']];
+  let win = q.get('w') || '0', cur = 'all', lim = 30;
+  const since = live_since ? new Date(live_since).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  const group = (title, parts) => `<div class="tr2-grp"><h3>${title}</h3>${parts.map(([l, cs]) => { const n = U.counts(cs), ok = n.clear >= U.SUB;
+      return `<div class="tr2-gl"><span>${l}</span><span class="muted">${n.hit} hits · ${n.miss} misses · ${n.flat} no clear · ${n.pending} pending</span><b class="${ok ? '' : 'locked'}">${ok ? Math.round(100 * n.hit / n.clear) + '% of ' + n.clear : `needs ${U.SUB} · ${n.clear} so far`}</b></div>`; }).join('')}</div>`;
+  const draw = () => {
+    const cs = all.filter(c => U.inWin(c, +win)), scored = cs.filter(c => c.res !== 'void'), n = U.counts(scored), a = U.acc(n, U.NEED);
+    const sel = c => cur === 'all' || c.res === cur || c.dir === cur, hist = cs.filter(sel);
+    const fams = [...new Set(scored.map(c => c.fam || 'other'))].sort((x, y) => scored.filter(c => (c.fam || 'other') === y).length - scored.filter(c => (c.fam || 'other') === x).length);
+    root.innerHTML = `<div class="tr2-two">
+      <section class="tr2-box"><div class="tr2-k">Live Prediction Track Record</div>
+        ${a ? `<div class="tr2-big">${a.pct}%</div><div class="tr2-sub">${a.text}</div>` : `<div class="tr2-big building">Building — ${n.judged} of ${U.NEED} judged calls</div><div class="tr2-bar"><i style="width:${Math.min(100, 100 * n.judged / U.NEED)}%"></i></div><div class="tr2-sub">No accuracy is shown until ${U.NEED} calls are judged.</div>`}
+        <div class="tr2-note">Every call is frozen before its outcome and scored from the earliest time it can be proven public, then judged on the first traded price at least 24 hours later in the asset’s own market session.${since ? ` Live since ${since}.` : ''}</div></section>
+      <section class="tr2-box"><div class="tr2-k">Historical Prediction Track Record</div>
+        ${concept ? '<div class="tr2-big">XX%<span class="tr2-ill">ILLUSTRATIVE</span></div><div class="tr2-sub">X,XXX backtested predictions</div>' : '<div class="tr2-big building">In validation</div><div class="tr2-sub">Backtested predictions using only the information available at the time. Nothing is published until they pass the published quality gates.</div>'}
+        <div class="tr2-note">Research data, kept separate. Never combined with the live record.</div></section></div>
+      <div class="cx-bar"><div class="cx-seg" role="group" aria-label="Time window">${WIN.map(([k, l]) => `<button type="button" data-w="${k}" aria-pressed="${k === win}">${l}</button>`).join('')}</div></div>
+      <div class="tr2-kpis six">${[['Judged', n.judged], ['Hits', n.hit, 'ok'], ['Misses', n.miss, 'no'], ['No clear move', n.flat], ['Pending', n.pending, 'wait'], ['Unresolved', n.unresolved]].map(([l, v, k]) => `<div class="tr2-kpi ${k || ''}"><b>${v}</b><span>${l}</span></div>`).join('')}</div>
+      <div class="tr2-groups">${group('Direction', [['Up calls', scored.filter(c => c.dir === 'up')], ['Down calls', scored.filter(c => c.dir === 'down')]])}
+        ${group('Confidence', ['high', 'medium', 'low'].map(k => [k[0].toUpperCase() + k.slice(1), scored.filter(c => c.conf === k)]))}
+        ${group('Event type', fams.slice(0, 8).map(f => [U.FAM[f] || f, scored.filter(c => (c.fam || 'other') === f)]))}</div>
+      <h2 class="cx-sec">Every call <small class="muted">· ${hist.length}</small></h2>
+      <div class="cx-filters">${F.map(([k, l]) => `<button type="button" data-f="${k}" aria-pressed="${k === cur}">${l}</button>`).join('')}</div>
+      ${hist.slice(0, lim).map(U.row).join('') || '<p class="muted">No calls in this group yet.</p>'}
+      ${hist.length > lim ? `<p style="text-align:center;margin-top:16px"><button type="button" class="btn" id="more">Show more (${hist.length - lim})</button></p>` : ''}`;
+    root.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { win = b.dataset.w; lim = 30; draw(); });
+    root.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { cur = b.dataset.f; lim = 30; draw(); });
+    const m = document.getElementById('more'); if (m) m.onclick = () => { lim += 30; draw(); };
+  };
+  draw();
 })();
 </script>

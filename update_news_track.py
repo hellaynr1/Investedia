@@ -112,7 +112,7 @@ def freeze(stories, series, ledger, now, seen_at=None):
                                                    'baseline_rule': i.get('baseline_rule'), 'pub': int(created.timestamp() // 60), 'res': 'pending',
                                                    'frozen': now.strftime('%Y-%m-%dT%H:%M:%SZ'), 'public': public.strftime('%Y-%m-%dT%H:%M:%SZ'),
                                                    'start': max(created, public).strftime('%Y-%m-%dT%H:%M:%SZ'), 'rule': RULE,
-                                                   'cat': s.get('category'), 'h': str(s.get('headline') or '')[:140]})
+                                                   'cat': s.get('category'), 'art': s.get('published_at'), 'h': str(s.get('headline') or '')[:140]})
             done.add((s.get('id'), sym))
             added += 1
     return added

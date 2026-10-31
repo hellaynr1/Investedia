@@ -5,7 +5,7 @@
 3. Wrong-asset call: the Colombian peso call frozen as COP (ConocoPhillips) by old ticker aliasing is voided, never deleted.
 4. Recovery: valid calls that git proves existed but that were never frozen (their article left the live feed first) are added with
    provenance (recovered: true). Calls whose ticker failed the registry are added only when the identity is verified (registry_repair).
-5. The older pre-stamping implications go to data/research/pre-live-implications.json: research data, never the Live Track Record.
+5. The older pre-stamping implications go to research/pre-live-implications.json (not published with the site): research data, never the Live Track Record.
 Usage: python3 tools/track/git_proof.py /tmp/proof.json && python3 tools/track/migrate_outcome_v2.py /tmp/proof.json"""
 import json, os, sys, collections
 from datetime import datetime, timezone
@@ -67,7 +67,7 @@ def main(proof_path):
     json.dump({'note': 'Research data for the Historical Prediction Track Record and Prediction Engine development. NOT live calls: these implications were '
                        'written before creation stamping (no frozen version/confidence; some were added to older articles). first_seen = first commit that '
                        'contains them. Never mix with the Live Track Record.', 'built': F(NOW), 'items': rs},
-              open(os.path.join(ROOT, 'data', 'research', 'pre-live-implications.json'), 'w'), separators=(',', ':'))
+              open(os.path.join(ROOT, 'research', 'pre-live-implications.json'), 'w'), separators=(',', ':'))
     print('ledger calls', len(calls), 'research items', len(rs))
 
 

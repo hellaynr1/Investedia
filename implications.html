@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=a505c84b9e">
-<script src="assets/consent.js?v=a505c84b9e"></script>
+<link rel="stylesheet" href="assets/consent.css?v=7ea458e81a">
+<script src="assets/consent.js?v=7ea458e81a"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia Recent market implications</title>
-<meta name="description" content="Every recent article that implied a move for a priced asset, with what the asset did afterwards: confirmed, went the other way, no clear move or still pending.">
+<meta name="description" content="See how the market reacted to recent Investedia calls: confirmed calls, misses and pending outcomes.">
 <meta property="og:title" content="Investedia Recent market implications">
-<meta property="og:description" content="Every recent article that implied a move for a priced asset, with what the asset did afterwards: confirmed, went the other way, no clear move or still pending.">
+<meta property="og:description" content="See how the market reacted to recent Investedia calls: confirmed calls, misses and pending outcomes.">
 <meta name="theme-color" content="#0A0A0B">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Investedia">
@@ -19,11 +19,11 @@
 <meta property="og:image:alt" content="Investedia: invest with clarity, see the world move">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Investedia Recent market implications">
-<meta name="twitter:description" content="Every recent article that implied a move for a priced asset, with what the asset did afterwards: confirmed, went the other way, no clear move or still pending.">
+<meta name="twitter:description" content="See how the market reacted to recent Investedia calls: confirmed calls, misses and pending outcomes.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=a505c84b9e">
-<link rel="stylesheet" href="assets/skin.css?v=a505c84b9e">
+<link rel="stylesheet" href="assets/app.css?v=7ea458e81a">
+<link rel="stylesheet" href="assets/skin.css?v=7ea458e81a">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,58 +46,47 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=a505c84b9e"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=a505c84b9e">
-<script src="assets/live-config.js?v=a505c84b9e"></script>
-<script src="assets/live-data.js?v=a505c84b9e" defer></script>
-<script src="assets/prefs.js?v=a505c84b9e"></script>
-<script src="assets/peek.js?v=a505c84b9e"></script>
-<script src="assets/sectors.js?v=a505c84b9e"></script>
-<script src="assets/news-menu.js?v=a505c84b9e"></script>
-<script src="assets/ui.js?v=a505c84b9e"></script>
-<script src="assets/news-alerts.js?v=a505c84b9e" defer></script>
-<script src="assets/since-news.js?v=a505c84b9e"></script>
-<script src="assets/implications.js?v=a505c84b9e"></script>
+<script src="assets/mock.js?v=7ea458e81a"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=7ea458e81a">
+<script src="assets/live-config.js?v=7ea458e81a"></script>
+<script src="assets/live-data.js?v=7ea458e81a" defer></script>
+<script src="assets/prefs.js?v=7ea458e81a"></script>
+<script src="assets/peek.js?v=7ea458e81a"></script>
+<script src="assets/sectors.js?v=7ea458e81a"></script>
+<script src="assets/news-menu.js?v=7ea458e81a"></script>
+<script src="assets/ui.js?v=7ea458e81a"></script>
+<script src="assets/news-alerts.js?v=7ea458e81a" defer></script>
+<script src="assets/calls-ui.js?v=7ea458e81a"></script>
 <main class="wrap" id="main-content" tabindex="-1">
-<link rel="stylesheet" href="assets/track-record.css"><link rel="stylesheet" href="assets/implications.css">
+<link rel="stylesheet" href="assets/calls-ui.css">
 <nav class="subnav" id="news-nav"></nav>
-<div class="page-head">
-  <div class="crumbs"><a href="index.html">Home</a><span>/</span><a href="news.html">News</a><span>/</span><span>Market implications</span></div>
-  <h1>Recent market implications</h1>
-  <p class="tr-lede">Every recent article that implied an asset would rise or fall, with what the asset did afterwards. Confirmed calls and misses alike.</p>
+<div class="cx-wrap">
+  <h1 class="cx-h1">Recent market implications</h1>
+  <p class="cx-lede">See how the market reacted to recent Investedia calls — confirmed calls, misses and pending outcomes.</p>
+  <div id="im" aria-live="polite"><p class="muted">Loading…</p></div>
 </div>
-<section class="im" id="im" aria-live="polite"><p class="tr-wait">Loading…</p></section>
-<section class="tr-how" aria-labelledby="im-how">
-  <h2 id="im-how">How to read this</h2>
-  <ul>
-    <li>The % is the <b>result of the call</b>: if the article said down and the asset fell 2%, that is +2%; if it rose instead, that is −2%. Hover a % to see the asset’s own move.</li>
-    <li><b>Confirmed</b> means the asset moved at least 0.3% the way the article implied. <b>Went the other way</b> means it moved at least 0.3% against it. Smaller moves are <b>no clear move</b>.</li>
-    <li>The move is measured from the first price recorded after the article to the latest recorded price, then fixed at 24 hours after the article. Stocks are delayed 15–30 minutes.</li>
-    <li><b>Pending</b> means no price has been recorded after the article yet, for example while the market is closed.</li>
-  </ul>
-  <p class="tr-note">Article directions are written with the help of AI from each source's reporting. Past results do not predict future ones. Investedia is media, not advice. <a href="track-record.html">See the overall track record</a>.</p>
-</section>
 <script>
 (async () => {
   if (window.UI && UI.newsNav) UI.newsNav('impl');
-  const root = document.getElementById('im'), esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const get = u => fetch(u, { cache: 'no-cache' }).then(r => r.json()).catch(() => null);
-  const [news, mk, trk, led] = await Promise.all([get('assets/globe/news-live.json'), get('assets/globe/markets.json'), get('assets/globe/news-track.json'), get('assets/globe/news-ledger.json')]);
-  const calls = Implications.collect({ stories: (news && news.stories) || [], markets: (mk && mk.assets) || [], track: trk, ledger: led });
-  const C = Implications.counts(calls);
-  const LAB = { hit: ['ok', '✓ confirmed'], miss: ['no', '✗ went the other way'], flat: ['na', '– no clear move'], pending: ['pd', '… waiting for a price'] };
-  const ago = t => { const m = Math.max(1, Math.round((Date.now() - t) / 60000)); return m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
-  const row = c => `<a class="tr-row im-row" href="story.html?id=${encodeURIComponent(c.story.id)}" data-res="${c.res}"><span class="tr-dir ${c.dir}" aria-label="Article implied ${c.dir}">${c.dir === 'up' ? '↑' : '↓'}</span><span class="tr-t"><b>${esc(c.asset.n)} · ${esc(c.story.headline)}</b><small>${ago(c.pub)} · said ${c.dir}</small></span>${(() => { const r = c.move == null ? null : c.move * (c.dir === 'down' ? -1 : 1); /* result of the call: a fall after "down" is a gain */ return `<span class="tr-mv ${r > 0 ? 'up' : r < 0 ? 'dn' : ''}" title="${c.move == null ? '' : 'Asset moved ' + (c.move > 0 ? '+' : '') + c.move.toFixed(2) + '%'}">${r == null ? '–' : (r > 0 ? '+' : '') + r.toFixed(2) + '%'}</span>`; })()}<span class="tr-chip ${LAB[c.res][0]}">${LAB[c.res][1]}</span></a>`;
-  const tabs = [['all', 'All', calls.length], ['hit', '✓ Confirmed', C.hit], ['miss', '✗ Other way', C.miss], ['flat', 'No clear move', C.flat], ['pending', 'Pending', C.pending]];
-  let cur = new URLSearchParams(location.search).get('show'); if (!tabs.some(t => t[0] === cur)) cur = 'all';
-  function paint() {
-    const list = cur === 'all' ? calls : calls.filter(c => c.res === cur);
-    root.innerHTML = `<div class="im-sum"><span class="tr-chip ok">${C.hit} confirmed</span><span class="tr-chip no">${C.miss} went the other way</span><span class="tr-chip na">${C.flat} no clear move</span><span class="tr-chip pd">${C.pending} pending</span><a href="track-record.html">Track record →</a></div>
-      <div class="im-tabs" role="tablist" aria-label="Filter">${tabs.map(t => `<button type="button" role="tab" data-k="${t[0]}" aria-selected="${t[0] === cur}">${t[1]} <i>${t[2]}</i></button>`).join('')}</div>
-      ${calls.length ? (list.length ? `<div class="tr-list">${list.map(row).join('')}</div>` : `<p class="tr-wait">Nothing in this group right now.</p>`) : `<p class="tr-wait">No recent article has implied a move for a priced asset yet.</p>`}`;
-    root.querySelector('.im-tabs').onclick = e => { const b = e.target.closest('button'); if (b) { cur = b.dataset.k; paint(); root.querySelector(`[data-k="${cur}"]`).focus(); } };
-  }
-  paint();
+  const U = window.CallsUI, root = document.getElementById('im'), q = new URLSearchParams(location.search);
+  const { calls: all } = await U.load(), live = all.filter(c => c.res !== 'void');
+  const WIN = [['1', '24H'], ['7', '7D'], ['30', '30D'], ['0', 'All']], F = [['all', 'All'], ['hit', 'Confirmed'], ['miss', 'Other way'], ['flat', 'No clear move'], ['pending', 'Pending']];
+  let win = q.get('w') || '7', cur = q.get('f') || 'all', lim = 12;
+  const draw = () => {
+    const cs = live.filter(c => U.inWin(c, +win)), n = U.counts(cs), a = U.acc(n, U.NEED), sel = c => cur === 'all' || c.res === cur;
+    const done = cs.filter(c => ['hit', 'miss', 'flat'].includes(c.res) && sel(c)).sort((x, y) => (y.end ? y.end[0] : 0) - (x.end ? x.end[0] : 0)), wait = cs.filter(c => c.res === 'pending' && sel(c));
+    root.innerHTML = `<div class="cx-bar"><div class="cx-seg" role="group" aria-label="Time window">${WIN.map(([k, l]) => `<button type="button" data-w="${k}" aria-pressed="${k === win}">${l}</button>`).join('')}</div></div>
+      <div class="cx-sum"><div class="ok"><b>${n.hit}</b><span>Confirmed</span></div><div class="no"><b>${n.miss}</b><span>Went the other way</span></div><div><b>${n.flat}</b><span>No clear move</span></div><div class="wait"><b>${n.pending}</b><span>Pending</span></div></div>
+      <p class="cx-acc">${a ? `<b>${a.pct}%</b> resolved accuracy · ${a.text}` : `Resolved accuracy appears after ${U.NEED} judged calls · ${n.judged} judged in this window so far`}</p>
+      <div class="cx-filters">${F.map(([k, l]) => `<button type="button" data-f="${k}" aria-pressed="${k === cur}">${l}</button>`).join('')}</div>`
+      + (done.length ? `<h2 class="cx-sec">Latest results</h2><div class="cx-grid">${done.slice(0, lim).map(U.card).join('')}</div>` + (done.length > lim ? `<p style="text-align:center;margin-top:16px"><button type="button" class="btn" id="more">Show more results (${done.length - lim})</button></p>` : '') : '')
+      + (wait.length ? `<h2 class="cx-sec">Pending <small class="muted">· ${wait.length} waiting for their outcome</small></h2>${wait.slice(0, 20).map(U.row).join('')}` + (wait.length > 20 ? `<p class="muted" style="margin-top:12px">${wait.length - 20} more pending calls are listed in the <a href="track-record.html">Track Record</a>.</p>` : '') : '')
+      + (!done.length && !wait.length ? '<p class="muted">No calls in this window yet.</p>' : '');
+    root.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { win = b.dataset.w; lim = 12; draw(); });
+    root.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { cur = b.dataset.f; lim = 12; draw(); });
+    const m = document.getElementById('more'); if (m) m.onclick = () => { lim += 12; draw(); };
+  };
+  draw();
 })();
 </script>
 </main>
