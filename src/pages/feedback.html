@@ -1,0 +1,60 @@
+{"title":"Feedback & suggestions — Investedia","desc":"Tell us what to improve: ideas, bugs and data issues. We read every message.","key":"about"}
+<link rel="stylesheet" href="assets/company-pages.css">
+<main class="wrap"><div class="cp">
+  <div class="eb">Company · Feedback</div>
+  <h1>Feedback &amp; suggestions.</h1>
+  <p class="lede">One tap, or tell us more. We read every message.</p>
+  <form class="cp-form" id="fb" novalidate>
+    <fieldset><legend>How is Investedia for you?</legend>
+      <div class="cp-taps" role="group" aria-label="How is Investedia for you?">
+        <button type="button" data-mood="good" aria-pressed="false"><b aria-hidden="true">👍</b>Good</button>
+        <button type="button" data-mood="bad" aria-pressed="false"><b aria-hidden="true">👎</b>Not good</button>
+        <button type="button" data-mood="idea" aria-pressed="false"><b aria-hidden="true">💡</b>I have an idea</button>
+      </div></fieldset>
+    <fieldset><legend>What is it about?</legend>
+      <div class="cp-chips" role="group" aria-label="Topic">
+        <button type="button" data-cat="Idea" aria-pressed="true">Idea</button><button type="button" data-cat="Bug" aria-pressed="false">Bug</button><button type="button" data-cat="Data issue" aria-pressed="false">Data issue</button><button type="button" data-cat="Other" aria-pressed="false">Other</button>
+      </div></fieldset>
+    <label for="fb-msg">Your message</label>
+    <textarea id="fb-msg" name="message" maxlength="2000" placeholder="Tell us what you would like to see…" required></textarea>
+    <label for="fb-mail">Email (optional, only if you want a reply)</label>
+    <input id="fb-mail" name="email" type="email" autocomplete="email" maxlength="200" placeholder="you@example.com">
+    <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
+    <p class="cp-msg" id="fb-out" role="status" hidden></p>
+    <div style="margin-top:22px"><button class="cp-btn" type="submit" id="fb-go">Send feedback</button></div>
+    <p class="cp-fine">We use your message to improve the site. If you add your email we use it only to reply. Do not include personal or financial details. You can also write to <a href="mailto:feedback@investedia.com">feedback@investedia.com</a>.</p>
+  </form>
+</div></main>
+<script>
+(() => {
+  const f = document.getElementById('fb'), out = document.getElementById('fb-out'), go = document.getElementById('fb-go');
+  const SB = 'https://lfjyoeusblhfpmgwbrhj.supabase.co', KEY = 'sb_publishable_kqozWiWcKHNqendoiWxsMA_ro7DfTQF', LAST = 'inv-fb-last';
+  let mood = '', cat = 'Idea';
+  const say = (t, c) => { out.hidden = false; out.className = 'cp-msg ' + c; out.textContent = t; };
+  const group = (sel, set) => document.querySelectorAll(sel).forEach(b => b.onclick = () => { const on = b.getAttribute('aria-pressed') === 'true' && sel.includes('mood'); document.querySelectorAll(sel).forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', on ? 'false' : 'true'); set(on ? '' : b); });
+  group('[data-mood]', b => { mood = b ? b.dataset.mood : ''; if (b && b.dataset.mood === 'idea') { cat = 'Idea'; document.querySelectorAll('[data-cat]').forEach(x => x.setAttribute('aria-pressed', x.dataset.cat === 'Idea')); } });
+  group('[data-cat]', b => { cat = b.dataset.cat; });
+  f.addEventListener('submit', async e => {
+    e.preventDefault();
+    const msg = f.message.value.trim(), mail = f.email.value.trim();
+    if (f.website.value) return;                                   // spam trap
+    if (!msg && !mood) return say('Add a message or tap one of the options above.', 'err');
+    if (mail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) return say('That email address does not look right.', 'err');
+    try { if (Date.now() - +(localStorage.getItem(LAST) || 0) < 30000) return say('Thanks. Please wait a moment before sending another one.', 'err'); } catch {}
+    go.disabled = true; say('Sending…', 'ok');
+    const body = { mood: mood || null, category: cat, message: msg.slice(0, 2000), email: mail || null, page: (document.referrer && new URL(document.referrer).hostname === location.hostname ? new URL(document.referrer).pathname : null), device: innerWidth < 700 ? 'phone' : 'desktop' };
+    try {
+      const r = await fetch(SB + '/rest/v1/feedback', { method: 'POST', headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error('status ' + r.status);
+      try { localStorage.setItem(LAST, String(Date.now())); } catch {}
+      f.reset(); mood = ''; document.querySelectorAll('[data-mood]').forEach(x => x.setAttribute('aria-pressed', 'false'));
+      say('Thank you. We read every message.', 'ok'); go.disabled = false;
+    } catch {
+      // Fallback: open the visitor's email app with everything filled in, so nothing is lost.
+      const sub = encodeURIComponent('Feedback: ' + cat), txt = encodeURIComponent((mood ? 'Mood: ' + mood + '\n' : '') + msg + (mail ? '\n\nReply to: ' + mail : ''));
+      say('We could not send it directly. Your email app should open with your message ready to send.', 'err');
+      go.disabled = false; location.href = 'mailto:feedback@investedia.com?subject=' + sub + '&body=' + txt;
+    }
+  });
+})();
+</script>
