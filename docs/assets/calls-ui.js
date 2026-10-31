@@ -21,7 +21,7 @@
   const gain = c => Number.isFinite(c.move) ? (c.dir === 'down' ? -c.move : c.move) : null;
   const moved = c => `${esc(c.name)} ${c.move > 0 ? 'rose' : c.move < 0 ? 'fell' : 'was unchanged'}${c.move ? ' ' + Math.abs(c.move).toFixed(2) + '%' : ''}`;
   const resBox = (c, big) => { const g = gain(c); if (g === null) return `<span class="cx-rb na${big ? ' big' : ''}"><b>—</b><small>${c.res === 'pending' ? 'waiting' : 'no result'}</small></span>`;
-    return `<span class="cx-rb ${c.res === 'flat' ? 'na' : g > 0 ? 'up' : 'dn'}${big ? ' big' : ''}" title="${moved(c)}"><b>${pct(g)}</b><small>${moved(c)}</small></span>`; };
+    return `<span class="cx-rb ${c.res === 'flat' ? 'na' : g > 0 ? 'up' : 'dn'}${big ? ' big' : ''}" title="${moved(c)}"><b>${pct(g)}</b></span>`; };
 
   // load the ledger and its joins; returns live calls (legacy calls never count as live)
   async function load(root = 'assets/globe/') {
