@@ -86,3 +86,17 @@ class Runner(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class Shadow(unittest.TestCase):
+    def test_frozen_records_are_never_rewritten_and_judged_once(self):
+        from engine import shadow as SH
+        L = SH.load('/nonexistent')
+        rec = {'id': 'v4-1', 'view_tier': 'standard', 'decision': 'long', 'horizon': '6h', 'cls': 'fx', 'start_ts': E('2026-10-30T12:00'), 'symbol': 'X',
+               'context': {'sigma_daily': 0.2}, 'magnitude': {'expected_pct': 0.3}, 'benchmark': {}}
+        self.assertEqual(SH.freeze(L, [rec], 't1'), 1); self.assertEqual(SH.freeze(L, [{**rec, 'decision': 'short'}], 't2'), 0)
+        self.assertEqual(L['records'][0]['decision'], 'long')
+        bars = [(E('2026-10-30T12:00') + k * 300, 100 + k * .01) for k in range(200)]
+        self.assertEqual(SH.judge(L, E('2026-10-31T00:00'), fetch=lambda s, a, b: bars), 1)
+        first = dict(L['records'][0]['outcome'])
+        SH.judge(L, E('2026-11-01T00:00'), fetch=lambda s, a, b: [(t, p * 2) for t, p in bars]); self.assertEqual(L['records'][0]['outcome'], first)
