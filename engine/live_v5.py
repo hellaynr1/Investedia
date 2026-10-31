@@ -9,7 +9,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.ins
 import registry, update_globe_news as robot
 from engine import extract as X, run as RUN, context as C, prices as PX, shadow as SH
 
-LIVE_SINCE = os.environ.get('V5_LIVE_SINCE', '2026-10-31T19:00:00Z')
+LIVE_SINCE = os.environ.get('V5_LIVE_SINCE', '2026-10-31T17:30:00Z')
 RULE = 'v5-not-priced-in'
 MAX_STORIES = int(os.environ.get('V5_MAX', 60)); BATCH = 10
 G = os.path.join(ROOT, 'assets', 'globe'); DOCS = os.path.join(ROOT, 'docs', 'assets', 'globe')
