@@ -207,6 +207,15 @@
     "textResizeOverflow": false
   },
   {
+    "page": "feedback.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
     "page": "globe.html",
     "width": 1440,
     "violations": [],
@@ -230,7 +239,7 @@
               "button[data-k=\"hit\"]"
             ],
             "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.07 (foreground color: #a1a1aa, background color: #6b6b6b, font size: 10.9pt (14.5px), font weight: normal). Expected contrast ratio of 4.5:1",
-            "html": "<button type=\"button\" role=\"tab\" data-k=\"hit\" aria-selected=\"false\">✓ Confirmed <i>1</i></button>"
+            "html": "<button type=\"button\" role=\"tab\" data-k=\"hit\" aria-selected=\"false\">✓ Confirmed <i>0</i></button>"
           },
           {
             "target": [
@@ -251,7 +260,14 @@
               "button[data-k=\"pending\"]"
             ],
             "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.07 (foreground color: #a1a1aa, background color: #6b6b6b, font size: 10.9pt (14.5px), font weight: normal). Expected contrast ratio of 4.5:1",
-            "html": "<button type=\"button\" role=\"tab\" data-k=\"pending\" aria-selected=\"false\">Pending <i>9</i></button>"
+            "html": "<button type=\"button\" role=\"tab\" data-k=\"pending\" aria-selected=\"false\">Pending <i>16</i></button>"
+          },
+          {
+            "target": [
+              "button[data-k=\"pending\"] > i"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.7 (foreground color: #919197, background color: #6b6b6b, font size: 10.9pt (14.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<i>16</i>"
           }
         ]
       }
@@ -263,6 +279,24 @@
   },
   {
     "page": "index.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "jobs.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "legal-notice.html",
     "width": 1440,
     "violations": [],
     "tapTargets": [],
@@ -302,15 +336,29 @@
             "target": [
               "button[data-n=\"Semiconductors\"] > span:nth-child(1) > small"
             ],
-            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.45 (foreground color: #afc5be, background color: #1b5a44, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.61 (foreground color: #dbbfbf, background color: #994848, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
             "html": "<small>SMH</small>"
           },
           {
             "target": [
-              "button[data-n=\"Semiconductors\"] > .u.mono"
+              "button[data-n=\"Semiconductors\"] > .d.mono"
             ],
-            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.21 (foreground color: #34d399, background color: #1b5a44, font size: 16.5pt (22px), font weight: normal). Expected contrast ratio of 4.5:1",
-            "html": "<span class=\"mono u\">↑ +3.14%</span>"
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.3 (foreground color: #fecaca, background color: #994848, font size: 16.5pt (22px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<span class=\"mono d\">↓ −6.98%</span>"
+          },
+          {
+            "target": [
+              "button[data-n=\"Autos\"] > span:nth-child(1) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.9 (foreground color: #d8bebe, background color: #8f4444, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<small>CARZ</small>"
+          },
+          {
+            "target": [
+              "button[data-n=\"Technology\"] > span:nth-child(1) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.9 (foreground color: #d8bebe, background color: #8f4444, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<small>XLK</small>"
           }
         ]
       }
@@ -331,6 +379,15 @@
   },
   {
     "page": "news.html",
+    "width": 1440,
+    "violations": [],
+    "tapTargets": [],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "partnerships.html",
     "width": 1440,
     "violations": [],
     "tapTargets": [],
@@ -425,7 +482,7 @@
               ".tr-bar"
             ],
             "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute",
-            "html": "<div class=\"tr-bar\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"50\" aria-valuenow=\"0\"><i style=\"width:0%\"></i></div>"
+            "html": "<div class=\"tr-bar\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"50\" aria-valuenow=\"13\"><i style=\"width:26%\"></i></div>"
           }
         ]
       }
@@ -559,6 +616,12 @@
         "text": "Region, language and currency",
         "width": 43,
         "height": 44
+      },
+      {
+        "target": "a.",
+        "text": "Home",
+        "width": 44,
+        "height": 32
       }
     ],
     "overflow": false,
@@ -591,6 +654,12 @@
         "text": "Region, language and currency",
         "width": 43,
         "height": 44
+      },
+      {
+        "target": "a.",
+        "text": "Home",
+        "width": 44,
+        "height": 32
       }
     ],
     "overflow": false,
@@ -639,6 +708,12 @@
         "text": "Region, language and currency",
         "width": 43,
         "height": 44
+      },
+      {
+        "target": "a.",
+        "text": "Home",
+        "width": 44,
+        "height": 32
       }
     ],
     "overflow": false,
@@ -671,6 +746,12 @@
         "text": "Region, language and currency",
         "width": 43,
         "height": 44
+      },
+      {
+        "target": "a.",
+        "text": "Home",
+        "width": 44,
+        "height": 32
       }
     ],
     "overflow": false,
@@ -703,6 +784,12 @@
         "text": "Region, language and currency",
         "width": 43,
         "height": 44
+      },
+      {
+        "target": "a.",
+        "text": "Home",
+        "width": 44,
+        "height": 32
       }
     ],
     "overflow": false,
@@ -822,6 +909,22 @@
     "textResizeOverflow": false
   },
   {
+    "page": "feedback.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [
+      {
+        "target": "button.pf-btn",
+        "text": "Region, language and currency",
+        "width": 43,
+        "height": 44
+      }
+    ],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
     "page": "globe.html",
     "width": 390,
     "violations": [],
@@ -852,7 +955,7 @@
               "button[data-k=\"hit\"]"
             ],
             "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.07 (foreground color: #a1a1aa, background color: #6b6b6b, font size: 10.9pt (14.5px), font weight: normal). Expected contrast ratio of 4.5:1",
-            "html": "<button type=\"button\" role=\"tab\" data-k=\"hit\" aria-selected=\"false\">✓ Confirmed <i>1</i></button>"
+            "html": "<button type=\"button\" role=\"tab\" data-k=\"hit\" aria-selected=\"false\">✓ Confirmed <i>0</i></button>"
           },
           {
             "target": [
@@ -873,11 +976,46 @@
               "button[data-k=\"pending\"]"
             ],
             "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.07 (foreground color: #a1a1aa, background color: #6b6b6b, font size: 10.9pt (14.5px), font weight: normal). Expected contrast ratio of 4.5:1",
-            "html": "<button type=\"button\" role=\"tab\" data-k=\"pending\" aria-selected=\"false\">Pending <i>9</i></button>"
+            "html": "<button type=\"button\" role=\"tab\" data-k=\"pending\" aria-selected=\"false\">Pending <i>16</i></button>"
+          },
+          {
+            "target": [
+              "button[data-k=\"pending\"] > i"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.7 (foreground color: #919197, background color: #6b6b6b, font size: 10.9pt (14.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<i>16</i>"
           }
         ]
       }
     ],
+    "tapTargets": [
+      {
+        "target": "button.pf-btn",
+        "text": "Region, language and currency",
+        "width": 43,
+        "height": 44
+      },
+      {
+        "target": "a.",
+        "text": "Home",
+        "width": 44,
+        "height": 32
+      },
+      {
+        "target": "a.",
+        "text": "News",
+        "width": 44,
+        "height": 32
+      }
+    ],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "index.html",
+    "width": 390,
+    "violations": [],
     "tapTargets": [
       {
         "target": "button.pf-btn",
@@ -891,7 +1029,23 @@
     "textResizeOverflow": false
   },
   {
-    "page": "index.html",
+    "page": "jobs.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [
+      {
+        "target": "button.pf-btn",
+        "text": "Region, language and currency",
+        "width": 43,
+        "height": 44
+      }
+    ],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "legal-notice.html",
     "width": 390,
     "violations": [],
     "tapTargets": [
@@ -952,15 +1106,29 @@
             "target": [
               "button[data-n=\"Semiconductors\"] > span:nth-child(1) > small"
             ],
-            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.45 (foreground color: #afc5be, background color: #1b5a44, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.61 (foreground color: #dbbfbf, background color: #994848, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
             "html": "<small>SMH</small>"
           },
           {
             "target": [
-              "button[data-n=\"Semiconductors\"] > .u.mono"
+              "button[data-n=\"Semiconductors\"] > .d.mono"
             ],
-            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.21 (foreground color: #34d399, background color: #1b5a44, font size: 16.5pt (22px), font weight: normal). Expected contrast ratio of 4.5:1",
-            "html": "<span class=\"mono u\">↑ +3.14%</span>"
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.3 (foreground color: #fecaca, background color: #994848, font size: 16.5pt (22px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<span class=\"mono d\">↓ −6.98%</span>"
+          },
+          {
+            "target": [
+              "button[data-n=\"Autos\"] > span:nth-child(1) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.9 (foreground color: #d8bebe, background color: #8f4444, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<small>CARZ</small>"
+          },
+          {
+            "target": [
+              "button[data-n=\"Technology\"] > span:nth-child(1) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.9 (foreground color: #d8bebe, background color: #8f4444, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1",
+            "html": "<small>XLK</small>"
           }
         ]
       }
@@ -995,6 +1163,22 @@
   },
   {
     "page": "news.html",
+    "width": 390,
+    "violations": [],
+    "tapTargets": [
+      {
+        "target": "button.pf-btn",
+        "text": "Region, language and currency",
+        "width": 43,
+        "height": 44
+      }
+    ],
+    "overflow": false,
+    "errors": [],
+    "textResizeOverflow": false
+  },
+  {
+    "page": "partnerships.html",
     "width": 390,
     "violations": [],
     "tapTargets": [
@@ -1051,6 +1235,12 @@
         "text": "Region, language and currency",
         "width": 43,
         "height": 44
+      },
+      {
+        "target": "a.",
+        "text": "Home",
+        "width": 44,
+        "height": 32
       }
     ],
     "overflow": false,
@@ -1083,6 +1273,18 @@
         "text": "Region, language and currency",
         "width": 43,
         "height": 44
+      },
+      {
+        "target": "a.",
+        "text": "Home",
+        "width": 44,
+        "height": 32
+      },
+      {
+        "target": "a.",
+        "text": "Markets",
+        "width": 50,
+        "height": 32
       }
     ],
     "overflow": false,
@@ -1115,6 +1317,12 @@
         "text": "Region, language and currency",
         "width": 43,
         "height": 44
+      },
+      {
+        "target": "a.",
+        "text": "Home",
+        "width": 44,
+        "height": 32
       }
     ],
     "overflow": false,
@@ -1152,7 +1360,7 @@
               ".tr-bar"
             ],
             "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute",
-            "html": "<div class=\"tr-bar\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"50\" aria-valuenow=\"0\"><i style=\"width:0%\"></i></div>"
+            "html": "<div class=\"tr-bar\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"50\" aria-valuenow=\"13\"><i style=\"width:26%\"></i></div>"
           }
         ]
       }
@@ -1163,6 +1371,18 @@
         "text": "Region, language and currency",
         "width": 43,
         "height": 44
+      },
+      {
+        "target": "a.",
+        "text": "Home",
+        "width": 44,
+        "height": 32
+      },
+      {
+        "target": "a.",
+        "text": "News",
+        "width": 44,
+        "height": 32
       }
     ],
     "overflow": false,
