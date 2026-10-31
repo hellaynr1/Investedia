@@ -30,6 +30,14 @@ def _last(bars, t):
     return p[-1] if p else None
 
 
+def session_start(bars, last, gap_h=2):
+    """Start time of the trading session that contains the bar `last` (runs of bars without a gap of gap_h hours)."""
+    ts = [b[0] for b in bars if b[0] <= last[0]]
+    k = len(ts) - 1
+    while k > 0 and ts[k] - ts[k - 1] < gap_h * 3600: k -= 1
+    return ts[k] if ts else last[0]
+
+
 def features(t, bars, daily, index_bars=None, index_daily=None, sector_bars=None, sector_daily=None, gap_h=2):
     """Context at publication time t. Moves are signed %, and in sigma units of the asset's own daily volatility."""
     out = {'t': int(t), 'price': None, 'session': None, 'sigma_daily': sigma_daily(daily or [], t), 'pre_move_pct': None, 'pre_move_sigma': None,
@@ -37,16 +45,17 @@ def features(t, bars, daily, index_bars=None, index_daily=None, sector_bars=None
     last = _last(bars or [], t)
     if not last: return out
     out['price'] = last[1]; out['session'] = 'open' if t - last[0] <= 15 * 60 else 'closed'
-    prev_close = next((c for ts, c in reversed(daily or []) if ts < last[0] - gap_h * 3600), None)  # last daily close before the current session
+    s0 = session_start(bars, last)
+    prev_close = next((c for ts, c in reversed(daily or []) if ts < s0 - 3600), None)  # the daily close before the latest session began
     def mv(a, b): return None if not a or not b else (b / a - 1) * 100
-    out['pre_move_pct'] = mv(prev_close, last[1])
     d24 = _last(bars, t - 86400); out['move_24h_pct'] = mv(d24[1] if d24 else None, last[1])
+    out['pre_move_pct'] = out['move_24h_pct'] if last[0] - s0 > 20 * 3600 else mv(prev_close, last[1])  # 24/7 markets: the last 24 h
     d5 = [c for ts, c in (daily or []) if ts <= t - 5 * 86400]; out['trend_5d_pct'] = mv(d5[-1] if d5 else None, last[1])
     sg = out['sigma_daily']
     if sg and out['pre_move_pct'] is not None: out['pre_move_sigma'] = out['pre_move_pct'] / sg
     for key, b, d in (('index', index_bars, index_daily), ('sector', sector_bars, sector_daily)):
         if not b: continue
-        lb = _last(b, t); pc = next((c for ts, c in reversed(d or []) if lb and ts < lb[0] - gap_h * 3600), None)
+        lb = _last(b, t); pc = next((c for ts, c in reversed(d or []) if lb and ts < session_start(b, lb) - 3600), None)
         m = mv(pc, lb[1] if lb else None); s2 = sigma_daily(d or [], t)
         out[key + '_pre_pct'] = m
         if m is not None and s2: out[key + '_pre_sigma'] = m / s2

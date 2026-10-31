@@ -1,0 +1,29 @@
+name: Engine v4 development replay (not evidence)
+# Runs only on the engine-v4 branch: replays the v4 extraction + frozen policy on current archived stories. Never touches main or the site.
+on:
+  push:
+    branches: [engine-v4]
+    paths: [tools/eval/v4_replay.py, engine/**, .github/workflows/v4-replay.yml]
+permissions:
+  contents: write
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Replay
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 tools/eval/v4_replay.py
+      - name: Save on this branch
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add research/v4-replay.json || true
+          git diff --cached --quiet && exit 0
+          git commit -q -m "v4 development replay results [skip ci]"
+          git pull -q --rebase origin engine-v4 && git push -q origin HEAD:engine-v4

@@ -27,10 +27,11 @@ class Extraction(unittest.TestCase):
     def test_calendar_expectations_are_injected_only_when_relevant(self):
         cal = {'events': [{'t': 'CPI y/y', 'country': 'US', 'at': '2026-10-30T12:30:00Z', 'fc': '3.1%', 'prev': '3.0%', 'src': 'BLS'},
                           {'t': 'GDP', 'country': 'US', 'at': '2026-10-20T12:30:00Z', 'fc': '2%'}], 'earnings': [{'s': 'INTC', 'n': 'Intel', 'date': '2026-10-30', 'eps': '$0.20'}]}
-        s = {'published_at': '2026-10-30T13:00:00Z', 'location': {'iso': 'US'}, 'impacts': [{'ticker': 'INTC'}]}
+        s = {'published_at': '2026-10-30T13:00:00Z', 'location': {'country': 'United States of America'}, 'impacts': [{'ticker': 'INTC'}]}
         txt, src = X.calendar_expectations(s, cal)
         self.assertIn('CPI y/y', txt); self.assertNotIn('GDP', txt); self.assertIn('consensus EPS $0.20', txt); self.assertEqual(len(src), 2)
         self.assertIn('{', X.PROMPT); self.assertEqual(len(X.PROMPT_ID), 12)
+        self.assertEqual(X.calendar_expectations({**s, 'location': {'country': 'Brazil'}}, {'events': cal['events']})[0], '')  # other economies get no macro consensus
 
 
 class Context(unittest.TestCase):
@@ -42,6 +43,13 @@ class Context(unittest.TestCase):
         self.assertLess(f['price'], 200)  # the later 500 print is never read
         self.assertIsNotNone(f['sigma_daily']); self.assertAlmostEqual(f['pre_move_sigma'], f['pre_move_pct'] / f['sigma_daily'], 2)
         self.assertEqual(C.sector_etf('3674'), 'XLK'); self.assertEqual(C.sector_etf('2834'), 'XLV'); self.assertIsNone(C.sector_etf(None))
+
+
+    def test_weekend_publication_measures_the_last_session(self):
+        daily = [(E(f'2026-10-{d:02d}T13:30'), 100.0) for d in range(1, 30)] + [(E('2026-10-30T13:30'), 110.0)]
+        bars = session('2026-10-30', p0=110)
+        f = C.features(E('2026-10-31T12:00'), bars, daily)  # Saturday: Friday closed at 110 vs Thursday 100
+        self.assertEqual(f['session'], 'closed'); self.assertAlmostEqual(f['pre_move_pct'], 10.0, 1)
 
 
 class Outcome(unittest.TestCase):

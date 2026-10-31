@@ -46,19 +46,26 @@ Stories:
 PROMPT_ID = hashlib.sha1(PROMPT.encode()).hexdigest()[:12]
 
 
+EU_MEMBERS = ['Austria', 'Belgium', 'Croatia', 'Cyprus', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Ireland', 'Italy', 'Latvia', 'Lithuania',
+              'Luxembourg', 'Malta', 'Netherlands', 'Portugal', 'Slovakia', 'Slovenia', 'Spain']
+CAL_CC = {'United States of America': 'US', 'United States': 'US', 'United Kingdom': 'GB', 'Japan': 'JP', 'Canada': 'CA', 'China': 'CN', 'Australia': 'AU',
+          'New Zealand': 'NZ', 'Switzerland': 'CH', **{c: 'EU' for c in EU_MEMBERS}}
+
+
 def calendar_expectations(story, cal, window_h=6):
     """Expectations from the economic calendar (ForexFactory consensus, Nasdaq EPS estimates) for this story, as a text block.
     Macro: releases of the story's country within [-window_h, +1 h] of publication with a forecast. Earnings: the company's estimate
     within 3 days. Returns (text, sources) or ('', [])."""
     try: t = datetime.fromisoformat(story['published_at'].replace('Z', '+00:00'))
     except Exception: return '', []
-    cc = ((story.get('location') or {}).get('iso') or (story.get('location') or {}).get('cc') or '').upper()
+    loc = story.get('location') or {}
+    cc = (loc.get('iso') or loc.get('cc') or CAL_CC.get(loc.get('country') or '', '')).upper()
     lines, src = [], []
     for e in (cal or {}).get('events') or []:
         try: at = datetime.fromisoformat(e['at'].replace('Z', '+00:00'))
         except Exception: continue
         if not e.get('fc') or not (t - timedelta(hours=window_h) <= at <= t + timedelta(hours=1)): continue
-        if cc and e.get('country') and e['country'] != cc: continue
+        if not cc or e.get('country') != cc: continue  # only the story's own economy
         lines.append(f"{e['t']} ({e.get('country')}, {at:%Y-%m-%d %H:%M}Z): forecast {e['fc']}, previous {e.get('prev') or 'n/a'}"); src.append('calendar:' + e.get('src', 'forexfactory'))
     syms = {((i.get('asset') or {}).get('px') or i.get('ticker') or '').upper() for i in story.get('impacts') or []} - {''}
     for e in (cal or {}).get('earnings') or []:
