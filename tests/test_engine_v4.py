@@ -11,7 +11,7 @@ class Policy(unittest.TestCase):
         self.assertEqual(P.horizon('earnings', 'equity'), 'S1'); self.assertEqual(P.horizon('macro-data', 'fx'), '6h')
         self.assertEqual(P.horizon('m&a', 'equity', 'acquirer'), 'S2'); self.assertIsNone(P.horizon('earnings', 'crypto'))
 
-    CTX = {'pre_move_sigma': 0.2, 'index_pre_sigma': 0.1, 'sector_pre_sigma': 0.0, 'expected_move_sigma': 1.4}
+    CTX = {'pre_move_sigma': 0.2, 'index_pre_sigma': 0.1, 'sector_pre_sigma': 0.0, 'expected_move_sigma': 1.4, 'sigma_daily': 2.0}
 
     def test_earnings_follow_surprise_not_tone_and_reach_priority(self):
         ev = {'event_type': 'earnings', 'event_id': 'e1', 'expectations': {'eps_actual': 1.10, 'eps_expected': 1.00}}
@@ -50,6 +50,13 @@ class Policy(unittest.TestCase):
         d = P.decide({'event_type': 'product'}, A(), self.CTX, th={'view': .6, 'priority': .7}, calibrate=cal); self.assertEqual(d['reasons'], ['below-view-threshold'])
         d = P.decide({'event_type': 'm&a', 'catalyst': {'premium_pct': 30}}, A(relation='target'), self.CTX, th={'view': .5, 'priority': .7}, calibrate=cal)
         self.assertEqual(d['view_tier'], 'standard'); self.assertIn('priority-confidence', d['priority_missing'])
+
+    def test_every_gate_and_reason_is_stored(self):
+        d = P.decide({'event_type': 'm&a', 'catalyst': {'premium_pct': 30}}, A(relation='target'), self.CTX)
+        self.assertEqual(set(d['gates']), set(P.PRIORITY_GATES)); self.assertEqual(d['tier_reasons'], ['all-gates-pass'])
+        self.assertEqual(d['pending'], ['type-enabled', 'priority-confidence'])  # recorded, not blocking during shadow validation
+        s = P.decide({'event_type': 'earnings', 'expectations': {}}, A(), self.CTX); self.assertEqual(s['tier_reasons'], ['evidence']); self.assertEqual(s['gates']['evidence'], 'fail')
+        n = P.decide({'event_type': 'product', 'flags': ['preview']}, A(), {}); self.assertEqual(n['tier_reasons'], ['preview'])
 
     def test_policy_id_is_stable(self):
         self.assertEqual(len(P.POLICY_ID), 12)

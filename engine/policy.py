@@ -91,7 +91,7 @@ def decide(ev, asset, ctx, th=None, calibrate=None, seen=(), type_enabled=None):
     th: frozen thresholds {view, priority} on calibrated confidence (None before validation: tiers come from the rules only).
     Returns {decision long|short|none, view_tier none|standard|priority, reasons (why No View), priority_missing (gates not met), raw, confidence, horizon}."""
     t, cls, rel, flags = ev.get('event_type'), asset.get('cls'), asset.get('relation'), set(ev.get('flags') or [])
-    out = {'decision': 'none', 'view_tier': 'none', 'reasons': [], 'priority_missing': [], 'raw': 0, 'confidence': None, 'horizon': horizon(t, cls, rel)}
+    out = {'decision': 'none', 'view_tier': 'none', 'reasons': [], 'tier_reasons': [], 'gates': {}, 'priority_missing': [], 'pending': [], 'raw': 0, 'confidence': None, 'horizon': horizon(t, cls, rel)}
     r = out['reasons']
     for f in ('commentary', 'preview', 'price-move-recap', 'competing-catalysts'):
         if f in flags: r.append(f)
@@ -117,24 +117,25 @@ def decide(ev, asset, ctx, th=None, calibrate=None, seen=(), type_enabled=None):
     out['raw'] = raw
     if calibrate: out['confidence'] = calibrate(raw, t)
     if not r and th and th.get('view') is not None and (out['confidence'] is None or out['confidence'] < th['view']): r.append('below-view-threshold')
-    if r or not d: return out
+    if r or not d:
+        out['tier_reasons'] = list(r) or ['stance-neutral']
+        return out
     out['decision'] = 'long' if d > 0 else 'short'; out['view_tier'] = 'standard'
-    m = out['priority_missing']
-    if rel not in PRIORITY_RELATIONS: m.append('direct-subject')
-    if not ((uses_surprise and big) or (t not in NEEDS_EXPECTATIONS and strong)): m.append('evidence')
-    if t in NEEDS_EXPECTATIONS and not uses_surprise: m.append('evidence')
-    if 'competing-catalysts' in flags: m.append('single-catalyst')
-    if pre is None or pre * d >= PRIORITY_PRICED_SIGMA: m.append('not-priced-in')
-    for k in ('index_pre_sigma', 'sector_pre_sigma'):
-        v = ctx.get(k)
-        if v is not None and v * d <= PRIORITY_CONTEXT_SIGMA: m.append('context-supports'); break
+    g = out['gates'] = {}  # every Priority gate individually: pass | fail | pending (not decidable yet, e.g. before validation)
+    g['direct-subject'] = 'pass' if rel in PRIORITY_RELATIONS else 'fail'
+    g['evidence'] = 'pass' if ((uses_surprise and big) or (t not in NEEDS_EXPECTATIONS and strong)) else 'fail'
+    g['single-catalyst'] = 'fail' if 'competing-catalysts' in flags else 'pass'
+    g['not-priced-in'] = 'fail' if (pre is None or pre * d >= PRIORITY_PRICED_SIGMA) else 'pass'
+    g['context-supports'] = 'fail' if any(ctx.get(k) is not None and ctx[k] * d <= PRIORITY_CONTEXT_SIGMA for k in ('index_pre_sigma', 'sector_pre_sigma')) else 'pass'
     em = ctx.get('expected_move_sigma')
-    if em is None or em < PRIORITY_MIN_MOVE_SIGMA: m.append('move-above-noise')
-    if pre is None or ctx.get('index_pre_sigma') is None: m.append('data-complete')
-    if type_enabled is not None and not type_enabled(t): m.append('type-enabled')
-    if th and th.get('priority') is not None and (out['confidence'] is None or out['confidence'] < th['priority']): m.append('priority-confidence')
-    out['priority_missing'] = sorted(set(m), key=PRIORITY_GATES.index)
-    if not out['priority_missing']: out['view_tier'] = 'priority'
+    g['move-above-noise'] = 'pass' if em is not None and em >= PRIORITY_MIN_MOVE_SIGMA else 'fail'
+    g['data-complete'] = 'pass' if pre is not None and ctx.get('index_pre_sigma') is not None and ctx.get('sigma_daily') else 'fail'
+    g['type-enabled'] = 'pending' if type_enabled is None else ('pass' if type_enabled(t) else 'fail')
+    g['priority-confidence'] = 'pending' if not (th and th.get('priority') is not None) else ('pass' if out['confidence'] is not None and out['confidence'] >= th['priority'] else 'fail')
+    out['priority_missing'] = [k for k in PRIORITY_GATES if g[k] == 'fail']
+    out['pending'] = [k for k in PRIORITY_GATES if g[k] == 'pending']
+    if not out['priority_missing']: out['view_tier'] = 'priority'  # pending gates do not block during shadow validation; they are recorded
+    out['tier_reasons'] = out['priority_missing'] or ['all-gates-pass']
     return out
 
 
