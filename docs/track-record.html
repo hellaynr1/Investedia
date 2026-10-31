@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=755e8ad8e2">
-<script src="assets/consent.js?v=755e8ad8e2"></script>
+<link rel="stylesheet" href="assets/consent.css?v=75fecc5b49">
+<script src="assets/consent.js?v=75fecc5b49"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia Track Record</title>
 <meta name="description" content="How Investedia's calls turned out: the Live Prediction Track Record (frozen before the outcome) and, separately, the Historical Prediction Track Record (backtests). Every call, hits and misses.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="How Investedia's calls turned out: the Live Prediction Track Record (frozen before the outcome) and, separately, the Historical Prediction Track Record (backtests). Every call, hits and misses.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=755e8ad8e2">
-<link rel="stylesheet" href="assets/skin.css?v=755e8ad8e2">
+<link rel="stylesheet" href="assets/app.css?v=75fecc5b49">
+<link rel="stylesheet" href="assets/skin.css?v=75fecc5b49">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,17 +46,17 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=755e8ad8e2"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=755e8ad8e2">
-<script src="assets/live-config.js?v=755e8ad8e2"></script>
-<script src="assets/live-data.js?v=755e8ad8e2" defer></script>
-<script src="assets/prefs.js?v=755e8ad8e2"></script>
-<script src="assets/peek.js?v=755e8ad8e2"></script>
-<script src="assets/sectors.js?v=755e8ad8e2"></script>
-<script src="assets/news-menu.js?v=755e8ad8e2"></script>
-<script src="assets/ui.js?v=755e8ad8e2"></script>
-<script src="assets/news-alerts.js?v=755e8ad8e2" defer></script>
-<script src="assets/calls-ui.js?v=755e8ad8e2"></script>
+<script src="assets/mock.js?v=75fecc5b49"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=75fecc5b49">
+<script src="assets/live-config.js?v=75fecc5b49"></script>
+<script src="assets/live-data.js?v=75fecc5b49" defer></script>
+<script src="assets/prefs.js?v=75fecc5b49"></script>
+<script src="assets/peek.js?v=75fecc5b49"></script>
+<script src="assets/sectors.js?v=75fecc5b49"></script>
+<script src="assets/news-menu.js?v=75fecc5b49"></script>
+<script src="assets/ui.js?v=75fecc5b49"></script>
+<script src="assets/news-alerts.js?v=75fecc5b49" defer></script>
+<script src="assets/calls-ui.js?v=75fecc5b49"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <link rel="stylesheet" href="assets/calls-ui.css">
 <nav class="subnav" id="news-nav"></nav>
@@ -71,7 +71,7 @@
   const U = window.CallsUI, root = document.getElementById('tr'), q = new URLSearchParams(location.search), concept = q.get('concept') === '1';
   const { calls: all, live_since } = await U.load();
   const WIN = [['7', '7D'], ['30', '30D'], ['90', '90D'], ['0', 'All']];
-  const F = [['all', 'All'], ['hit', 'Hits'], ['miss', 'Misses'], ['flat', 'No clear move'], ['pending', 'Pending'], ['up', 'Up calls'], ['down', 'Down calls']];
+  const F = [['all', 'All'], ['hit', 'Hits'], ['miss', 'Misses'], ['flat', 'No clear move'], ['pending', 'Pending'], ['up', 'Long calls'], ['down', 'Short calls']];
   let win = q.get('w') || '0', cur = 'all', lim = 30;
   const since = live_since ? new Date(live_since).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
   const group = (title, parts) => `<div class="tr2-grp"><h3>${title}</h3>${parts.map(([l, cs]) => { const n = U.counts(cs), ok = n.clear >= U.SUB;
@@ -83,13 +83,13 @@
     root.innerHTML = `<div class="tr2-two">
       <section class="tr2-box"><div class="tr2-k">Live Prediction Track Record</div>
         ${a ? `<div class="tr2-big">${a.pct}%</div><div class="tr2-sub">${a.text}</div>` : `<div class="tr2-big building">Building — ${n.judged} of ${U.NEED} judged calls</div><div class="tr2-bar"><i style="width:${Math.min(100, 100 * n.judged / U.NEED)}%"></i></div><div class="tr2-sub">No accuracy is shown until ${U.NEED} calls are judged.</div>`}
-        <div class="tr2-note">Every call is frozen before its outcome and scored from the earliest time it can be proven public, then judged on the first traded price at least 24 hours later in the asset’s own market session. Call result reads “down” as sold: a fall is a gain.${since ? ` Live since ${since}.` : ''}</div></section>
+        <div class="tr2-note">Every call is frozen before its outcome and scored from the earliest time it can be proven public, then judged on the first traded price at least 24 hours later in the asset’s own market session. Call result reads each call as a position: a short gains when the price falls.${since ? ` Live since ${since}.` : ''}</div></section>
       <section class="tr2-box"><div class="tr2-k">Historical Prediction Track Record</div>
         ${concept ? '<div class="tr2-big">XX%<span class="tr2-ill">ILLUSTRATIVE</span></div><div class="tr2-sub">X,XXX backtested predictions</div>' : '<div class="tr2-big building">In validation</div><div class="tr2-sub">Backtested predictions using only the information available at the time. Nothing is published until they pass the published quality gates.</div>'}
         <div class="tr2-note">Research data, kept separate. Never combined with the live record.</div></section></div>
       <div class="cx-bar"><div class="cx-seg" role="group" aria-label="Time window">${WIN.map(([k, l]) => `<button type="button" data-w="${k}" aria-pressed="${k === win}">${l}</button>`).join('')}</div></div>
       <div class="tr2-kpis six">${[['Judged', n.judged], ['Hits', n.hit, 'ok'], ['Misses', n.miss, 'no'], ['No clear move', n.flat], ['Pending', n.pending, 'wait'], ['Unresolved', n.unresolved]].map(([l, v, k]) => `<div class="tr2-kpi ${k || ''}"><b>${v}</b><span>${l}</span></div>`).join('')}</div>
-      <div class="tr2-groups">${group('Direction', [['Up calls', scored.filter(c => c.dir === 'up')], ['Down calls', scored.filter(c => c.dir === 'down')]])}
+      <div class="tr2-groups">${group('Direction', [['Long calls', scored.filter(c => c.dir === 'up')], ['Short calls', scored.filter(c => c.dir === 'down')]])}
         ${group('Confidence', ['high', 'medium', 'low'].map(k => [k[0].toUpperCase() + k.slice(1), scored.filter(c => c.conf === k)]))}
         ${group('Event type', fams.slice(0, 8).map(f => [U.FAM[f] || f, scored.filter(c => (c.fam || 'other') === f)]))}</div>
       <h2 class="cx-sec">Every call <small class="muted">· ${hist.length}</small></h2>

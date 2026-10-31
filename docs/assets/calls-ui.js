@@ -14,7 +14,7 @@
   const pct = v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + '%';
   const tk = c => (c.sym || '').replace(/-USD$/, '').replace(/=X$/, '');
   const badge = c => { const [k, i, l] = RES[c.res] || RES.pending; return `<span class="cx-badge ${k}">${i} ${l}</span>`; };
-  const said = c => `<span class="cx-said ${c.dir}">said ${c.dir === 'up' ? '↑ up' : '↓ down'}</span>`;
+  const said = c => `<span class="cx-said ${c.dir}">${c.dir === 'up' ? 'Long' : 'Short'}</span>`;
   const conf = c => c.conf ? `<span class="cx-conf">${esc(c.conf)} confidence</span>` : '';
   const start = c => Date.parse(c.start || c.created);
   // result of the call, not the asset's move: "down" is read as sold, so a fall is a gain and a rise is a loss
@@ -90,7 +90,7 @@
       ${c.src ? `<p class="cx-fine" style="margin:-8px 0 12px">${esc(c.src)}</p>` : ''}
       <div class="cx-bigchart">${chart(c, { w: 720, h: 280, big: true })}${c.path ? `<p class="cx-fine">Price path: ${esc(c.path.src === 'exchange bars' ? 'traded prices from the asset’s own exchange session (5-minute bars, thinned to 30 minutes), stored when the call was judged' : 'prices recorded by Investedia’s price robot so far; the full path is stored when the call is judged')}. Nothing is interpolated.</p>` : ''}</div>
       <dl class="cx-dl">${rows.filter(Boolean).map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
-      <p class="cx-fine">Call result reads the call like a trade: “up” as bought, “down” as sold, so a fall after a “down” call is a gain. The call was frozen before its outcome and is scored from the earliest time it can be proven public. No exit or target signal was recorded for this call, so none is shown.</p></div>`;
+      <p class="cx-fine">Call result reads the call as a position: a long gains when the price rises, a short gains when it falls. The call was frozen before its outcome and is scored from the earliest time it can be proven public. No exit or target signal was recorded for this call, so none is shown.</p></div>`;
   }
   window.CallsUI = { gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
 })();
