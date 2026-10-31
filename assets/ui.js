@@ -381,11 +381,22 @@
   // Everything else: pick up the robot's newest prices every 2 minutes without reloading the page
   whenVisible(() => fetch('assets/quotes.js?t=' + Date.now(), { cache: 'no-store' }).then(r => r.text()).then(t => {
     const j = JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1)); if (!j.q || (M.updated && new Date(j.updated) <= M.updated)) return;
+    if (window.InvData && InvData.mode === 'worker' && Date.now() - (InvData.workerAt || 0) < 300000) return;  // the Worker answered in the last 5 minutes: its prices stay, the static file is only the fallback
     for (const s in j.q) { const a = M.bySym[s]; if (!a || a.live) continue; a.base = null; setPrice(s, j.q[s].p, j.q[s].d); Object.assign(a, { w: j.q[s].w, m1: j.q[s].m1 }); }
     M.updated = new Date(j.updated);
     document.querySelectorAll('[data-asof]').forEach(el => el.textContent = 'Delayed · updated ' + M.updated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     document.dispatchEvent(new CustomEvent('inv:tick'));
   }).catch(() => {}), 120000);
+
+  // Prices from the Cloudflare Worker (INV_DATA_MODE = 'worker'): stocks, indices, currencies and commodities, every 30 s while the page is open.
+  // Only price and change are taken; the static file keeps providing everything else and is the fallback whenever the Worker is slow, down or empty.
+  whenVisible(() => { const D = window.InvData; if (!D || D.mode !== 'worker') return;
+    D.get('prices').then(r => {
+      D.workerAt = Date.now(); const q = window.QUOTES && window.QUOTES.q;
+      for (const s in r.data) { const a = M.bySym[s]; if (!a || a.live) continue; const row = r.data[s]; a.base = null; setPrice(s, row[0], row[1]); if (q && q[s]) { q[s].p = row[0]; q[s].d = row[1]; } }
+      document.dispatchEvent(new CustomEvent('inv:tick'));
+    }).catch(() => {});
+  }, 30000);
 
   // ---------- live crypto: Coinbase's free public feed, applied at most once a second ----------
   (function liveCrypto() {
@@ -428,9 +439,9 @@
     <div><h6>Learn</h6><ul><li><a href="education.html">Education</a></li></ul></div>
     <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
     <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our background</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="contact.html">Contact</a></li><li><a href="mailto:jobs@investedia.com">Jobs</a></li><li><a href="mailto:partners@investedia.com">Partnerships</a></li><li><a href="mailto:feedback@investedia.com">Feedback &amp; suggestions</a></li></ul></div>
-    <div class="ftr-legal"><h6>Legal</h6><ul><li><a href="legal.html">Legal hub</a></li><li><a href="terms.html">Terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="cookies.html">Cookies</a></li><li><a href="disclaimer.html">Disclaimer</a></li><li><a href="ai-disclosure.html">AI use</a></li><li><a href="sources.html">Sources</a></li><li><a href="copyright.html">Copyright & takedown</a></li><li><a href="editorial-policy.html">Editorial policy</a></li><li><a href="corrections.html">Corrections</a></li><li><a href="affiliate-disclosure.html">Advertising & affiliates</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="contact.html">Contact</a></li><li><button type="button" data-cookie-settings>Cookie settings</button></li></ul></div>
+    <div class="ftr-legal"><h6>Legal</h6><ul><li><a href="legal.html">Legal hub</a></li><li><a href="legal-notice.html">Legal notice</a></li><li><a href="terms.html">Terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="cookies.html">Cookies</a></li><li><a href="disclaimer.html">Disclaimer</a></li><li><a href="ai-disclosure.html">AI use</a></li><li><a href="sources.html">Sources</a></li><li><a href="copyright.html">Copyright & takedown</a></li><li><a href="editorial-policy.html">Editorial policy</a></li><li><a href="corrections.html">Corrections</a></li><li><a href="affiliate-disclosure.html">Advertising & affiliates</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="contact.html">Contact</a></li><li><button type="button" data-cookie-settings>Cookie settings</button></li></ul></div>
   </div>
-  <div class="ftr-bottom"><span>© ${new Date().getFullYear()} Investedia · ${window.InvLegal?.legal_name ? String(window.InvLegal.legal_name).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;") : '<mark class="owner-placeholder">[OWNER: legal name]</mark>'}. <a href="disclaimer.html">Not investment advice.</a></span><span>Data: Yahoo Finance, FRED & Coinbase. <a href="sources.html">Sources & attributions</a>.</span></div></div>`;
+  <div class="ftr-bottom"><span>© ${new Date().getFullYear()} Investedia · <a href="legal-notice.html">Legal notice</a> · <a href="disclaimer.html">Not investment advice.</a></span><span>Data: Yahoo Finance, FRED & Coinbase. <a href="sources.html">Sources & attributions</a>.</span></div></div>`;
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
 
   // ---------- charts ----------
@@ -618,7 +629,9 @@
   const sbLoad = () => sb ? Promise.resolve(sb) : new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'; s.onload = () => ok(sb = window.supabase.createClient(SB_URL, SB_KEY)); s.onerror = no; document.head.append(s); });
   window.invSB = sbLoad;
   // ---------- optional first-party usage events, gated by analytics consent ----------
-  const OWNERS = ['adonaykabeya10@gmail.com', 'info@investedia.com'];
+  // Owner accounts are recognised by a SHA-256 hash of their email, so no address appears in this public file. This only changes which buttons show; access to data is enforced by Supabase.
+  const OWNER_HASHES = ["264b0fd1279e8a878bb289abf5411178fe468ea4bb1a0f87331618413d05144e", "f1b59c964027b7263946e880de371f9f61738244628d1acc3a98744be74decde"];
+  const isOwnerEmail = async (e) => { try { const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(e || '').toLowerCase())); return OWNER_HASHES.includes([...new Uint8Array(d)].map(b => b.toString(16).padStart(2, '0')).join('')); } catch { return false; } };
   const track = (type, detail) => { try {
     if (!window.InvConsent?.allows('analytics')) return;
     if (navigator.webdriver || /bot|crawl|spider|headless|lighthouse/i.test(navigator.userAgent) || !/investedia\.com$/.test(location.hostname) || store('inv-owner') === '1') return;
@@ -684,7 +697,7 @@
   if (gated) document.documentElement.classList.add('auth-gate');
   const paintUser = u => { if (gated && u) document.documentElement.classList.remove('auth-gate');
     const av = hdr.querySelector('#hdr-avatar'), lb = hdr.querySelector('#hdr-login'); if (!lb) return;
-    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); const owner = !!u && OWNERS.includes(String(u.email || '').toLowerCase()); document.documentElement.classList.toggle('is-owner', owner); if (owner) store('inv-owner', '1'); INVWATCH.login(u); window.invUser = u || null; window.dispatchEvent(new CustomEvent('inv-user', { detail: u || null })); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
+    lb.hidden = !!u; av.hidden = !u; document.documentElement.classList.toggle('is-member', !!u); document.documentElement.classList.remove('is-owner'); if (u) isOwnerEmail(u.email).then(owner => { document.documentElement.classList.toggle('is-owner', owner); if (owner) store('inv-owner', '1'); }); INVWATCH.login(u); window.invUser = u || null; window.dispatchEvent(new CustomEvent('inv-user', { detail: u || null })); if (!u) return; store('inv-had-account', '1'); const nm = (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name)) || u.email;
     av.textContent = nm.split(/[\s@.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase(); paintAvatar();
     if (u.app_metadata && u.app_metadata.provider === 'google' && store('inv-news-optin') === '1' && !u.user_metadata.newsletter) { sb.auth.updateUser({ data: { newsletter: true } }); store('inv-news-optin', '0'); } };
   {

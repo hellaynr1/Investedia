@@ -12,7 +12,7 @@
 ## FRED key (optional)
 1. Request a free key: https://fredaccount.stlouisfed.org/apikeys (docs: https://fred.stlouisfed.org/docs/api/api_key.html).
 2. Add it as a repository secret named `FRED_API_KEY`: https://github.com/hellaynr1/Investedia/settings/secrets/actions/new
-3. Both workflows that run `update_calendar.py` pass it in (`update-calendar.yml`, `update-globe-news.yml`). Without the secret the module does nothing.
+3. Both workflows that run `update_calendar.py` pass it in (`update-calendar.yml`, `broad-news.yml`). Without the secret the module does nothing.
 4. Never paste the key into a chat, a file or a commit. The module reads it from the environment and strips it from every error message.
 5. First run: Actions, "Refresh economic releases", Run workflow. Check the log for the line `FRED: n releases added, n actuals filled`.
 

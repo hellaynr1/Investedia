@@ -25,21 +25,26 @@ class Daily(unittest.TestCase):
         bars = BARS + [[ts(2026, 10, 26), 0, 0, 0, 110.0, 0]]
         self.assertEqual(b.judge_daily(sat, 'up', bars), (7.84, 'hit'))
 
-    def test_run_skips_young_articles_and_never_adds_twice(self):
+    def test_run_only_finishes_frozen_pending_calls_and_never_creates_calls(self):
         import json, tempfile
         d = tempfile.mkdtemp(); g = os.path.join(d, 'g'); h = os.path.join(d, 'h'); os.makedirs(g); os.makedirs(h)
         json.dump({'assets': [{'s': 'AAA', 'site': 'AAA', 'n': 'Aaa'}]}, open(os.path.join(g, 'markets.json'), 'w'))
         json.dump({'daily': BARS}, open(os.path.join(h, 'AAA.json'), 'w'))
-        st = lambda i, t: {'id': i, 'published_at': t, 'headline': 'x', 'impacts': [{'ticker': 'AAA', 'name': 'Aaa', 'direction': 'up'}]}
-        json.dump({'stories': [st('old', '2026-10-20T15:00:00Z'), st('young', '2026-10-24T10:00:00Z')]}, open(os.path.join(g, 'news-archive.json'), 'w'))
-        b.G, b.HIST = g, h
-        now = datetime(2026, 10, 22, 16, tzinfo=timezone.utc)  # 'old' is 49 h old: still the live recorder's
-        self.assertEqual(b.run(False, now)[0], 0)
-        now = datetime(2026, 10, 24, 16, tzinfo=timezone.utc)
-        n, led = b.run(True, now)
+        # an archived story with an implication but no frozen call: must NOT become a call
+        json.dump({'stories': [{'id': 'story', 'published_at': '2026-10-20T15:00:00Z', 'impacts': [{'ticker': 'AAA', 'direction': 'up'}]}]}, open(os.path.join(g, 'news-archive.json'), 'w'))
+        call = lambda i, t, **k: {'id': i, 'sym': 'AAA', 'dir': 'up', 'created': t, 'res': 'pending', **k}
+        json.dump({'schema': 2, 'calls': [call('old', '2026-10-20T15:00:00Z'), call('young', '2026-10-24T10:00:00Z'), call('legacy', '2026-10-20T15:00:00Z', legacy=True)]},
+                  open(os.path.join(g, 'news-ledger.json'), 'w'))
+        b.G, b.HIST, b.ROOT = g, h, d  # never touch the real site files
+        self.assertEqual(b.run(False, datetime(2026, 10, 22, 16, tzinfo=timezone.utc))[0], 0)  # 49 h: still the live recorder's
+        n, led = b.run(True, datetime(2026, 10, 24, 16, tzinfo=timezone.utc))
         self.assertEqual(n, 1)
-        self.assertEqual(led['calls'][0]['basis'], 'daily')
-        self.assertEqual(b.run(True, now)[0], 0)
+        by = {c['id']: c for c in led['calls']}
+        self.assertEqual(len(led['calls']), 3)
+        self.assertEqual((by['old']['res'], by['old']['basis'], by['old']['dir']), ('hit', 'daily', 'up'))
+        self.assertEqual(by['young']['res'], 'pending')
+        self.assertEqual(by['legacy']['res'], 'pending')
+        self.assertEqual(b.run(True, datetime(2026, 10, 24, 17, tzinfo=timezone.utc))[0], 0)  # never judged twice
 
 
 if __name__ == '__main__':

@@ -63,14 +63,14 @@ const sinceOf = (s, m) => { if (!m || !window.SinceNews || !TRACK || !TRACK.s) r
 const whyFeatured = (s, asof) => { const m = primary(s), t = s.why_moved || s.summary;
   const since = sinceOf(s, m), body = since || (m ? `<div class="hn-wrow"><div class="hn-wbig"><span class="hn-wl">${esc(m.a.n)} · today</span><strong class="${m.a.d > 0 ? 'up' : m.a.d < 0 ? 'down' : 'flat'}">${m.a.d > 0 ? '↑' : m.a.d < 0 ? '↓' : '↔'} ${Math.abs(m.a.d).toFixed(2)}%</strong><span class="hn-wl">7 days ${sign(m.a.w)}</span></div><div class="hn-wchart">${spark(m.a, markIndex(s, m.a, asof), m.a.w >= 0)}<div class="hn-wcap"><span>22 sessions ago</span><span class="hn-wmk">● article published</span><span>now</span></div></div></div>` : '');
   return `<a class="hn-wf" href="${url(s)}"><div class="hn-wtop">${tags(s)}${m ? implies(m.i) : ''}</div><h3>${esc(s.headline)}</h3><p>${esc(t)}</p>${body}${impactChips(s)}</a>`; };
-const whySmall = s => { const m = primary(s); return `<a class="hn-wc" href="${url(s)}"><div class="hn-wtop">${tags(s)}</div><h4>${esc(s.headline)}</h4>${m ? `<div class="hn-wasset"><b>${esc(m.a.n)}</b>${pctPill(m.a.d)}${implies(m.i)}</div>` : impactChips(s)}</a>`; };
+const whySmall = s => { const m = primary(s); return `<a class="hn-wc" href="${url(s)}"><div class="hn-wtop">${tags(s)}</div><h4>${esc(s.headline)}</h4>${m ? `<div class="hn-wasset"><b>${esc(m.a.n)}</b>${pctPill(m.a.d)}${implies(m.i)}</div>` : ''}${impactChips(s)}</a>`; };
 const whySection = (list, asof) => list.length ? whyFeatured(list[0], asof) + `<div class="hn-wside">${list.slice(1, 3).map(whySmall).join('')}</div>` : '';
 function countries(list) {
   const c = {}; for (const s of list) c[s.location.country] = (c[s.location.country] || 0) + 1;
   return Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, n]) => `<a class="hn-cty" href="assets/globe/news.html?country=${encodeURIComponent(k)}">${flagSrc(k) ? `<img src="${flagSrc(k)}" alt="">` : ''}<span><b>${esc(nm(k))}</b><small>${n} ${n === 1 ? 'article' : 'articles'}</small></span></a>`).join('');
 }
-// rank: importance, then sources, then recency
-const rank = (a, b) => (b.importance - a.importance) || ((b.sources?.length || 1) - (a.sources?.length || 1)) || (Date.parse(b.published_at) - Date.parse(a.published_at));
+// rank: importance, then priority score (stored, never shown), then sources, then recency
+const rank = (a, b) => (b.importance - a.importance) || ((b.score || 0) - (a.score || 0)) || ((b.sources?.length || 1) - (a.sources?.length || 1)) || (Date.parse(b.published_at) - Date.parse(a.published_at));
 async function loadNews() {
   const [n, iso, logos, mk, trk, led] = await Promise.all([fetch('assets/globe/news-live.json', { cache: 'no-cache' }).then(r => r.json()), fetch('assets/globe/iso.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/logos.json').then(r => r.json()).catch(() => ({})), fetch('assets/globe/markets.json').then(r => r.json()).catch(() => ({ assets: [] })), window.SinceNews ? SinceNews.load('assets/globe/news-track.json') : null, fetch('assets/globe/news-ledger.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => null)]);
   MARKETS = mk.assets || []; TRACK = trk; LEDGER = led;
@@ -78,7 +78,8 @@ async function loadNews() {
   return { stories, top: [...stories].sort(rank), latest: [...stories].sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at)), updated: n.updated_at,
     moved: (() => { const all = [...stories].filter(s => s.market_moving || s.importance === 3).sort(rank), seen = new Set(), out = []; for (const s of all) { const m = primary(s); if (m && !seen.has(m.a.s)) { seen.add(m.a.s); out.push(s); } } for (const s of all) if (!out.includes(s) && !primary(s)) out.push(s); return out; })(), asof: mk.asof, calls: window.Implications ? Implications.collect({ stories, markets: MARKETS, track: TRACK, ledger: LEDGER }) : [] };
 }
-const updatedText = t => 'Live · updated ' + new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+const freshAgo = t => { const m = Math.max(0, Math.round((Date.now() - Date.parse(t)) / 60000)); return m < 1 ? 'just now' : m < 60 ? m + 'm ago' : m < 1440 ? Math.floor(m / 60) + 'h ago' : Math.floor(m / 1440) + 'd ago'; };
+const updatedText = t => 'Updated ' + freshAgo(t);
 
 // "Articles the market confirmed" (homepage): only calls the market bore out are featured; every other call is one click away on implications.html.
 const sgn = v => (v > 0 ? '↑ ' : v < 0 ? '↓ ' : '↔ ') + Math.abs(v).toFixed(2) + '%';
@@ -87,7 +88,7 @@ function confirmedFeatured(c) {
   const s = c.story, card = window.SinceNews ? SinceNews.card({ story: s, impact: c.impact, asset: c.asset, series: c.series, now: Date.now() }) : '';
   return `<a class="hn-wf" href="${url(s)}"><div class="hn-wtop">${tags(s)}</div>${confirmedChip(c)}<h3>${esc(s.headline)}</h3><p>${esc(s.why_moved || s.summary)}</p>${card}${impactChips(s)}</a>`;
 }
-const confirmedSmall = c => `<a class="hn-wc" href="${url(c.story)}"><div class="hn-wtop">${tags(c.story)}</div><h4>${esc(c.story.headline)}</h4><div class="hn-wasset"><span class="hn-conf sm">✓ ${esc(c.asset.n)} ${sgn(c.move)}</span></div></a>`;
+const confirmedSmall = c => `<a class="hn-wc" href="${url(c.story)}"><div class="hn-wtop">${tags(c.story)}</div><h4>${esc(c.story.headline)}</h4><div class="hn-wasset"><span class="hn-conf sm">✓ ${esc(c.asset.n)} ${sgn(c.move)}</span></div>${impactChips(c.story)}</a>`;
 function confirmedSection(d) {
   const calls = d.calls || [], C = window.Implications ? Implications.counts(calls) : { hit: 0, miss: 0, flat: 0 }, judged = C.hit + C.miss + C.flat;
   const hits = calls.filter(c => c.res === 'hit' && c.judged === 'live').sort((a, b) => (b.story.importance - a.story.importance) || (b.pub - a.pub));

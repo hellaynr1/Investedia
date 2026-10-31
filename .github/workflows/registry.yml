@@ -1,0 +1,36 @@
+name: Asset registry (hourly)
+# Rebuilds data/registry.json, the canonical asset/entity registry, so tickers the news started using are verified against the SEC
+# company-ticker file and Yahoo Finance security records. Nothing is guessed: unverified symbols stay out until a record confirms them.
+on:
+  schedule:
+    - cron: "41 * * * *"   # hourly: tickers the news starts using are verified within the hour (stories are re-stamped every news run)
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: registry
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: tools/registry/cache
+          key: registry-cache-${{ github.run_id }}
+          restore-keys: registry-cache-
+      - name: Build the registry
+        run: python3 tools/registry/build_registry.py
+      - name: Check it
+        run: python3 -m unittest tests.test_registry
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add data/registry.json docs/data/registry.json assets/globe/industries.json docs/assets/globe/industries.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Update asset registry"
+          for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep 5; done
+          exit 1

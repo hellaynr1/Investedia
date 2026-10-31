@@ -23,50 +23,36 @@ async function snapshot() {
   return { t: Date.now(), source: 'Coinbase public market data', ttl: TTL, p: out };
 }
 
-// ---- Non-crypto prices: a cron job refreshes a rotating batch from Yahoo's free chart feed and saves one snapshot in KV. ----
-import { TIER_A, TIER_B } from './symbols.js';
-const UA_Y = 'Mozilla/5.0 (compatible; Investedia/1.0; +https://investedia.com)';
-async function quote(entry) {
-  const [site, y, inv] = entry.split('|');
-  try {
-    const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(y)}?range=1d&interval=1d`, { headers: { 'User-Agent': UA_Y } });
-    if (!r.ok) return null;
-    const m = (await r.json())?.chart?.result?.[0]?.meta, p = m?.regularMarketPrice, prev = m?.chartPreviousClose ?? m?.previousClose;
-    if (!(p > 0) || !(prev > 0)) return null;
-    const d = (p / prev - 1) * 100 * (inv === '1' ? -1 : 1);
-    return [site, [+p.toFixed(6), +d.toFixed(2), m.regularMarketDayHigh ?? null, m.regularMarketDayLow ?? null, m.regularMarketVolume ?? null, (m.regularMarketTime || 0) * 1000]];
-  } catch { return null; }
-}
-const pick = (list, from, n) => { const out = []; for (let i = 0; i < Math.min(n, list.length); i++) out.push(list[(from + i) % list.length]); return out; };
-export async function refresh(env, now = Date.now()) {
-  const a = +env.BATCH_A || 30, b = +env.BATCH_B || 15;
-  let snap = {}; try { snap = JSON.parse(await env.PRICES.get('px')) || {}; } catch {}
-  const cur = snap.cur || { a: 0, b: 0 }, p = snap.p || {};
-  const batch = [...pick(TIER_A, cur.a, a), ...pick(TIER_B, cur.b, b)];
-  const got = (await Promise.all(batch.map(quote))).filter(Boolean);
-  for (const [site, v] of got) p[site] = [...v, now];
-  const next = { t: now, cur: { a: (cur.a + a) % TIER_A.length, b: (cur.b + b) % TIER_B.length }, p };
-  if (got.length) await env.PRICES.put('px', JSON.stringify(next));
-  return { fetched: batch.length, ok: got.length };
-}
+// ---- Non-crypto prices, news and globe: /v1 (see v1/). Provider adapters live in providers/. ----
+import { refresh, handlePrices, handleStatus } from './v1/prices.js';
+import { refreshNews, handleNews, handleGlobe, ingestNews } from './v1/news.js';
+export { refresh };
+const json = (h, status, body, cache = 'no-store') => new Response(JSON.stringify(body), { status, headers: { ...h, 'Content-Type': 'application/json', 'Cache-Control': cache } });
 
 export default {
-  async scheduled(event, env, ctx) { ctx.waitUntil(refresh(env)); },
+  async scheduled(event, env, ctx) {
+    const log = (o) => console.log(JSON.stringify(o)), fail = (k) => (e) => log({ cron: k, error: String(e).slice(0, 200) });
+    if (event.cron === '*/5 * * * *') { if (env.NEWS_CRON === 'on') ctx.waitUntil(refreshNews(env).then(r => log({ cron: 'news', fetched: r.fetched, candidates: r.candidates, added: r.added, wrote: r.wrote, gemini_ok: r.gemini_ok, feeds_failed: r.feeds_failed })).catch(fail('news'))); }
+    else ctx.waitUntil(refresh(env).then(r => log({ cron: 'prices', ok: r.ok, sent: r.sent, wrote: r.wrote, changed: r.changed, reason: r.reason })).catch(fail('prices')));
+  },
   async fetch(req, env, ctx) {
     const h = cors(req), url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
-    if (req.method === 'GET' && url.pathname === '/prices') {
-      let body = await env.PRICES?.get('px');
-      if (!body) return new Response(JSON.stringify({ error: 'no data yet' }), { status: 503, headers: { ...h, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
-      const snap = JSON.parse(body); delete snap.cur;
-      return new Response(JSON.stringify(snap), { headers: { ...h, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=30' } });
+    if (req.method === 'POST' && url.pathname === '/v1/ingest/news') {
+      let r; try { r = await ingestNews(req, env); } catch (e) { console.log(JSON.stringify({ route: 'ingest', error: String(e).slice(0, 200) })); r = { status: 500, body: { error: 'internal' } }; }
+      return json({}, r.status, r.body);
     }
-    if (req.method === 'GET' && url.pathname === '/probe') { // temporary check: can this Worker read Yahoo's free chart feed? Fixed symbols only.
-      const out = {};
-      for (const sym of ['^GSPC', 'AAPL', 'EURUSD=X']) {
-        try { const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?range=1d&interval=5m`, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Investedia/1.0; +https://investedia.com)' } }); const j = r.ok ? await r.json() : null; out[sym] = { status: r.status, price: j?.chart?.result?.[0]?.meta?.regularMarketPrice ?? null }; } catch (e) { out[sym] = { error: String(e) }; }
-      }
-      return new Response(JSON.stringify(out), { headers: { ...h, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+    if (req.method === 'GET' && ['/v1/prices', '/v1/status', '/v1/news', '/v1/globe'].includes(url.pathname)) {
+      // 15 s shared edge cache in front of KV: many visitors cost one KV read per location per 15 s
+      const cache = caches.default, key = new Request(url.origin + url.pathname + url.search + '#v1', { method: 'GET' });
+      const hit = await cache.match(key);
+      if (hit) return new Response(await hit.text(), { headers: { ...h, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=15', 'X-Inv-Cache': 'hit' } });
+      let r;
+      try { r = url.pathname === '/v1/prices' ? await handlePrices(url, env, ctx) : url.pathname === '/v1/news' ? await handleNews(env) : url.pathname === '/v1/globe' ? await handleGlobe(env) : await handleStatus(env); }
+      catch (e) { console.log(JSON.stringify({ route: url.pathname, error: String(e).slice(0, 200) })); r = { status: 500, body: { error: 'internal', meta: { state: 'unavailable', version: 1 } } }; }
+      const res = json(h, r.status, r.body, r.status === 200 ? 'public, max-age=15' : 'no-store');
+      if (r.status === 200) { res.headers.set('X-Inv-State', r.body.meta?.state || 'ok'); ctx.waitUntil(cache.put(key, new Response(JSON.stringify(r.body), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=15' } }))); }
+      return res;
     }
     if (req.method !== 'GET' || url.pathname !== '/ticker') return new Response('Not found', { status: 404, headers: h });
     const cache = caches.default, key = new Request(url.origin + '/__ticker', { method: 'GET' });

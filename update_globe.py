@@ -12,8 +12,23 @@ UA = {'User-Agent': 'Mozilla/5.0'}
 # Listings whose site symbol is not a Yahoo symbol keep the last known price; their currency follows the country of the listing.
 CUR_BY_CC = {'de': 'EUR', 'fr': 'EUR', 'it': 'EUR', 'es': 'EUR', 'nl': 'EUR', 'ie': 'EUR', 'ch': 'CHF', 'gb': 'GBP', 'kr': 'KRW', 'in': 'INR', 'sg': 'SGD', 'au': 'AUD', 'nz': 'NZD', 'za': 'ZAR', 'eg': 'EGP', 'sa': 'SAR', 'qa': 'QAR', 'ae': 'AED', 'pe': 'PEN', 'us': 'USD', 'jp': 'JPY', 'cn': 'CNY', 'hk': 'HKD'}
 
+def registry_listing():
+    """Globe symbol -> verified Yahoo symbol for Globe stocks whose symbol is a site code (MC = LVMH -> MC.PA, AIR = Airbus -> AIR.PA).
+    Without this, the bare code is priced as whichever US company has those letters (MC = Moelis & Company)."""
+    try:
+        import os
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'registry.json'), encoding='utf-8') as f: reg = json.load(f)['assets']
+        return {a['globe_symbol']: a['px'] for a in reg.values() if a.get('globe_symbol') and a.get('px')}
+    except Exception:
+        return {}
+
+LISTING = registry_listing()
+
 def ysym(m):
+    if m['t'] == 'stocks' and m['s'] in LISTING: return LISTING[m['s']]
     return m['s'] + '=X' if m['t'] == 'fx' else m['s'] + '-USD' if m['t'] == 'crypto' else m['s']
+
+MINOR = {'GBp': ('GBP', .01), 'GBX': ('GBP', .01), 'ZAc': ('ZAR', .01), 'USX': ('USD', .01), 'ILA': ('ILS', .01), 'KWF': ('KWD', .001)}  # pence, cents, agorot, fils
 
 def fetch(sym):
     for i in range(2):
@@ -23,7 +38,9 @@ def fetch(sym):
             c = [x for x in r['indicators']['quote'][0]['close'] if x is not None]
             live = r['meta'].get('regularMarketPrice')
             if live: c[-1] = live
-            if len(c) >= 6 and c[-1]: return c, r['meta'].get('currency')
+            cur = r['meta'].get('currency')
+            if cur in MINOR: cur, k = MINOR[cur]; c = [x * k for x in c]  # quoted in minor units: show the main currency (HSBC 1292.6 GBp -> 12.926 GBP)
+            if len(c) >= 6 and c[-1]: return c, cur
         except Exception:
             time.sleep(1 + i)
     return None

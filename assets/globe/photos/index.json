@@ -11,6 +11,54 @@
    "credit": "SpaceX-Imagery",
    "source_url": "https://pixabay.com/photos/cape-canaveral-launch-pad-693268/",
    "alt": "satellite space rocket"
+  },
+  {
+   "file": "photos/satellite-space-rocket-2809624.jpg",
+   "credit": "kalhh",
+   "source_url": "https://pixabay.com/photos/space-planet-space-cruiser-2809624/",
+   "alt": "satellite space rocket"
+  },
+  {
+   "file": "photos/satellite-space-rocket-4478233.jpg",
+   "credit": "rauschenberger",
+   "source_url": "https://pixabay.com/photos/aerospace-ariadne-sputnik-toulouse-4478233/",
+   "alt": "satellite space rocket"
+  },
+  {
+   "file": "photos/satellite-space-rocket-140304.jpg",
+   "credit": "14398",
+   "source_url": "https://pixabay.com/photos/world-map-satellite-image-140304/",
+   "alt": "satellite space rocket"
+  },
+  {
+   "file": "photos/satellite-space-rocket-1527501.jpg",
+   "credit": "Ponciano",
+   "source_url": "https://pixabay.com/photos/moon-sky-luna-craters-lunar-1527501/",
+   "alt": "satellite space rocket"
+  },
+  {
+   "file": "photos/satellite-space-rocket-67646.jpg",
+   "credit": "WikiImages",
+   "source_url": "https://pixabay.com/photos/rocket-launch-rocket-take-off-67646/",
+   "alt": "satellite space rocket"
+  },
+  {
+   "file": "photos/satellite-space-rocket-416973.jpg",
+   "credit": "PeterDargatz",
+   "source_url": "https://pixabay.com/photos/moon-super-moon-craters-full-moon-416973/",
+   "alt": "satellite space rocket"
+  },
+  {
+   "file": "photos/satellite-space-rocket-8579189.jpg",
+   "credit": "Mike_68",
+   "source_url": "https://pixabay.com/photos/moon-half-moon-night-sky-8579189/",
+   "alt": "satellite space rocket"
+  },
+  {
+   "file": "photos/satellite-space-rocket-3568835.jpg",
+   "credit": "adege",
+   "source_url": "https://pixabay.com/photos/moon-sky-night-sky-lunar-moonlight-3568835/",
+   "alt": "satellite space rocket"
   }
  ],
  "banknotes money": [
@@ -1519,7 +1567,11 @@
   "copper mine",
   "cargo trucks highway",
   "telecom tower 5g",
-  "hotel tourism"
+  "hotel tourism",
+  "beer brewery",
+  "freight train",
+  "luxury fashion",
+  "satellite space rocket"
  ],
  "airplane airport": [
   {
@@ -1923,6 +1975,36 @@
    "credit": "PIRO4D",
    "source_url": "https://pixabay.com/photos/time-clock-wrist-watch-chronometer-3091031/",
    "alt": "luxury fashion"
+  },
+  {
+   "file": "photos/luxury-fashion-1485984.jpg",
+   "credit": "maya_7966",
+   "source_url": "https://pixabay.com/photos/wedding-dress-bride-extravagant-1485984/",
+   "alt": "luxury fashion"
+  },
+  {
+   "file": "photos/luxury-fashion-1028398.jpg",
+   "credit": "haidi2002",
+   "source_url": "https://pixabay.com/photos/woman-fashion-jewelry-makeup-1028398/",
+   "alt": "luxury fashion"
+  },
+  {
+   "file": "photos/luxury-fashion-1869928.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/analog-watch-time-watch-wrist-watch-1869928/",
+   "alt": "luxury fashion"
+  },
+  {
+   "file": "photos/luxury-fashion-2538424.jpg",
+   "credit": "eloigomez_",
+   "source_url": "https://pixabay.com/photos/shoes-heels-woman-female-fashion-2538424/",
+   "alt": "luxury fashion"
+  },
+  {
+   "file": "photos/luxury-fashion-1284496.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/fashion-high-heels-shoes-pumps-1284496/",
+   "alt": "luxury fashion"
   }
  ],
  "mining truck": [
@@ -2159,6 +2241,18 @@
    "credit": "Ralf1403",
    "source_url": "https://pixabay.com/photos/locomotive-railroad-transport-train-8568473/",
    "alt": "freight train"
+  },
+  {
+   "file": "photos/freight-train-4789035.jpg",
+   "credit": "Michael_Luenen",
+   "source_url": "https://pixabay.com/photos/freight-depot-trains-railroad-4789035/",
+   "alt": "freight train"
+  },
+  {
+   "file": "photos/freight-train-6392173.jpg",
+   "credit": "DivineLeaders",
+   "source_url": "https://pixabay.com/photos/train-railroad-trees-cargo-rails-6392173/",
+   "alt": "freight train"
   }
  ],
  "wind turbines": [
@@ -2235,6 +2329,54 @@
    "credit": "PeterKraayvanger",
    "source_url": "https://pixabay.com/photos/beer-varieties-different-sorts-2370783/",
    "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-1283566.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/beers-glasses-of-beer-drink-alcohol-1283566/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-2439237.jpg",
+   "credit": "Alexas_Fotos",
+   "source_url": "https://pixabay.com/photos/beer-mug-refreshment-beer-mug-2439237/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-956322.jpg",
+   "credit": "stevepb",
+   "source_url": "https://pixabay.com/photos/beer-barrel-keg-cask-oak-barrel-956322/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-1866945.jpg",
+   "credit": "Pexels",
+   "source_url": "https://pixabay.com/photos/bottles-beer-bottles-bottle-caps-1866945/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-7415073.jpg",
+   "credit": "RitaE",
+   "source_url": "https://pixabay.com/photos/hop-vines-hop-hop-plants-hop-garden-7415073/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-564401.jpg",
+   "credit": "stevepb",
+   "source_url": "https://pixabay.com/photos/beer-drinks-bottles-beer-bottles-564401/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-1518504.jpg",
+   "credit": "tiburi",
+   "source_url": "https://pixabay.com/photos/factory-beer-production-brewery-1518504/",
+   "alt": "beer brewery"
+  },
+  {
+   "file": "photos/beer-brewery-5164755.jpg",
+   "credit": "2112ST",
+   "source_url": "https://pixabay.com/photos/beer-bottle-craft-beer-beer-glass-5164755/",
+   "alt": "beer brewery"
   }
  ],
  "wheat field harvest": [
@@ -2297,6 +2439,68 @@
    "credit": "sulox32",
    "source_url": "https://pixabay.com/photos/wheat-field-wheat-field-barley-2513272/",
    "alt": "wheat field harvest"
+  }
+ ],
+ "coffee beans": [
+  {
+   "file": "photos/coffee-beans-2714970.jpg",
+   "credit": "cocoparisienne",
+   "source_url": "https://pixabay.com/photos/coffee-coffee-cup-cup-drink-beans-2714970/",
+   "alt": "coffee beans"
+  },
+  {
+   "file": "photos/coffee-beans-9135194.jpg",
+   "credit": "jhenning",
+   "source_url": "https://pixabay.com/photos/coffee-coffee-beans-roasted-pattern-9135194/",
+   "alt": "coffee beans"
+  },
+  {
+   "file": "photos/coffee-beans-4512564.jpg",
+   "credit": "zhxj560",
+   "source_url": "https://pixabay.com/photos/coffee-caffeine-organic-background-4512564/",
+   "alt": "coffee beans"
+  },
+  {
+   "file": "photos/coffee-beans-3392168.jpg",
+   "credit": "Couleur",
+   "source_url": "https://pixabay.com/photos/coffee-coffee-beans-beans-roasted-3392168/",
+   "alt": "coffee beans"
+  },
+  {
+   "file": "photos/coffee-beans-1705026.jpg",
+   "credit": "Alexas_Fotos",
+   "source_url": "https://pixabay.com/photos/coffee-can-coffee-coffee-beans-1705026/",
+   "alt": "coffee beans"
+  },
+  {
+   "file": "photos/coffee-beans-6603499.jpg",
+   "credit": "NickyPe",
+   "source_url": "https://pixabay.com/photos/coffee-beans-coffee-6603499/",
+   "alt": "coffee beans"
+  },
+  {
+   "file": "photos/coffee-beans-2317201.jpg",
+   "credit": "Myriams-Fotos",
+   "source_url": "https://pixabay.com/photos/coffee-cup-coffee-heartbeat-cup-2317201/",
+   "alt": "coffee beans"
+  },
+  {
+   "file": "photos/coffee-beans-3224527.jpg",
+   "credit": "felix_w",
+   "source_url": "https://pixabay.com/photos/coffee-caffeine-bean-coffee-beans-3224527/",
+   "alt": "coffee beans"
+  },
+  {
+   "file": "photos/coffee-beans-4574774.jpg",
+   "credit": "RoyBuri",
+   "source_url": "https://pixabay.com/photos/coffee-bean-caffeine-coffee-beans-4574774/",
+   "alt": "coffee beans"
+  },
+  {
+   "file": "photos/coffee-beans-9743627.jpg",
+   "credit": "indraprojects",
+   "source_url": "https://pixabay.com/photos/drink-caffeine-espresso-beverage-9743627/",
+   "alt": "coffee beans"
   }
  ]
 }

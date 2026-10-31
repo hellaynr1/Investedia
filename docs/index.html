@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=8376d74b12">
-<script src="assets/consent.js?v=8376d74b12"></script>
+<link rel="stylesheet" href="assets/consent.css?v=670054b7ba">
+<script src="assets/consent.js?v=670054b7ba"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Investedia — Invest with clarity</title>
+<title>Investedia</title>
 <meta name="description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
-<meta property="og:title" content="Investedia — Invest with clarity">
+<meta property="og:title" content="Investedia">
 <meta property="og:description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
 <meta name="theme-color" content="#0A0A0B">
 <meta property="og:type" content="website">
@@ -18,12 +18,12 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Investedia: invest with clarity, see the world move">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Investedia — Invest with clarity">
+<meta name="twitter:title" content="Investedia">
 <meta name="twitter:description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=8376d74b12">
-<link rel="stylesheet" href="assets/skin.css?v=8376d74b12">
+<link rel="stylesheet" href="assets/app.css?v=670054b7ba">
+<link rel="stylesheet" href="assets/skin.css?v=670054b7ba">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,19 +46,19 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=8376d74b12"></script>
-<script src="assets/legal-owner.js?v=8376d74b12"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=8376d74b12">
-<script src="assets/live-config.js?v=8376d74b12"></script>
-<script src="assets/prefs.js?v=8376d74b12"></script>
-<script src="assets/peek.js?v=8376d74b12"></script>
-<script src="assets/sectors.js?v=8376d74b12"></script>
-<script src="assets/news-menu.js?v=8376d74b12"></script>
-<script src="assets/ui.js?v=8376d74b12"></script>
-<script src="assets/news-alerts.js?v=8376d74b12" defer></script>
-<script src="assets/since-news.js?v=8376d74b12"></script>
-<script src="assets/implications.js?v=8376d74b12"></script>
-<script src="assets/home-news.js?v=8376d74b12"></script>
+<script src="assets/mock.js?v=670054b7ba"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=670054b7ba">
+<script src="assets/live-config.js?v=670054b7ba"></script>
+<script src="assets/live-data.js?v=670054b7ba" defer></script>
+<script src="assets/prefs.js?v=670054b7ba"></script>
+<script src="assets/peek.js?v=670054b7ba"></script>
+<script src="assets/sectors.js?v=670054b7ba"></script>
+<script src="assets/news-menu.js?v=670054b7ba"></script>
+<script src="assets/ui.js?v=670054b7ba"></script>
+<script src="assets/news-alerts.js?v=670054b7ba" defer></script>
+<script src="assets/since-news.js?v=670054b7ba"></script>
+<script src="assets/implications.js?v=670054b7ba"></script>
+<script src="assets/home-news.js?v=670054b7ba"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -85,6 +85,10 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .hn-title span{color:var(--fg-3)}
 .hn-lead{font-size:18px;line-height:1.55;color:var(--fg-2);max-width:500px;margin:18px 0 26px}
 .hn-search{display:flex;align-items:center;gap:10px;width:min(480px,100%);height:52px;padding:0 16px;border-radius:14px;border:1px solid var(--line-2,rgba(255,255,255,.15));background:rgba(18,18,20,.8);backdrop-filter:blur(10px);color:var(--fg-3);font-size:15px;text-decoration:none}
+.hn-pop{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px;max-width:min(560px,100%)}.hn-pop-l{color:var(--fg-3);font-size:12.5px;margin-right:2px}
+.hn-pop a{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px 0 6px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(18,18,20,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--fg);font-size:12.5px;font-weight:500;text-decoration:none;transition:border-color .15s,background .15s}
+.hn-pop a:hover,.hn-pop a:focus-visible{border-color:var(--accent);background:rgba(30,30,34,.6)}.hn-pop .ai-t,.hn-pop .ai-i{width:16px;height:16px;border-radius:50%;object-fit:cover;flex:none}.hn-pop .pi{display:inline-grid;place-items:center;width:16px;height:16px;flex:none}.hn-pop .pi svg{width:14px;height:14px}.hn-pop .pi.eur{border-radius:50%;background:#1f4fd6;color:#fff;font-size:10px;font-weight:700}
+@media (max-width:760px){.hn-pop{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:8px;margin:12px -16px 0;padding:2px 16px;max-width:none;scroll-snap-type:x proximity;scroll-padding:0 16px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 28px),transparent)}.hn-pop::-webkit-scrollbar{display:none}.hn-pop-l{display:none}.hn-pop a{flex:none;scroll-snap-align:start;height:36px;padding:0 14px 0 9px;gap:8px;font-size:13.5px;border-radius:999px}.hn-pop .ai-t,.hn-pop .ai-i,.hn-pop .pi{width:20px;height:20px}}  /* phone: one swipeable row of evenly padded pills */
 .hn-search svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 .hn-tick{position:absolute;z-index:2;left:0;right:0;bottom:0;border-top:1px solid var(--line);background:rgba(10,10,11,.7);backdrop-filter:blur(10px)}
 .hn-tick .hn{display:flex;gap:28px;height:54px;align-items:center;overflow:hidden;white-space:nowrap;font-size:13.5px}
@@ -95,6 +99,16 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .whys{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
 @media (max-width:900px){.hn-hero{height:auto;min-height:0;display:flex;flex-direction:column}.hn-copy{position:relative;top:0;padding-top:28px}.hn-hero iframe{order:2;position:relative;inset:auto;height:min(96vw,460px);margin-top:8px;will-change:transform}.hn-tick{order:3}.hn-hero::after{background:linear-gradient(180deg,transparent 70%,var(--bg))}.hn-lead{font-size:16px;margin:14px 0 18px}.hn-tick{position:relative}
   .grid3,.whys{grid-template-columns:1fr}.grid3 .hn-card:first-child{grid-row:auto}.grid3 .hn-card:first-child h3{font-size:21px}}
+/* phone hero: the globe is not boxed in; it continues behind the search bar and under itself */
+@media (max-width:900px){
+.hn-copy{z-index:2}.hn-hero .hn-search{background:rgba(18,18,20,.42);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border-color:rgba(255,255,255,.2)}
+.hn-hero.hv-a{position:relative;display:block;min-height:780px;overflow:hidden}
+.hn-hero.hv-a iframe{position:absolute;inset:0;width:100%;height:100%;margin:0;z-index:0}
+.hn-hero.hv-a .hn-tick{position:absolute;left:0;right:0;bottom:0;z-index:2;background:linear-gradient(0deg,rgba(10,10,11,.92),rgba(10,10,11,.35));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.hn-hero.hv-a .hn-open{bottom:84px;z-index:3}
+.hn-hero.hv-a::after{z-index:1;background:linear-gradient(180deg,rgba(10,10,11,.9) 0,rgba(10,10,11,.5) 34%,transparent 55%,transparent 82%,var(--bg) 100%)}
+}
+
 .hn-mk{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:10px}
 .hn-m{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#101012}
 .hn-m img{width:26px;height:19px;border-radius:3px;object-fit:cover;flex:none}
@@ -124,6 +138,7 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
     <h1 class="hn-title" id="hnTitle"><b>Invest with clarity.</b><span>See the world move.</span></h1>
     <p class="hn-lead">Financial news and market intelligence: what happened, where, and what it means for markets and portfolios.</p>
     <a class="hn-search" href="assets/globe/news.html"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search assets, countries &amp; articles</a>
+    <div class="hn-pop" id="hnPop" aria-label="Popular searches"><span class="hn-pop-l">Popular searches:</span></div>
   </div></div>
   <div class="hn-tick"><div class="hn" id="hnTick"></div></div>
 </section>
@@ -148,9 +163,43 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 function fitTitle() { const h = hnTitle, lim = innerWidth > 900 ? 540 : Math.min(document.documentElement.clientWidth, innerWidth) - 48;
   for (let f = 60; f >= 22; f--) { h.style.fontSize = f + 'px'; if (Math.max(...[...h.children].map(c => c.offsetWidth)) <= lim) break; } }
 const isPhone = () => innerWidth <= 900;
-hnGlobe.src = 'assets/globe/news.html?embed=1&' + (isPhone() ? 'cx=.5&cy=.5&r=.46' : 'cx=.7&cy=.5&r=.4');
+document.querySelector('.hn-hero').classList.add('hv-a');
+// phone: the globe is centred exactly in the free space between the search bar and the news ticker (side to side and top to bottom), a little smaller than the screen width
+function globeParams() {
+  if (!isPhone()) return 'cx=.7&cy=.5&r=.4';
+  const hr = document.querySelector('.hn-hero').getBoundingClientRect(), s = document.querySelector('.hn-search').getBoundingClientRect(), t = document.querySelector('.hn-tick').getBoundingClientRect();
+  const pop = document.querySelector('.hn-pop'), sb = pop ? Math.max(s.bottom, pop.getBoundingClientRect().bottom) : s.bottom;
+  const top = sb - hr.top, bot = t.top - hr.top, mid = (top + bot) / 2, free = bot - top, W = hr.width, base = Math.min(W, hr.height);
+  const radius = Math.min(W * .42, free / 2 * 1.02);
+  return 'cx=.5&cy=' + (mid / hr.height).toFixed(4) + '&r=' + (radius / base).toFixed(4);
+}
+// Popular searches under the search bar: well-known assets people look up most; each chip opens that asset (pop-up sheet when available).
+const POPULAR = [{ s: 'NVDA', n: 'Nvidia', t: 'stocks' }, { s: 'AAPL', n: 'Apple', t: 'stocks' }, { s: 'MSFT', n: 'Microsoft', t: 'stocks' },
+  { s: 'TSLA', n: 'Tesla', t: 'stocks' }, { s: 'BTC-USD', n: 'Bitcoin', t: 'crypto' }];
+const POP_IC = {  // small chip icons for commodities and currencies (the asset tiles are drawn for larger cards)
+  oil: '<span class="pi"><svg viewBox="0 0 24 24"><path d="M12 3c3.5 4.6 6 8 6 11a6 6 0 0 1-12 0c0-3 2.5-6.4 6-11Z" fill="#FF8A1F"/></svg></span>',
+  gold: '<span class="pi"><svg viewBox="0 0 24 24"><path d="M3 18 6 11h12l3 7H3Z" fill="#E8A92C"/><path d="M8 11 9.5 6h5L16 11" fill="#F4C451"/></svg></span>',
+  eur: '<span class="pi eur">€</span>' };
+function drawPopular() {
+  const el = document.getElementById('hnPop'); if (!el) return;
+  el.querySelectorAll('a').forEach(a => a.remove());
+  el.insertAdjacentHTML('beforeend', POPULAR.map(a => `<a href="asset.html?s=${encodeURIComponent(a.s)}" data-pop="${a.s}">${a.ic ? POP_IC[a.ic] : window.AssetIcons ? AssetIcons.icon(a) : ''}<span>${a.n}</span></a>`).join(''));
+}
+document.getElementById('hnPop')?.addEventListener('click', e => { const a = e.target.closest('[data-pop]'); if (a && window.InvPeek) { e.preventDefault(); InvPeek.open(a.dataset.pop); } });
+drawPopular();
+if (window.AssetIcons) (AssetIcons.ready || Promise.resolve()).then(drawPopular); else addEventListener('load', () => window.AssetIcons && (AssetIcons.ready || Promise.resolve()).then(drawPopular));
+const placeGlobe = () => { hnGlobe.src = 'assets/globe/news.html?embed=1&' + globeParams(); };
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => requestAnimationFrame(placeGlobe));
 // phone: the globe glides up a little faster than the page as you scroll, then the news follows
-const glide = () => { if (!isPhone()) { hnGlobe.style.transform = ''; return; } const y = Math.min(scrollY, 600); hnGlobe.style.transform = `translateY(${-y * .18}px) scale(${1 - y / 3000})`; hnGlobe.style.opacity = Math.max(.25, 1 - y / 700); };
+// while the globe is pinched the page behind stays exactly where it is (the globe iframe reports the gesture)
+let holdY = null;
+const holdScroll = () => { if (holdY != null && Math.abs(scrollY - holdY) > 0) scrollTo(0, holdY); };
+addEventListener('message', e => {
+  if (e.origin !== location.origin || e.source !== hnGlobe.contentWindow || !e.data || e.data.inv !== 'globe-gesture') return;
+  if (e.data.on) { holdY = scrollY; document.documentElement.style.overscrollBehavior = 'none'; addEventListener('scroll', holdScroll, { passive: true }); }
+  else { setTimeout(() => { holdY = null; document.documentElement.style.overscrollBehavior = ''; removeEventListener('scroll', holdScroll); }, 180); }
+});
+const glide = () => { if (holdY != null) return; if (!isPhone()) { hnGlobe.style.transform = ''; return; } const y = Math.min(scrollY, 600); hnGlobe.style.transform = `translateY(${-y * .18}px) scale(${1 - y / 3000})`; hnGlobe.style.opacity = Math.max(.25, 1 - y / 700); };
 if (!matchMedia('(prefers-reduced-motion: reduce)').matches) addEventListener('scroll', () => requestAnimationFrame(glide), { passive: true });
 fitTitle(); addEventListener('resize', fitTitle); document.fonts && document.fonts.ready.then(fitTitle);
 loadNews().then(d => {

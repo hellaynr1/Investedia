@@ -26,8 +26,8 @@ input,textarea,.pbody,.pbody *,.fsheet input{-webkit-user-select:text;user-selec
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
-#cv{position:fixed;inset:0;width:100%;height:100%;touch-action:none;cursor:grab;display:block}
-#cv.drag{cursor:grabbing}
+#cv{position:fixed;inset:0;width:100%;height:100%;touch-action:none;display:block}
+#cv.drag{cursor:grabbing!important}
 .glass{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2)}
 
 /* Top: brand, title, filters */
@@ -251,6 +251,8 @@ h1 span{color:var(--fg-3)}
   h1{display:none}
   .chips,.regions{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent)}
   .chips::-webkit-scrollbar,.regions::-webkit-scrollbar{display:none}
+  .chips,.regions,.strip-list{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .strip-list::-webkit-scrollbar{display:none}
   .chips{margin-top:10px}.regions{margin-top:6px}
   .search{margin-top:12px;height:48px;width:100%}.search kbd{display:none}
   .legend{display:none}
@@ -276,7 +278,8 @@ h1 span{color:var(--fg-3)}
 .compact-item time{display:block;font-size:11px;color:var(--fg-3);margin-top:5px}
 .panel-more{display:inline-flex;align-items:center;min-height:36px;margin-top:12px;font-size:12px;color:var(--fg-2)}
 .panel-more:hover{color:var(--fg)}
-.panel-tabs{display:flex;gap:2px;margin:14px 0 8px}
+.panel-tabs{display:flex;gap:2px;margin:14px 0 8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.panel-tabs::-webkit-scrollbar{display:none}.panel-tabs button{flex:none;white-space:nowrap;touch-action:manipulation}
 .mk-eyebrow{margin:6px 0 4px}.mk-list{display:grid}.mk-row{display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:12px;padding:12px 0;border:0;border-top:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .mk-main{display:grid;gap:2px}.mk-row small{color:var(--fg-3);font-size:12px;font-weight:500}.mk-row .mk-st{text-align:right}
 .mk-toggle{display:inline-flex;align-items:center;gap:8px;height:34px;margin-top:8px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:rgba(16,16,18,.6);color:var(--fg-2);font-size:12.5px;font-weight:600}.mk-toggle svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.mk-toggle:hover{color:#fff}.mk-toggle[aria-pressed=true]{background:#fff;color:#000;border-color:#fff}
@@ -285,7 +288,7 @@ h1 span{color:var(--fg-3)}
 .panel-tabs button[aria-selected=true]{background:rgba(255,255,255,.08);color:var(--fg)}
 .compact-country{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;text-align:left;font-size:13px}
 .compact-country small{margin-left:auto;color:var(--fg-3);font-size:11px}
-.strip-list{display:flex;gap:18px;overflow-x:auto;scrollbar-width:thin;scroll-snap-type:x proximity;padding-bottom:6px}
+.strip-list{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding-bottom:6px}
 .strip-list .compact-item{flex:0 0 255px;scroll-snap-align:start}
 @media(min-width:761px){
   html[data-panel=a].panel-top{--pw:320px}
@@ -320,26 +323,32 @@ h1 span{color:var(--fg-3)}
 @media(max-width:760px){
   html[data-panel] .panel{height:92vh;height:92dvh;max-height:none;transform:translate3d(0,var(--sheet-offset,calc(100% - 84px)),0);transition:transform .32s cubic-bezier(.2,.8,.2,1);will-change:transform}
   html[data-panel].panel-top .panel:not(.open){transform:translate3d(0,var(--sheet-offset,calc(100% - 84px)),0)}
-  html[data-panel] .panel.sheet-dragging{transition:none;user-select:none}
+  html[data-panel] .panel.sheet-dragging,html[data-panel] .panel.sheet-dragging .pbody{transition:none!important;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
   .grab{height:40px;min-height:40px;touch-action:none;cursor:ns-resize}
-  .grab::after{top:13px;width:38px;height:4px}
+  .grab::after{top:13px;width:80px;height:5px;margin-left:-40px;background:rgba(255,255,255,.32)}
   .grab:focus-visible{outline:1px solid var(--accent);outline-offset:-5px;border-radius:18px}
   .sheet-actions{display:flex;position:absolute;right:10px;top:4px;gap:3px}
   .sheet-actions button{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;color:var(--fg-2)}
   .sheet-actions button:active{background:rgba(255,255,255,.08)}
   .sheet-actions svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
   .sheet-close{font-size:25px;line-height:1}
-  html[data-panel] .panel .pbody{flex:none;min-height:0;height:calc(var(--sheet-visible,84px) - 40px);padding:0 18px max(28px,env(safe-area-inset-bottom));overscroll-behavior:contain;touch-action:pan-y;overflow-y:auto;box-sizing:border-box}
+  html[data-panel] .panel .pbody{flex:none;min-height:0;height:calc(var(--sheet-visible,84px) - 40px);padding:0 18px max(28px,env(safe-area-inset-bottom));overscroll-behavior:contain;touch-action:pan-x pan-y;overflow-y:auto;box-sizing:border-box}
   html[data-panel] .panel[data-sheet=closed] .pbody{overflow:hidden;padding-bottom:0}
   .panel[data-sheet=closed] .sheet-close{visibility:hidden}
   .panel[data-sheet=full] #sheet-expand{visibility:hidden}
   /* Open sheet = a card floating above the dock (never under it); header is one slim row: Back, expand, close. */
-  html[data-panel] .panel:not([data-sheet=closed]){left:12px;right:12px;top:auto;bottom:calc(var(--dock-gap,90px) + env(safe-area-inset-bottom));height:calc(var(--sheet-visible,84px) - var(--dock-gap,90px));border-radius:22px;border:1px solid rgba(255,255,255,.16);transform:none;transition:height .32s cubic-bezier(.2,.8,.2,1)}
+  /* The open sheet is ONE full-height card moved with transform (compositor only) and cropped with clip-path, so dragging never re-lays-out the article list.
+     --sheet-drop = how far it is pulled down from fully open. The page never decides a height: JS writes any pixel value between the minimum and maximum. */
+  html[data-panel] .panel:not([data-sheet=closed]){left:12px;right:12px;top:auto;bottom:calc(var(--dock-gap,90px) + env(safe-area-inset-bottom));height:calc(var(--sheet-max,92dvh) - var(--dock-gap,90px));border-radius:22px;border:1px solid rgba(255,255,255,.16);box-shadow:none;transform:translate3d(0,var(--sheet-drop,0px),0);clip-path:inset(0 0 var(--sheet-drop,0px) 0 round 22px);transition:transform .32s cubic-bezier(.2,.8,.2,1),clip-path .32s cubic-bezier(.2,.8,.2,1);will-change:transform,clip-path}
   html[data-panel] .panel:not([data-sheet=closed]) .grab{height:18px;min-height:18px}
   html[data-panel] .panel:not([data-sheet=closed]) .grab::after{top:7px}
+  html[data-panel] .panel:not([data-sheet=closed]) .grab{touch-action:none;position:relative;z-index:2}
+  /* invisible drag zone: the top 56 px of the sheet. touch-action:none here means the browser never waits for a scroll decision (no touch slop), so even 5 px moves the sheet */
+  html[data-panel] .panel:not([data-sheet=closed]) .grab::before{content:'';position:absolute;left:0;right:0;top:0;height:56px}
+  html[data-panel] .panel:not([data-sheet=closed]) .sheet-actions{z-index:4}
   html[data-panel] .panel:not([data-sheet=closed]) .sheet-actions{top:0}
   html[data-panel] .panel:not([data-sheet=closed]) .sheet-actions button{min-width:44px;min-height:44px;width:44px;height:44px}
-  html[data-panel] .panel:not([data-sheet=closed]) .pbody{height:calc(var(--sheet-visible,84px) - var(--dock-gap,90px) - 18px);padding-bottom:24px}
+  html[data-panel] .panel:not([data-sheet=closed]) .pbody{height:calc(var(--sheet-max,92dvh) - var(--dock-gap,90px) - 18px);padding-bottom:calc(24px + var(--sheet-pad,0px));transition:none}
   html[data-panel] .panel:not([data-sheet=closed]) .pbody:has(.back){padding-top:44px}
   html[data-panel] .panel:not([data-sheet=closed]) .pbody .back{position:absolute;left:12px;top:0;margin:0;min-height:44px;z-index:3;color:#fff;font-size:15px;font-weight:600;background:none}
   .panel[data-sheet=closed] .pbody{cursor:pointer}
@@ -357,7 +366,7 @@ h1 span{color:var(--fg-3)}
 @media (prefers-reduced-motion:reduce){html[data-panel] .panel{transition:none}}
 .embed body,.embed{background:transparent}
 .embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom,.embed .dock,.embed .peek,.embed .fsheet,.embed .fs-back,.embed .layers,.embed .ddrow{display:none!important}
-.embed #cv{touch-action:pan-y}
+.embed #cv{touch-action:pan-y}  /* the page scrolls from anywhere next to the globe; a finger that lands ON the globe is claimed in JS (touchstart below) so it spins first */
 
 /* Atlas-style floating glass: segmented category + region bars, richer news panel */
 .chips{display:inline-flex;flex-wrap:nowrap;gap:2px;padding:4px;border-radius:999px;background:rgba(24,24,27,.62);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border:1px solid rgba(255,255,255,.1);box-shadow:0 12px 40px rgba(0,0,0,.35);max-width:100%;overflow-x:auto;scrollbar-width:none}
@@ -493,11 +502,13 @@ h1 span{color:var(--fg-3)}
 <div class="layers" id="layers">
   <div class="lay-pop glass" id="lay-pop" role="group" aria-label="Map layers" hidden>
     <div id="lay-switches">
-      <button type="button" class="lay-sw" id="sw-conn" role="switch" aria-checked="true"><span><b>Connections</b><small id="connection-count"></small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-conn" role="switch" aria-checked="true"><span><b>News impact</b><small id="connection-count"></small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-rel" role="switch" aria-checked="false"><span><b>Sector spread</b><small>Same-sector companies moving the same way</small></span><i class="tg"></i></button>
+      <button type="button" class="lay-sw" id="sw-story" role="switch" aria-checked="false"><span><b>Story threads</b><small>Earlier → later articles on the same asset</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-up" role="switch" aria-checked="false"><span><b>Upcoming</b><small id="up-sub">Releases in the next 7 days</small></span><i class="tg"></i></button>
       <button type="button" class="lay-sw" id="sw-mkt" role="switch" aria-checked="false"><span><b>Market hours</b><small>Night shade, open exchanges</small></span><i class="tg"></i></button>
     </div>
-    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span>↑ Asset</span><span>↓ Asset</span></div>
+    <div class="lay-legend" aria-label="Connections legend"><span><i></i>News origin</span><span style="color:rgb(255,122,26)">━ Main impact</span><span style="color:rgb(255,150,64)">─ Ripple</span><span style="color:rgb(255,190,110)">┄ Sector</span></div>
   </div>
   <button type="button" class="lay-btn glass" id="lay-btn" aria-expanded="false" aria-controls="lay-pop" aria-haspopup="true" aria-label="Layers, 1 on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>Layers <b id="lay-n">1</b></button>
 </div>
@@ -633,9 +644,9 @@ function entityChip(e, country) {
   return `<span class="ent"${e.ticker ? ` title="${esc(e.ticker)}"` : ''}>${image}<span>${esc(e.name)}</span></span>`;
 }
 
-let MKT = { by: {}, intra: {}, list: [] };
+let MKT = { by: {}, np: {}, reg: {}, intra: {}, list: [] };
 Promise.all([fetch('markets.json').then(r => r.json()), fetch('news-prices.json').then(r => r.json()).catch(() => ({ assets: {} })), fetch('../intraday.json').then(r => r.json()).catch(() => ({ s: {} }))]).then(([m, np, i]) => {
-  MKT.intra = i.s || {}; MKT.by = Object.fromEntries((m.assets || []).map(a => [a.s, a]));
+  MKT.intra = i.s || {}; MKT.by = Object.fromEntries((m.assets || []).map(a => [a.s, a])); MKT.np = (np && np.assets) || {}; MKT.reg = {};
   const known = a => !/[.\d]/.test(a.s.replace(/[=^-]/g, '')) && a.t !== 'fx' && Math.abs(a.d) < 20 && (a.m || a.t === 'crypto' || a.t === 'cmd' || MKT.intra[a.s]);
   MKT.list = (m.assets || []).filter(known).sort((x, y) => Math.abs(y.d) - Math.abs(x.d)).slice(0, 12);
   MKT.all = m.assets || [];
@@ -734,16 +745,22 @@ function sinceHTML(s, rows) {
 function impactHTML(s) {
   const rows = impactsOf(s), moved = s.market_moving && typeof s.why_moved === 'string' ? s.why_moved : '';
   if (!rows.length && !moved) return '';
-  return `<section class="impact-section" aria-label="Affected assets">${sinceHTML(s, rows)}${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">Affected assets</div><div class="impact-list">${rows.map(i => `<div><div class="impact-head" ${assetForImpact(i) ? `data-asset="${esc(assetForImpact(i).s)}" role="button" tabindex="0"` : ''}>${impactVisual(i)}<span>${esc(i.name)}</span>${assetForImpact(i) && Number.isFinite(assetForImpact(i).d) ? pctPill(assetForImpact(i).d) : ''}<span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p></div>`).join('')}</div></section>`;
+  return `<section class="impact-section" aria-label="Affected assets">${sinceHTML(s, rows)}${moved ? `<div class="why moved"><div class="eyebrow">Why it moved</div><p>${esc(moved)}</p></div>` : ''}<div class="sec-h">Affected assets</div><div class="impact-list">${rows.map(i => `<div><div class="impact-head" ${assetForImpact(i) ? `data-asset="${esc(assetForImpact(i).s)}" role="button" tabindex="0"` : ''}>${impactVisual(i)}<span>${esc(i.name)}</span>${assetForImpact(i) && Number.isFinite(assetForImpact(i).d) ? movePill(assetForImpact(i)) : ''}<span class="impact-dir impact-${i.direction}" aria-label="${i.direction}" title="${i.direction}">${IMPACT_ARROW[i.direction]}</span></div><p>${esc(i.why.slice(0, 200))}</p></div>`).join('')}</div></section>`;
 }
+// Only an asset the canonical registry verified can draw a line or show a price: the news robot stamps each impact/entity with
+// `asset` (id, name, class, price symbol, place) or `unresolved` (why not). Raw ticker strings are never looked up here.
+// An asset without a place (crypto) is still returned for cards and prices; assetTarget() then gives it no line.
+const T_OF = { equity: 'stocks', fund: 'stocks', index: 'stocks', fx: 'fx', commodity: 'cmd', crypto: 'crypto', rate: 'rate' };
 function assetForImpact(i) {
-  if (!i.ticker) return null;
-  const ticker = i.ticker.toUpperCase();
-  return MKT.by[ticker] || MKT.by[ticker+'-USD'] || MKT.by[ticker.replace(/=X$/, '')] || null;
+  const r = i && i.asset; if (!r || !r.id) return null;
+  if (MKT.reg[r.id]) return MKT.reg[r.id];
+  const p = MKT.by[r.px] || MKT.np[r.px] || {};
+  return MKT.reg[r.id] = { ...p, s: r.px || r.id, id: r.id, n: r.n, la: r.la, lo: r.lo, t: T_OF[r.c] || 'stocks', c: r.c, site: r.site || p.site };
 }
+const movePill = a => a && a.u === 'bp' ? `<span class="pct ${a.d > 0 ? 'up' : a.d < 0 ? 'down' : 'flat'}">${a.d > 0 ? '↑' : a.d < 0 ? '↓' : '↔'} ${Math.abs(a.d).toFixed(1)} bp</span>` : pctPill(a.d);
 const pctPill = v => `<span class="pct ${v > 0 ? 'up' : v < 0 ? 'down' : 'flat'}">${v > 0 ? '↑' : v < 0 ? '↓' : '↔'} ${Math.abs(v).toFixed(2)}%</span>`;
 const dirWord = v => v > 0 ? 'up' : v < 0 ? 'down' : 'flat';
-function money(a) { try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: a.cur || 'USD', maximumFractionDigits: a.p < 10 ? 3 : 2 }).format(a.p); } catch { return String(a.p); } }
+function money(a) { if (a.u === 'bp') return Number(a.p).toFixed(2) + '%'; try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: a.cur || 'USD', maximumFractionDigits: a.p < 10 ? 3 : 2 }).format(a.p); } catch { return String(a.p); } }
 function sparkSvg(sp, col) {
   if (!Array.isArray(sp) || sp.length < 2) return '';
   const mn = Math.min(...sp), mx = Math.max(...sp), X = k => k / (sp.length - 1) * 300, Y = v => 40 - (v - mn) / ((mx - mn) || 1) * 34 - 3;
@@ -754,23 +771,176 @@ function sparkSvg(sp, col) {
 function hoverCardHTML(edge) {
   const rows = impactsOf(edge.article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && Number.isFinite(x.a.d)).sort((a, b) => (b.i === edge.impact) - (a.i === edge.impact)).slice(0, 3);
   return `<div class="eyebrow">Affected assets · ${rows.length}</div><h3>${esc(edge.article.headline)}</h3><div class="meta">${esc(edge.article.source?.name || '')}${edge.article.location?.place ? ' · ' + esc(edge.article.location.place.split(',')[0]) : ''} · ${ago(edge.article.t)}</div>`
-    + rows.map(({ i, a }) => `<div class="hv-row"><div class="hv-top">${impactVisual(i)}<div class="hv-name"><b>${esc(a.n)}</b><span>${esc(a.s.replace(/-USD$/, ''))} · ${esc(money(a))}</span></div><div class="hv-pct">${pctPill(a.d)}<small>7 days ${a.w > 0 ? '+' : ''}${Number(a.w).toFixed(2)}%</small></div></div><div class="hv-impl">Article implies <b class="${i.direction === 'up' ? 'up' : i.direction === 'down' ? 'down' : 'flat'}">${IMPACT_ARROW[i.direction]} ${i.direction === 'mixed' || i.direction === 'unclear' ? i.direction : i.direction}</b> · price today <b class="${dirWord(a.d)}">${a.d > 0 ? '↑ up' : a.d < 0 ? '↓ down' : '↔ flat'}</b></div>${sparkSvg(a.sp, a.d >= 0 ? '#34d399' : '#f87171')}`).join('')
+    + rows.map(({ i, a }) => `<div class="hv-row"><div class="hv-top">${impactVisual(i)}<div class="hv-name"><b>${esc(a.n)}</b><span>${esc(a.s.replace(/-USD$/, ''))} · ${esc(money(a))}</span></div><div class="hv-pct">${movePill(a)}<small>7 days ${a.w > 0 ? '+' : ''}${Number(a.w).toFixed(a.u === 'bp' ? 1 : 2)}${a.u === 'bp' ? ' bp' : '%'}</small></div></div><div class="hv-impl">Article implies <b class="${i.direction === 'up' ? 'up' : i.direction === 'down' ? 'down' : 'flat'}">${IMPACT_ARROW[i.direction]} ${i.direction === 'mixed' || i.direction === 'unclear' ? i.direction : i.direction}</b> · price today <b class="${dirWord(a.d)}">${a.d > 0 ? '↑ up' : a.d < 0 ? '↓ down' : '↔ flat'}</b></div>${sparkSvg(a.sp, a.d >= 0 ? '#34d399' : '#f87171')}`).join('')
     + `<p class="hv-why">${esc(edge.impact.why.slice(0, 170))}</p>`;
 }
 function assetTarget(a) {
   let la=a.la, lo=a.lo;
   if (a.t === 'cmd') [la,lo] = a.s === 'BZ=F' ? [51.507,-.128] : [40.71,-74];
-  // Crypto is geographically neutral; the Atlantic hub is a display convention.
-  if (a.t === 'crypto') [la,lo] = [0,-30];
+  // Crypto has no legitimate geographic endpoint: no place, so no line (it still shows in cards, prices and implications).
+  if (a.t === 'crypto') return null;
   return Number.isFinite(la) && Number.isFinite(lo) ? {phi:la*rad,lam:lo*rad} : null;
 }
 let network = [], arcHits = [], arcHover = null, pillRects = [];
+// ---- Connections: one orange hierarchy, built only from relationships we can defend. Real data only; nothing is drawn to fill space.
+//  Main impact   (solid, bright)       article → its primary affected asset (the article's own first impact).
+//  Ripple        (solid, thinner)      the same article → another asset it explicitly affects (impacts only, never a passing mention),
+//                                      ranked by confidence, directness, importance of the asset and size of the move; weak ones are dropped.
+//  Sector spread (short dash, amber)   primary company → companies in the SAME SEC industry (SIC code) that moved the same way ≥1% today.
+//                                      Only the same 4-digit SIC qualifies (relevance 1.0); industry groups and sectors are too broad.
+//  Story thread  (faintest)            earlier → later article on the same company AND the same event family (earnings → guidance → analysts…).
+// Default: main lines + only the strongest ripple. Clicking an event or an asset reveals the rest; unrelated lines fade to ~15 %.
+// All lines are orange/amber; green and red appear only in price labels and cards.
+const QS = new URLSearchParams(location.search);
+let SECTORON = QS.get('sector') === '1', STORYON = QS.get('story') === '1';
+const MAIN = '255,122,26', RIPPLE = '255,150,64', SECTOR = '255,190,110';
+let IND = {}; fetch('industries.json').then(r => r.json()).then(d => { IND = d.by || {}; updateNetwork(); }).catch(() => {});
+// Canonical identity: the registry is the single source of truth. An impact asset is usable only when the robot stamped it with a
+// registry id (assetForImpact); a Globe stock can be a sector peer only when industries.json (built from the registry) lists it.
+const trusted = a => !!a && !!(a.id || (IND[a.s] && IND[a.s].id));
+const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { main: ph ? 5 : 8, ripple: ph ? 2 : 4 } : { main: ph ? 10 : 15, ripple: ph ? 5 : 10 }; };
+const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells
+function strokeArc(pts, col, alpha, width, glow, phase, dash) {
+  ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha.toFixed(3)})`; ctx.lineCap = 'round'; if (dash) ctx.setLineDash(dash);
+  if (glow) { ctx.shadowColor = `rgba(${col},.55)`; ctx.shadowBlur = EMBED ? 6 : 8; }
+  ctx.beginPath(); let pen = false; for (const [x, y, v] of pts) { if (!v) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } ctx.stroke(); ctx.restore();
+  if (phase != null) { const q = pts[Math.round(phase * (pts.length - 1))]; if (q && q[2]) { ctx.fillStyle = `rgba(${col},${Math.min(1, alpha * 1.3).toFixed(3)})`; ctx.beginPath(); ctx.arc(q[0], q[1], glow ? 2 : 1.4, 0, 7); ctx.fill(); } }
+  return pts.some(p => p[2]);
+}
+function assetsNamed(s) {  // impacts and entities that map to a real asset with a price move
+  const out = new Map();
+  for (const i of impactsOf(s)) { const a = assetForImpact(i); if (a) out.set(a.id, { a, via: 'impact', impact: i }); }
+  for (const e of s.entities || []) { const a = assetForImpact(e); if (a && !out.has(a.id)) out.set(a.id, { a, via: 'entity' }); }
+  return [...out.values()];
+}
+// --- relevance scores (0..1); a line is drawn only above its threshold ---
+const CONF = { high: 1, medium: .75, low: .4 };
+function rippleScore(i, a) {
+  const conf = CONF[i.confidence] ?? .6;                                             // stamped confidence (older articles: neutral .6)
+  const direct = i.kind === 'company' || i.kind === 'asset' ? 1 : i.kind === 'sector' ? .6 : .4;
+  const dir = i.direction === 'up' || i.direction === 'down' ? 1 : .3;               // mixed / unclear are weak evidence
+  const imp = a.g === 'Index' || a.t === 'fx' || a.t === 'cmd' || a.m ? 1 : .7;     // major market vs smaller asset
+  const mv = Math.min(1, Math.abs(a.d || 0) / 2);
+  return +(conf * .35 + direct * .2 + dir * .2 + imp * .1 + mv * .15).toFixed(3);
+}
+const RIPPLE_MIN = .62;
+function peerScore(a, p) {
+  const x = IND[a.s], y = IND[p.s];
+  if (!x || !y) return [0, null];
+  if (x.sic === y.sic) return [1, `same industry (${y.industry})`];
+  if (x.sic.slice(0, 3) === y.sic.slice(0, 3)) return [.75, `same industry group (SIC ${y.sic.slice(0, 3)}x)`];
+  return [0, null];
+}
+const PEER_MIN = 1;  // exact SEC industry only: the 3-digit group was too broad (e.g. search vs. enterprise software)
+let events = [], storyLines = [];
+function newsScore(article, asset) { const fresh = Math.max(0, 1 - (Date.now() - article.t) / 864e5); return article.importance * 1.2 + Math.min(3, Math.abs(asset.d || 0)) * .6 + fresh + (article.flag ? .5 : 0); }
+// Story threads come from the event archive (threads.json: same canonical affected asset + same event family, 1–96 h apart,
+// computed by the news robot over 30 days), not from the 160 articles loaded here. Ends that are not in the live feed are drawn
+// from the archive's own place.
+let THREADS = []; fetch('threads.json').then(r => r.json()).then(d => { THREADS = d.threads || []; updateNetwork(); }).catch(() => {});
+const assetBy = sym => MKT.by[sym] || Object.values(MKT.reg).find(a => a.s === sym) || null;
+const idOfSym = sym => (assetBy(sym) || {}).id || null;
+function archiveThreads(max, onlyId, focus) {
+  const byId = new Map(stories.map(s => [s.id, s])), out = [];
+  const end = x => byId.get(x.id) || (Number.isFinite(x.la) && Number.isFinite(x.lo) ? { id: x.id, headline: x.title || '', phi: x.la * rad, lam: x.lo * rad, t: Date.parse(x.at), location: { country: x.country } } : null);
+  for (const th of THREADS) {
+    if (out.length >= max) break;
+    const tb = Date.parse(th.b.at); if (!(play ? tb <= play.cur : Date.now() - tb <= winMin() * 60000)) continue;
+    if (onlyId && th.asset !== onlyId) continue;
+    if (focus && th.a.id !== focus.id && th.b.id !== focus.id) continue;
+    const a = end(th.a), b = end(th.b); if (!a || !b || geoKey(a) === geoKey(b)) continue;
+    out.push({ a, b, sym: th.asset, why: `same affected asset, same ${th.fam} story, ${Math.max(1, Math.round((tb - Date.parse(th.a.at)) / 36e5))} h later` });
+  }
+  return out;
+}
+const cappedBy = cap => { const n = {}; return ks => { if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; }; };
+function onFront(pts) { const v = pts.filter(p => p[2]); if (v.length < pts.length) return false;
+  if (pts[0][3] != null && (Math.min(pts[0][3], pts.at(-1)[3]) < .25 || Math.min(...pts.map(p => p[3])) < .12)) return false;  // ends clearly on the front, arc never skimming the horizon  // both ends and the whole arc on the visible face: never a line running into the horizon
+  const a = v[0], b = v[v.length - 1], m = v[v.length >> 1]; return Math.hypot(a[0] - b[0], a[1] - b[1]) + Math.hypot(a[0] - m[0], a[1] - m[1]) > R * .1; }
 function updateNetwork() {
-  network = [...shown].sort(sortTop).flatMap(article => impactsOf(article).flatMap(impact => {
-    const asset=assetForImpact(impact), target=asset && assetTarget(asset);
-    return target ? [{article,impact,asset,target}] : [];
-  })).slice(0,EMBED ? 10 : 40);
-  const count=$('connection-count');if(count) count.textContent=`Show all ${network.length} ${network.length === 1 ? 'connection' : 'connections'} from ${WLABEL[F.win]}`;
+  events = [];
+  for (const article of shown) {
+    const imp = impactsOf(article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && trusted(x.a) && assetTarget(x.a));
+    const main = imp[0]; if (!main) continue;
+    const ripples = imp.slice(1).map(x => ({ a: x.a, impact: x.i, target: assetTarget(x.a), dir: x.i.direction, score: rippleScore(x.i, x.a) }))
+      .filter(r => r.score >= RIPPLE_MIN && r.a.s !== main.a.s).sort((x, y) => y.score - x.score).slice(0, 5)
+      .map(r => ({ ...r, why: `explicitly affected secondary asset (relevance ${r.score.toFixed(2)})` }));
+    const pa = main.a, sectors = pa.t === 'stocks' && Math.abs(pa.d || 0) >= 1 ? (MKT.all || [])
+      .filter(p => p.t === 'stocks' && p.s !== pa.s && trusted(p) && Number.isFinite(p.d) && Math.abs(p.d) >= 1 && Math.abs(p.d) < 30 && Math.sign(p.d) === Math.sign(pa.d) && assetTarget(p))
+      .map(p => { const [sc, why] = peerScore(pa, p); return { a: p, target: assetTarget(p), score: sc, why: why && `${why} + same-direction move ${p.d > 0 ? '+' : ''}${p.d.toFixed(1)}%` }; })
+      .filter(x => x.score >= PEER_MIN).sort((x, y) => y.score - x.score || Math.abs(y.a.d) - Math.abs(x.a.d)).slice(0, 3) : [];
+    events.push({ article, impact: main.i, asset: main.a, target: assetTarget(main.a), dir: main.i.direction, ripples, sectors, score: newsScore(article, main.a) });
+  }
+  events.sort((a, b) => b.score - a.score);
+  const seen = new Set(); events = events.filter(e => { const k = geoKey(e.article) + '>' + geoKey(e.target); if (seen.has(k)) return false; seen.add(k); return true; });
+  network = events;
+  storyLines = archiveThreads(12);
+  const count = $('connection-count'); if (count) count.textContent = `${events.length} events · ${WLABEL[F.win]}`;
+  if (!EMBED && view.k === 'asset') render();
+}
+const selAsset = () => !EMBED && view.k === 'asset' ? view.id : null;
+const touches_ = (e, sym) => e.asset.s === sym || e.ripples.some(r => r.a.s === sym) || e.sectors.some(s => s.a.s === sym);
+function drawConnections(t, focus, country) {
+  arcHits = []; pillRects = []; lineWhy = []; let visibleArcs = 0; const B = BUDGET(), sym = selAsset();
+  const iso = country && ISO[country.name], sel = !!(focus || iso || sym), fade = sel ? .15 : 1;
+  const ph = k => reduce ? null : (t / 4200 + k * .17) % 1;
+  const related = e => focus ? e.article === focus : sym ? touches_(e, sym) : iso ? e.article.location.country === country.name : false;
+  const mains = [], cap = cappedBy(EMBED ? 2 : 3);
+  if (CONNON || sel) for (const e of events) { if (mains.length >= B.main) break; if (related(e)) continue; const pts = arcPts(e.article, e.target, 32); if (onFront(pts) && cap(['a' + e.article.location.country, 't' + geoKey(e.target)])) mains.push([e, pts]); }
+  const ripples = [];  // default: only the single strongest ripple per event, and only for the strongest events
+  if (CONNON || sel) for (const [e] of mains) { if (ripples.length >= B.ripple) break; const r = e.ripples[0]; if (!r) continue; const pts = arcPts(e.article, r.target, 28); if (onFront(pts)) ripples.push([r, pts]); }
+  if (!EMBED && SECTORON) mains.forEach(([e]) => e.sectors.forEach(s => { const pts = arcPts(e.target, s.target, 26); if (onFront(pts)) strokeArc(pts, SECTOR, .42 * fade, 1, false, null, [3, 4]); }));
+  if (!EMBED && STORYON) storyLines.forEach(({ a, b }) => { const pts = arcPts(a, b, 28); if (onFront(pts)) strokeArc(pts, MAIN, .2 * fade, .9, false, null); });
+  const label = (e, points, a, sel2) => {  // price label (green/red live here, not in the line); clicking it selects the asset
+    if (EMBED || !sel) return;
+    const seen = points.filter(p => p[2] && p[0] > globeBox.left + 34 && p[0] < globeBox.right - 34 && p[1] > globeBox.top + 30 && p[1] < globeBox.bottom - 30);
+    if (seen.length < 3) return;
+    const m = seen[sel2 ? seen.length - 1 : Math.floor(seen.length / 2)], d = a.d, nm = a.n.length > 17 ? a.n.slice(0, 16) + '…' : a.n, pt = Number.isFinite(d) ? `${d > 0 ? '↑' : d < 0 ? '↓' : '↔'} ${a.u === 'bp' ? Math.abs(d).toFixed(1) + ' bp' : Math.abs(d).toFixed(2) + '%'}` : '↔';
+    ctx.font = '650 12px Inter,sans-serif'; const w1 = ctx.measureText(nm).width, w2 = ctx.measureText(pt).width, W = w1 + w2 + 32, H = 26; let x = m[0] - W / 2, y = m[1] - H / 2;
+    for (let n = 0; n < 8 && pillRects.some(r => x < r.x + r.w + 4 && x + W + 4 > r.x && y < r.y + r.h + 4 && y + H + 4 > r.y); n++) y += H + 4;
+    pillRects.push({ x, y, w: W, h: H, nm, pt, w1, d, asset: a, edge: { ...e, asset: a, points, pill: { x, y, w: W, h: H } } });
+  };
+  ripples.forEach(([r, pts]) => { if (strokeArc(pts, RIPPLE, (EMBED ? .32 : .38) * fade, EMBED ? .8 : .95, false, null)) visibleArcs++; });
+  mains.forEach(([e, pts], i) => {
+    const top = !EMBED && !sel && i < 3;
+    if (strokeArc(pts, MAIN, (EMBED ? .85 : top ? .95 : .7) * fade, EMBED ? 1.4 : top ? 2 : 1.5, top, top ? ph(i) : null)) visibleArcs++;
+    if (!EMBED && e.impact) arcHits.push({ ...e, points: pts });
+  });
+  // the selection (an event or an asset): its main line brightest, then ripples, sector spread and story threads, each with its reason
+  const chosen = focus ? events.filter(related).slice(0, 1) : sym ? events.filter(related).slice(0, 8) : iso ? events.filter(related).slice(0, 8) : [];
+  for (const e of chosen) {
+    const pts = arcPts(e.article, e.target, 32), isMain = !sym || e.asset.s === sym;
+    if (focus || sym) {
+      e.sectors.filter(s => !sym || e.asset.s === sym || s.a.s === sym).forEach(s => { const sp = arcPts(e.target, s.target, 26); if (!onFront(sp)) return; strokeArc(sp, SECTOR, .7, 1.2, false, null, [3, 4]); label(e, sp, s.a, true); lineWhy.push(['Sector spread', `${e.asset.n} → ${s.a.n}`, s.why]); });
+      e.ripples.filter(r => !sym || e.asset.s === sym || r.a.s === sym).forEach((r, k) => { const rp = arcPts(e.article, r.target, 28); if (!onFront(rp)) return; strokeArc(rp, RIPPLE, .75, 1.3, false, ph(k)); label(e, rp, r.a); lineWhy.push(['Ripple', `${e.article.headline.slice(0, 48)}… → ${r.a.n}`, r.why]); if (!EMBED) arcHits.push({ ...e, impact: r.impact, asset: r.a, target: r.target, points: rp }); });
+    }
+    if (isMain && onFront(pts)) { if (strokeArc(pts, MAIN, 1, 2.4, true, ph(0))) visibleArcs++; label(e, pts, e.asset); lineWhy.push(['Main impact', `${e.article.headline.slice(0, 48)}… → ${e.asset.s}`, 'primary affected asset of the article']); if (!EMBED && e.impact) arcHits.push({ ...e, points: pts }); }
+  }
+  if (focus || sym) archiveThreads(6, sym ? idOfSym(sym) : null, sym ? null : focus)
+    .forEach(({ a, b, why }) => { const sp = arcPts(a, b, 28); if (!onFront(sp)) return; strokeArc(sp, MAIN, .3, 1, false, null); lineWhy.push(['Story thread', `${a.headline.slice(0, 30)}… → ${b.headline.slice(0, 30)}…`, why]); });
+  if (sym) { const a = assetBy(sym), tg = a && assetTarget(a); if (tg) { const [x, y, z] = proj(tg.phi, tg.lam); if (z > 0) {  // contextual asset marker, only while selected
+    ctx.save(); ctx.strokeStyle = 'rgba(255,122,26,.95)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 9, 0, 7); ctx.stroke(); ctx.fillStyle = 'rgba(255,122,26,.25)'; ctx.fill(); ctx.restore(); } } }
+  cv.dataset.arcCount = String(visibleArcs); cv.dataset.why = JSON.stringify(lineWhy);
+}
+let lineWhy = [];
+function selectAsset(sym) {
+  if (EMBED || !assetBy(sym)) return false;
+  sel = null; selCountry = null; go({ k: 'asset', id: sym });
+  const tg = assetTarget(assetBy(sym)); if (tg) flyTo(tg.lam / rad - 20, Math.max(-30, Math.min(40, tg.phi / rad - 5)), Math.max(1, Math.min(Z, 1.4)));
+  return true;
+}
+function assetPanel(sym) {
+  const a = assetBy(sym); if (!a) return '<div class="empty">This asset is not in today’s price data.</div>';
+  const rel = events.filter(e => touches_(e, sym)), arts = [...new Map(shown.filter(s => impactsOf(s).some(i => assetForImpact(i)?.s === sym) || (s.entities || []).some(x => (x.ticker || '').toUpperCase() === sym)).map(s => [s.id, s])).values()].sort(sortTop);
+  const imps = arts.flatMap(s => impactsOf(s).filter(i => assetForImpact(i)?.s === sym && i.why).map(i => ({ s, i }))).slice(0, 4);
+  const peers = (MKT.all || []).filter(p => p.s !== sym && p.t === 'stocks' && Number.isFinite(p.d)).map(p => [p, peerScore(a, p)]).filter(([, [sc]]) => sc >= PEER_MIN).sort((x, y) => y[1][0] - x[1][0] || Math.abs(y[0].d) - Math.abs(x[0].d)).slice(0, 5);
+  return `<button class="back" data-back>← Back</button><div class="eyebrow">Asset</div><h2>${esc(a.n)}</h2>
+    <div class="meta"><b>${esc(a.s.replace(/-USD$/, ''))}</b> · ${esc(money(a))} ${Number.isFinite(a.d) ? pctPill(a.d) : ''}${IND[sym] ? ` · ${esc(IND[sym].industry)}` : ''}</div>
+    <div class="stats"><div><b>${arts.length}</b>${arts.length === 1 ? 'article' : 'articles'}</div><div><b>${rel.length}</b>connections</div><div><b>${peers.length}</b>industry peers</div></div>
+    ${arts.length ? `<div class="sec-h">Latest articles affecting ${esc(a.n)}</div><div class="list">${arts.slice(0, 6).map(item).join('')}</div>` : '<div class="empty">No article in the current window names this asset.</div>'}
+    ${imps.length ? `<div class="sec-h">Recent Investedia implications</div>${imps.map(({ s, i }) => `<div class="why"><div class="eyebrow">${IMPACT_ARROW[i.direction] || ''} ${esc(i.direction)} · ${ago(s.t)}</div><p>${esc(i.why)}</p></div>`).join('')}` : ''}
+    ${peers.length ? `<div class="sec-h">Same industry today</div><div class="list">${peers.map(([p, [, why]]) => `<button class="item" data-asset="${esc(p.s)}"><span></span><span><h4>${esc(p.n)} ${pctPill(p.d)}</h4><span class="meta">${esc(why)}</span></span></button>`).join('')}</div>` : ''}
+    <p style="margin-top:18px"><a class="btn" href="../../asset.html?s=${encodeURIComponent(sym)}" style="color:var(--accent)">Open the full ${esc(a.s.replace(/-USD$/, ''))} page →</a></p>`;
 }
 function arcPick(x,y) { const pr=pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h); if(pr) return pr.edge; return arcHits.find(h=>h.points.some(p=>p[2] && Math.hypot(p[0]-x,p[1]-y)<10)); }
 function impactTargets(s) { return impactsOf(s).map(i => ({ impact: i, country: impactCountry(i) })).filter(x => x.country); }
@@ -802,8 +972,8 @@ const isOpenAt = (e, ms) => { const l = localMin(e, ms); return l.wd !== 'Sat' &
 let UPON = new URLSearchParams(location.search).get('upcoming') === '1', MKTON = new URLSearchParams(location.search).get('markets') === '1', CONNON = new URLSearchParams(location.search).get('connections') !== '0';
 function syncLayers() {
   $('sw-conn').setAttribute('aria-checked', String(CONNON)); $('sw-mkt').setAttribute('aria-checked', String(MKTON));
-  $('sw-up').setAttribute('aria-checked', String(UPON));
-  const n = (CONNON ? 1 : 0) + (MKTON ? 1 : 0) + (UPON ? 1 : 0); $('lay-n').textContent = n; $('lay-btn').setAttribute('aria-label', `Layers, ${n} on`);
+  $('sw-up').setAttribute('aria-checked', String(UPON)); $('sw-rel').setAttribute('aria-checked', String(SECTORON)); $('sw-story').setAttribute('aria-checked', String(STORYON));
+  const n = [CONNON, SECTORON, STORYON, MKTON, UPON].filter(Boolean).length; $('lay-n').textContent = n; $('lay-btn').setAttribute('aria-label', `Layers, ${n} on`);
 }
 const CAPS = { US: [38.9, -77.04], GB: [51.5, -.13], JP: [35.68, 139.69], EU: [50.11, 8.68], AU: [-33.87, 151.21], CA: [45.42, -75.7], NZ: [-41.29, 174.78], CH: [46.95, 7.45], CN: [39.9, 116.4] };
 // High-impact releases in the next 7 days (assets/calendar-live.json), soonest first.
@@ -924,9 +1094,20 @@ function refresh() {
 }
 
 // ===== Globe =====
-const cv = $('cv'), ctx = cv.getContext('2d');
+const cv = $('cv'); let ctx = cv.getContext('2d');
 const BOTTOM_DOCK = 90; let peekH = 140;
 let sheetState = 'closed', sheetVisible = 84, sheetGesture = null, phoneMapTop = 0;
+// Sheet model: the open sheet has ONE continuous height (sheetVisible, in px) between SHEET_MIN and SHEET_MAX. There are no detents.
+// sheetState is only 'closed' or 'open'. Every resting height is wherever the user left it (sheetFrac keeps it through resizes).
+let sheetFrac = .30;
+const SHEET_MIN = () => H * .30, SHEET_MAX = () => H * .92;
+const clampSheet = h => Math.max(SHEET_MIN(), Math.min(SHEET_MAX(), h));
+function sheetHeight(state) { return state === 'closed' ? 84 : clampSheet(sheetFrac * H); }
+function paintSheet(h, rest) {  // rest = a resting position (also re-pads the article list so its last item can be scrolled into view)
+  const drop = SHEET_MAX() - h + 'px';
+  panel.style.setProperty('--sheet-max', SHEET_MAX() + 'px'); panel.style.setProperty('--sheet-drop', drop);
+  if (rest) { panel.style.setProperty('--sheet-pad', drop); panel.style.setProperty('--sheet-visible', h + 'px'); panel.style.setProperty('--sheet-offset', (H * .92 - h) + 'px'); }
+}
 let cyT = 0, W = 0, H = 0, R0 = 0, R = 0, cx = 0, cy = 0, Z = 1, Zt = 1, lon0 = -15, lat0 = 24, ZMAX = 6, globeBox = { left: 0, top: 0, right: 0, bottom: 0 };
 function size() {
   const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -938,9 +1119,8 @@ function size() {
     R0 = Math.min(W * .47, Math.max(120, H - phoneMapTop - (BOTTOM_DOCK + peekH + 28)) * .47);
     cx = W / 2;
     sheetVisible = sheetHeight(sheetState);
-    panel.style.setProperty('--sheet-offset', (H * .92 - sheetVisible) + 'px');
-    panel.style.setProperty('--sheet-visible', sheetVisible + 'px');
-    panel.dataset.sheet = sheetState;
+    paintSheet(sheetVisible, true);
+    panel.dataset.sheet = sheetState === 'closed' ? 'closed' : sheetVisible >= SHEET_MAX() - 1 ? 'full' : 'open';
     phoneMapArea();
   }
   else {
@@ -1007,32 +1187,47 @@ function setZ(z, x, y, anchor) {
 // ===== Interaction state =====
 let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
 // pointer: drag to rotate, pinch / wheel / double-click / buttons to zoom, tap to select
-const touches = new Map(); let pinch = null, drag = null;
+const touches = new Map(); let pinch = null, drag = null, spin = null;  // spin: momentum after a drag is released (degrees per ms)
+// In the homepage embed a pinch must zoom the globe only: the page behind must not scroll with it. Two fingers cancel the browser's scrolling,
+// and the parent page is asked to hold its scroll position for the length of the gesture (some browsers start scrolling before the second finger lands).
+const gestureLock = on => { if (!EMBED) return; try { parent.postMessage({ inv: 'globe-gesture', on }, location.origin); } catch {} };
+// A touch only belongs to the globe when it starts on the globe disc or on its outline (14 px of tolerance). Next to it nothing rotates, and in the embed the page scrolls.
+const onGlobe = (x, y) => Math.hypot(x - cx, y - cy) <= R + 14;
+const claimGlobe = e => { if (EMBED && e.touches.length === 1 && e.cancelable && onGlobe(e.touches[0].clientX, e.touches[0].clientY)) e.preventDefault(); };
+const twoFingers = e => { if (EMBED && e.touches && e.touches.length >= 2 && e.cancelable) e.preventDefault(); };
+cv.addEventListener('touchstart', e => { claimGlobe(e); twoFingers(e); }, { passive: false }); cv.addEventListener('touchmove', twoFingers, { passive: false });
 cv.addEventListener('pointerdown', e => {
   touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); cv.setPointerCapture(e.pointerId);
-  if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), z: Zt, anchor: inv((a.x + b.x) / 2, (a.y + b.y) / 2) }; drag = null; return; }
-  drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false };
+  if (touches.size === 2 && (() => { const [a, b] = [...touches.values()]; return !EMBED || onGlobe((a.x + b.x) / 2, (a.y + b.y) / 2); })()) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), z: Zt, anchor: inv((a.x + b.x) / 2, (a.y + b.y) / 2) }; drag = null; gestureLock(true); return; }
+  spin = null; drag = { x: e.clientX, y: e.clientY, lon: lon0, lat: lat0, moved: false, rot: !EMBED || onGlobe(e.clientX, e.clientY), t: performance.now(), vx: 0, vy: 0, touch: e.pointerType !== 'mouse' };
 });
 cv.addEventListener('pointermove', e => {
   if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pinch && touches.size === 2) { const [a, b] = [...touches.values()]; setZ(pinch.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2, pinch.anchor); return; }
   if (drag) {
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.rot) return;  // the touch started next to the globe: it never rotates it
     if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; fly = null; zoomAnchor = null; Zt = Z; cv.classList.add('drag'); hideHover(); }
-    if (drag.moved) { lon0 = drag.lon - dx * .3 / Z; lat0 = Math.max(-70, Math.min(70, drag.lat + dy * .26 / Z)); }
+    if (drag.moved) {
+      const gain = 1;  // original sensitivity (a faster phone setting was tried and was too fast)
+      const pl = lon0, pa = lat0, now = performance.now(), dt = Math.max(1, now - drag.t); drag.t = now;
+      lon0 = drag.lon - dx * .3 * gain / Z; lat0 = Math.max(-70, Math.min(70, drag.lat + dy * .26 * gain / Z));
+      drag.vx = drag.vx * .6 + ((lon0 - pl) / dt) * .4; drag.vy = drag.vy * .6 + ((lat0 - pa) / dt) * .4;  // smoothed velocity, for the glide
+    }
     return;
   }
   if (fine) { lastX = e.clientX; lastY = e.clientY; hoverAt(e.clientX, e.clientY); }
 });
 function endPointer(e) {
   touches.delete(e.pointerId);
-  if (pinch) { if (touches.size < 2) pinch = null; drag = null; return; }
+  if (pinch) { if (touches.size < 2) { pinch = null; gestureLock(false); } drag = null; return; }
   if (drag && !drag.moved && e.type === 'pointerup') tap(e.clientX, e.clientY, e.pointerType !== 'mouse');
+  if (drag && drag.moved && e.type === 'pointerup' && e.pointerType === 'touch' && !reduce && performance.now() - drag.t < 90 && Math.hypot(drag.vx, drag.vy) > .005) spin = { vx: Math.max(-.6, Math.min(.6, drag.vx)), vy: Math.max(-.3, Math.min(.3, drag.vy)) };
   drag = null; cv.classList.remove('drag');
 }
 cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
 cv.addEventListener('pointerleave', () => { if (!drag && !phone()) hideHover(); });
-cv.addEventListener('wheel', e => { if (EMBED) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
+cv.addEventListener('wheel', e => { if (EMBED && !e.ctrlKey) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
 cv.addEventListener('selectstart', e => e.preventDefault()); cv.addEventListener('dragstart', e => e.preventDefault());
 cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) setZ(Zt < ZMAX - .1 ? Zt * 1.8 : 1, e.clientX, e.clientY); });
 $('zin').onclick = () => setZ(Zt * 1.6); $('zout').onclick = () => setZ(Zt / 1.6);
@@ -1041,15 +1236,16 @@ let cTimer = null, lastX = 0, lastY = 0;
 addEventListener('wheel', () => { clearTimeout(cTimer); hideHover(); }, { passive: true });
 function pick(x, y, r) { let best = null, bd = r * r; for (const d of drawn) { const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < bd) { bd = q; best = d; } } return best; }
 function hoverAt(x, y) {
-  const ex = !EMBED && (exPick(x, y) || upPick(x, y)); if (ex) { $('hover').classList.remove('on'); cv.style.cursor = 'pointer'; return; }
+  cv.style.cursor = !EMBED || onGlobe(x, y) ? 'grab' : 'default';  // full Globe page: hand everywhere; homepage: only over the globe
+  const ex = !EMBED && (exPick(x, y) || upPick(x, y)); if (ex) { $('hover').classList.remove('on'); return; }
   const edge=arcPick(x,y); arcHover=edge || null;
-  if(edge){const hv=$('hover');hv.className='hover glass solo hv-b on';hv.innerHTML=hoverCardHTML(edge);edge.pill?placeHover(edge.pill.x+edge.pill.w+4,edge.pill.y+edge.pill.h/2):placeHover(x,y);cv.style.cursor='pointer';return;}
+  if(edge){const hv=$('hover');hv.className='hover glass solo hv-b on';hv.innerHTML=hoverCardHTML(edge);edge.pill?placeHover(edge.pill.x+edge.pill.w+4,edge.pill.y+edge.pill.h/2):placeHover(x,y);return;}
 
   const d = pick(x, y, 16);
-  if (d) { hoverCountry = null; if (hoverC !== d.key) { hoverC = d.key; showHover(d); } placeHover(d.x, d.y); cv.style.cursor = 'pointer'; return; }
+  if (d) { hoverCountry = null; if (hoverC !== d.key) { hoverC = d.key; showHover(d); } placeHover(d.x, d.y); return; }
   if (hoverC) { hoverC = null; $('hover').classList.remove('on'); }
   const g = inv(x, y), c = g && countryAt(g[0], g[1]);
-  cv.style.cursor = c ? 'pointer' : '';
+  cv.style.cursor = !EMBED || onGlobe(x, y) ? 'grab' : 'default';
   if (c === hoverCountry) return;
   hoverCountry = c; clearTimeout(cTimer); $('hover').classList.remove('on');
   if (c && !EMBED) cTimer = setTimeout(() => { if (hoverCountry !== c || drag) return; const hv = $('hover');
@@ -1067,11 +1263,12 @@ function showHover(d) {
   }
 }
 function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.offsetHeight; let l = x + 16, t = y - h / 2; if (l + w > innerWidth - 12) l = x - w - 16; t = Math.max(12, Math.min(innerHeight - h - 12, t)); hv.style.left = l + 'px'; hv.style.top = t + 'px'; }
-function hideHover() { delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on'); cv.style.cursor = ''; }
+function hideHover() { delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
 function tap(x, y, touch) {
   if (touch) hideHover();
   const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
   const ex = !EMBED && exPick(x, y); if (ex) { window.InvPeek?.open(ex.e.ix); return; }
+  const pr=!EMBED&&pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);if(pr&&pr.asset&&selectAsset(pr.asset.s)){arcHover=null;return;}  // a price label selects its asset
   const edge=arcPick(x,y);if(edge){arcHover=null;openStory(edge.article);return;}
 
   const d = pick(x, y, touch ? 26 : 16);
@@ -1083,7 +1280,6 @@ $('hover').addEventListener('click', e => { const n = $('hover').dataset.country
 
 // ===== Panel =====
 const panel = $('panel'), pbody = $('pbody'); size(); new MutationObserver(() => { if (!phone()) size(); }).observe(panel, { attributes: true, attributeFilter: ['class'] }); let view = { k: 'top' }, hist = [];
-function sheetHeight(state) { return state === 'closed' ? 84 : H * ({ peek: .30, half: .55, full: .92 }[state] || .30); }
 function phoneMapArea() {
   const pk = $('peek').getBoundingClientRect(); if (pk.height) peekH = pk.height;
   const bottom = sheetState === 'closed' ? (pk.height ? pk.top : H - BOTTOM_DOCK - peekH - 20) - 10 : H - sheetVisible - 12;
@@ -1091,21 +1287,27 @@ function phoneMapArea() {
   cyT = phoneMapTop + Math.max(0, bottom - phoneMapTop) / 2;
   document.querySelector('.zoom').style.top = Math.max(phoneMapTop, bottom - 96) + 'px';
 }
+function placeSheet(st, h) {  // a resting position; CSS animates programmatic changes (opening, expand button), never a drag
+  sheetState = st; sheetVisible = h; if (st !== 'closed') sheetFrac = h / H;
+  const atMax = st !== 'closed' && h >= SHEET_MAX() - 1;
+  panel.dataset.sheet = st === 'closed' ? 'closed' : atMax ? 'full' : 'open'; panel.classList.toggle('open', st !== 'closed');
+  paintSheet(h, true);
+  $('grab').setAttribute('aria-label', st === 'closed' ? 'Open Top articles' : atMax ? 'Collapse the news panel' : 'Expand the news panel');
+  $('grab').setAttribute('aria-expanded', String(st !== 'closed'));
+  phoneMapArea(); peekUpdate(); dockUpdate();
+}
+// Programmatic requests: 'closed', 'full' (jump to the maximum), anything else = "make sure it is open" (opens at the minimum, never moves a sheet the user already placed).
 function setSheet(state) {
   if (!phone() || EMBED) return;
-  sheetState = state; sheetVisible = sheetHeight(state);
-  panel.dataset.sheet = state; panel.classList.toggle('open', state !== 'closed');
-  panel.style.setProperty('--sheet-offset', (H * .92 - sheetVisible) + 'px');
-  panel.style.setProperty('--sheet-visible', sheetVisible + 'px');
-  $('grab').setAttribute('aria-label', state === 'full' ? 'Show news panel at peek height' : state === 'half' ? 'Show full news panel' : state === 'peek' ? 'Show news panel at half height' : 'Open Top articles');
-  $('grab').setAttribute('aria-expanded', String(state !== 'closed'));
-  phoneMapArea(); peekUpdate(); dockUpdate();
+  if (state === 'closed') return placeSheet('closed', 84);
+  placeSheet('open', state === 'full' ? SHEET_MAX() : sheetState === 'closed' ? SHEET_MIN() : sheetVisible);
 }
 let sheetDraggedAt = -1000;
 $('grab').onclick = () => {
   if (!phone()) return panel.classList.toggle('open');
   if (performance.now() - sheetDraggedAt < 400) return;
-  setSheet({ closed: 'peek', peek: 'half', half: 'full', full: 'peek' }[sheetState]);
+  if (sheetState === 'closed') return setSheet('peek');
+  sheetVisible >= SHEET_MAX() - 1 ? placeSheet('open', SHEET_MIN()) : setSheet('full');  // a tap on the handle toggles collapse / expand
 };
 $('sheet-expand').onclick = () => setSheet('full');
 $('sheet-close').onclick = () => {
@@ -1113,38 +1315,54 @@ $('sheet-close').onclick = () => {
   setMarketsLayer(false);
   sel = null; selCountry = null; hist = []; view = { k: 'top' }; render(); pbody.scrollTop = 0; setSheet('closed');
 };
-// Only the handle and heading drag the sheet. Links retain their native taps;
-// the body scrolls independently and never passes a gesture through to the map.
-panel.addEventListener('pointerdown', e => {
-  if (!phone() || e.button !== 0 || !e.target.closest('.grab,.story-heading') || e.target.closest('a,button:not(.grab),input')) return;
-  sheetGesture = { id: e.pointerId, y: e.clientY, height: sheetVisible, lastY: e.clientY, lastT: performance.now(), velocity: 0, moved: false, target: e.target };
-  e.target.setPointerCapture(e.pointerId);
+// Sheet drag. Gesture ownership is decided once, at pointerdown, by WHERE the touch lands, and never changes until it ends:
+//   the handle / header zone (#grab and its 56 px overlay) -> this code resizes the sheet and nothing else moves
+//   the article list (#pbody)                               -> the browser scrolls it; this code never sees the gesture
+//   the map outside the sheet                              -> the globe handlers own it
+// While dragging: newHeight = heightAtStart + (fingerStartY - fingerY), clamped to [MIN, MAX]. No snap points, no thresholds, no transition, no velocity.
+// On release the sheet stays at that exact height; only the last MAGNET px next to the minimum or maximum pull in.
+const MAGNET = 24, grab = $('grab');
+let sheetRaf = 0, sheetWant = 0;
+const sheetApply = () => {
+  sheetRaf = 0; sheetVisible = sheetWant;
+  paintSheet(sheetVisible, false);  // one custom property: transform + clip-path, compositor only
+  globeBox.bottom = H - sheetVisible - 12; cyT = phoneMapTop + Math.max(0, globeBox.bottom - phoneMapTop) / 2;  // writes only, no layout reads
+  document.querySelector('.zoom').style.top = Math.max(phoneMapTop, globeBox.bottom - 96) + 'px';
+};
+grab.addEventListener('pointerdown', e => {
+  if (!phone() || EMBED || sheetState === 'closed' || e.button !== 0) return;
+  sheetGesture = { id: e.pointerId, y0: e.clientY, h0: sheetVisible, moved: false }; sheetWant = sheetVisible;
+  panel.classList.add('sheet-dragging');  // transitions off from the first touch
+  try { grab.setPointerCapture(e.pointerId); } catch {}
 });
-panel.addEventListener('pointermove', e => {
+grab.addEventListener('pointermove', e => {
   const g = sheetGesture; if (!g || g.id !== e.pointerId) return;
-  const now = performance.now(), delta = g.y - e.clientY;
-  if (!g.moved && Math.abs(delta) < 5) return;
-  g.moved = true; g.velocity = (g.lastY - e.clientY) / Math.max(1, now - g.lastT); g.lastY = e.clientY; g.lastT = now;
-  panel.classList.add('sheet-dragging');
-  sheetVisible = Math.max(sheetHeight('peek'), Math.min(sheetHeight('full'), g.height + delta));
-  panel.style.setProperty('--sheet-offset', (H * .92 - sheetVisible) + 'px');
-  phoneMapArea();
+  if (Math.abs(g.y0 - e.clientY) > 1) g.moved = true;
+  sheetWant = clampSheet(g.h0 + (g.y0 - e.clientY));
+  if (!sheetRaf) sheetRaf = requestAnimationFrame(sheetApply);
 });
-function endSheetGesture(e) {
-  const g = sheetGesture; if (!g || g.id !== e.pointerId) return;
-  sheetGesture = null; panel.classList.remove('sheet-dragging');
-  if (!g.moved) return;
+function sheetEnd(e) {
+  const g = sheetGesture; if (!g || g.id !== e.pointerId) return; sheetGesture = null;
+  if (sheetRaf) { cancelAnimationFrame(sheetRaf); sheetRaf = 0; }
+  panel.classList.remove('sheet-dragging');
+  if (!g.moved) { sheetVisible = g.h0; paintSheet(g.h0, true); return; }  // it was a tap: the click handler toggles
   sheetDraggedAt = performance.now();
-  const velocity = performance.now() - g.lastT < 100 && e.type !== 'pointercancel' ? g.velocity : 0;
-  const projected = sheetVisible + Math.max(-1.5, Math.min(1.5, velocity)) * 160;
-  const state = ['peek','half','full'].sort((a,b) => Math.abs(sheetHeight(a) - projected) - Math.abs(sheetHeight(b) - projected))[0];
-  setSheet(state);
+  let h = sheetWant;
+  // the magnet only pulls toward the edge the finger was moving to: dragging 10 px up from the minimum stays 10 px up
+  if (h < g.h0 && h - SHEET_MIN() < MAGNET) h = SHEET_MIN(); else if (h > g.h0 && SHEET_MAX() - h < MAGNET) h = SHEET_MAX();
+  placeSheet('open', h);
 }
-panel.addEventListener('pointerup', endSheetGesture);
-panel.addEventListener('pointercancel', endSheetGesture);
+grab.addEventListener('pointerup', sheetEnd); grab.addEventListener('pointercancel', sheetEnd);
+// On-device check: open the globe page with ?debugsheet=1 and a small readout shows what the sheet receives (touch events, finger Y, height in px).
+if (new URLSearchParams(location.search).has('debugsheet')) {
+  const d = Object.assign(document.createElement('div'), { id: 'dbgsheet' }); d.style.cssText = 'position:fixed;left:8px;top:96px;z-index:99999;font:11px/1.35 ui-monospace,monospace;color:#9f9;background:rgba(0,0,0,.7);padding:6px 8px;border-radius:8px;pointer-events:none;white-space:pre'; document.body.appendChild(d);
+  const n = { down: 0, move: 0, up: 0, cancel: 0 }; const show = (t, e) => { d.textContent = `pointer events  down ${n.down}  move ${n.move}  up ${n.up}  cancel ${n.cancel}\nlast ${t}  y ${Math.round(e.clientY)}  type ${e.pointerType}\nsheet ${Math.round(sheetVisible)} px  (${Math.round(sheetVisible / H * 100)}%)  state ${sheetState}  dragging ${!!sheetGesture}`; };
+  for (const [t, k] of [['pointerdown', 'down'], ['pointermove', 'move'], ['pointerup', 'up'], ['pointercancel', 'cancel']]) grab.addEventListener(t, e => { n[k]++; show(t, e); });
+}
+grab.addEventListener('lostpointercapture', sheetEnd);
 pbody.addEventListener('click', e => { const b = e.target.closest('[data-share]'); if (b && window.ShareLink) { e.preventDefault(); ShareLink.share(b.dataset.share, (pbody.querySelector('h2') || {}).textContent || 'Investedia', b); } });
 pbody.addEventListener('click', e => { if (phone() && sheetState === 'closed' && !e.target.closest('a,button,input')) setSheet('peek'); });
-const layoutObserver = new ResizeObserver(size); [document.querySelector('.top'), $('tl'), panel, $('peek')].forEach(e => layoutObserver.observe(e));
+const layoutObserver = new ResizeObserver(() => { if (!sheetGesture) size(); }); [document.querySelector('.top'), $('tl'), panel, $('peek')].forEach(e => layoutObserver.observe(e));
 document.fonts.ready.then(size);
 function go(v, push = true) { if (push && view.k !== v.k || push && view.id !== v.id) hist.push(view); view = v; render(); pbody.scrollTop = 0; if (phone()) setSheet('peek'); }
 function back() { view = hist.pop() || { k: 'top' }; if (view.k === 'top') { sel = null; selCountry = null; } else if (view.k === 'country') { sel = null; selCountry = byName[view.id]; } else if (view.k === 'article') { sel = byId[view.id]; } render(); }
@@ -1168,7 +1386,7 @@ pbody.addEventListener('pointerover',e=>{const b=e.target.closest('[data-story]'
 pbody.addEventListener('pointerleave',()=>{arcHover=null;});
 pbody.addEventListener('change', e => { const t = e.target.closest('[data-topic]'); if (t) setTopic(t.dataset.c, t.dataset.topic, t.checked); });
 pbody.addEventListener('click', e => {
-  const asset=e.target.closest('[data-asset]');if(asset){window.InvPeek?.open(asset.dataset.asset);return;}
+  const asset=e.target.closest('[data-asset]');if(asset){if(!selectAsset(asset.dataset.asset))window.InvPeek?.open(asset.dataset.asset);return;}  // assets open their globe view
   const b = e.target.closest('[data-story],[data-back],[data-country],[data-follow]'); if (!b) return; if (b.tagName !== 'LABEL') e.preventDefault();
   if (b.dataset.follow) return toggleFollow(b.dataset.follow);
   if (b.dataset.back != null) return back();
@@ -1212,7 +1430,13 @@ function variantPanel(list) {
 }
 pbody.addEventListener('click', e => {
   const tab = e.target.closest('[data-panel-tab]'), more = e.target.closest('[data-panel-more]');
-  if (tab) { panelTab = tab.dataset.panelTab; panelExpanded = false; render(); $('panel-tab-' + panelTab).focus(); }
+  if (tab) {
+    const strip = pbody.querySelector('.panel-tabs'), left = strip ? strip.scrollLeft : 0;
+    panelTab = tab.dataset.panelTab; panelExpanded = false; render();
+    const cur = $('panel-tab-' + panelTab); cur.focus({ preventScroll: true });
+    const ns = pbody.querySelector('.panel-tabs');  // render rebuilt the strip: restore where it was, then glide the chosen tab fully into view (the page itself never moves)
+    if (ns && cur) { ns.scrollLeft = left; const want = Math.max(0, Math.min(ns.scrollWidth - ns.clientWidth, cur.offsetLeft - (ns.clientWidth - cur.offsetWidth) / 2)); if (Math.abs(want - left) > 1) ns.scrollTo({ left: want, behavior: matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth' }); }
+  }
   else if (more) { panelExpanded = !panelExpanded; render(); pbody.querySelector('[data-panel-more]')?.focus({ preventScroll: true }); }
 });
 pbody.addEventListener('keydown', e => {
@@ -1267,6 +1491,8 @@ function render() {
         ${groups.map(([l, g]) => `<div class="sec-h">${l}</div><div class="list">${g.map(item).join('')}</div>`).join('')}
         ${cos.length ? `<div class="sec-h">Companies & assets</div><div class="cos">${cos.map(x => entityChip(x, c.name)).join('')}</div>` : ''}`
       : `<div class="empty">${all.length ? `No ${F.cat === 'all' ? '' : esc(CAT[F.cat]).toLowerCase() + ' '}articles for ${esc(nm(c.name))} in ${WLABEL[F.win]}. ${all.length} in the last 7 days: switch the timeline to <b>7D</b>.` : `No financial or business articles for ${esc(nm(c.name))} right now. When live sources are connected, articles appear here as they are published. We never fill a country with invented news.`}</div>`}${noteHTML()}`;
+  } else if (view.k === 'asset') {
+    pbody.innerHTML = assetPanel(view.id);
   } else if (view.k === 'place') {
     const list = view.ids.map(i => byId[i]).sort(sortTop);
     pbody.innerHTML = `<button class="back" data-back>← Back</button><div class="eyebrow">${esc(nm(list[0].location.country))}</div><h2>${esc(list[0].location.place)}</h2><div class="stats"><div><b>${list.length}</b>articles here</div></div><div class="list">${list.map(item).join('')}</div>${noteHTML()}`;
@@ -1328,13 +1554,16 @@ $('play').onclick = () => { F.win = '7d'; press($('wins'), '7d'); play = { start
 
 // ===== Draw =====
 function vec(phi, lam) { return [Math.cos(phi) * Math.cos(lam), Math.cos(phi) * Math.sin(lam), Math.sin(phi)]; }
-function arcPts(a, b, n = 56) {
+function arcPts(a, b, n = 56, lift = 0) {  // lift > 0: a taller arc that rises out past the globe's outline (homepage blue lines)
   const A = vec(a.phi, a.lam), B = vec(b.phi, b.lam), dot = Math.max(-1, Math.min(1, A[0] * B[0] + A[1] * B[1] + A[2] * B[2])), om = Math.acos(dot), so = Math.sin(om) || 1, out = [];
   if (om < .00001) { const p=proj(a.phi,a.lam,1); return [[p[0],p[1],p[2]>0],[p[0],p[1],p[2]>0]]; }
   for (let i = 0; i <= n; i++) {
     const k = i / n, f1 = Math.sin((1 - k) * om) / so, f2 = Math.sin(k * om) / so, v = [A[0] * f1 + B[0] * f2, A[1] * f1 + B[1] * f2, A[2] * f1 + B[2] * f2];
-    const h = 1 + Math.sin(Math.PI * k) * Math.min(.22, .08 + om * .12), p = proj(Math.asin(v[2]), Math.atan2(v[1], v[0]), h);
-    out.push([p[0], p[1], p[2] > 0]);
+    // The lift follows the surface: it is full in the middle of the front face and flattens to zero as the arc nears the edge of the globe,
+    // so the line runs down onto the rim and carries on over it instead of ending in the sky.
+    const phi = Math.asin(v[2]), lam = Math.atan2(v[1], v[0]), zS = proj(phi, lam, 1)[2], f = Math.max(0, Math.min(1, zS / .3));
+    const h = 1 + Math.sin(Math.PI * k) * (lift ? lift * Math.min(1, .35 + om * .8) : Math.min(.15, .05 + om * .09) * f), p = proj(phi, lam, h);
+    out.push([p[0], p[1], zS > 0 || (lift > 0 && p[2] > -.2 && Math.hypot(p[0] - cx, p[1] - cy) > R), zS]);
   }
   return out;
 }
@@ -1360,10 +1589,69 @@ function countryShape(c, fill, stroke, lw = 1) {
   ctx.beginPath(); for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = fill; ctx.fill('evenodd'); if (!stroke) return;
   ctx.beginPath(); for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke();
 }
+// globe look: neutral grey sphere, brighter than before, with a strong orange outline
+const GB0 = { s0: '#26262c', s1: '#101014', atm: .14, atmRGB: '255,122,26', dot: 1.35, rgb: '161,161,170', land: .015, line: .04, grid: .5, rim: .9, rimRGB: '180,136,109', rimW: 1.8, glow: '255,122,26,.42', blur: 16 };  // default: graphite rim with orange glow
+// ?gb=A|B|C previews outline options (temporary, for choosing a look)
+const GB = Object.assign({}, GB0, ({
+  A: { rim: .9, rimRGB: '232,232,238', rimW: 1.6, glow: '255,255,255,.28', blur: 10, atm: .10, atmRGB: '215,215,225' },
+  B: { rim: .75, rimRGB: '150,150,160', rimW: 1.6, glow: '0,0,0,0', blur: 0, atm: .06, atmRGB: '170,170,180' },
+  C: { rim: .65, rimRGB: '255,168,104', rimW: 1.4, glow: '255,160,90,.35', blur: 10, atm: .12, atmRGB: '255,160,90' },
+  D: { rim: .8, rimRGB: '196,190,182', rimW: 1.5, glow: '230,222,210,.22', blur: 12, atm: .08, atmRGB: '210,204,194' },   // titanium: warm silver
+  M: { rim: .85, rimRGB: '140,144,154', rimW: 1.8, glow: '255,122,26,.42', blur: 16, atm: .14, atmRGB: '255,122,26' },   // graphite rim with an orange glow (mixed)
+  E: { rim: .5, rimRGB: '255,255,255', rimW: 1, glow: '255,255,255,.18', blur: 16, atm: .05, atmRGB: '235,240,255' },       // glass: white hairline
+  F: { rim: .9, rimRGB: '120,124,134', rimW: 2, glow: '0,0,0,0', blur: 0, atm: .04, atmRGB: '120,124,134' } })[new URLSearchParams(location.search).get('gb')], (g => g === null ? {} : { grid: +g })(new URLSearchParams(location.search).get('gr')));  // ?gr=0..2 previews the grid strength
+// Star field behind the globe (preview: ?st=1 sparse, 2 dense with a soft galaxy band, 3 dense + slow twinkle and parallax). Off by default.
+const STARS = 1;  // chosen: sparse stars, no twinkle
+const P = new URLSearchParams(location.search), ARC_A = +P.get('arc') || .4, STAR_MONO = !P.has('color');  // previews: ?arc=0.3 stronger connections, ?smono black-and-white stars
+const starList = (() => { let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647; const SM = +P.get('sm') || 3;  // star style: 3 = dim and dense (default); ?sm=2 bright and sparse, ?sm=1 the earlier style
+  const n = P.has('sn') ? +P.get('sn') : SM === 3 ? (innerWidth <= 760 ? 90 : 340) : SM === 2 ? 38 : (innerWidth <= 760 ? 40 : 60);  // fewer stars on a phone, where the space is smaller
+  return Array.from({ length: n }, () => { const big = rnd() > .93, band = STARS > 1 && rnd() < .38; const x = rnd(), y = band ? Math.min(1, Math.max(0, .78 - x * .55 + (rnd() - .5) * .22)) : rnd();
+    return { x, y, r: SM === 2 ? 1.2 + rnd() * 1.1 : SM === 3 ? .6 + rnd() * .65 : big ? 1.6 + rnd() * 1.2 : .8 + rnd() * .9, a: SM === 2 ? .7 + rnd() * .3 : SM === 3 ? .28 + rnd() * .42 : .45 + rnd() * .55, ph: rnd() * 6.28, sp: .4 + rnd() * 1.2, warm: (!STAR_MONO && rnd() > .82), d: .15 + rnd() * .85 }; }); })();
+// Desktop look (chosen design B): a near-black grey globe background and dimmer stars. The outline, glow and grid are unchanged. Phones are untouched.
+if (innerWidth > 760) Object.assign(GB, { s0: '#161618', s1: '#050506', glow: '255,122,26,.6', blur: 22 });  // desktop: a bit more orange glow around the outline
+const STAR_DIM = innerWidth > 760 ? (P.has('sd') ? +P.get('sd') : .95) : 1;  // desktop stars: brighter than before (.4 was too faint), still subdued
+// Galaxy preview (?gx=1 violet band, 2 warm nebula, 3 spiral galaxy, 4 nebula + spiral). Drawn once into an offscreen canvas per size, then copied each frame: cheap for scrolling and dragging.
+const GALAXY = 0;  // Milky Way / galaxy concepts removed; only the stars remain  // desktop: nebula + spiral mix. Phones: no galaxy or Milky Way, only the thin stars
+let galaxyCv = null, galaxyKey = '';
+function drawGalaxy() {
+  if (!GALAXY) return;
+  const key = W + 'x' + H + ':' + GALAXY;
+  if (key !== galaxyKey) {
+    galaxyKey = key; galaxyCv = document.createElement('canvas'); galaxyCv.width = W; galaxyCv.height = H; const g2 = galaxyCv.getContext('2d');
+    if (GALAXY === 1) { const gr = g2.createLinearGradient(0, H * .95, W, H * .05); gr.addColorStop(0, 'rgba(90,70,160,0)'); gr.addColorStop(.45, 'rgba(110,90,190,.13)'); gr.addColorStop(.6, 'rgba(70,110,200,.10)'); gr.addColorStop(1, 'rgba(90,70,160,0)'); g2.fillStyle = gr; g2.fillRect(0, 0, W, H); }
+    if (GALAXY === 2 || GALAXY === 4) { [[.12, .2, .45], [.9, .78, .35]].forEach(([x, y, r]) => { const gr = g2.createRadialGradient(W * x, H * y, 0, W * x, H * y, Math.max(W, H) * r); gr.addColorStop(0, 'rgba(255,122,26,.10)'); gr.addColorStop(.5, 'rgba(255,90,40,.04)'); gr.addColorStop(1, 'rgba(255,90,40,0)'); g2.fillStyle = gr; g2.fillRect(0, 0, W, H); }); }
+    if (GALAXY === 3 || GALAXY === 4) { g2.save(); g2.translate(W * .18, H * .18); g2.rotate(-.5); g2.scale(1, .34); const R = Math.max(W, H) * .32;
+      for (let arm = 0; arm < 2; arm++) for (let i = 0; i < 90; i++) { const t = i / 90, a = t * 4.2 + arm * Math.PI, rr = R * t; g2.fillStyle = `rgba(200,210,255,${(.10 * (1 - t) + .02).toFixed(3)})`; g2.beginPath(); g2.arc(Math.cos(a) * rr, Math.sin(a) * rr, 2 + 10 * t, 0, 7); g2.fill(); }
+      const core = g2.createRadialGradient(0, 0, 0, 0, 0, R * .25); core.addColorStop(0, 'rgba(255,240,220,.22)'); core.addColorStop(1, 'rgba(255,240,220,0)'); g2.fillStyle = core; g2.fillRect(-R, -R, R * 2, R * 2); g2.restore(); }
+  }
+  ctx.drawImage(galaxyCv, 0, 0, W, H);
+}
+let skyCv = null, skyKey = '';
+function drawSky() {
+  const key = W + 'x' + H + ':' + GALAXY + ':' + STARS + ':' + STAR_DIM + ':' + GB.s0;
+  if (key !== skyKey) {
+    skyKey = key; skyCv = document.createElement('canvas'); skyCv.width = W; skyCv.height = H;
+    const real = ctx; ctx = skyCv.getContext('2d');
+    try { drawGalaxy(); drawStars(0); } finally { ctx = real; }
+  }
+  ctx.drawImage(skyCv, 0, 0, W, H);
+}
+function drawStars(now) {
+  if (!STARS) return;
+  if (false) { const g = ctx.createLinearGradient(0, H * .85, W, H * .1); g.addColorStop(0, 'rgba(120,130,170,0)'); g.addColorStop(.5, 'rgba(150,160,200,.055)'); g.addColorStop(1, 'rgba(120,130,170,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+  const par = 0;
+  for (const st of starList) {
+    const tw = 1;
+    const x = ((st.x * W - par * st.d) % W + W) % W, y = st.y * H;
+    ctx.fillStyle = st.warm ? `rgba(255,214,170,${(st.a * tw * STAR_DIM).toFixed(3)})` : `rgba(225,232,255,${(st.a * tw * STAR_DIM).toFixed(3)})`;
+    ctx.beginPath(); ctx.arc(x, y, st.r, 0, 7); ctx.fill();
+  }
+}
 let last = performance.now();
 function frame(t) {
   const dt = Math.min(50, t - last); last = t;
-  if (fly) { const k = Math.min(1, (t - fly.t0) / fly.dur), e = ease(k); lon0 = fly.from[0] + fly.dl * e; lat0 = fly.from[1] + (fly.la - fly.from[1]) * e; Zt = fly.from[2] + (fly.z - fly.from[2]) * e; if (k >= 1) fly = null; }
+  if (fly) { spin = null; const k = Math.min(1, (t - fly.t0) / fly.dur), e = ease(k); lon0 = fly.from[0] + fly.dl * e; lat0 = fly.from[1] + (fly.la - fly.from[1]) * e; Zt = fly.from[2] + (fly.z - fly.from[2]) * e; if (k >= 1) fly = null; }
+  else if (spin) { lon0 += spin.vx * dt; lat0 = Math.max(-70, Math.min(70, lat0 + spin.vy * dt)); const f = Math.exp(-dt / 380); spin.vx *= f; spin.vy *= f; if (Math.hypot(spin.vx, spin.vy) < .004) spin = null; }  // friction: glides to a stop in about a second
   else if (!drag && !pinch && !reduce && !sel && !selCountry && !hoverC && !hoverCountry && view.k === 'top' && F.region === 'global' && Zt < 1.05 && !zoomAnchor) lon0 -= dt * .0022;
   Z += (Zt - Z) * (reduce ? 1 : .18); if (Math.abs(Zt - Z) < .0001) Z = Zt; R = R0 * Z;
   lon0 = ((lon0 + 540) % 360) - 180; cy += (cyT - cy) * (reduce ? 1 : .12);
@@ -1372,27 +1660,32 @@ function frame(t) {
 
   ctx.clearRect(0, 0, W, H);
   ctx.save(); // no hard clip: when zoomed in, the map runs softly behind the controls (markers still stay inside the free area)
+  drawSky();  // galaxy and stars: built once per size, then one copy per frame
   // atmosphere + sphere
-  const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, 'rgba(255,122,26,.22)'); at.addColorStop(.25, 'rgba(255,122,26,.07)'); at.addColorStop(1, 'rgba(255,122,26,0)');
+  const at = ctx.createRadialGradient(cx, cy, R * .96, cx, cy, R * 1.22); at.addColorStop(0, `rgba(${GB.atmRGB},${GB.atm})`); at.addColorStop(.25, `rgba(${GB.atmRGB},${GB.atm / 3})`); at.addColorStop(1, `rgba(${GB.atmRGB},0)`);
   ctx.fillStyle = at; ctx.beginPath(); ctx.arc(cx, cy, R * 1.22, 0, 7); ctx.fill();
-  const sg = ctx.createRadialGradient(cx - R * .4, cy - R * .45, R * .05, cx, cy, R); sg.addColorStop(0, '#1a1a1e'); sg.addColorStop(1, '#09090b');
-  ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill(); ctx.strokeStyle = 'rgba(255,160,100,.35)'; ctx.lineWidth = 1; ctx.stroke();
+  const sg = ctx.createRadialGradient(cx - R * .4, cy - R * .45, R * .05, cx, cy, R); sg.addColorStop(0, GB.s0); sg.addColorStop(1, GB.s1);
+  ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill(); ctx.strokeStyle = `rgba(${GB.rimRGB},${GB.rim})`; ctx.lineWidth = GB.rimW; ctx.shadowColor = `rgba(${GB.glow})`; ctx.shadowBlur = GB.blur; ctx.stroke(); ctx.shadowBlur = 0;
   ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.clip();
   // faint latitude / longitude lines
   if (Z < 2.6) { ctx.beginPath(); for (let lo = -180; lo < 180; lo += 30) { let pen = false; for (let la = -80; la <= 80; la += 4) { const [x, y, z] = proj(la * rad, lo * rad); if (z <= 0) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } }
     for (let la = -60; la <= 60; la += 30) { let pen = false; for (let lo = -180; lo <= 180; lo += 4) { const [x, y, z] = proj(la * rad, lo * rad); if (z <= 0) { pen = false; continue; } pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } }
-    ctx.strokeStyle = `rgba(255,255,255,${(.045 * (1 - (Z - 1) / 1.6)).toFixed(3)})`; ctx.lineWidth = .6; ctx.stroke(); }
+    ctx.strokeStyle = `rgba(255,255,255,${(.045 * GB.grid * (1 - (Z - 1) / 1.6)).toFixed(3)})`; ctx.lineWidth = .6; ctx.stroke(); }
   // land: dots fade out as you zoom in, country shapes take over
   const da = Math.max(0, 1.25 - Z * .25), ds = Math.max(1.1, Math.min(2.2, R / 230));
-  if (da > .02) for (const [phi, lam] of pts) { const [x, y, z] = proj(phi, lam); if (z <= 0) continue; ctx.fillStyle = `rgba(161,161,170,${((.08 + z * .42) * da).toFixed(3)})`; ctx.fillRect(x - ds / 2, y - ds / 2, ds, ds); }
+  if (da > .02) {  // dots are batched by brightness: 12 fills per frame instead of one fill per dot (the main per-frame cost on PC)
+    const B = 12, buckets = Array.from({ length: B }, () => []);
+    for (const [phi, lam] of pts) { const [x, y, z] = proj(phi, lam); if (z <= 0) continue; const a = Math.min(1, (.08 + z * .42) * da * GB.dot); buckets[Math.min(B - 1, Math.floor(a * B))].push(x - ds / 2, y - ds / 2); }
+    for (let i = 0; i < B; i++) { const q = buckets[i]; if (!q.length) continue; ctx.fillStyle = `rgba(${GB.rgb},${((i + .5) / B).toFixed(3)})`; ctx.beginPath(); for (let j = 0; j < q.length; j += 2) ctx.rect(q[j], q[j + 1], ds, ds); ctx.fill(); }
+  }
   if (!EMBED && MKTON) { const n = nightPath(); ctx.save(); ctx.fillStyle = 'rgba(2,2,5,.46)'; if (n.wholeDisc) { const all = new Path2D(); all.arc(cx, cy, R, 0, 7); all.addPath(n.path); ctx.fill(all, 'evenodd'); } else ctx.fill(n.path); ctx.strokeStyle = 'rgba(255,160,100,.22)'; ctx.lineWidth = 1; ctx.stroke(n.path); ctx.restore(); }
-  const la = Math.min(.07, .012 + (Z - 1) * .02);
+  const la = Math.min(.07, .012 + (Z - 1) * .02) + GB.land;
   const map = Z >= 1.8 ? countries : overview;
   ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, true); ctx.fillStyle = `rgba(255,255,255,${la})`; ctx.fill('evenodd');
   const impactFocus = sel || arcHover?.article || (hoverC && drawn.find(d => d.key === hoverC)?.list.length === 1 ? drawn.find(d => d.key === hoverC).list[0] : null);
   // countries with news in the current filters get a soft orange tint
   for (const c of map) { const n = activity[c.name]; if (n) countryShape(c, `rgba(255,122,26,${(.035 + .025 * Math.min(4, n)).toFixed(3)})`); }
-  ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = `rgba(255,255,255,${Math.min(.2, .07 + (Z - 1) * .04)})`; ctx.lineWidth = .7; ctx.stroke();
+  ctx.beginPath(); for (const c of map) for (const rr of c.rr) ringPath(rr, false); ctx.strokeStyle = `rgba(255,255,255,${Math.min(.2, .07 + (Z - 1) * .04) + GB.line})`; ctx.lineWidth = .7; ctx.stroke();
   for (const { impact, country } of impactTargets(impactFocus)) countryShape(country, `rgba(${IMPACT_COLOR[impact.direction]},.10)`);
   if (hoverCountry && hoverCountry !== selCountry) countryShape(hoverCountry, 'rgba(255,255,255,.05)', 'rgba(255,255,255,.35)');
   if (selCountry) countryShape(selCountry, 'rgba(255,122,26,.10)', 'rgba(255,122,26,.75)', 1.2);
@@ -1410,23 +1703,7 @@ function frame(t) {
     if (q[2]) { const g = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], 8); g.addColorStop(0, 'rgba(255,200,150,.95)'); g.addColorStop(1, 'rgba(255,122,26,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q[0], q[1], 8, 0, 7); ctx.fill(); }
   }
 
-  // Option C: a calm network; the selected article reveals its complete asset links.
-  arcHits = []; pillRects = []; let visibleArcs=0;
-  for (const [i, edge] of (CONNON || focus ? network : []).entries()) {
-    const {article,impact,asset,target}=edge, active=focus?.id === article.id;
-    if (focus && !active) continue;
-    const points=arcPts(article,target,32), col=IMPACT_COLOR[impact.direction];
-    ctx.lineWidth=active ? 1.3 + article.importance*.35 : .6 + article.importance*.18;
-    ctx.strokeStyle=`rgba(${col},${EMBED ? .14 : active ? .8 : .20})`;ctx.beginPath();let pen=false;
-    for(const [x,y,v] of points){if(!v){pen=false;continue;}pen?ctx.lineTo(x,y):ctx.moveTo(x,y);pen=true;}ctx.stroke();
-    if(points.some(p=>p[2]))visibleArcs++;
-    const q=points[Math.round((reduce ? .5 : (t/3800+i*.17)%1)*(points.length-1))];
-    if(q[2]){ctx.fillStyle=`rgba(${col},${active?.95:.35})`;ctx.beginPath();ctx.arc(q[0],q[1],active?2.5:1.5,0,7);ctx.fill();}
-    if(active && !EMBED){const seen=points.filter(p=>p[2]&&p[0]>globeBox.left+34&&p[0]<globeBox.right-34&&p[1]>globeBox.top+30&&p[1]<globeBox.bottom-30);if(seen.length>2){const m=seen[Math.floor(seen.length/2)],d=asset.d,nm=asset.n.length>17?asset.n.slice(0,16)+'…':asset.n,pt=Number.isFinite(d)?`${d>0?'↑':d<0?'↓':'↔'} ${Math.abs(d).toFixed(2)}%`:IMPACT_ARROW[impact.direction];ctx.font='650 12px Inter,sans-serif';const w1=ctx.measureText(nm).width,w2=ctx.measureText(pt).width,W=w1+w2+32,H=26;let x=m[0]-W/2,y=m[1]-H/2;for(let n=0;n<8&&pillRects.some(r=>x<r.x+r.w+4&&x+W+4>r.x&&y<r.y+r.h+4&&y+H+4>r.y);n++)y+=H+4;
-      pillRects.push({x,y,w:W,h:H,nm,pt,w1,d,edge:{...edge,points,pill:{x,y,w:W,h:H}}});}}
-    if(!EMBED)arcHits.push({...edge,points});
-  }
-  cv.dataset.arcCount=String(visibleArcs);
+  drawConnections(t, focus, sel ? null : selCountry);
 
   // lens active: stories outside the lens stay on the map as faint dots
   for (const s of dimmed) { const [x, y, z] = proj(s.phi, s.lam); if (z <= .04) continue; ctx.fillStyle = `rgba(161,161,170,${(.1 + .22 * z).toFixed(3)})`; ctx.beginPath(); ctx.arc(x, y, 1.7, 0, 7); ctx.fill(); }
@@ -1555,6 +1832,8 @@ $('dock').onclick = e => {
 };
 pbody.addEventListener('click', e => { const u = e.target.closest('[data-up]'); if (u && CAPS[u.dataset.up]) flyTo(CAPS[u.dataset.up][1], CAPS[u.dataset.up][0], 1.6); });
 $('sw-conn').onclick = () => { CONNON = !CONNON; syncLayers(); };
+$('sw-rel').onclick = () => { SECTORON = !SECTORON; syncLayers(); };
+$('sw-story').onclick = () => { STORYON = !STORYON; syncLayers(); };
 $('sw-up').onclick = () => {
   const on = !UPON; setUpcomingLayer(on);
   if (on && !phone()) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; panelExpanded = false; }
@@ -1578,7 +1857,7 @@ placeFilters(phone()); addEventListener('resize', () => placeFilters(phone()));
 let LIVE = null;
 const load = u => fetch(u, { cache: 'no-cache' }).then(r => { if (!r.ok) throw 0; return r.json(); });
 load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return d; }).catch(() => load(DEMO_URL)).then(raw => {
-  if (!raw.demo) { LIVE = raw; const b = $('badge'); b.className = 'demo live'; b.title = raw.notice || ''; b.innerHTML = '<i></i>Live news · updated ' + new Date(raw.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  if (!raw.demo) { LIVE = raw; const b = $('badge'); b.className = 'demo live'; b.title = raw.notice || ''; const m = Math.max(0, Math.round((Date.now() - Date.parse(raw.updated_at)) / 60000)); b.innerHTML = '<i></i>News updated ' + (m < 1 ? 'just now' : m < 60 ? m + 'm ago' : m < 1440 ? Math.floor(m / 60) + 'h ago' : Math.floor(m / 1440) + 'd ago'); }
   stories = normalize(raw); byId = Object.fromEntries(stories.map(s => [s.id, s])); incoming = {};
   for (const s of stories) for (const l of s.links) if (byId[l]) incoming[l] = s.id;
   refresh();

@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=8376d74b12">
-<script src="assets/consent.js?v=8376d74b12"></script>
+<link rel="stylesheet" href="assets/consent.css?v=670054b7ba">
+<script src="assets/consent.js?v=670054b7ba"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Recent market implications — Investedia</title>
+<title>Investedia Recent market implications</title>
 <meta name="description" content="Every recent article that implied a move for a priced asset, with what the asset did afterwards: confirmed, went the other way, no clear move or still pending.">
-<meta property="og:title" content="Recent market implications — Investedia">
+<meta property="og:title" content="Investedia Recent market implications">
 <meta property="og:description" content="Every recent article that implied a move for a priced asset, with what the asset did afterwards: confirmed, went the other way, no clear move or still pending.">
 <meta name="theme-color" content="#0A0A0B">
 <meta property="og:type" content="website">
@@ -18,12 +18,12 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Investedia: invest with clarity, see the world move">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Recent market implications — Investedia">
+<meta name="twitter:title" content="Investedia Recent market implications">
 <meta name="twitter:description" content="Every recent article that implied a move for a priced asset, with what the asset did afterwards: confirmed, went the other way, no clear move or still pending.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=8376d74b12">
-<link rel="stylesheet" href="assets/skin.css?v=8376d74b12">
+<link rel="stylesheet" href="assets/app.css?v=670054b7ba">
+<link rel="stylesheet" href="assets/skin.css?v=670054b7ba">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,18 +46,18 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=8376d74b12"></script>
-<script src="assets/legal-owner.js?v=8376d74b12"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=8376d74b12">
-<script src="assets/live-config.js?v=8376d74b12"></script>
-<script src="assets/prefs.js?v=8376d74b12"></script>
-<script src="assets/peek.js?v=8376d74b12"></script>
-<script src="assets/sectors.js?v=8376d74b12"></script>
-<script src="assets/news-menu.js?v=8376d74b12"></script>
-<script src="assets/ui.js?v=8376d74b12"></script>
-<script src="assets/news-alerts.js?v=8376d74b12" defer></script>
-<script src="assets/since-news.js?v=8376d74b12"></script>
-<script src="assets/implications.js?v=8376d74b12"></script>
+<script src="assets/mock.js?v=670054b7ba"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=670054b7ba">
+<script src="assets/live-config.js?v=670054b7ba"></script>
+<script src="assets/live-data.js?v=670054b7ba" defer></script>
+<script src="assets/prefs.js?v=670054b7ba"></script>
+<script src="assets/peek.js?v=670054b7ba"></script>
+<script src="assets/sectors.js?v=670054b7ba"></script>
+<script src="assets/news-menu.js?v=670054b7ba"></script>
+<script src="assets/ui.js?v=670054b7ba"></script>
+<script src="assets/news-alerts.js?v=670054b7ba" defer></script>
+<script src="assets/since-news.js?v=670054b7ba"></script>
+<script src="assets/implications.js?v=670054b7ba"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <link rel="stylesheet" href="assets/track-record.css"><link rel="stylesheet" href="assets/implications.css">
 <nav class="subnav" id="news-nav"></nav>
@@ -70,6 +70,7 @@
 <section class="tr-how" aria-labelledby="im-how">
   <h2 id="im-how">How to read this</h2>
   <ul>
+    <li>The % is the <b>result of the call</b>: if the article said down and the asset fell 2%, that is +2%; if it rose instead, that is −2%. Hover a % to see the asset’s own move.</li>
     <li><b>Confirmed</b> means the asset moved at least 0.3% the way the article implied. <b>Went the other way</b> means it moved at least 0.3% against it. Smaller moves are <b>no clear move</b>.</li>
     <li>The move is measured from the first price recorded after the article to the latest recorded price, then fixed at 24 hours after the article. Stocks are delayed 15–30 minutes.</li>
     <li><b>Pending</b> means no price has been recorded after the article yet, for example while the market is closed.</li>
@@ -86,7 +87,7 @@
   const C = Implications.counts(calls);
   const LAB = { hit: ['ok', '✓ confirmed'], miss: ['no', '✗ went the other way'], flat: ['na', '– no clear move'], pending: ['pd', '… waiting for a price'] };
   const ago = t => { const m = Math.max(1, Math.round((Date.now() - t) / 60000)); return m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
-  const row = c => `<a class="tr-row im-row" href="story.html?id=${encodeURIComponent(c.story.id)}" data-res="${c.res}"><span class="tr-dir ${c.dir}" aria-label="Article implied ${c.dir}">${c.dir === 'up' ? '↑' : '↓'}</span><span class="tr-t"><b>${esc(c.asset.n)} · ${esc(c.story.headline)}</b><small>${ago(c.pub)} · said ${c.dir}</small></span><span class="tr-mv ${c.move > 0 ? 'up' : c.move < 0 ? 'dn' : ''}">${c.move == null ? '–' : (c.move > 0 ? '+' : '') + c.move.toFixed(2) + '%'}</span><span class="tr-chip ${LAB[c.res][0]}">${LAB[c.res][1]}</span></a>`;
+  const row = c => `<a class="tr-row im-row" href="story.html?id=${encodeURIComponent(c.story.id)}" data-res="${c.res}"><span class="tr-dir ${c.dir}" aria-label="Article implied ${c.dir}">${c.dir === 'up' ? '↑' : '↓'}</span><span class="tr-t"><b>${esc(c.asset.n)} · ${esc(c.story.headline)}</b><small>${ago(c.pub)} · said ${c.dir}</small></span>${(() => { const r = c.move == null ? null : c.move * (c.dir === 'down' ? -1 : 1); /* result of the call: a fall after "down" is a gain */ return `<span class="tr-mv ${r > 0 ? 'up' : r < 0 ? 'dn' : ''}" title="${c.move == null ? '' : 'Asset moved ' + (c.move > 0 ? '+' : '') + c.move.toFixed(2) + '%'}">${r == null ? '–' : (r > 0 ? '+' : '') + r.toFixed(2) + '%'}</span>`; })()}<span class="tr-chip ${LAB[c.res][0]}">${LAB[c.res][1]}</span></a>`;
   const tabs = [['all', 'All', calls.length], ['hit', '✓ Confirmed', C.hit], ['miss', '✗ Other way', C.miss], ['flat', 'No clear move', C.flat], ['pending', 'Pending', C.pending]];
   let cur = new URLSearchParams(location.search).get('show'); if (!tabs.some(t => t[0] === cur)) cur = 'all';
   function paint() {

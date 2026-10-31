@@ -1,0 +1,82 @@
+name: Broad news (every 30 min)
+# Tier B. Live news for the Globe News page (update_globe_news.py): free sources (GDELT, official press releases), Gemini for selection + short summaries,
+# Pixabay for topic photos. Every 30 minutes; visitors only read the saved file, so traffic never uses the free limits.
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+    inputs:
+      backfill_days:
+        description: "Also fill the past N days (0-7) with the most important stories"
+        default: "0"
+  push:
+    branches: [preview/live-news]
+    paths: [update_globe_news.py, news_core.py, registry.py, events.py, data/registry.json, .github/workflows/broad-news.yml]
+permissions:
+  contents: write
+  actions: write   # lets the run schedule its successor (workflow_dispatch), see the "next" job
+jobs:
+  update:
+    concurrency:
+      group: news-data
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}   # latest commit, not the one current when this run was queued (a queued run otherwise conflicts with the run it waited for)
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q pillow
+      - name: Fetch news
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PIXABAY_KEY: ${{ secrets.PIXABAY_KEY }}
+          NEWS_TIER: broad
+          BACKFILL_DAYS: ${{ inputs.backfill_days || '0' }}
+        run: python3 update_globe_news.py
+        timeout-minutes: 60
+      - name: Draw share cards
+        run: python3 update_share_cards.py || echo "Share cards failed; keeping the previous files"
+      - name: Fetch economic calendar and earnings
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: python3 update_calendar.py || echo "Calendar update failed; keeping the previous data"
+      - name: Push to the Worker (optional, never blocks)
+        if: always()
+        env:
+          WORKER_URL: ${{ vars.WORKER_URL }}
+          NEWS_INGEST_TOKEN: ${{ secrets.NEWS_INGEST_TOKEN }}
+        run: python3 tools/push-news-to-worker.py
+      - name: Publish
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add assets/globe docs/assets/globe assets/share docs/assets/share assets/calendar-live.json docs/assets/calendar-live.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Update globe news"
+          for i in 1 2 3; do git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep 5; done
+          exit 1
+  # GitHub's cron is best effort: measured on 2026-10-29/30 the 30-minute schedule ran on average only every 58 minutes.
+  # Each run therefore queues its successor itself, 30 minutes after it started (workflow_dispatch is allowed with the built-in
+  # token). This job holds no lock, so the waiting never blocks the other news tier. The cron above stays as a safety net that restarts
+  # the chain if a run is lost. Only the newest run continues the chain, so duplicate chains stop by themselves.
+  next:
+    needs: update
+    if: always() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Queue the next run 30 minutes after this one started
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          start=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .run_started_at)
+          wait=$(( $(date -d "$start" +%s) + 1800 - $(date +%s) ))
+          [ "$wait" -gt 0 ] && sleep "$wait"
+          # one chain only: if a newer run of this workflow already exists (cron or another chain), it carries on and this one stops
+          mine=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .created_at)
+          newer=$(gh run list -R "${{ github.repository }}" --workflow broad-news.yml --limit 20 --json createdAt --jq "[.[] | select(.createdAt > \"$mine\")] | length")
+          if [ "$newer" = "0" ]; then for i in 1 2 3; do gh workflow run broad-news.yml -R "${{ github.repository }}" --ref main && break; sleep 20; done; else echo "a newer run exists: it continues the chain"; fi

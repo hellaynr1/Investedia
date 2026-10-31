@@ -16,6 +16,8 @@ investedia.com: **investing media for everyone**. A news-first website: the worl
 6. **Secrets:** never commit `.env`, API keys, the Supabase service_role key, the Google client secret or the Resend key. Only the Supabase *publishable* key may be in the code (it is in `assets/ui.js`).
 7. Never delete files, data, accounts or keys without asking.
 8. **Label every option on the image itself.** Whenever you show design options, put a clear label (A, B, C or 1, 2, 3, plus a 2-3 word name) printed on each screenshot or mock-up image, big enough to read at a glance, and use the same labels in the message. The owner receives many screenshots and must be able to decide from the image alone. Also label before/after images ("Now" / "New") and PC / phone.
+9. **Every preview must visibly differ.** Before sending design previews, put them side by side and check that each one is clearly different at normal viewing size (not just in a pixel diff). If a change is too faint to see, make it visible (isolate it, crop and zoom to the area) or say so instead of sending near-identical screenshots. One image per option, only as many images as there are real differences.
+10. **Globe lines.** Homepage globe: only orange article → affected-asset lines (from the article's own implications), hotspots and markers; no blue lines and no trade routes. Globe page: green up / red down / orange neutral, optional Market relationships and Story timeline layers. Lines spread across countries (per-country caps on visible lines), only lines with both ends on the visible face, arcs stay on the globe. Trade routes were removed from the globe entirely (owner decision).
 9. **A chosen design is finished only when every visible element of the chosen mockup exists in the build** (including numbers such as % changes). Follow `design/CODEX-ACCEPTANCE-PROTOCOL.md` for every task and PR: numbered acceptance criteria, a data map, one test per criterion, and a built-vs-mockup screenshot table. Missing data means stop and report, never ship a different design.
 
 ## How the site is built
@@ -25,7 +27,7 @@ investedia.com: **investing media for everyone**. A news-first website: the worl
 - **Homepage** `src/pages/index.html` + `assets/home-news.js` + `assets/home-news.css` (classes prefixed `hn-` so they never clash with app.css): globe hero, top stories, why it moved, countries, markets open now, upcoming events + earnings, free-resources strip.
 - **Globe News page** `assets/globe/news.html`, source in `tools/globe-news/` (`page.html`, `build.py`). Build: `python3 tools/globe-news/build.py && python3 build.py`. `?embed=1` gives the globe alone (used by the homepage).
 - **Robots (GitHub Actions):**
-  - `update-globe-news.yml` every 30 min: `update_globe_news.py` (GDELT + ECB/Fed/BoE feeds, Gemini picks and summarises, Pixabay topic photos) → `assets/globe/news-live.json`; `update_calendar.py` (ForexFactory events, Nasdaq earnings) → `assets/calendar-live.json`.
+  - `broad-news.yml` every 30 min: `update_globe_news.py` (GDELT + ECB/Fed/BoE feeds, Gemini picks and summarises, Pixabay topic photos) → `assets/globe/news-live.json`; `update_calendar.py` (ForexFactory events, Nasdaq earnings) → `assets/calendar-live.json`.
   - `update-economy.yml` weekly: `update_economy.py` (World Bank) → `assets/globe/economy.json`.
   - `update-market.yml`: old price data (still used by Tools pages).
   - Secrets in GitHub: `GEMINI_API_KEY`, `PIXABAY_KEY`. Brandfetch logo Client ID is public, in `tools/globe-news/page.html`.
@@ -44,7 +46,7 @@ investedia.com: **investing media for everyone**. A news-first website: the worl
 - Google Auth Platform → Branding: after 24 h, "J'ai corrigé les problèmes" (domain verified in Search Console).
 - Search Console: submit `sitemap.xml`.
 - Forward `info@investedia.com` to the owner's Gmail (Spaceship email forwarding or ImprovMX) so replies arrive.
-- Delete the test users `adonaykabeya10+invtest1…5@gmail.com` in Supabase (ask first).
+- Delete the five `+invtest` test users (aliases of the owner's mailbox) in Supabase (ask first).
 - Globe: place oil/mining stocks at their real mines and oil fields (only where relevant).
 - Later: news on the globe (Pro feature); weekly analytics summary into the owner's Second Brain.
 - Before making money from the site: move prices to a licensed data source (Yahoo's free feed is not for commercial use).

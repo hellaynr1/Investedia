@@ -1,0 +1,79 @@
+name: Priority news (every ~10 min)
+# Tier A: official sources (central banks, regulators, statistics) and a few fast business feeds. Small on purpose: no GDELT, no article-page fetches,
+# at most 10 new articles per run, never rewrites the 30-day archive (the broad run does). GitHub cron is best effort: runs can start 5-15 minutes late
+# and are skipped under load, so the page always shows an honest "Updated Xm ago" label instead of claiming to be live.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write   # lets the run schedule its successor (workflow_dispatch), see the "next" job
+jobs:
+  update:
+    concurrency:
+      group: news-data   # shared with broad-news: never two news writers at once, and a queued run replaces older queued runs
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}   # latest commit, not the one current when this run was queued (a queued run otherwise conflicts with the run it waited for)
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Fetch priority news
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NEWS_TIER: priority
+        run: python3 update_globe_news.py
+        timeout-minutes: 6
+      - name: Push to the Worker (optional, never blocks)
+        if: always()
+        env:
+          WORKER_URL: ${{ vars.WORKER_URL }}
+          NEWS_INGEST_TOKEN: ${{ secrets.NEWS_INGEST_TOKEN }}
+        run: python3 tools/push-news-to-worker.py
+      - name: Publish (only when something changed)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NEWS_TIER: priority
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add assets/globe/news-live.json assets/globe/news-status.json assets/globe/news-seen.json docs/assets/globe/news-live.json docs/assets/globe/news-status.json assets/globe/events docs/assets/globe/events
+          # a run that found nothing new only moves timestamps: commit only when the article list changed (each commit costs a Pages build)
+          git diff --cached --quiet -- assets/globe/news-live.json && { git reset -q; git checkout -q -- assets/globe docs/assets/globe; exit 0; }
+          git commit -q -m "Priority news"
+          for i in 1 2 3; do
+            git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            # another news writer committed the same files meanwhile: start again from the latest data instead of failing
+            git rebase --abort 2>/dev/null || true
+            git fetch -q origin "${GITHUB_REF_NAME}" && git reset -q --hard "origin/${GITHUB_REF_NAME}"
+            python3 update_globe_news.py
+            git add assets/globe/news-live.json assets/globe/news-status.json assets/globe/news-seen.json docs/assets/globe/news-live.json docs/assets/globe/news-status.json assets/globe/events docs/assets/globe/events
+            git diff --cached --quiet -- assets/globe/news-live.json && exit 0
+            git commit -q -m "Priority news"
+          done
+          exit 1
+  # GitHub's cron is best effort: measured on 2026-10-29/30 the 10-minute schedule ran on average only every 46 minutes.
+  # Each run therefore queues its successor itself, 10 minutes after it started (workflow_dispatch is allowed with the built-in
+  # token). This job holds no lock, so the waiting never blocks the other news tier. The cron above stays as a safety net that restarts
+  # the chain if a run is lost. Only the newest run continues the chain, so duplicate chains stop by themselves.
+  next:
+    needs: update
+    if: always() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Queue the next run 10 minutes after this one started
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          start=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .run_started_at)
+          wait=$(( $(date -d "$start" +%s) + 600 - $(date +%s) ))
+          [ "$wait" -gt 0 ] && sleep "$wait"
+          # one chain only: if a newer run of this workflow already exists (cron or another chain), it carries on and this one stops
+          mine=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .created_at)
+          newer=$(gh run list -R "${{ github.repository }}" --workflow priority-news.yml --limit 20 --json createdAt --jq "[.[] | select(.createdAt > \"$mine\")] | length")
+          if [ "$newer" = "0" ]; then for i in 1 2 3; do gh workflow run priority-news.yml -R "${{ github.repository }}" --ref main && break; sleep 20; done; else echo "a newer run exists: it continues the chain"; fi
