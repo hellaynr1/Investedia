@@ -91,7 +91,7 @@
     return s + '</svg>';
   }
   const href = c => `call.html?id=${encodeURIComponent(c.id)}&sym=${encodeURIComponent(c.sym)}${PREV ? '&engine=previous' : ''}`;
-  const btTag = c => c.bt ? `<span class="cx-bt" title="v5 rules applied after the fact to past news: not published at the time">Backtest</span>` : '';
+  const btTag = c => c.bt ? `<span class="cx-bt" title="Backtest">Backtest</span>` : '';
   function card(c) {
     return `<a class="cx-card" href="${href(c)}">
       <div class="cx-top">${logo(c)}<span class="cx-tk">${esc(tk(c))}</span><span class="cx-name">${esc(c.name)}</span>${btTag(c)}${badge(c)}</div>

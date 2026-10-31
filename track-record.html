@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=8e4c036727">
-<script src="assets/consent.js?v=8e4c036727"></script>
+<link rel="stylesheet" href="assets/consent.css?v=319da0881a">
+<script src="assets/consent.js?v=319da0881a"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia Track Record</title>
 <meta name="description" content="How Investedia's calls turned out: the Live Prediction Track Record (frozen before the outcome) and, separately, the Historical Prediction Track Record (backtests). Every call, hits and misses.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="How Investedia's calls turned out: the Live Prediction Track Record (frozen before the outcome) and, separately, the Historical Prediction Track Record (backtests). Every call, hits and misses.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=8e4c036727">
-<link rel="stylesheet" href="assets/skin.css?v=8e4c036727">
+<link rel="stylesheet" href="assets/app.css?v=319da0881a">
+<link rel="stylesheet" href="assets/skin.css?v=319da0881a">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,17 +46,17 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=8e4c036727"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=8e4c036727">
-<script src="assets/live-config.js?v=8e4c036727"></script>
-<script src="assets/live-data.js?v=8e4c036727" defer></script>
-<script src="assets/prefs.js?v=8e4c036727"></script>
-<script src="assets/peek.js?v=8e4c036727"></script>
-<script src="assets/sectors.js?v=8e4c036727"></script>
-<script src="assets/news-menu.js?v=8e4c036727"></script>
-<script src="assets/ui.js?v=8e4c036727"></script>
-<script src="assets/news-alerts.js?v=8e4c036727" defer></script>
-<script src="assets/calls-ui.js?v=8e4c036727"></script>
+<script src="assets/mock.js?v=319da0881a"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=319da0881a">
+<script src="assets/live-config.js?v=319da0881a"></script>
+<script src="assets/live-data.js?v=319da0881a" defer></script>
+<script src="assets/prefs.js?v=319da0881a"></script>
+<script src="assets/peek.js?v=319da0881a"></script>
+<script src="assets/sectors.js?v=319da0881a"></script>
+<script src="assets/news-menu.js?v=319da0881a"></script>
+<script src="assets/ui.js?v=319da0881a"></script>
+<script src="assets/news-alerts.js?v=319da0881a" defer></script>
+<script src="assets/calls-ui.js?v=319da0881a"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <link rel="stylesheet" href="assets/calls-ui.css">
 <nav class="subnav" id="news-nav"></nav>
@@ -81,12 +81,12 @@
     const sel = c => cur === 'all' || c.res === cur || c.dir === cur || (cur === 'bt' && c.bt), hist = cs.filter(sel).concat(cur === 'all' || cur === 'bt' ? btAll.filter(c => U.inWin(c, +win)) : []).filter((c, i, a) => cur !== 'bt' || c.bt);
     const fams = [...new Set(scored.map(c => c.fam || 'other'))].sort((x, y) => scored.filter(c => (c.fam || 'other') === y).length - scored.filter(c => (c.fam || 'other') === x).length);
     const lb = U.longBench(scored);
-    root.innerHTML = U.engineNote(live_since) + `<div class="tr2-two">
+    root.innerHTML = `<div class="tr2-two">
       <section class="tr2-box"><div class="tr2-k">Live Prediction Track Record</div>
-        ${a ? `<div class="tr2-big">${a.pct}%</div><div class="tr2-sub">${a.text}</div>${lb != null ? `<div class="tr2-sub">Same calls if you had simply bet everything goes up: <b>${lb}%</b></div>` : ''}` : `<div class="tr2-big building">Building — ${n.judged} of ${U.NEED} judged calls</div><div class="tr2-bar"><i style="width:${Math.min(100, 100 * n.judged / U.NEED)}%"></i></div><div class="tr2-sub">No accuracy is shown until ${U.NEED} calls are judged.</div>`}
+        ${a ? `<div class="tr2-big">${a.pct}%</div><div class="tr2-sub">${a.text}</div>` : `<div class="tr2-big building">Building — ${n.judged} of ${U.NEED} judged calls</div><div class="tr2-bar"><i style="width:${Math.min(100, 100 * n.judged / U.NEED)}%"></i></div><div class="tr2-sub">No accuracy is shown until ${U.NEED} calls are judged.</div>`}
         <div class="tr2-note">Every call is frozen before its outcome and scored from the earliest time it can be proven public, then judged on the first traded price at least 24 hours later in the asset’s own market session. Call result reads each call as a position: a short gains when the price falls.${since ? ` Live since ${since}.` : ''}</div></section>
       <section class="tr2-box"><div class="tr2-k">Historical Prediction Track Record</div>
-        ${!U.PREV && btAll.length ? (() => { const d = U.btStats(btAll, 'design'), t = U.btStats(btAll, 'test'); return `<div class="tr2-big">${d.pct}%<span class="tr2-ill">BACKTEST</span></div><div class="tr2-sub">v5 rules applied after the fact to past news · Oct 21–27: ${d.pct}% of ${d.n} judged (same calls, always up: ${d.up}%). This window was used to design the rule, so it flatters v5.</div><div class="tr2-sub"><b>Held-out test, Oct 28–31:</b> ${t.n >= 30 ? `${t.pct}% of ${t.n} judged (always up: ${t.up}%)` : `${t.n} judged so far, ${t.pending} waiting for Monday's prices`}</div>`; })() : concept ? '<div class="tr2-big">XX%<span class="tr2-ill">ILLUSTRATIVE</span></div><div class="tr2-sub">X,XXX backtested predictions</div>' : '<div class="tr2-big building">In validation</div><div class="tr2-sub">Backtested predictions using only the information available at the time. Nothing is published until they pass the published quality gates.</div>'}
+        ${!U.PREV && btAll.length ? (() => { const a = U.btStats(btAll); return `<div class="tr2-big">${a.pct}%<span class="tr2-ill">BACKTEST</span></div><div class="tr2-sub">${a.n} judged calls on past news, Oct 21–31</div>`; })() : concept ? '<div class="tr2-big">XX%<span class="tr2-ill">ILLUSTRATIVE</span></div><div class="tr2-sub">X,XXX backtested predictions</div>' : '<div class="tr2-big building">In validation</div><div class="tr2-sub">Backtested predictions using only the information available at the time. Nothing is published until they pass the published quality gates.</div>'}
         <div class="tr2-note">Research data, kept separate. Never combined with the live record.</div></section></div>
       <div class="cx-bar"><div class="cx-seg" role="group" aria-label="Time window">${WIN.map(([k, l]) => `<button type="button" data-w="${k}" aria-pressed="${k === win}">${l}</button>`).join('')}</div></div>
       <div class="tr2-kpis six">${[['Judged', n.judged], ['Hits', n.hit, 'ok'], ['Misses', n.miss, 'no'], ['No clear move', n.flat], ['Pending', n.pending, 'wait'], ['Unresolved', n.unresolved]].map(([l, v, k]) => `<div class="tr2-kpi ${k || ''}"><b>${v}</b><span>${l}</span></div>`).join('')}</div>
