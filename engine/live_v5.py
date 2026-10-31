@@ -40,7 +40,11 @@ def call_of(r):
 def main():
     path = os.path.join(G, 'v5-records.json'); led = SH.load(path); led.setdefault('done', []); led['note'] = 'Prediction Engine v5 live records (all, incl. No View)'
     done = set(led['done']); now = time.time()
-    arch = json.load(open(os.path.join(G, 'news-archive.json'))).get('stories', [])
+    arch = {}
+    for f in ('news-archive.json', 'news-live.json'):  # the live feed is updated every ~10 min, the archive less often
+        try: arch.update({x['id']: x for x in json.load(open(os.path.join(G, f))).get('stories', []) if x.get('id')})
+        except Exception: pass
+    arch = list(arch.values())
     new = sorted((s for s in arch if s.get('published_at', '') >= LIVE_SINCE and s['id'] not in done and not s.get('demo')), key=lambda s: s['published_at'])[:MAX_STORIES]
     R = registry.get(); IND = json.load(open(os.path.join(DOCS, 'industries.json'))).get('by', {})
     try: cal = json.load(open(os.path.join(DOCS, '..', 'calendar-live.json')))
