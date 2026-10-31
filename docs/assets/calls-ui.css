@@ -56,3 +56,6 @@ svg.cx-chart{display:block;overflow:visible}.cx-chart.empty{display:flex;align-i
 .cx-rb.big{align-items:flex-start}.cx-rb.big b{font-size:17px}
 .cx-dl dd .cx-rb{margin-left:0;vertical-align:middle}
 @media(max-width:760px){.tr2-row .cx-rb{grid-column:1}}
+/* asset logos (UI.logo) in cards, rows and the call page */
+.cx-top .logo,.cx-dh .logo{width:26px;height:26px;border-radius:50%;overflow:hidden}.cx-top .logo img,.cx-dh .logo img,.tr2-row .logo img{width:100%;height:100%;object-fit:cover}
+.tr2-row small .logo{display:inline-grid;width:18px;height:18px;border-radius:50%;overflow:hidden;vertical-align:-4px;margin-right:6px;font-size:7px}

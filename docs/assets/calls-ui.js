@@ -17,6 +17,23 @@
   const said = c => `<span class="cx-said ${c.dir}">${c.dir === 'up' ? 'Long' : 'Short'}</span>`;
   const conf = c => c.conf ? `<span class="cx-conf">${esc(c.conf)} confidence</span>` : '';
   const start = c => Date.parse(c.start || c.created);
+  // asset logo: exchange symbol -> the site's logo code (UI.logo: coins, brands, flags, commodity icons), else the globe's company icon, else a ticker tile
+  const FUT = { 'BZ=F': 'BRENT', 'CL=F': 'WTI', 'GC=F': 'XAU', 'SI=F': 'XAG', 'NG=F': 'NG', 'HG=F': 'HG', 'PL=F': 'PL', 'ZW=F': 'ZW', 'ZC=F': 'ZC', 'ZS=F': 'ZS', 'KC=F': 'KC' };
+  const IDX = { '^GSPC': 'SPX', '^DJI': 'DJI', '^NDX': 'NDX', '^RUT': 'RUT', '^BVSP': 'IBOV', '^MXX': 'MXX', '^TNX': 'US10Y', 'DX-Y.NYB': 'DXY', '^FTSE': 'UKX', '^GDAXI': 'DAX', '^FCHI': 'CAC', '^N225': 'NKY', '^HSI': 'HSI' };
+  const IDX_CC = { '^IXIC': 'us', '^MERV': 'ar', '^IPSA': 'cl', '^NSEI': 'in' };
+  let LOGOS = {};
+  const logo = c => {
+    const s = c.sym || '', U = window.UI;
+    if (!U || !U.logo) return '';
+    if (s.endsWith('-USD')) return U.logo({ s: s.slice(0, -4), c: 'crypto' });
+    if (/^[A-Z]{6}(=X)?$/.test(s)) return U.logo({ s: s.slice(0, 6), c: 'currencies' });
+    if (/^[A-Z]{3}=X$/.test(s)) return U.logo({ s: 'USD' + s.slice(0, 3), c: 'currencies' });
+    if (FUT[s]) return U.logo({ s: FUT[s], c: 'commodities' });
+    if (IDX[s]) return U.logo({ s: IDX[s], c: 'indices' });
+    if (IDX_CC[s]) return `<span class="logo logo-img"><img src="assets/logos/flags/${IDX_CC[s]}.svg" alt="" width="48" height="48" decoding="async"></span>`;
+    if (LOGOS[s]) return `<span class="logo logo-img"><img src="assets/${LOGOS[s].replace(/^\.\.\//, '')}" alt="" width="48" height="48" decoding="async"></span>`;
+    return U.logo({ s: s.replace(/\.[A-Z]+$/, '').replace(/-[A-Z]$/, ''), c: 'stocks' });
+  };
   // result of the call, not the asset's move: "down" is read as sold, so a fall is a gain and a rise is a loss
   const gain = c => Number.isFinite(c.move) ? (c.dir === 'down' ? -c.move : c.move) : null;
   const moved = c => `${esc(c.name)} ${c.move > 0 ? 'rose' : c.move < 0 ? 'fell' : 'was unchanged'}${c.move ? ' ' + Math.abs(c.move).toFixed(2) + '%' : ''}`;
@@ -26,7 +43,8 @@
   // load the ledger and its joins; returns live calls (legacy calls never count as live)
   async function load(root = 'assets/globe/') {
     const get = u => fetch(root + u, { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
-    const [L, P, T, A] = await Promise.all([get('news-ledger.json'), get('call-paths.json'), get('news-track.json'), get('news-archive.json')]);
+    const [L, P, T, A, G] = await Promise.all([get('news-ledger.json'), get('call-paths.json'), get('news-track.json'), get('news-archive.json'), get('logos.json')]);
+    LOGOS = G || {};
     const calls = (L.calls || []).filter(c => c && !c.legacy && c.sym && (c.dir === 'up' || c.dir === 'down'));
     const days = [...new Set(calls.map(c => (c.start || c.created || '').slice(0, 10)).filter(Boolean))];
     const ev = await Promise.all(days.map(d => get(`events/${d}.json`)));
@@ -72,20 +90,20 @@
   const href = c => `call.html?id=${encodeURIComponent(c.id)}&sym=${encodeURIComponent(c.sym)}`;
   function card(c) {
     return `<a class="cx-card" href="${href(c)}">
-      <div class="cx-top"><span class="cx-tk">${esc(tk(c))}</span><span class="cx-name">${esc(c.name)}</span>${badge(c)}</div>
+      <div class="cx-top">${logo(c)}<span class="cx-tk">${esc(tk(c))}</span><span class="cx-name">${esc(c.name)}</span>${badge(c)}</div>
       <h3 class="cx-h">${esc(c.h)}</h3>
       <div class="cx-meta">${said(c)}${conf(c)}<span class="cx-t" title="${esc(when(c.t))}">${c.art ? 'article ' + esc(when(c.art)) : esc(when(c.t))}</span>${resBox(c)}</div>
       ${chart(c)}</a>`;
   }
   const due = c => { const d = c.t + 24 * HR; return d > Date.now() ? `checked in ~${Math.max(1, Math.round((d - Date.now()) / HR))} h` : 'waiting for its market to reopen'; };
-  const row = c => `<a class="tr2-row" href="${href(c)}"><small class="tr2-when">${esc(when(c.t))}</small><span><h4>${esc(c.h)}</h4><small><span class="cx-tk">${esc(tk(c))}</span> ${esc(c.name)} · ${said(c)}${c.conf ? ' · ' + esc(c.conf) : ''}${c.res === 'pending' ? ' · ' + due(c) : ''}</small></span>${Number.isFinite(c.move) ? resBox(c) : '<span></span>'}${badge(c)}</a>`;
+  const row = c => `<a class="tr2-row" href="${href(c)}"><small class="tr2-when">${esc(when(c.t))}</small><span><h4>${esc(c.h)}</h4><small>${logo(c)}<span class="cx-tk">${esc(tk(c))}</span> ${esc(c.name)} · ${said(c)}${c.conf ? ' · ' + esc(c.conf) : ''}${c.res === 'pending' ? ' · ' + due(c) : ''}</small></span>${Number.isFinite(c.move) ? resBox(c) : '<span></span>'}${badge(c)}</a>`;
   function detail(c) {
     const rows = [['Asset', `${esc(c.name)} · <b>${esc(tk(c))}</b>`], ['Article posted', c.art ? esc(when(c.art)) : '<span class="muted">not in the news archive</span>'],
       ['Investedia call (proven start)', esc(when(c.t))], ['Prediction', said(c)], ['Confidence', c.conf ? esc(c.conf) : '<span class="muted">not recorded</span>'],
       ['Baseline', c.base ? `${c.base[1]} · ${esc(when(c.base[0] * MIN))}` : '<span class="muted">—</span>'],
       ['Call result', c.end ? `${resBox(c, true)} <span class="muted">measured ${esc(when(c.end[0] * MIN))}</span>` : c.res === 'pending' ? esc(due(c)) : esc(c.why || '—')], ['Result', badge(c)],
       ['Model', `Investedia Prediction Model · <span class="muted">${esc(ENGINE(c.ver))}</span>`], c.fam ? ['Event type', esc(FAM[c.fam] || c.fam)] : null];
-    return `<div class="cx-detail"><div class="cx-dh"><span class="cx-tk">${esc(tk(c))}</span>${badge(c)}</div>
+    return `<div class="cx-detail"><div class="cx-dh">${logo(c)}<span class="cx-tk">${esc(tk(c))}</span>${badge(c)}</div>
       <h2>${c.url ? `<a href="${esc(c.url)}" rel="noopener" target="_blank">${esc(c.h)} ↗</a>` : `<a href="story.html?id=${encodeURIComponent(c.id)}">${esc(c.h)}</a>`}</h2>
       ${c.src ? `<p class="cx-fine" style="margin:-8px 0 12px">${esc(c.src)}</p>` : ''}
       <div class="cx-bigchart">${chart(c, { w: 720, h: 280, big: true })}${c.path ? `<p class="cx-fine">Price path: ${esc(c.path.src === 'exchange bars' ? 'traded prices from the asset’s own exchange session (5-minute bars, thinned to 30 minutes), stored when the call was judged' : 'prices recorded by Investedia’s price robot so far; the full path is stored when the call is judged')}. Nothing is interpolated.</p>` : ''}</div>
