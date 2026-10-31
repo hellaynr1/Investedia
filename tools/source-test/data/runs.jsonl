@@ -173,3 +173,8 @@
 {"at": "2026-10-31T18:29:52Z", "source": "eurostat-news", "ok": true, "http": 200, "ms": 433, "n": 11, "error": null}
 {"at": "2026-10-31T18:29:52Z", "source": "ons", "ok": true, "http": 200, "ms": 284, "n": 10, "error": null}
 {"at": "2026-10-31T18:29:52Z", "source": "statcan", "ok": false, "http": null, "ms": 15088, "n": 0, "error": "<urlopen error [Errno 104] Connection reset by peer>"}
+{"at": "2026-10-31T19:30:21Z", "source": "pib", "ok": true, "http": 200, "ms": 563, "n": 20, "error": null}
+{"at": "2026-10-31T19:30:21Z", "source": "eurostat-releases", "ok": true, "http": 200, "ms": 526, "n": 11, "error": null}
+{"at": "2026-10-31T19:30:21Z", "source": "eurostat-news", "ok": true, "http": 200, "ms": 428, "n": 11, "error": null}
+{"at": "2026-10-31T19:30:21Z", "source": "ons", "ok": true, "http": 200, "ms": 723, "n": 10, "error": null}
+{"at": "2026-10-31T19:30:21Z", "source": "statcan", "ok": false, "http": null, "ms": 15098, "n": 0, "error": "<urlopen error [Errno 104] Connection reset by peer>"}
