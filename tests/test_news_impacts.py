@@ -121,4 +121,14 @@ class NewsImpacts(unittest.TestCase):
         self.assertNotIn('news-live.json', writes); self.assertNotIn('news-archive.json', writes)
         self.assertIn('last_success', writes['news-status.json']['tiers']['priority'])
 
+    def test_ranked_tiers(self):
+        rows = [{'kind': 'company', 'role': 'secondary', 'name': f'Co{k}', 'country': 'US', 'ticker': None, 'direction': 'up', 'why': 'x', 'confidence': 'high'} for k in range(4)]
+        rows.insert(2, {'kind': 'asset', 'role': 'primary', 'name': 'Brent crude', 'country': 'GB', 'ticker': 'BZ=F', 'direction': 'up', 'why': 'x', 'confidence': 'high'})
+        rows.append({'kind': 'asset', 'role': 'primary', 'name': 'Gold', 'country': 'US', 'ticker': 'GC=F', 'direction': 'up', 'why': 'x', 'confidence': 'low'})
+        out = robot.validate_analysis({'impacts': rows}, True, ISO, created_at='2026-10-31T00:00:00Z')['impacts']
+        roles = [i['role'] for i in out]
+        self.assertEqual(roles.count('primary'), 1); self.assertEqual(out[0]['name'], 'Brent crude')
+        self.assertLessEqual(roles.count('secondary'), 2)
+        self.assertTrue(all(not i.get('scorable') for i in out if i['role'] == 'speculative'))
+
 if __name__ == '__main__': unittest.main()

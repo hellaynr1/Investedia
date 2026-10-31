@@ -1,0 +1,29 @@
+name: Impact extraction eval (measurement only)
+# Runs only on the impact-eval branch: compares affected-asset prompts on the same stories. Never touches main or the site.
+on:
+  push:
+    branches: [impact-eval]
+    paths: [tools/eval/impacts_eval.py, tools/eval/sample.json, tools/eval/impact_prompts.json, .github/workflows/impact-eval.yml]
+permissions:
+  contents: write
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Run the comparison
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 tools/eval/impacts_eval.py
+      - name: Save the results on this branch
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add tools/eval/results.json || true
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Impact eval results [skip ci]"
+          git push -q origin HEAD:impact-eval

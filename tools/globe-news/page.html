@@ -729,7 +729,8 @@ function normalize(raw) {
 const IMPACT_COLOR = { up: '34,197,94', down: '240,68,68', mixed: '161,161,170', unclear: '161,161,170' };
 const IMPACT_ARROW = { up: '↑', down: '↓', mixed: '↔', unclear: '↔' };
 function impactsOf(s) {
-  return (Array.isArray(s?.impacts) ? s.impacts : []).filter(i => i && ['country', 'company', 'asset', 'sector'].includes(i.kind) && typeof i.name === 'string' && typeof i.why === 'string' && Object.values(ISO).includes(i.country) && IMPACT_COLOR[i.direction]).slice(0, 4);
+  // speculative effects are stored for research only: never shown in cards or drawn
+  return (Array.isArray(s?.impacts) ? s.impacts : []).filter(i => i && i.role !== 'speculative' && ['country', 'company', 'asset', 'sector'].includes(i.kind) && typeof i.name === 'string' && typeof i.why === 'string' && Object.values(ISO).includes(i.country) && IMPACT_COLOR[i.direction]).slice(0, 4);
 }
 function impactCountry(i) { const name = Object.keys(ISO).find(n => ISO[n] === i.country && byName[n]); return name && byName[name]; }
 function impactVisual(i) {
@@ -860,10 +861,11 @@ function onFront(pts) { const v = pts.filter(p => p[2]); if (v.length < pts.leng
 function updateNetwork() {
   events = [];
   for (const article of shown) {
-    const imp = impactsOf(article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && trusted(x.a) && assetTarget(x.a));
+    // a line needs: registry identity (trusted), a place (assetTarget), a price, and for ranked (v3) analysis at least medium confidence
+    const imp = impactsOf(article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && trusted(x.a) && assetTarget(x.a) && Number.isFinite(x.a.d) && !(x.i.role && x.i.confidence === 'low'));
     const main = imp[0]; if (!main) continue;
-    const ripples = imp.slice(1).map(x => ({ a: x.a, impact: x.i, target: assetTarget(x.a), dir: x.i.direction, score: rippleScore(x.i, x.a) }))
-      .filter(r => r.score >= RIPPLE_MIN && r.a.s !== main.a.s).sort((x, y) => y.score - x.score).slice(0, 5)
+    const ripples = imp.slice(1).map(x => ({ a: x.a, impact: x.i, target: assetTarget(x.a), dir: x.i.direction, score: x.i.role === 'secondary' ? 1 : rippleScore(x.i, x.a) }))
+      .filter(r => r.score >= RIPPLE_MIN && r.a.id !== main.a.id).sort((x, y) => y.score - x.score).slice(0, 5)
       .map(r => ({ ...r, why: `explicitly affected secondary asset (relevance ${r.score.toFixed(2)})` }));
     const pa = main.a, sectors = pa.t === 'stocks' && Math.abs(pa.d || 0) >= 1 ? (MKT.all || [])
       .filter(p => p.t === 'stocks' && p.s !== pa.s && trusted(p) && Number.isFinite(p.d) && Math.abs(p.d) >= 1 && Math.abs(p.d) < 30 && Math.sign(p.d) === Math.sign(pa.d) && assetTarget(p))
