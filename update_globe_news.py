@@ -12,6 +12,7 @@ import xml.etree.ElementTree as ET
 import news_core as core
 import registry as R
 import events as EV
+import event_ids as EVID
 from email.utils import parsedate_to_datetime
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -603,6 +604,10 @@ def main():
     if status.get('gemini_ok') or not cands: save_seen(seen)  # a failed Gemini call must not mark candidates as judged
     prev_ids = {x.get('id') for x in prev}
     new = [x for x in new if x.get('id') not in prev_ids]  # a published story keeps its first implications: never replaced or re-generated
+    try:  # stable event identity: join an earlier story about the same specific incident, else start an event (frozen once set)
+        status['event_ids'] = EVID.assign(new, EV.load_days(4) + prev, gemini)
+    except Exception as e:
+        err(f'event ids: {e}')
     every = sorted(new + prev, key=lambda s: s['published_at'], reverse=True)[:ARCHIVE_MAX]
     live_cut = NOW - timedelta(days=LIVE_DAYS)
     stories = [s for s in every if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > live_cut][:MAX_STORIES]

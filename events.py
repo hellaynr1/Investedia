@@ -49,7 +49,7 @@ def record(s):
             assets.append(row)
     loc = s.get('location') or {}
     return {'id': s['id'], 'at': s['published_at'], 'title': s.get('headline'), 'src': (s.get('source') or {}).get('name'),
-            'url': (s.get('source') or {}).get('url'), 'n_src': len(s.get('sources') or []) or 1, 'cluster': s.get('cluster') or s['id'],
+            'url': (s.get('source') or {}).get('url'), 'n_src': len(s.get('sources') or []) or 1, 'cluster': s.get('cluster') or s['id'], **({'cluster_why': s['cluster_why']} if s.get('cluster_why') else {}),
             'cat': s.get('category'), 'fam': family(s.get('headline'), s.get('category'), s.get('event_type')), 'imp': s.get('importance'),
             'mm': bool(s.get('market_moving')), 'loc': {k: loc.get(k) for k in ('place', 'country', 'lat', 'lon', 'region')},
             'cos': sorted({a['id'] for a in assets if a.get('id', '').startswith('EQ:')}), 'assets': assets}
@@ -89,6 +89,10 @@ def upsert(stories, base=None):
             try: cur = {e['id']: e for e in json.load(open(p, encoding='utf-8')).get('events', [])}
             except Exception: cur = {}
         for r in recs:
+            old = cur.get(r['id'])
+            if old and old.get('cluster', old['id']) != old['id'] and r['cluster'] == r['id']:  # an assigned event id is frozen: never reset
+                r['cluster'] = old['cluster']
+                if old.get('cluster_why'): r['cluster_why'] = old['cluster_why']
             if cur.get(r['id']) != r: cur[r['id']] = r; changed += 1
         evs = sorted(cur.values(), key=lambda e: e['at'])
         _write(p, {'schema': SCHEMA, 'day': day, 'events': evs})
