@@ -8,7 +8,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 import registry, events as EV, update_globe_news as robot
 from engine import extract as X, run as RUN, context as C, prices as PX, shadow as SH
 
-OUT = os.path.join(ROOT, 'research', 'v4-replay.json'); BATCH = int(os.environ.get('V4_BATCH', 10)); N = int(os.environ.get('V4_N', 600))
+SHARD, SHARDS = int(os.environ.get('V4_SHARD', 0)), int(os.environ.get('V4_SHARDS', 1))
+OUT = os.path.join(ROOT, 'research', 'v4-replay.json' if SHARDS == 1 else f'v4-replay-{SHARD}.json'); BATCH = int(os.environ.get('V4_BATCH', 10)); N = int(os.environ.get('V4_N', 600))
 P = lambda s: datetime.fromisoformat(s.replace('Z', '+00:00')).timestamp()
 R = registry.get(); IND = json.load(open(os.path.join(ROOT, 'docs', 'assets', 'globe', 'industries.json'))).get('by', {})
 cal = json.load(open(os.path.join(ROOT, 'docs', 'assets', 'calendar-live.json')))
@@ -18,10 +19,11 @@ if FROM:
     sys.path.insert(0, os.path.join(ROOT, 'tools', 'registry')); import seed_events_from_git as G
     stories = sorted((s for s in G.history(os.environ.get('V4_REF', 'origin/main')) if s['published_at'] >= FROM), key=lambda s: s['published_at'])
     cluster.update({r['id']: r.get('cluster') or r['id'] for r in EV.load_days(40)})
+    k = -(-len(stories) // SHARDS); stories = stories[SHARD * k:(SHARD + 1) * k]  # contiguous time slices, so an event's articles stay together
 else:
     stories = sorted(json.load(open(os.path.join(ROOT, 'docs', 'assets', 'globe', 'news-archive.json')))['stories'], key=lambda s: s['published_at'])[-N:]
 res = {'note': 'V4 RE-RUN ON PAST NEWS (backtest): the frozen v4 rules applied to stories after the fact; not calls published at the time',
-       'from': FROM, 'policy_id': RUN.P.POLICY_ID if hasattr(RUN, 'P') else None, 'prompt_id': X.PROMPT_ID, 'stories': len(stories), 'done': [], 'records': [], 'errors': 0}
+       'from': FROM, 'shard': [SHARD, SHARDS], 'policy_id': RUN.P.POLICY_ID if hasattr(RUN, 'P') else None, 'prompt_id': X.PROMPT_ID, 'stories': len(stories), 'done': [], 'records': [], 'errors': 0}
 try:
     old = json.load(open(OUT))
     if (FROM and old.get('from') == FROM) or (not FROM and old.get('stories') == len(stories)): res = {**old, 'stories': len(stories)}

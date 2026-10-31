@@ -1,43 +1,59 @@
 name: Engine v4 re-run on past news (backtest)
 # Runs only on the engine-v4 branch: the frozen v4 rules applied to every story since V4_FROM (recovered from main's git history),
-# then outcome-v4 judging. Resumable; re-dispatches itself until every story is done. Never touches main or the site.
+# in 8 parallel time slices, then outcome-v4 judging and a merge. Resumable. Never touches main or the site.
 on:
   push:
     branches: [engine-v4]
-    paths: [tools/eval/v4_replay.py, engine/**, .github/workflows/v4-replay.yml]
+    paths: [tools/eval/v4_replay.py, tools/eval/v4_merge.py, engine/**, .github/workflows/v4-replay.yml]
   workflow_dispatch:
 permissions:
   contents: write
   actions: write
-concurrency: { group: v4-replay, cancel-in-progress: false }
+concurrency: { group: v4-replay, cancel-in-progress: true }
 jobs:
   replay:
     runs-on: ubuntu-latest
     timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix: { shard: [0, 1, 2, 3, 4, 5, 6, 7] }
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - run: git fetch -q origin main
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - name: Re-run v4 on past news
+      - name: Re-run v4 on past news (part ${{ matrix.shard }})
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           V4_FROM: "2026-10-21"
           V4_MINUTES: "250"
+          V4_SHARD: ${{ matrix.shard }}
+          V4_SHARDS: "8"
         run: python3 tools/eval/v4_replay.py
-      - name: Save on this branch
+      - name: Save this part
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add research/v4-replay.json || true
+          git add research/v4-replay-${{ matrix.shard }}.json || true
           git diff --cached --quiet && exit 0
-          git commit -q -m "v4 re-run on past news: progress [skip ci]"
-          git pull -q --rebase origin engine-v4 && git push -q origin HEAD:engine-v4
-      - name: Continue until every story is done
-        if: success()
-        env: { GH_TOKEN: "${{ github.token }}" }
+          git commit -q -m "v4 re-run part ${{ matrix.shard }} [skip ci]"
+          for i in 1 2 3 4 5; do git pull -q --rebase origin engine-v4 && git push -q origin HEAD:engine-v4 && break; sleep $((RANDOM % 20 + 5)); done
+  merge:
+    needs: replay
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: engine-v4 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Merge parts
+        run: python3 tools/eval/v4_merge.py
+      - name: Save
         run: |
-          python3 -c "import json,sys; d=json.load(open('research/v4-replay.json')); sys.exit(0 if len(d['done']) >= d['stories'] else 1)" \
-            && echo "all stories done" || gh workflow run v4-replay.yml --ref engine-v4
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add research/v4-replay.json && (git diff --cached --quiet || git commit -q -m "v4 re-run merged [skip ci]")
+          git pull -q --rebase origin engine-v4 && git push -q origin HEAD:engine-v4
