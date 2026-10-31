@@ -114,8 +114,33 @@
   // section, never mixed into live statistics or Market Implications. Rows open the original article (no stored price path).
   async function loadEarly(root = 'assets/globe/') {
     const d = await fetch(root + 'early-calls.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
-    return { range: d.range || [], calls: (d.calls || []).map(c => ({ ...c, t: Date.parse(c.start), early: true })).sort((a, b) => b.t - a.t) };
+    return { range: d.range || [], v1: d.v1 || null, method: d.method || null, calls: (d.calls || []).map(c => ({ ...c, t: Date.parse(c.start), early: true })).sort((a, b) => b.t - a.t) };
   }
-  const earlyRow = c => `<a class="tr2-row early"${c.url ? ` href="${esc(c.url)}" target="_blank" rel="noopener"` : ''}><small class="tr2-when">${esc(when(c.t))}</small><span><h4>${esc(c.h)}</h4><small>${logo(c)}<span class="cx-tk">${esc(tk(c))}</span> ${esc(c.name)} · ${said(c)}</small></span>${Number.isFinite(c.move) ? resBox(c) : '<span></span>'}${badge(c)}</a>`;
-  window.CallsUI = { loadEarly, earlyRow, gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
+  const earlyRow = c => c.collapsed_into ? `<a class="tr2-row early dup"${c.url ? ` href="${esc(c.url)}" target="_blank" rel="noopener"` : ''}><small class="tr2-when">${esc(when(c.t))}</small><span><h4>${esc(c.h)}</h4><small>${logo(c)}<span class="cx-tk">${esc(tk(c))}</span> ${esc(c.name)} · ${said(c)} · counted once with an earlier call on the same asset and direction</small></span><span></span><span class="cx-badge na">Duplicate</span></a>` : `<a class="tr2-row early"${c.url ? ` href="${esc(c.url)}" target="_blank" rel="noopener"` : ''}><small class="tr2-when">${esc(when(c.t))}</small><span><h4>${esc(c.h)}</h4><small>${logo(c)}<span class="cx-tk">${esc(tk(c))}</span> ${esc(c.name)} · ${said(c)}</small></span>${Number.isFinite(c.move) ? resBox(c) : '<span></span>'}${badge(c)}</a>`;
+  // Benchmarks: is there an edge beyond simple rules? Same judged calls (meaningful moves only). Exact binomial test vs a coin flip;
+  // paired exact McNemar test vs "always long" and vs "follow the market index" (only calls whose asset has a relevant index).
+  const lgam = n => { let s = 0; for (let k = 2; k <= n; k++) s += Math.log(k); return s; };
+  const binomTwo = (k, n, p = .5) => { if (!n) return null; const lp = j => lgam(n) - lgam(j) - lgam(n - j) + j * Math.log(p) + (n - j) * Math.log(1 - p), o = lp(k); let t = 0; for (let j = 0; j <= n; j++) { const l = lp(j); if (l <= o + 1e-9) t += Math.exp(l); } return Math.min(1, t); };
+  const wilson = (h, n, z = 1.96) => { if (!n) return null; const p = h / n, d = 1 + z * z / n, c = (p + z * z / (2 * n)) / d, w = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d; return [Math.round(1000 * (c - w)) / 10, Math.round(1000 * (c + w)) / 10]; };
+  const pFmt = p => p === null ? '—' : p < .001 ? 'p < 0.001' : `p = ${p.toFixed(p < .01 ? 3 : 2)}`;
+  function bench(cs) {
+    const J = cs.filter(c => (c.res === 'hit' || c.res === 'miss') && Number.isFinite(c.move)), n = J.length, h = J.filter(c => c.res === 'hit').length;
+    const ok = c => c.res === 'hit', mc = (base) => { let b = 0, c2 = 0; J.forEach(c => { const m = ok(c), x = base(c); if (x === null) return; if (m && !x) b++; if (!m && x) c2++; }); return binomTwo(b, b + c2); };
+    const long = c => c.move > 0, IX = J.filter(c => c.mkt && c.mkt.move), ix = c => (c.move > 0) === (c.mkt.move > 0);
+    return { n, h, acc: n ? 100 * h / n : null, ci: wilson(h, n), pCoin: binomTwo(h, n),
+      long: n ? 100 * J.filter(long).length / n : null, pLong: mc(long),
+      ixN: IX.length, ixModel: IX.length ? 100 * IX.filter(ok).length / IX.length : null, ixBase: IX.length ? 100 * IX.filter(ix).length / IX.length : null,
+      pIx: (() => { let b = 0, c2 = 0; IX.forEach(c => { const m = ok(c), x = ix(c); if (m && !x) b++; if (!m && x) c2++; }); return binomTwo(b, b + c2); })() };
+  }
+  function benchBlock(cs, need) {
+    const B = bench(cs), f = v => v === null ? '—' : v.toFixed(1) + '%';
+    if (B.n < need) return `<div class="tr2-bench"><h3>Benchmarks</h3><p class="muted">Compared with always long, a random 50/50 call and following the market index once ${need} calls are judged with a clear move · ${B.n} so far.</p></div>`;
+    return `<div class="tr2-bench"><h3>Benchmarks <small class="muted">· same ${B.n} calls with a clear move</small></h3>
+      <div class="tr2-bt"><div class="me"><span>Investedia</span><b>${f(B.acc)}</b><small>${B.h} of ${B.n} · 95% range ${B.ci ? B.ci.join('–') + '%' : '—'}</small></div>
+      <div><span>Random 50/50</span><b>50.0%</b><small>Investedia vs coin flip: ${pFmt(B.pCoin)}</small></div>
+      <div><span>Always long</span><b>${f(B.long)}</b><small>Investedia vs always long: ${pFmt(B.pLong)}</small></div>
+      <div><span>Follow the market index</span><b>${f(B.ixBase)}</b><small>${B.ixN ? `on ${B.ixN} calls with an index (Investedia ${f(B.ixModel)}) · ${pFmt(B.pIx)}` : 'no calls with an index yet'}</small></div></div>
+      <p class="tr2-note">An edge is only claimed when Investedia beats every baseline with p &lt; 0.05. Paired tests on the same calls; p-values are two-sided.</p></div>`;
+  }
+  window.CallsUI = { bench, benchBlock, wilson, binomTwo, pFmt, loadEarly, earlyRow, gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
 })();

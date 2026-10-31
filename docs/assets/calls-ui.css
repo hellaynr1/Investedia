@@ -69,3 +69,10 @@ svg.cx-chart{display:block;overflow:visible}.cx-chart.empty{display:flex;align-i
 .tr2-elist summary{cursor:pointer;font:600 15px var(--sans);padding:12px 0;color:var(--fg)}.tr2-elist summary::marker{color:#c9b38a}
 .tr2-row.early{opacity:.92}
 @media(max-width:760px){.tr2-early{padding:20px 14px 16px;margin-top:32px}}
+/* benchmarks + early v2 */
+.tr2-bench{margin:0 0 22px;padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line-soft)}.tr2-bench h3{margin:0 0 12px;font:600 15px var(--sans)}
+.tr2-bt{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.tr2-bt>div{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:10px;background:var(--bg-2);border:1px solid var(--line-soft)}
+.tr2-bt span{font-size:12.5px;color:var(--fg-2)}.tr2-bt b{font:650 22px var(--sans)}.tr2-bt small{font-size:11.5px;color:var(--fg-2)}.tr2-bt .me{border-color:rgba(255,122,26,.45)}
+.tr2-v1{margin:-6px 0 16px !important;font-size:13px !important;color:#a1a1aa !important;border-left:2px solid rgba(201,179,138,.4);padding-left:10px}
+.tr2-row.dup{opacity:.6}
+@media(max-width:760px){.tr2-bt{grid-template-columns:1fr 1fr}}

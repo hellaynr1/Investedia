@@ -1,23 +1,26 @@
-"""Publishes the scored early calls (21-30 Oct 2026, before the frozen live ledger) for the Track Record's separate Early Track Record
-section: assets/globe/early-calls.json (+ docs mirror). Historical only: never read by Market Implications or the live statistics.
-Source: research/pre-live-outcomes.json (tools/track/score_research.py). One entry per article and asset.
-python3 tools/track/publish_early_calls.py"""
-import json, os, sys
+"""Publishes the Early Track Record (21-30 Oct 2026) for the Track Record page: assets/globe/early-calls.json (+ docs mirror).
+Official score: frozen framework early-v2 (research/EARLY-SCORING-V2.md, research/early-outcomes-v2.json) with the market-index
+benchmark (research/early-bench-v2.json). The original v1 score is included only as an old-methodology comparison (totals).
+Historical only: never read by Market Implications or the live statistics.  python3 tools/track/publish_early_calls.py"""
+import json, os, sys, collections
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))); sys.path.insert(0, ROOT)
 import events as EV
-src = json.load(open(os.path.join(ROOT, 'research', 'pre-live-outcomes.json')))
+R = lambda *p: os.path.join(ROOT, *p)
+v2 = json.load(open(R('research', 'early-outcomes-v2.json'))); bench = json.load(open(R('research', 'early-bench-v2.json')))
 url = {r['id']: r.get('url') for r in EV.load_days(30)}
-seen, out = set(), []
-for x in sorted(src['items'], key=lambda x: x['start']):
-    k = (x['story'], x['sym'])
-    if k in seen: continue
-    seen.add(k)
-    out.append({k2: v for k2, v in {'id': x['story'], 'h': (x.get('h') or '')[:140], 'name': (x.get('name') or x['sym'])[:60], 'sym': x['sym'], 'dir': x['dir'],
-                'start': x['start'], 'res': x['res'], 'move': x.get('move'), 'base': x.get('base'), 'end': x.get('end'), 'url': url.get(x['story'])}.items() if v is not None})
-doc = {'note': 'Early calls (21-30 Oct 2026): made by the first engine before the frozen live ledger and before event grouping. Scored with the '
-               'current outcome rule from their first provable public time. Historical only; never mixed with live statistics.',
-       'range': ['2026-10-21', '2026-10-30'], 'built': src['built'], 'calls': out}
-for d in ('assets/globe', 'docs/assets/globe'):
-    p = os.path.join(ROOT, d, 'early-calls.json'); json.dump(doc, open(p, 'w'), separators=(',', ':'))
-from collections import Counter
-print(len(out), Counter(c['res'] for c in out), 'with url', sum('url' in c for c in out), os.path.getsize(p) // 1024, 'KB')
+# v1 comparison: the original scoring, one entry per article and asset (as first published)
+v1, seen = [], set()
+for x in sorted(json.load(open(R('research', 'pre-live-outcomes.json')))['items'], key=lambda x: x['start']):
+    if (x['story'], x['sym']) not in seen: seen.add((x['story'], x['sym'])); v1.append(x['res'])
+n1 = collections.Counter(v1)
+calls = []
+for c in v2['calls']:
+    k = c['id'] + '|' + c['sym']
+    calls.append({x: y for x, y in {**{f: c.get(f) for f in ('id', 'h', 'name', 'sym', 'dir', 'cls', 'fam', 'start', 'horizon_h', 'res', 'move', 'thr', 'entry', 'exit', 'collapsed_into', 'why')},
+                  'url': url.get(c['id']), 'mkt': bench.get(k)}.items() if y is not None})
+doc = {'note': 'Early calls (21-30 Oct 2026): first engine, before the frozen live ledger and event grouping. Official score: frozen framework early-v2.',
+       'range': ['2026-10-21', '2026-10-30'], 'method': {**v2['framework'], 'doc': 'research/EARLY-SCORING-V2.md', 'built': v2['built']},
+       'v1': {'hit': n1['hit'], 'miss': n1['miss'], 'flat': n1['flat'], 'note': 'original scoring: credited some overnight gaps and counted duplicate calls separately'},
+       'calls': calls}
+for d in ('assets/globe', 'docs/assets/globe'): json.dump(doc, open(R(d, 'early-calls.json'), 'w'), separators=(',', ':'))
+print(len(calls), collections.Counter(c['res'] for c in calls if 'collapsed_into' not in c), 'collapsed', sum('collapsed_into' in c for c in calls), 'v1', dict(n1))
