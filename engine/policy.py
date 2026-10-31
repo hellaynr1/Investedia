@@ -1,5 +1,5 @@
 """Frozen v4 tables and decision policy (research/ENGINE-V4.md §4-§8, §10). Changing anything here = a new engine version.
-Pure functions: no network, no clock. decide() turns an extracted event + asset + market context into Long / Short / No call."""
+Pure functions: no network, no clock. decide() turns an extracted event + asset + market context into Long / Short / No View."""
 import hashlib, json, math
 
 ENGINE = 'pe-v4'
@@ -19,9 +19,9 @@ ACQUIRER_HORIZON = 'S2'
 FLOOR = {'equity': .3, 'index': .2, 'fx': .1, 'commodity': .3, 'crypto': .5}           # §10 class floors, % move
 SURPRISE_FLOOR = {'eps': 2.0, 'revenue': 2.0, 'guidance': 1.0, 'rate_bp': 10.0}         # §7, % (rates in bp)
 DIRECT = {'subject', 'target', 'acquirer', 'counterparty', 'policy-rate', 'commodity-output', 'issuer'}
-# Product tiers (research/ENGINE-V4.md §2a): No call -> Market Outlook -> Priority Signal (a labelled subset of Outlooks).
-PRICED_IN_SIGMA = 3.0          # asset already moved >= 3 sigma in the called direction before publication: No call (substantially priced in)
-PRIORITY_PRICED_SIGMA = 1.5    # >= 1.5 sigma: still an Outlook, never Priority
+# Product tiers (research/ENGINE-V4.md §2a): No View -> Market View -> Priority Insight (a labelled subset of Views).
+PRICED_IN_SIGMA = 3.0          # asset already moved >= 3 sigma in the called direction before publication: No View (substantially priced in)
+PRIORITY_PRICED_SIGMA = 1.5    # >= 1.5 sigma: still an View, never Priority
 PRIORITY_CONTEXT_SIGMA = -1.0  # index/sector already moved >= 1 sigma AGAINST the call: never Priority
 PRIORITY_MIN_MOVE_SIGMA = 1.0  # expected move must be >= 1 sigma of normal noise over the horizon
 PRIORITY_RELATIONS = {'subject', 'target', 'issuer', 'policy-rate', 'commodity-output'}
@@ -32,7 +32,7 @@ STRONG = {'m&a': ('premium_pct', 15), 'financing': ('size_pct_mcap', 5), 'legal-
           'analyst': ('rating_notches', 1), 'commodity-supply': ('supply_change_pct', 1), 'trade-tariff': ('tariff_change_pct', 10),
           'geopolitical': ('supply_at_risk_pct', 1), 'management': (None, None), 'crypto': ('amount_usd_bn', 1), 'other': (None, None)}
 HARD = ['commentary', 'preview', 'price-move-recap', 'indirect', 'competing-catalysts', 'stance-neutral', 'unsupported-combination',
-        'duplicate-event', 'priced-in', 'below-outlook-threshold']
+        'duplicate-event', 'priced-in', 'below-view-threshold']
 PRIORITY_GATES = ['direct-subject', 'evidence', 'single-catalyst', 'not-priced-in', 'context-supports', 'move-above-noise', 'data-complete',
                   'type-enabled', 'priority-confidence']
 POLICY_ID = hashlib.sha1(json.dumps([TYPES, H, ACQUIRER_HORIZON, FLOOR, SURPRISE_FLOOR, sorted(DIRECT), PRICED_IN_SIGMA, PRIORITY_PRICED_SIGMA,
@@ -88,10 +88,10 @@ def strong_catalyst(ev):
 def decide(ev, asset, ctx, th=None, calibrate=None, seen=(), type_enabled=None):
     """ev: extracted event {event_id, event_type, flags, expectations, catalyst}; asset: {id, cls, relation, stance (+1/-1/0), map};
     ctx: {pre_move_sigma, index_pre_sigma, sector_pre_sigma, expected_move_sigma} (signed, sigma units; None = unavailable).
-    th: frozen thresholds {outlook, priority} on calibrated confidence (None before validation: tiers come from the rules only).
-    Returns {decision long|short|none, tier none|outlook|priority, reasons (why No call), priority_missing (gates not met), raw, confidence, horizon}."""
+    th: frozen thresholds {view, priority} on calibrated confidence (None before validation: tiers come from the rules only).
+    Returns {decision long|short|none, view_tier none|standard|priority, reasons (why No View), priority_missing (gates not met), raw, confidence, horizon}."""
     t, cls, rel, flags = ev.get('event_type'), asset.get('cls'), asset.get('relation'), set(ev.get('flags') or [])
-    out = {'decision': 'none', 'tier': 'none', 'reasons': [], 'priority_missing': [], 'raw': 0, 'confidence': None, 'horizon': horizon(t, cls, rel)}
+    out = {'decision': 'none', 'view_tier': 'none', 'reasons': [], 'priority_missing': [], 'raw': 0, 'confidence': None, 'horizon': horizon(t, cls, rel)}
     r = out['reasons']
     for f in ('commentary', 'preview', 'price-move-recap', 'competing-catalysts'):
         if f in flags: r.append(f)
@@ -102,7 +102,7 @@ def decide(ev, asset, ctx, th=None, calibrate=None, seen=(), type_enabled=None):
     if conflict and 'competing-catalysts' not in r: r.append('competing-catalysts')
     stance = asset.get('stance') or 0
     uses_surprise = t in NEEDS_EXPECTATIONS and s != 0
-    d = s * (asset.get('map') or 1) if uses_surprise else stance  # without expectations an Outlook may still follow the stance
+    d = s * (asset.get('map') or 1) if uses_surprise else stance  # without expectations an View may still follow the stance
     if d == 0 and 'competing-catalysts' not in r: r.append('stance-neutral')
     pre = ctx.get('pre_move_sigma')
     if d and pre is not None and pre * d >= PRICED_IN_SIGMA: r.append('priced-in')
@@ -116,9 +116,9 @@ def decide(ev, asset, ctx, th=None, calibrate=None, seen=(), type_enabled=None):
     if d and stance and uses_surprise and stance == s: raw += POINTS['stance_agrees']
     out['raw'] = raw
     if calibrate: out['confidence'] = calibrate(raw, t)
-    if not r and th and th.get('outlook') is not None and (out['confidence'] is None or out['confidence'] < th['outlook']): r.append('below-outlook-threshold')
+    if not r and th and th.get('view') is not None and (out['confidence'] is None or out['confidence'] < th['view']): r.append('below-view-threshold')
     if r or not d: return out
-    out['decision'] = 'long' if d > 0 else 'short'; out['tier'] = 'outlook'
+    out['decision'] = 'long' if d > 0 else 'short'; out['view_tier'] = 'standard'
     m = out['priority_missing']
     if rel not in PRIORITY_RELATIONS: m.append('direct-subject')
     if not ((uses_surprise and big) or (t not in NEEDS_EXPECTATIONS and strong)): m.append('evidence')
@@ -134,7 +134,7 @@ def decide(ev, asset, ctx, th=None, calibrate=None, seen=(), type_enabled=None):
     if type_enabled is not None and not type_enabled(t): m.append('type-enabled')
     if th and th.get('priority') is not None and (out['confidence'] is None or out['confidence'] < th['priority']): m.append('priority-confidence')
     out['priority_missing'] = sorted(set(m), key=PRIORITY_GATES.index)
-    if not out['priority_missing']: out['tier'] = 'priority'
+    if not out['priority_missing']: out['view_tier'] = 'priority'
     return out
 
 

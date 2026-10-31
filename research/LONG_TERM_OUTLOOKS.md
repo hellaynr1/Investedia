@@ -1,7 +1,7 @@
 # Long-Term Outlooks: design note (not built yet)
 
 **Question:** "What is Investedia's longer-term thesis on this asset?" Fundamental and strategic, 1–12 months. Architecturally separate
-from the event-driven Market Outlooks / Priority Signals (research/ENGINE-V4.md): own engine version line (`lt-v1`), own records file,
+from the event-driven Market Views / Priority Insights (research/ENGINE-V4.md): own engine version line (`lt-v1`), own records file,
 own outcome rule, own Track Record. Never mixed into short-term statistics.
 
 ## Data model (one record per thesis, frozen at creation; outcomes appended)
