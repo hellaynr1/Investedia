@@ -73,6 +73,11 @@ def main():
     classes = {}
     want = {}
     for t, (nm, c) in wanted_assets(news, mk).items(): want[t] = nm; classes[t] = c
+    try:  # every still-pending frozen call keeps its price, even after its article has left the live feed
+        for c in json.load(open(os.path.join(G, 'news-ledger.json'), encoding='utf-8')).get('calls', []):
+            if c.get('res') == 'pending' and not c.get('legacy') and c.get('sym') and c['sym'] not in mk and not c['sym'].startswith('FRED:'):
+                want.setdefault(c['sym'], c.get('name') or c['sym'])
+    except Exception: pass
     for nm, t in SECTORS.items(): want[t] = nm  # sector ETFs always fetched
     for t, nm in {**CRYPTOS, **EXTRA_INDICES}.items(): want[t] = nm
     path = os.path.join(G, 'news-prices.json')

@@ -3,6 +3,8 @@ from datetime import datetime, timezone, timedelta
 import update_news_track as t
 
 NOW = datetime(2026, 10, 26, 12, 0, tzinfo=timezone.utc)
+# outcome-v2 judges from exchange bars; in tests the recorded series stands in for them
+FX = lambda series: (lambda sym, t0, t1: [(p[0] * 60, p[1]) for p in series.get(sym, []) if t0 <= p[0] * 60 <= t1])
 
 
 def story(ticker, hours_ago):
@@ -79,12 +81,12 @@ class Ledger(unittest.TestCase):
 
     def series(self, end_price, end_hours=25):
         pm = self.pm
-        return {'A': [[pm(self.PUB + timedelta(minutes=10)), 100.0], [pm(self.PUB + timedelta(hours=end_hours)), end_price]]}
+        return {'A': [[pm(self.PUB - timedelta(minutes=5)), 100.0], [pm(self.PUB + timedelta(hours=end_hours)), end_price]]}
 
     def judge(self, story, series):
         ledger = {'schema': 2, 'calls': []}
-        t.freeze([story], series, ledger, NOW)
-        n = t.judge(series, ledger, NOW)
+        t.freeze([story], series, ledger, NOW, self.PUB)
+        n = t.judge(series, ledger, NOW, fetch=FX(series))
         return n, ledger['calls']
 
     def test_hit_miss_flat(self):
@@ -112,19 +114,19 @@ class Ledger(unittest.TestCase):
 
     def test_prediction_cannot_change_after_freezing(self):
         ledger = {'schema': 2, 'calls': []}
-        t.freeze([self.st('up')], self.series(103), ledger, NOW)
+        t.freeze([self.st('up')], self.series(103), ledger, NOW, self.PUB)
         flipped = self.st('down')  # the story is edited afterwards
-        t.freeze([flipped], self.series(103), ledger, NOW)
-        t.judge(self.series(103), ledger, NOW)
+        t.freeze([flipped], self.series(103), ledger, NOW, self.PUB)
+        t.judge(self.series(103), ledger, NOW, fetch=FX(self.series(103)))
         self.assertEqual(len(ledger['calls']), 1)
         self.assertEqual(ledger['calls'][0]['dir'], 'up')
         self.assertEqual(ledger['calls'][0]['res'], 'hit')
 
     def test_a_call_is_only_judged_once(self):
         ledger = {'schema': 2, 'calls': []}
-        t.freeze([self.st('up')], self.series(103), ledger, NOW)
-        self.assertEqual(t.judge(self.series(103), ledger, NOW), 1)
-        self.assertEqual(t.judge(self.series(90), ledger, NOW), 0)
+        t.freeze([self.st('up')], self.series(103), ledger, NOW, self.PUB)
+        self.assertEqual(t.judge(self.series(103), ledger, NOW, fetch=FX(self.series(103))), 1)
+        self.assertEqual(t.judge(self.series(90), ledger, NOW, fetch=FX(self.series(90))), 0)
         self.assertEqual(ledger['calls'][0]['move'], 3.0)
 
     def test_late_first_price_is_not_judged(self):

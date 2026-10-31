@@ -124,7 +124,7 @@ CRYPTO_NAMES = {'BTC': [r'bitcoin', r'btc'], 'ETH': [r'ethereum', r'ether', r'et
 CRYPTO_EXTRA = {'DOT': 'Polkadot'}  # majors priced by update_news_prices but not in the site's coin list
 # Company names whose usual form differs from the registrant's legal name; each points at one verified listing (its company's
 # home listing is then chosen). Only unambiguous, well-known forms.
-COMPANY_ALIASES = {'Google': 'GOOGL', 'Alphabet': 'GOOGL', 'Facebook': 'META', 'Meta': 'META', 'Berkshire Hathaway': 'BRK-B', 'TSMC': 'TSM',
+COMPANY_ALIASES = {'Seplat': 'SEPL.L', 'Seplat Energy': 'SEPL.L', 'Google': 'GOOGL', 'Alphabet': 'GOOGL', 'Facebook': 'META', 'Meta': 'META', 'Berkshire Hathaway': 'BRK-B', 'TSMC': 'TSM',
                    'Taiwan Semiconductor': 'TSM', 'Samsung': '005930.KS', 'Samsung Electronics': '005930.KS', 'Alibaba': 'BABA', 'Tencent': '0700.HK',
                    'LVMH': 'MC.PA', 'Nestle': 'NESN.SW', 'Nestlé': 'NESN.SW', 'Roche': 'ROG.SW', 'Saudi Aramco': '2222.SR', 'Aramco': '2222.SR',
                    'Petrobras': 'PBR', 'Vale': 'VALE', 'BYD': '1211.HK', 'Xiaomi': '1810.HK', 'Toyota': '7203.T', 'Sony': '6758.T', 'SoftBank': '9984.T',
