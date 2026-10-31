@@ -21,7 +21,9 @@ Frozen in git **before** any v2 accuracy was computed. Parameters are fixed here
    - 24 h: earnings, guidance, m&a, capital, regulation, rates, macro-data, labor, crypto, other;
    - 72 h: commodity-prices, energy-supply, geopolitics, trade.
 4. **Exit = the session close at or after entry + H**: the last traded price of the first session that ends after entry + H
-   (a whole session, not one opening print; crypto trades 24/7, so its exit is the first price at or after entry + H).
+   (a whole session, not one opening print). Markets without a daily session close (crypto, and FX/futures whose bars run more than
+   20 h without a 2 h break) use the first traded price at or after entry + H. *(Clarified in a second commit before any scoring:
+   the first version would have slid FX/futures exits to the end of the trading week.)*
    No exit within 4 days after entry + H: unresolved; not yet reached: pending.
 5. **Meaningful move**: |move| ≥ max(0.3%, 0.5 × σ_d × √(H / 24 h)), σ_d = standard deviation of the asset's daily returns over the
    20 trading days before T (daily closes). Smaller moves are **no clear move** (not counted as hits or misses).

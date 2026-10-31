@@ -39,6 +39,9 @@ def session_close(bars, t, crypto):
     if crypto: return bars[i]
     j = i
     while j + 1 < len(bars) and bars[j + 1][0] - bars[j][0] < FROZEN['session_gap_h'] * H: j += 1
+    k = i
+    while k > 0 and bars[k][0] - bars[k - 1][0] < FROZEN['session_gap_h'] * H: k -= 1
+    if bars[j][0] - bars[k][0] > 20 * H: return bars[i]  # near-24h markets (FX, futures): no daily session close, use the first price at t
     return bars[j] if j + 1 < len(bars) else None  # the session must have ended (a later bar exists)
 
 
