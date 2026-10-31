@@ -1168,3 +1168,7 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .drawer-theme{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px 4px;border:0;border-bottom:1px solid var(--line-soft);background:none;color:var(--fg);font:inherit;font-size:16px;font-weight:500;cursor:pointer;text-align:left}
 .drawer-theme i{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);flex:none;color:var(--fg)}
 .drawer-theme i svg{width:18px;height:18px}
+
+/* theme switch: the old page stays still while the new one is revealed in a circle (see ui.js switchTheme) */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){z-index:2}

@@ -257,7 +257,18 @@
   const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>', moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
   const setTheme = t => { document.documentElement.dataset.theme = t; document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'light' ? '#FFFFFF' : '#0A0A0B'); tb.innerHTML = t === 'light' ? moon : sun; try { localStorage.setItem('inv-theme', t); } catch {} };
   let th = 'dark'; try { th = localStorage.getItem('inv-theme') || 'dark'; } catch {}
-  setTheme(th); window.setInvTheme = setTheme; tb.onclick = () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
+  // animated switch: the new theme spreads in a circle from the button that was pressed (View Transitions; GPU-composited, smooth on
+  // phones). Browsers without it, and reduced motion, switch instantly.
+  const switchTheme = (t, from) => {
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) return setTheme(t);
+    const r = from?.getBoundingClientRect(), x = r ? r.left + r.width / 2 : innerWidth - 40, y = r ? r.top + r.height / 2 : 30;
+    const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const vt = document.startViewTransition(() => setTheme(t));
+    vt.ready.then(() => document.documentElement.animate({ clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${end}px at ${x}px ${y}px)`] },
+      { duration: 650, easing: 'cubic-bezier(.65,0,.35,1)', pseudoElement: '::view-transition-new(root)' })).catch(() => {});
+  };
+  setTheme(th); window.setInvTheme = setTheme; window.switchInvTheme = switchTheme;
+  tb.onclick = () => switchTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light', tb);
 
   const onScrollHdr = () => hdr.classList.toggle('scrolled', scrollY > 8); addEventListener('scroll', onScrollHdr, { passive: true }); onScrollHdr();
   document.addEventListener('DOMContentLoaded', () => { const m = document.querySelector('main'); if (m) { m.id = m.id || 'main'; if (!('onpagereveal' in window)) m.classList.add('enter'); } });
@@ -317,7 +328,7 @@
   // light / dark switch in the phone menu (the header button is hidden on small phones); closes the menu first so the switch is seen
   const dth = drawer.querySelector('.drawer-theme'), paintDth = () => { const l = document.documentElement.dataset.theme === 'light'; dth.firstElementChild.textContent = l ? 'Dark mode' : 'Light mode'; dth.lastElementChild.innerHTML = l ? moon : sun; };
   paintDth(); new MutationObserver(paintDth).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-  dth.onclick = () => { const t = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'; closeDrawer(); setTimeout(() => setTheme(t), 200); };
+  dth.onclick = () => { const t = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'; closeDrawer(); setTimeout(() => switchTheme(t, dth.lastElementChild), 200); };
   // phones: the light/dark button sits in the header (like on PC) and the currency picker moves into the menu
   const pfHome = () => hdr.querySelector('.hdr-tools'), dcHost = drawer.querySelector('.dc-host'), phoneQ = matchMedia('(max-width: 900px)');
   const placePf = () => { const w = document.querySelector('.pf-wrap'); if (!w) return; if (phoneQ.matches) { if (w.parentNode !== dcHost) dcHost.append(w); } else if (w.parentNode === dcHost) pfHome().prepend(w); };

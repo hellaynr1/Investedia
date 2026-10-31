@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=d2eca106b5">
-<script src="assets/consent.js?v=d2eca106b5"></script>
+<link rel="stylesheet" href="assets/consent.css?v=5bc35d6cf2">
+<script src="assets/consent.js?v=5bc35d6cf2"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia</title>
 <meta name="description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="Financial news and market intelligence for investors: the world's news on one live globe, with what happened, where, and why it matters to your money.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=d2eca106b5">
-<link rel="stylesheet" href="assets/skin.css?v=d2eca106b5">
+<link rel="stylesheet" href="assets/app.css?v=5bc35d6cf2">
+<link rel="stylesheet" href="assets/skin.css?v=5bc35d6cf2">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,19 +46,19 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=d2eca106b5"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=d2eca106b5">
-<script src="assets/live-config.js?v=d2eca106b5"></script>
-<script src="assets/live-data.js?v=d2eca106b5" defer></script>
-<script src="assets/prefs.js?v=d2eca106b5"></script>
-<script src="assets/peek.js?v=d2eca106b5"></script>
-<script src="assets/sectors.js?v=d2eca106b5"></script>
-<script src="assets/news-menu.js?v=d2eca106b5"></script>
-<script src="assets/ui.js?v=d2eca106b5"></script>
-<script src="assets/news-alerts.js?v=d2eca106b5" defer></script>
-<script src="assets/since-news.js?v=d2eca106b5"></script>
-<script src="assets/implications.js?v=d2eca106b5"></script>
-<script src="assets/home-news.js?v=d2eca106b5"></script>
+<script src="assets/mock.js?v=5bc35d6cf2"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=5bc35d6cf2">
+<script src="assets/live-config.js?v=5bc35d6cf2"></script>
+<script src="assets/live-data.js?v=5bc35d6cf2" defer></script>
+<script src="assets/prefs.js?v=5bc35d6cf2"></script>
+<script src="assets/peek.js?v=5bc35d6cf2"></script>
+<script src="assets/sectors.js?v=5bc35d6cf2"></script>
+<script src="assets/news-menu.js?v=5bc35d6cf2"></script>
+<script src="assets/ui.js?v=5bc35d6cf2"></script>
+<script src="assets/news-alerts.js?v=5bc35d6cf2" defer></script>
+<script src="assets/since-news.js?v=5bc35d6cf2"></script>
+<script src="assets/implications.js?v=5bc35d6cf2"></script>
+<script src="assets/home-news.js?v=5bc35d6cf2"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <style>
 /* News-first homepage. The globe is the hero; everything below is live news. */
@@ -128,18 +128,6 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .hn-ci .eps{font:500 12px var(--mono,monospace);color:var(--fg-3);text-align:right}.hn-ci .eps b{display:block;color:var(--fg);font-size:13px}
 .hn-ci img.lg{width:30px;height:30px;border-radius:7px;background:#fff;padding:3px;object-fit:contain}.hn-lgc{width:40px;height:40px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#fff;flex:none}.hn-lgc .ai-t,.hn-lgc .ai-i{width:100%!important;height:100%!important;border-radius:50%!important}.hn-lgc .ai-i{object-fit:contain;padding:7px;box-sizing:border-box;background:#fff}.hn-lgc .ai-t{background:#26262b;color:#e5e5ea;font-size:13px}
 @media (max-width:900px){.hn-cal{grid-template-columns:1fr}.hn-mk{grid-template-columns:1fr 1fr}#hnClock{display:none}.hn-m{padding:11px 12px;gap:9px}}
-/* night / day: a small moon (dark theme) or sun (light theme) above the headline; the switch is animated with the globe */
-.hn-cel{position:absolute;z-index:2;width:64px;height:64px;pointer-events:none;left:0;top:0}
-.hn-cel img{position:absolute;inset:0;width:100%;height:100%;transition:opacity .7s cubic-bezier(.65,0,.35,1),transform .9s cubic-bezier(.65,0,.35,1)}
-.hn-cel .moon{filter:drop-shadow(0 0 14px rgba(190,205,235,.28))}
-.hn-cel .sun{border-radius:50%;box-shadow:0 0 30px 10px rgba(255,190,90,.35),0 0 80px 30px rgba(255,214,150,.25)}
-.hn-cel .sun{opacity:0;transform:translateY(26px) scale(.9)}
-:root[data-theme="light"] .hn-cel .moon{opacity:0;transform:translate(-18px,-22px) scale(.92)}
-:root[data-theme="light"] .hn-cel .sun{opacity:1;transform:none}
-@media (max-width:900px){.hn-cel{width:48px;height:48px}.hn-cel .moon{filter:drop-shadow(0 0 10px rgba(200,215,245,.45)) brightness(1.15)}}
-html.theme-anim,html.theme-anim *{transition:background-color .7s ease,border-color .7s ease,color .7s ease!important}
-html.theme-anim .hn-cel img{transition:opacity .7s cubic-bezier(.65,0,.35,1),transform .9s cubic-bezier(.65,0,.35,1)!important}
-@media (prefers-reduced-motion:reduce){.hn-cel img{transition:none!important}}
 /* day hero: light veil, light search and chips */
 :root[data-theme="light"] .hn-hero::after{background:linear-gradient(90deg,var(--bg) 0%,rgba(247,247,248,.82) 28%,transparent 55%),linear-gradient(0deg,var(--bg),transparent 22%)}
 :root[data-theme="light"] .hn-hero .hn-search{background:rgba(255,255,255,.72);border-color:rgba(10,10,11,.12)}
@@ -154,7 +142,6 @@ html.theme-anim .hn-cel img{transition:opacity .7s cubic-bezier(.65,0,.35,1),tra
 <section class="hn-hero" aria-label="Live news globe">
   <iframe id="hnGlobe" title="Live news globe"></iframe>
   <a class="hn-open" href="/assets/globe/news.html" aria-label="Open the globe"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg><span class="t">Open globe</span><span class="ar" aria-hidden="true">→</span></a>
-  <div class="hn-cel" id="hnCel" aria-hidden="true"><img class="moon" src="assets/sky/moon-a.webp" alt="" width="64" height="64" decoding="async"><img class="sun" src="assets/sky/sun-d1.webp" alt="" width="64" height="64" decoding="async"></div>
   <div class="hn-copy"><div class="hn">
     <span class="hn-live" id="hnLive"><i></i>Live</span>
     <h1 class="hn-title" id="hnTitle"><b>Invest with clarity.</b><span>See the world move.</span></h1>
@@ -181,18 +168,14 @@ html.theme-anim .hn-cel img{transition:opacity .7s cubic-bezier(.65,0,.35,1),tra
   <p class="hn-disc">Summaries are written with the help of AI from each source's own reporting. Every article links to its source. Not investment advice.</p>
 </div>
 <script>
-// night / day: place the moon/sun above the headline, and tell the globe when the theme changes so it animates with the page
+// day / night: tell the globe when the theme changes so it animates with the page
 (() => {
-  const cel = document.getElementById('hnCel'), hero = document.querySelector('.hn-hero'), reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const place = () => { const h = hnTitle.getBoundingClientRect(), r = hero.getBoundingClientRect(), ph = innerWidth <= 900;
-    cel.style.transform = `translate(${h.left - r.left + (ph ? h.width * .74 : 300)}px,${h.top - r.top - (ph ? 52 : 96)}px)`; };
-  addEventListener('resize', () => requestAnimationFrame(place)); addEventListener('load', place); document.fonts?.ready.then(() => requestAnimationFrame(place)); requestAnimationFrame(place);
-  let cur = document.documentElement.dataset.theme, tm;
-  const tell = instant => hnGlobe.contentWindow?.postMessage({ type: 'inv-theme', theme: document.documentElement.dataset.theme, dur: 1000, instant }, location.origin);
+  const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let cur = document.documentElement.dataset.theme;
+  const tell = instant => hnGlobe.contentWindow?.postMessage({ type: 'inv-theme', theme: document.documentElement.dataset.theme, dur: 800, instant }, location.origin);
   hnGlobe.addEventListener('load', () => tell(true));
-  new MutationObserver(() => { const t = document.documentElement.dataset.theme; if (t === cur) return; cur = t;
-    if (!reduce()) { document.documentElement.classList.add('theme-anim'); clearTimeout(tm); tm = setTimeout(() => document.documentElement.classList.remove('theme-anim'), 1000); }
-    tell(reduce()); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  new MutationObserver(() => { const t = document.documentElement.dataset.theme; if (t === cur) return; cur = t; tell(reduce()); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 })();
 </script>
 <script>
