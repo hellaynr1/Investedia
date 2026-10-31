@@ -6,7 +6,7 @@
 (function () {
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const MIN = 60000, HR = 3600000, DAY = 864e5, NEED = 50, SUB = 30;
-  const ENGINE = v => ({ 'impact-gemini-v1': 'Prediction Engine v1', 'impact-gemini-v2': 'Prediction Engine v2', 'impact-gemini-v3': 'Prediction Engine v3' })[v] || 'Prediction Engine v1';
+  const ENGINE = v => ({ 'impact-gemini-v1': 'Prediction Engine v1', 'impact-gemini-v2': 'Prediction Engine v2', 'impact-gemini-v3': 'Prediction Engine v3', 'pe-v5': 'Prediction Engine v5' })[v] || 'Prediction Engine v1';
   const RES = { hit: ['ok', '✓', 'Hit'], miss: ['no', '✕', 'Miss'], flat: ['na', '–', 'No clear move'], pending: ['wait', '◷', 'Waiting for price'], unresolved: ['na', '?', 'Unresolved'], void: ['na', '!', 'Excluded'] };
   const FAM = { earnings: 'Earnings', guidance: 'Guidance', 'm&a': 'M&A', regulation: 'Regulation', rates: 'Rates', 'macro-data': 'Macro data', 'commodity-prices': 'Commodities', 'energy-supply': 'Energy supply', geopolitics: 'Geopolitics', crypto: 'Crypto', capital: 'Capital markets', trade: 'Trade', labor: 'Labour', other: 'Other' };
   const ago = t => { const m = Math.round((Date.now() - t) / MIN); return m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
@@ -41,9 +41,11 @@
     return `<span class="cx-rb ${c.res === 'flat' ? 'na' : g > 0 ? 'up' : 'dn'}${big ? ' big' : ''}" title="${moved(c)}"><b>${pct(g)}</b></span>`; };
 
   // load the ledger and its joins; returns live calls (legacy calls never count as live)
+  // which record: the current engine (v5) by default; ?engine=previous shows the archived calls of the previous engine
+  const PREV = new URLSearchParams(location.search).get('engine') === 'previous';
   async function load(root = 'assets/globe/') {
     const get = u => fetch(root + u, { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
-    const [L, P, T, A, G] = await Promise.all([get('news-ledger.json'), get('call-paths.json'), get('news-track.json'), get('news-archive.json'), get('logos.json')]);
+    const [L, P, T, A, G] = await Promise.all([get(PREV ? 'news-ledger.json' : 'v5-ledger.json'), get('call-paths.json'), get('news-track.json'), get('news-archive.json'), get('logos.json')]);
     LOGOS = G || {};
     const calls = (L.calls || []).filter(c => c && !c.legacy && c.sym && (c.dir === 'up' || c.dir === 'down'));
     const days = [...new Set(calls.map(c => (c.start || c.created || '').slice(0, 10)).filter(Boolean))];
@@ -56,7 +58,7 @@
       const p = P[c.id + '|' + c.sym];
       c.path = p ? { pts: p.pts, src: 'exchange bars' } : (T.s && T.s[c.sym] ? { pts: T.s[c.sym], src: 'recorded so far' } : null);
     }
-    return { calls: calls.sort((a, b) => b.t - a.t), rule: L.outcome_rule, live_since: L.live_since };
+    return { calls: calls.sort((a, b) => b.t - a.t), rule: L.outcome_rule, live_since: L.live_since, engine: PREV ? 'previous' : 'v5' };
   }
   const inWin = (c, days) => !days || c.t >= Date.now() - days * DAY;
   const counts = cs => { const n = { hit: 0, miss: 0, flat: 0, pending: 0, unresolved: 0, void: 0 }; cs.forEach(c => { n[c.res] = (n[c.res] || 0) + 1; }); n.judged = n.hit + n.miss + n.flat; n.clear = n.hit + n.miss; return n; };
@@ -87,7 +89,7 @@
     if (big) s += `<text x="${pad[3]}" y="${H - 6}" class="cx-ax">${esc(when(pts[0][0]))}</text><text x="${W - pad[1]}" y="${H - 6}" class="cx-ax" text-anchor="end">${esc(when(pts.at(-1)[0]))}</text>`;
     return s + '</svg>';
   }
-  const href = c => `call.html?id=${encodeURIComponent(c.id)}&sym=${encodeURIComponent(c.sym)}`;
+  const href = c => `call.html?id=${encodeURIComponent(c.id)}&sym=${encodeURIComponent(c.sym)}${PREV ? '&engine=previous' : ''}`;
   function card(c) {
     return `<a class="cx-card" href="${href(c)}">
       <div class="cx-top">${logo(c)}<span class="cx-tk">${esc(tk(c))}</span><span class="cx-name">${esc(c.name)}</span>${badge(c)}</div>
@@ -110,5 +112,10 @@
       <dl class="cx-dl">${rows.filter(Boolean).map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
       <p class="cx-fine">Call result reads the call as a position: a long gains when the price rises, a short gains when it falls. The call was frozen before its outcome and is scored from the earliest time it can be proven public. No exit or target signal was recorded for this call, so none is shown.</p></div>`;
   }
-  window.CallsUI = { gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
+  // the same judged calls, if one had simply bet that every asset goes up: the bar a real edge must clear
+  const longBench = cs => { const j = cs.filter(c => (c.res === 'hit' || c.res === 'miss') && typeof c.move === 'number'); return j.length ? Math.round(100 * j.filter(c => c.move > 0).length / j.length) : null; };
+  const engineNote = (live_since) => PREV
+    ? `<p class="cx-eng">Archived calls of the <b>previous prediction engine</b>, kept unchanged. <a href="${location.pathname.split('/').pop()}">See Prediction Engine v5 →</a></p>`
+    : `<p class="cx-eng">Calls from <b>Prediction Engine v5</b>${live_since ? ` since ${new Date(live_since).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}: it only makes a call when the price has not already moved that way before the call. <a href="${location.pathname.split('/').pop()}?engine=previous">Previous engine’s calls</a></p>`;
+  window.CallsUI = { longBench, engineNote, PREV, gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
 })();

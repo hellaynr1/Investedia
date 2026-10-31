@@ -21,9 +21,10 @@
     const cs = all.filter(c => U.inWin(c, +win)), scored = cs.filter(c => c.res !== 'void'), n = U.counts(scored), a = U.acc(n, U.NEED);
     const sel = c => cur === 'all' || c.res === cur || c.dir === cur, hist = cs.filter(sel);
     const fams = [...new Set(scored.map(c => c.fam || 'other'))].sort((x, y) => scored.filter(c => (c.fam || 'other') === y).length - scored.filter(c => (c.fam || 'other') === x).length);
-    root.innerHTML = `<div class="tr2-two">
+    const lb = U.longBench(scored);
+    root.innerHTML = U.engineNote(live_since) + `<div class="tr2-two">
       <section class="tr2-box"><div class="tr2-k">Live Prediction Track Record</div>
-        ${a ? `<div class="tr2-big">${a.pct}%</div><div class="tr2-sub">${a.text}</div>` : `<div class="tr2-big building">Building — ${n.judged} of ${U.NEED} judged calls</div><div class="tr2-bar"><i style="width:${Math.min(100, 100 * n.judged / U.NEED)}%"></i></div><div class="tr2-sub">No accuracy is shown until ${U.NEED} calls are judged.</div>`}
+        ${a ? `<div class="tr2-big">${a.pct}%</div><div class="tr2-sub">${a.text}</div>${lb != null ? `<div class="tr2-sub">Same calls if you had simply bet everything goes up: <b>${lb}%</b></div>` : ''}` : `<div class="tr2-big building">Building — ${n.judged} of ${U.NEED} judged calls</div><div class="tr2-bar"><i style="width:${Math.min(100, 100 * n.judged / U.NEED)}%"></i></div><div class="tr2-sub">No accuracy is shown until ${U.NEED} calls are judged.</div>`}
         <div class="tr2-note">Every call is frozen before its outcome and scored from the earliest time it can be proven public, then judged on the first traded price at least 24 hours later in the asset’s own market session. Call result reads each call as a position: a short gains when the price falls.${since ? ` Live since ${since}.` : ''}</div></section>
       <section class="tr2-box"><div class="tr2-k">Historical Prediction Track Record</div>
         ${concept ? '<div class="tr2-big">XX%<span class="tr2-ill">ILLUSTRATIVE</span></div><div class="tr2-sub">X,XXX backtested predictions</div>' : '<div class="tr2-big building">In validation</div><div class="tr2-sub">Backtested predictions using only the information available at the time. Nothing is published until they pass the published quality gates.</div>'}
@@ -31,7 +32,7 @@
       <div class="cx-bar"><div class="cx-seg" role="group" aria-label="Time window">${WIN.map(([k, l]) => `<button type="button" data-w="${k}" aria-pressed="${k === win}">${l}</button>`).join('')}</div></div>
       <div class="tr2-kpis six">${[['Judged', n.judged], ['Hits', n.hit, 'ok'], ['Misses', n.miss, 'no'], ['No clear move', n.flat], ['Pending', n.pending, 'wait'], ['Unresolved', n.unresolved]].map(([l, v, k]) => `<div class="tr2-kpi ${k || ''}"><b>${v}</b><span>${l}</span></div>`).join('')}</div>
       <div class="tr2-groups">${group('Direction', [['Long calls', scored.filter(c => c.dir === 'up')], ['Short calls', scored.filter(c => c.dir === 'down')]])}
-        ${group('Confidence', ['high', 'medium', 'low'].map(k => [k[0].toUpperCase() + k.slice(1), scored.filter(c => c.conf === k)]))}
+        ${U.PREV ? group('Confidence', ['high', 'medium', 'low'].map(k => [k[0].toUpperCase() + k.slice(1), scored.filter(c => c.conf === k)])) : group('Tier', [['Priority Insights', scored.filter(c => c.tier === 'priority')], ['Market Views', scored.filter(c => c.tier !== 'priority')]])}
         ${group('Event type', fams.slice(0, 8).map(f => [U.FAM[f] || f, scored.filter(c => (c.fam || 'other') === f)]))}</div>
       <h2 class="cx-sec">Every call <small class="muted">· ${hist.length}</small></h2>
       <div class="cx-filters">${F.map(([k, l]) => `<button type="button" data-f="${k}" aria-pressed="${k === cur}">${l}</button>`).join('')}</div>

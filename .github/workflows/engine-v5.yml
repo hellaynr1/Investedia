@@ -1,0 +1,31 @@
+name: Prediction engine v5 (live calls, every ~30 min)
+# New stories since V5_LIVE_SINCE go through engine v5 (research/ENGINE-V5-CANDIDATE.md). Records are frozen once and committed, so
+# every call's creation time is proven by git; due calls are judged once with outcome-v4. Writes only the v5 files.
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: engine-v5, cancel-in-progress: false }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Engine v5
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 -m engine.live_v5
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          F="assets/globe/v5-records.json assets/globe/v5-ledger.json docs/assets/globe/v5-records.json docs/assets/globe/v5-ledger.json"
+          git add $F; git diff --cached --quiet && exit 0
+          git commit -q -m "Engine v5 calls"
+          for i in 1 2 3 4; do git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0; sleep $((i * 7)); done
+          exit 1
