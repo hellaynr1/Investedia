@@ -1163,3 +1163,9 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .hn-tick a{flex:0 0 auto;display:flex;align-items:center}.hn-tick .hn{overflow-x:auto;scrollbar-width:none}
 
 .owner-placeholder{background:#472400;color:#ffbd8a;border:1px dashed #ff7a1a;padding:2px 4px;border-radius:3px;overflow-wrap:anywhere}
+
+/* phone menu: light / dark switch */
+.drawer-theme{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px 4px;border:0;border-bottom:1px solid var(--line-soft);background:none;color:var(--fg);font:inherit;font-size:16px;font-weight:500;cursor:pointer;text-align:left}
+.drawer-theme i{position:relative;width:44px;height:26px;border-radius:999px;background:var(--line);transition:background .2s;flex:none}
+.drawer-theme i::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.drawer-theme[aria-checked=true] i{background:var(--accent)}.drawer-theme[aria-checked=true] i::after{transform:translateX(18px)}

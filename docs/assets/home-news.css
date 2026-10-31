@@ -78,3 +78,7 @@ body[data-page=home]{--line-2:rgba(255,255,255,.15);--bg-2:#0B0B0D;--card:#12121
 .hn-wmore{display:flex;align-items:center;gap:14px 18px;flex-wrap:wrap;margin-top:22px}
 .hn-btn{display:inline-flex;align-items:center;min-height:46px;padding:0 22px;border-radius:99px;background:#fff;color:#000;font-weight:650;font-size:15px;text-decoration:none}.hn-btn:hover{background:#e8e8ea}
 .hn-wmore .hn-meta a{color:inherit;text-decoration:underline}
+
+/* light theme: the homepage dark tokens above would otherwise win over the light theme (dark buttons with dark text) */
+:root[data-theme="light"] body[data-page=home]{--line-2:rgba(10,10,11,.12);--bg-2:#FFFFFF;--card:#FFFFFF;--fg-2:#52525B;--fg-3:#8A8A93;--down:#DC2626;--up:#16A34A}
+:root[data-theme="light"] .hn-th{background:#F3F3F5}

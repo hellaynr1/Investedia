@@ -308,10 +308,15 @@
   drawer.innerHTML = `${page === 'home' ? '' : `<a class="search-btn" href="assets/globe/news.html">${icon('search')}<span>Search assets, countries &amp; articles</span></a>`}
     <a href="index.html">Home</a><a href="assets/globe/news.html">Globe</a><details class="nn-drawer-news"><summary>News ${icon('chev')}</summary>${InvNewsMenu.html('nn-mobile')}</details><a href="markets.html">Markets</a><a href="education.html">Learn</a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details><a href="about.html">About</a>
+    <button class="drawer-theme" type="button" role="switch" aria-checked="false"><span>Light mode</span><i aria-hidden="true"></i></button>
     <div class="drawer-acct guest-only"><p>Save your watchlist and alerts on every device.</p><button class="btn btn-primary" type="button" data-auth="up">Create free account</button><button class="btn btn-ghost" type="button" data-auth="in">Log in</button></div>
     <div class="drawer-acct member-only"><a class="owner-only" href="admin.html">Analytics dashboard</a><a href="profile.html">Profile &amp; notifications</a><button class="btn btn-ghost" type="button" data-logout>Log out</button></div>`;
   hdr.after(drawer);
   const mt = hdr.querySelector('.menu-toggle');
+  // light / dark switch in the phone menu (the header button is hidden on small phones); closes the menu first so the switch is seen
+  const dth = drawer.querySelector('.drawer-theme'), paintDth = () => dth.setAttribute('aria-checked', document.documentElement.dataset.theme === 'light');
+  paintDth(); new MutationObserver(paintDth).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  dth.onclick = () => { const t = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'; closeDrawer(); setTimeout(() => setTheme(t), 200); };
   function closeDrawer() { if(drawer.classList.contains('open')) modalClose(drawer); drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.classList.remove('is-open'); document.body.style.overflow = ''; }
   mt.onclick = () => { const o = !drawer.classList.contains('open'); if(o)modalOpen(drawer);else modalClose(drawer); drawer.classList.toggle('open', o); mt.setAttribute('aria-expanded', o); mt.classList.toggle('is-open', o); mt.setAttribute('aria-label', o ? 'Close menu' : 'Open menu'); document.body.style.overflow = o ? 'hidden' : ''; if(o)drawer.querySelector('a').focus(); };
 
