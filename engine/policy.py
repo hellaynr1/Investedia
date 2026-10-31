@@ -19,13 +19,25 @@ ACQUIRER_HORIZON = 'S2'
 FLOOR = {'equity': .3, 'index': .2, 'fx': .1, 'commodity': .3, 'crypto': .5}           # §10 class floors, % move
 SURPRISE_FLOOR = {'eps': 2.0, 'revenue': 2.0, 'guidance': 1.0, 'rate_bp': 10.0}         # §7, % (rates in bp)
 DIRECT = {'subject', 'target', 'acquirer', 'counterparty', 'policy-rate', 'commodity-output', 'issuer'}
-ALREADY_MOVED_SIGMA = 1.5
-POINTS = {'expectations': 2, 'big_surprise': 1, 'direct': 1, 'single_catalyst': 1, 'context_agrees': 1, 'stance_agrees': 1}
+# Product tiers (research/ENGINE-V4.md §2a): No call -> Market Outlook -> Priority Signal (a labelled subset of Outlooks).
+PRICED_IN_SIGMA = 3.0          # asset already moved >= 3 sigma in the called direction before publication: No call (substantially priced in)
+PRIORITY_PRICED_SIGMA = 1.5    # >= 1.5 sigma: still an Outlook, never Priority
+PRIORITY_CONTEXT_SIGMA = -1.0  # index/sector already moved >= 1 sigma AGAINST the call: never Priority
+PRIORITY_MIN_MOVE_SIGMA = 1.0  # expected move must be >= 1 sigma of normal noise over the horizon
+PRIORITY_RELATIONS = {'subject', 'target', 'issuer', 'policy-rate', 'commodity-output'}
+POINTS = {'expectations': 2, 'big_surprise': 1, 'direct': 1, 'single_catalyst': 1, 'context_agrees': 1, 'stance_agrees': 1, 'strong_catalyst': 1}
 NEEDS_EXPECTATIONS = {'earnings', 'guidance', 'macro-data', 'central-bank'}
-REASONS = ['commentary', 'preview', 'price-move-recap', 'indirect', 'competing-catalysts', 'stance-neutral', 'no-expectations',
-           'already-moved', 'unsupported-combination', 'duplicate-event', 'below-threshold']
-POLICY_ID = hashlib.sha1(json.dumps([TYPES, H, ACQUIRER_HORIZON, FLOOR, SURPRISE_FLOOR, sorted(DIRECT), ALREADY_MOVED_SIGMA, POINTS,
-                                     sorted(NEEDS_EXPECTATIONS)], sort_keys=True).encode()).hexdigest()[:12]
+# strong-catalyst table for types without consensus expectations (numbers as stated in the article; missing = not strong)
+STRONG = {'m&a': ('premium_pct', 15), 'financing': ('size_pct_mcap', 5), 'legal-regulatory': ('amount_pct_mcap', 1), 'product': ('value_pct_revenue', 5),
+          'analyst': ('rating_notches', 1), 'commodity-supply': ('supply_change_pct', 1), 'trade-tariff': ('tariff_change_pct', 10),
+          'geopolitical': ('supply_at_risk_pct', 1), 'management': (None, None), 'crypto': ('amount_usd_bn', 1), 'other': (None, None)}
+HARD = ['commentary', 'preview', 'price-move-recap', 'indirect', 'competing-catalysts', 'stance-neutral', 'unsupported-combination',
+        'duplicate-event', 'priced-in', 'below-outlook-threshold']
+PRIORITY_GATES = ['direct-subject', 'evidence', 'single-catalyst', 'not-priced-in', 'context-supports', 'move-above-noise', 'data-complete',
+                  'type-enabled', 'priority-confidence']
+POLICY_ID = hashlib.sha1(json.dumps([TYPES, H, ACQUIRER_HORIZON, FLOOR, SURPRISE_FLOOR, sorted(DIRECT), PRICED_IN_SIGMA, PRIORITY_PRICED_SIGMA,
+                                     PRIORITY_CONTEXT_SIGMA, PRIORITY_MIN_MOVE_SIGMA, sorted(PRIORITY_RELATIONS), POINTS, sorted(NEEDS_EXPECTATIONS), STRONG],
+                                    sort_keys=True).encode()).hexdigest()[:12]
 
 
 def horizon(event_type, asset_class, relation=None):
@@ -66,41 +78,63 @@ def surprise_sign(ev):
     return (g[0], big, False) if g else (0, False, True)
 
 
-def decide(ev, asset, ctx, threshold=None, calibrate=None, seen=()):
-    """ev: extracted event (event_type, flags, expectations, catalysts); asset: {id, cls, relation, stance(+1/-1/0)};
-    ctx: {pre_move_sigma: asset move from previous close to publication in sigma units (signed), ...}.
-    Returns {decision: long|short|none, reasons, raw, confidence, horizon}."""
+def strong_catalyst(ev):
+    f, th = STRONG.get(ev.get('event_type'), (None, None))
+    v = (ev.get('catalyst') or {}).get(f) if f else None
+    try: return v is not None and abs(float(v)) >= th
+    except (TypeError, ValueError): return False
+
+
+def decide(ev, asset, ctx, th=None, calibrate=None, seen=(), type_enabled=None):
+    """ev: extracted event {event_id, event_type, flags, expectations, catalyst}; asset: {id, cls, relation, stance (+1/-1/0), map};
+    ctx: {pre_move_sigma, index_pre_sigma, sector_pre_sigma, expected_move_sigma} (signed, sigma units; None = unavailable).
+    th: frozen thresholds {outlook, priority} on calibrated confidence (None before validation: tiers come from the rules only).
+    Returns {decision long|short|none, tier none|outlook|priority, reasons (why No call), priority_missing (gates not met), raw, confidence, horizon}."""
     t, cls, rel, flags = ev.get('event_type'), asset.get('cls'), asset.get('relation'), set(ev.get('flags') or [])
-    out = {'decision': 'none', 'reasons': [], 'raw': 0, 'confidence': None, 'horizon': horizon(t, cls, rel)}
+    out = {'decision': 'none', 'tier': 'none', 'reasons': [], 'priority_missing': [], 'raw': 0, 'confidence': None, 'horizon': horizon(t, cls, rel)}
     r = out['reasons']
     for f in ('commentary', 'preview', 'price-move-recap', 'competing-catalysts'):
         if f in flags: r.append(f)
     if out['horizon'] is None: r.append('unsupported-combination')
     if rel not in DIRECT: r.append('indirect')
-    key = (ev.get('event_id'), asset.get('id'), out['horizon'])
-    if key in seen: r.append('duplicate-event')
+    if (ev.get('event_id'), asset.get('id'), out['horizon']) in seen: r.append('duplicate-event')
     s, big, conflict = surprise_sign(ev)
     if conflict and 'competing-catalysts' not in r: r.append('competing-catalysts')
     stance = asset.get('stance') or 0
-    if t in NEEDS_EXPECTATIONS:
-        if s == 0 and not conflict: r.append('no-expectations')
-        d = s * (asset.get('map') or 1)  # asset mapping for macro/rates (e.g. index = -1, currency = +1), set by the caller per §7
-    else:
-        d = stance
-        if d == 0: r.append('stance-neutral')
-    if d == 0 and t in NEEDS_EXPECTATIONS and 'no-expectations' not in r and 'competing-catalysts' not in r: r.append('stance-neutral')
+    uses_surprise = t in NEEDS_EXPECTATIONS and s != 0
+    d = s * (asset.get('map') or 1) if uses_surprise else stance  # without expectations an Outlook may still follow the stance
+    if d == 0 and 'competing-catalysts' not in r: r.append('stance-neutral')
     pre = ctx.get('pre_move_sigma')
-    if d and pre is not None and pre * d >= ALREADY_MOVED_SIGMA: r.append('already-moved')
+    if d and pre is not None and pre * d >= PRICED_IN_SIGMA: r.append('priced-in')
+    strong = strong_catalyst(ev)
     raw = 0
-    if t in NEEDS_EXPECTATIONS and s: raw += POINTS['expectations'] + (POINTS['big_surprise'] if big else 0)
+    if uses_surprise: raw += POINTS['expectations'] + (POINTS['big_surprise'] if big else 0)
+    if strong: raw += POINTS['strong_catalyst']
     if rel in DIRECT: raw += POINTS['direct']
     if 'competing-catalysts' not in r: raw += POINTS['single_catalyst']
-    if d and (pre is None or pre * d > -ALREADY_MOVED_SIGMA) and pre is not None: raw += POINTS['context_agrees']
-    if d and stance and t in NEEDS_EXPECTATIONS and stance == s: raw += POINTS['stance_agrees']
+    if d and pre is not None and pre * d < PRIORITY_PRICED_SIGMA: raw += POINTS['context_agrees']
+    if d and stance and uses_surprise and stance == s: raw += POINTS['stance_agrees']
     out['raw'] = raw
     if calibrate: out['confidence'] = calibrate(raw, t)
-    if not r and threshold is not None and (out['confidence'] is None or out['confidence'] < threshold): r.append('below-threshold')
-    if not r and d: out['decision'] = 'long' if d > 0 else 'short'
+    if not r and th and th.get('outlook') is not None and (out['confidence'] is None or out['confidence'] < th['outlook']): r.append('below-outlook-threshold')
+    if r or not d: return out
+    out['decision'] = 'long' if d > 0 else 'short'; out['tier'] = 'outlook'
+    m = out['priority_missing']
+    if rel not in PRIORITY_RELATIONS: m.append('direct-subject')
+    if not ((uses_surprise and big) or (t not in NEEDS_EXPECTATIONS and strong)): m.append('evidence')
+    if t in NEEDS_EXPECTATIONS and not uses_surprise: m.append('evidence')
+    if 'competing-catalysts' in flags: m.append('single-catalyst')
+    if pre is None or pre * d >= PRIORITY_PRICED_SIGMA: m.append('not-priced-in')
+    for k in ('index_pre_sigma', 'sector_pre_sigma'):
+        v = ctx.get(k)
+        if v is not None and v * d <= PRIORITY_CONTEXT_SIGMA: m.append('context-supports'); break
+    em = ctx.get('expected_move_sigma')
+    if em is None or em < PRIORITY_MIN_MOVE_SIGMA: m.append('move-above-noise')
+    if pre is None or ctx.get('index_pre_sigma') is None: m.append('data-complete')
+    if type_enabled is not None and not type_enabled(t): m.append('type-enabled')
+    if th and th.get('priority') is not None and (out['confidence'] is None or out['confidence'] < th['priority']): m.append('priority-confidence')
+    out['priority_missing'] = sorted(set(m), key=PRIORITY_GATES.index)
+    if not out['priority_missing']: out['tier'] = 'priority'
     return out
 
 
