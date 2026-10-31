@@ -110,5 +110,12 @@
       <dl class="cx-dl">${rows.filter(Boolean).map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
       <p class="cx-fine">Call result reads the call as a position: a long gains when the price rises, a short gains when it falls. The call was frozen before its outcome and is scored from the earliest time it can be proven public. No exit or target signal was recorded for this call, so none is shown.</p></div>`;
   }
-  window.CallsUI = { gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
+  // Early calls (21-30 Oct 2026): first engine, before the frozen live ledger and event grouping. Historical only: separate file, separate
+  // section, never mixed into live statistics or Market Implications. Rows open the original article (no stored price path).
+  async function loadEarly(root = 'assets/globe/') {
+    const d = await fetch(root + 'early-calls.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+    return { range: d.range || [], calls: (d.calls || []).map(c => ({ ...c, t: Date.parse(c.start), early: true })).sort((a, b) => b.t - a.t) };
+  }
+  const earlyRow = c => `<a class="tr2-row early"${c.url ? ` href="${esc(c.url)}" target="_blank" rel="noopener"` : ''}><small class="tr2-when">${esc(when(c.t))}</small><span><h4>${esc(c.h)}</h4><small>${logo(c)}<span class="cx-tk">${esc(tk(c))}</span> ${esc(c.name)} · ${said(c)}</small></span>${Number.isFinite(c.move) ? resBox(c) : '<span></span>'}${badge(c)}</a>`;
+  window.CallsUI = { loadEarly, earlyRow, gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
 })();

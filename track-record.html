@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=20b492e6e7">
-<script src="assets/consent.js?v=20b492e6e7"></script>
+<link rel="stylesheet" href="assets/consent.css?v=edd2e69f81">
+<script src="assets/consent.js?v=edd2e69f81"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia Track Record</title>
 <meta name="description" content="How Investedia's calls turned out: the Live Prediction Track Record (frozen before the outcome) and, separately, the Historical Prediction Track Record (backtests). Every call, hits and misses.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="How Investedia's calls turned out: the Live Prediction Track Record (frozen before the outcome) and, separately, the Historical Prediction Track Record (backtests). Every call, hits and misses.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=20b492e6e7">
-<link rel="stylesheet" href="assets/skin.css?v=20b492e6e7">
+<link rel="stylesheet" href="assets/app.css?v=edd2e69f81">
+<link rel="stylesheet" href="assets/skin.css?v=edd2e69f81">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,17 +46,17 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=20b492e6e7"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=20b492e6e7">
-<script src="assets/live-config.js?v=20b492e6e7"></script>
-<script src="assets/live-data.js?v=20b492e6e7" defer></script>
-<script src="assets/prefs.js?v=20b492e6e7"></script>
-<script src="assets/peek.js?v=20b492e6e7"></script>
-<script src="assets/sectors.js?v=20b492e6e7"></script>
-<script src="assets/news-menu.js?v=20b492e6e7"></script>
-<script src="assets/ui.js?v=20b492e6e7"></script>
-<script src="assets/news-alerts.js?v=20b492e6e7" defer></script>
-<script src="assets/calls-ui.js?v=20b492e6e7"></script>
+<script src="assets/mock.js?v=edd2e69f81"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=edd2e69f81">
+<script src="assets/live-config.js?v=edd2e69f81"></script>
+<script src="assets/live-data.js?v=edd2e69f81" defer></script>
+<script src="assets/prefs.js?v=edd2e69f81"></script>
+<script src="assets/peek.js?v=edd2e69f81"></script>
+<script src="assets/sectors.js?v=edd2e69f81"></script>
+<script src="assets/news-menu.js?v=edd2e69f81"></script>
+<script src="assets/ui.js?v=edd2e69f81"></script>
+<script src="assets/news-alerts.js?v=edd2e69f81" defer></script>
+<script src="assets/calls-ui.js?v=edd2e69f81"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <link rel="stylesheet" href="assets/calls-ui.css">
 <nav class="subnav" id="news-nav"></nav>
@@ -69,24 +69,47 @@
 (async () => {
   if (window.UI && UI.newsNav) UI.newsNav('track');
   const U = window.CallsUI, root = document.getElementById('tr'), q = new URLSearchParams(location.search), concept = q.get('concept') === '1';
-  const { calls: all, live_since } = await U.load();
+  const [{ calls: all, live_since }, early] = await Promise.all([U.load(), U.loadEarly()]);
+  let ecur = 'all', elim = 40;
   const WIN = [['7', '7D'], ['30', '30D'], ['90', '90D'], ['0', 'All']];
   const F = [['all', 'All'], ['hit', 'Hits'], ['miss', 'Misses'], ['flat', 'No clear move'], ['pending', 'Pending'], ['up', 'Long calls'], ['down', 'Short calls']];
   let win = q.get('w') || '0', cur = 'all', lim = 30;
   const since = live_since ? new Date(live_since).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
   const group = (title, parts) => `<div class="tr2-grp"><h3>${title}</h3>${parts.map(([l, cs]) => { const n = U.counts(cs), ok = n.clear >= U.SUB;
       return `<div class="tr2-gl"><span>${l}</span><span class="muted">${n.hit} hits · ${n.miss} misses · ${n.flat} no clear · ${n.pending} pending</span><b class="${ok ? '' : 'locked'}">${ok ? Math.round(100 * n.hit / n.clear) + '% of ' + n.clear : `needs ${U.SUB} · ${n.clear} so far`}</b></div>`; }).join('')}</div>`;
+  const E = early.calls, en = U.counts(E), ea = U.acc(en, U.NEED), rng = 'Oct 21–30, 2026';
+  const pctOf = cs => { const n = U.counts(cs); return n.clear ? Math.round(100 * n.hit / n.clear) + '% of ' + n.clear : '—'; };
+  const earlyBox = () => `<section class="tr2-box tr2-earlybox"><div class="tr2-k">Early calls · ${rng}<span class="tr2-tag">Historical</span></div>
+      ${ea ? `<div class="tr2-big">${ea.pct}%</div><div class="tr2-sub">${ea.text} · ${en.judged} judged</div>` : `<div class="tr2-big building">${en.judged} judged</div>`}
+      <div class="tr2-note">Made by the first engine, before the frozen live ledger and event grouping. Scored with today’s outcome rule from their first provable public time. Shown separately, never combined with the live record. <a href="#early">See all early calls ↓</a></div></section>`;
+  const earlySection = () => {
+    const sel = c => ecur === 'pending' ? c.res === 'pending' : c.res !== 'pending' && (ecur === 'all' || c.res === ecur || c.dir === ecur), list = E.filter(sel), days = [...new Set(E.map(c => c.start.slice(0, 10)))].sort();
+    const top = Object.entries(E.reduce((m, c) => (m[c.sym] = (m[c.sym] || []).concat(c), m), {})).sort((a, b) => b[1].length - a[1].length).slice(0, 6);
+    const line = (l, cs) => { const n = U.counts(cs); return `<div class="tr2-gl"><span>${l}</span><span class="muted">${n.hit} hits · ${n.miss} misses · ${n.flat} no clear${n.pending ? ` · ${n.pending} pending` : ''}</span><b>${pctOf(cs)}</b></div>`; };
+    return `<section class="tr2-early" id="early">
+      <div class="tr2-early-h"><span class="tr2-tag">Historical</span><h2>Early Track Record <small>· ${rng}</small></h2>
+        <p>${en.judged} judged calls${en.pending ? ` (${en.pending} more waiting for their markets to reopen)` : ''} from the first engine, before the current methodology: no frozen ledger, no confidence or version stamps and no event grouping (one story covered by several articles can appear several times). Every call is scored from the moment it was first provably public, on real exchange prices, at least 24 hours later.</p></div>
+      <div class="tr2-kpis six">${[['Judged', en.judged], ['Hits', en.hit, 'ok'], ['Misses', en.miss, 'no'], ['No clear move', en.flat], ['Long accuracy', pctOf(E.filter(c => c.dir === 'up'))], ['Short accuracy', pctOf(E.filter(c => c.dir === 'down'))]].map(([l, v, k]) => `<div class="tr2-kpi ${k || ''}"><b>${v}</b><span>${l}</span></div>`).join('')}</div>
+      <div class="tr2-groups">
+        <div class="tr2-grp"><h3>Direction</h3>${line('Long calls', E.filter(c => c.dir === 'up'))}${line('Short calls', E.filter(c => c.dir === 'down'))}</div>
+        <div class="tr2-grp"><h3>By day</h3>${days.map(d => line(new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }), E.filter(c => c.start.startsWith(d)))).join('')}</div>
+        <div class="tr2-grp"><h3>Most-called assets</h3>${top.map(([s, cs]) => line(`${U.esc(cs[0].name)}`, cs)).join('')}</div></div>
+      <details class="tr2-elist" id="early-list"${ecur !== 'all' ? ' open' : ''}><summary>Show all ${en.judged} judged early calls</summary>
+        <div class="cx-filters">${[['all', 'All judged'], ['hit', 'Hits'], ['miss', 'Misses'], ['flat', 'No clear move'], ['up', 'Long calls'], ['down', 'Short calls'], ...(en.pending ? [['pending', `Waiting (${en.pending})`]] : [])].map(([k, l]) => `<button type="button" data-ef="${k}" aria-pressed="${k === ecur}">${l}</button>`).join('')}</div>
+        ${list.slice(0, elim).map(U.earlyRow).join('')}
+        ${list.length > elim ? `<p style="text-align:center;margin-top:16px"><button type="button" class="btn" id="emore">Show more (${list.length - elim})</button></p>` : ''}</details>
+      <p class="tr2-note" style="margin-top:14px">The Historical Prediction Track Record (backtests with information available at the time) is still in validation and will be published separately.</p></section>`;
+  };
   const draw = () => {
     const cs = all.filter(c => U.inWin(c, +win)), scored = cs.filter(c => c.res !== 'void'), n = U.counts(scored), a = U.acc(n, U.NEED);
     const sel = c => cur === 'all' || c.res === cur || c.dir === cur, hist = cs.filter(sel);
     const fams = [...new Set(scored.map(c => c.fam || 'other'))].sort((x, y) => scored.filter(c => (c.fam || 'other') === y).length - scored.filter(c => (c.fam || 'other') === x).length);
     root.innerHTML = `<div class="tr2-two">
-      <section class="tr2-box"><div class="tr2-k">Live Prediction Track Record</div>
+      <section class="tr2-box"><div class="tr2-k">Live Prediction Track Record · current methodology</div>
         ${a ? `<div class="tr2-big">${a.pct}%</div><div class="tr2-sub">${a.text}</div>` : `<div class="tr2-big building">Building — ${n.judged} of ${U.NEED} judged calls</div><div class="tr2-bar"><i style="width:${Math.min(100, 100 * n.judged / U.NEED)}%"></i></div><div class="tr2-sub">No accuracy is shown until ${U.NEED} calls are judged.</div>`}
         <div class="tr2-note">Every call is frozen before its outcome and scored from the earliest time it can be proven public, then judged on the first traded price at least 24 hours later in the asset’s own market session. Call result reads each call as a position: a short gains when the price falls.${since ? ` Live since ${since}.` : ''}</div></section>
-      <section class="tr2-box"><div class="tr2-k">Historical Prediction Track Record</div>
-        ${concept ? '<div class="tr2-big">XX%<span class="tr2-ill">ILLUSTRATIVE</span></div><div class="tr2-sub">X,XXX backtested predictions</div>' : '<div class="tr2-big building">In validation</div><div class="tr2-sub">Backtested predictions using only the information available at the time. Nothing is published until they pass the published quality gates.</div>'}
-        <div class="tr2-note">Research data, kept separate. Never combined with the live record.</div></section></div>
+      ${earlyBox()}</div>
+      <h2 class="cx-sec tr2-h">Current methodology <small class="muted">· frozen live calls since ${since || 'October 2026'}</small></h2>
       <div class="cx-bar"><div class="cx-seg" role="group" aria-label="Time window">${WIN.map(([k, l]) => `<button type="button" data-w="${k}" aria-pressed="${k === win}">${l}</button>`).join('')}</div></div>
       <div class="tr2-kpis six">${[['Judged', n.judged], ['Hits', n.hit, 'ok'], ['Misses', n.miss, 'no'], ['No clear move', n.flat], ['Pending', n.pending, 'wait'], ['Unresolved', n.unresolved]].map(([l, v, k]) => `<div class="tr2-kpi ${k || ''}"><b>${v}</b><span>${l}</span></div>`).join('')}</div>
       <div class="tr2-groups">${group('Direction', [['Long calls', scored.filter(c => c.dir === 'up')], ['Short calls', scored.filter(c => c.dir === 'down')]])}
@@ -95,7 +118,10 @@
       <h2 class="cx-sec">Every call <small class="muted">· ${hist.length}</small></h2>
       <div class="cx-filters">${F.map(([k, l]) => `<button type="button" data-f="${k}" aria-pressed="${k === cur}">${l}</button>`).join('')}</div>
       ${hist.slice(0, lim).map(U.row).join('') || '<p class="muted">No calls in this group yet.</p>'}
-      ${hist.length > lim ? `<p style="text-align:center;margin-top:16px"><button type="button" class="btn" id="more">Show more (${hist.length - lim})</button></p>` : ''}`;
+      ${hist.length > lim ? `<p style="text-align:center;margin-top:16px"><button type="button" class="btn" id="more">Show more (${hist.length - lim})</button></p>` : ''}
+      ${earlySection()}`;
+    root.querySelectorAll('[data-ef]').forEach(b => b.onclick = () => { ecur = b.dataset.ef; elim = 40; draw(); root.querySelector('#early-list').open = true; root.querySelector('#early').scrollIntoView({ block: 'start' }); });
+    const em = document.getElementById('emore'); if (em) em.onclick = () => { elim += 40; draw(); root.querySelector('#early-list').open = true; };
     root.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { win = b.dataset.w; lim = 30; draw(); });
     root.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { cur = b.dataset.f; lim = 30; draw(); });
     const m = document.getElementById('more'); if (m) m.onclick = () => { lim += 30; draw(); };
