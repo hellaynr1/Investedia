@@ -1,0 +1,3685 @@
+{
+"start": "2026-10-29T18:00:00Z",
+"articles": 721,
+"asked": 124,
+"joined": 75,
+"errors": 1,
+"batches": 35,
+"assign": {
+"n6117c1c96c": {
+"cluster": "n6117c1c96c",
+"why": null,
+"at": "2026-10-29T18:00:00Z",
+"title": "US Pushes Nuclear Energy Expansion in Central Asia and Caucasus",
+"fam": "geopolitics"
+},
+"nbc8e0f76ec": {
+"cluster": "nbc8e0f76ec",
+"why": null,
+"at": "2026-10-29T18:03:47Z",
+"title": "New Port Samaná Cruise Terminal Set to Open on November 24",
+"fam": "macro-data"
+},
+"nb8e850e462": {
+"cluster": "nb8e850e462",
+"why": null,
+"at": "2026-10-29T18:06:51Z",
+"title": "Clorox Appoints Unilever Executive as New Chief Executive Officer",
+"fam": "other"
+},
+"n03e2edf838": {
+"cluster": "n03e2edf838",
+"why": null,
+"at": "2026-10-29T18:07:45Z",
+"title": "Microsoft Expects to Raise $25 Billion in U.S. Bond Sale",
+"fam": "rates"
+},
+"n320f052694": {
+"cluster": "n320f052694",
+"why": null,
+"at": "2026-10-29T18:15:00Z",
+"title": "Cartagena and Canada to Resume Seasonal Direct Flights for Winter 2026-2027",
+"fam": "other"
+},
+"nfe3df5f4ce": {
+"cluster": "nf23db59b35",
+"why": "Follow-up on YPF's record production and third-quarter earnings report.",
+"at": "2026-10-29T18:16:09Z",
+"title": "YPF CEO Predicts Positive Production Surprise for 2027 Following Record Results",
+"fam": "earnings"
+},
+"n93d7c69d80": {
+"cluster": "n93d7c69d80",
+"why": null,
+"at": "2026-10-29T18:16:19Z",
+"title": "Dangote Cement Surge Lifts Aliko Dangote's Fortune to $55.4 Billion",
+"fam": "other"
+},
+"ne412258d5a": {
+"cluster": "ne412258d5a",
+"why": null,
+"at": "2026-10-29T18:18:22Z",
+"title": "Nasdaq Falls as Alphabet Faces Record Loss Amid AI Spending Concerns",
+"fam": "other"
+},
+"n499f35c57e": {
+"cluster": "n499f35c57e",
+"why": null,
+"at": "2026-10-29T18:20:32Z",
+"title": "Toast Faces FTC Lawsuit Over Business Contract Practices",
+"fam": "regulation"
+},
+"n4999b7407a": {
+"cluster": "n4999b7407a",
+"why": null,
+"at": "2026-10-29T18:20:53Z",
+"title": "Brazilian Logistics Firm JSL Reports 36% Rise in Q3 Net Profit",
+"fam": "earnings"
+},
+"n81c1e7153e": {
+"cluster": "n81c1e7153e",
+"why": null,
+"at": "2026-10-29T18:24:12Z",
+"title": "Argentine Central Bank Confirms Transferring Gold to London for BIS Operations",
+"fam": "rates"
+},
+"ne237fcf194": {
+"cluster": "n8861297e64",
+"why": "Reports on the same market selloff following the Brazilian presidential election results.",
+"at": "2026-10-29T18:24:23Z",
+"title": "Brazilian Real and Stocks Suffer Sharp Correction After Presidential Election",
+"fam": "geopolitics"
+},
+"nbcb377eaa2": {
+"cluster": "nbcb377eaa2",
+"why": null,
+"at": "2026-10-29T18:26:03Z",
+"title": "PriceSmart to Build First Colombian Club in Cartagena by Late 2027",
+"fam": "other"
+},
+"n541124fe6f": {
+"cluster": "n252136bd05",
+"why": "Identical report on Citi upgrading Motiva following a post-election selloff.",
+"at": "2026-10-29T18:31:40Z",
+"title": "Citi Upgrades Motiva to Buy Following Post-Election Selloff",
+"fam": "m&a"
+},
+"n3ca0078a23": {
+"cluster": "n3ca0078a23",
+"why": null,
+"at": "2026-10-29T18:45:52Z",
+"title": "Binance and Polymarket Hit by Major Cyberattack Totalling $5.5B",
+"fam": "crypto"
+},
+"n3317318545": {
+"cluster": "n3317318545",
+"why": null,
+"at": "2026-10-29T18:46:37Z",
+"title": "Brazil Confirms New Newcastle Disease Outbreak, Prompting Export Bans",
+"fam": "regulation"
+},
+"n7e0624c22c": {
+"cluster": "n7e0624c22c",
+"why": null,
+"at": "2026-10-29T18:48:43Z",
+"title": "Argentina Central Bank Defends Foreign Reserve Management Strategy",
+"fam": "rates"
+},
+"naba07bf40c": {
+"cluster": "naba07bf40c",
+"why": null,
+"at": "2026-10-29T18:55:35Z",
+"title": "Polymarket Suspends Trading Following Third-Party Security Breach",
+"fam": "crypto"
+},
+"neb358d47cf": {
+"cluster": "n648dd50212",
+"why": "Both report on the Federal Reserve interest rate decision and policy outlook.",
+"at": "2026-10-29T18:55:42Z",
+"title": "Fed Considers Rate Hike in December With Subsequent Path Data-Dependent",
+"fam": "rates"
+},
+"nd1e6339d7c": {
+"cluster": "ned64bfbe2c",
+"why": "Both report on BYD third-quarter financial earnings results.",
+"at": "2026-10-29T19:00:00Z",
+"title": "BYD Reports Third-Quarter Earnings Miss Amid Intensifying EV Price War",
+"fam": "earnings"
+},
+"nc023f45fa3": {
+"cluster": "nc023f45fa3",
+"why": null,
+"at": "2026-10-29T19:06:15Z",
+"title": "Brazil Markets Price in Pause to Selic Rate Cuts Amid Shift in Expectations",
+"fam": "macro-data"
+},
+"n5d10d7e01c": {
+"cluster": "n0a7802ed5e",
+"why": "Both report gold prices falling after the Fed rate decision.",
+"at": "2026-10-29T19:07:01Z",
+"title": "Gold Dips as Federal Reserve Holds Rates and Markets Weigh Tightening",
+"fam": "rates"
+},
+"na276863b51": {
+"cluster": "n5e37fd298d",
+"why": "Both cover Alphabet stock decline following its quarterly earnings release.",
+"at": "2026-10-29T19:09:00Z",
+"title": "Alphabet Shares Trigger Death Cross Following Post-Earnings Decline",
+"fam": "earnings"
+},
+"n61f6343302": {
+"cluster": "n61f6343302",
+"why": null,
+"at": "2026-10-29T19:11:10Z",
+"title": "Poundland Prepares to Appoint Administrators as Retailer Faces Collapse",
+"fam": "other"
+},
+"n1d42d4eada": {
+"cluster": "n1d42d4eada",
+"why": null,
+"at": "2026-10-29T19:27:47Z",
+"title": "Nestlé Nigeria 9M Pre-Tax Profit Jumps 51% on Lower Finance Costs",
+"fam": "earnings"
+},
+"naa2ebb3f05": {
+"cluster": "n5e37fd298d",
+"why": "Both cover Alphabet stock sell-off following its earnings report.",
+"at": "2026-10-29T19:34:42Z",
+"title": "Alphabet Shares Drop $500 Billion as AI Summaries Threaten Ad Revenue",
+"fam": "earnings"
+},
+"nc4529968a9": {
+"cluster": "nc4529968a9",
+"why": null,
+"at": "2026-10-29T19:37:09Z",
+"title": "Mercado Pago Receives Technical Approval for Argentine Banking License",
+"fam": "regulation"
+},
+"n3f0ff5a16e": {
+"cluster": "n786ddba003",
+"why": "Both report falling oil prices driven by US-Iran peace talk efforts.",
+"at": "2026-10-29T19:43:37Z",
+"title": "Oil Prices Slip as US and Iran Explore Middle East Peace Talks",
+"fam": "commodity-prices"
+},
+"nda2601db92": {
+"cluster": "nda2601db92",
+"why": null,
+"at": "2026-10-29T19:46:03Z",
+"title": "Vale Third-Quarter Profit Drops 53% to $1.26 Billion on Weaker Iron Ore",
+"fam": "earnings"
+},
+"nae1612d3f0": {
+"cluster": "n5cb79f64d1",
+"why": "Both report DoorDash acquiring Instacart for $17 billion.",
+"at": "2026-10-29T19:48:00Z",
+"title": "DoorDash to Acquire Instacart in $17 Billion Deal",
+"fam": "m&a"
+},
+"nae25384309": {
+"cluster": "nae25384309",
+"why": null,
+"at": "2026-10-29T19:48:12Z",
+"title": "Bradesco BBI Cuts Azul Price Target on Fuel and FX Pressures",
+"fam": "other"
+},
+"nadd2ef3843": {
+"cluster": "nadd2ef3843",
+"why": null,
+"at": "2026-10-29T19:51:34Z",
+"title": "Brazil's Federal Public Debt Rises to R$ 9.38 Trillion in September",
+"fam": "macro-data"
+},
+"n19d19540f8": {
+"cluster": "n19d19540f8",
+"why": null,
+"at": "2026-10-29T19:59:37Z",
+"title": "Argentina Increases Subsidies for 104 Bus Lines to Avert Fare Hikes",
+"fam": "macro-data"
+},
+"n10ea54741d": {
+"cluster": "n10ea54741d",
+"why": null,
+"at": "2026-10-29T20:00:00Z",
+"title": "Exxon and Chevron Executives Cancel Abu Dhabi Conference Visit Over Security Concerns",
+"fam": "geopolitics"
+},
+"n30634be1a4": {
+"cluster": "n30634be1a4",
+"why": null,
+"at": "2026-10-29T20:00:00Z",
+"title": "Finland Approves Operating License for World's First Nuclear Waste Site",
+"fam": "regulation"
+},
+"n64f3336579": {
+"cluster": "n64f3336579",
+"why": null,
+"at": "2026-10-29T20:05:27Z",
+"title": "Brazilian Real Plummets and Ibovespa Drops Amid Fiscal Concerns",
+"fam": "macro-data"
+},
+"na3fbe1e76a": {
+"cluster": "na3fbe1e76a",
+"why": null,
+"at": "2026-10-29T20:05:27Z",
+"title": "Wall Street Falls as Tech Earnings and Rate Hike Concerns Weigh on Markets",
+"fam": "earnings"
+},
+"na6b710f92e": {
+"cluster": "na6b710f92e",
+"why": null,
+"at": "2026-10-29T20:09:24Z",
+"title": "Mubadala and FS Evaluating Acquisition of Raízen Debt Credits",
+"fam": "m&a"
+},
+"n6fe42ae14c": {
+"cluster": "n6fe42ae14c",
+"why": null,
+"at": "2026-10-29T20:16:25Z",
+"title": "Dangote Cement Rally Drives Nigerian Equities to Record High",
+"fam": "other"
+},
+"n57047a0171": {
+"cluster": "n57047a0171",
+"why": null,
+"at": "2026-10-29T20:16:54Z",
+"title": "Banco Macro Announces Stock Buyback Program to Protect Shareholder Value",
+"fam": "capital"
+},
+"nf4fa8cd294": {
+"cluster": "nf4fa8cd294",
+"why": null,
+"at": "2026-10-29T20:18:41Z",
+"title": "Mercado Pago Passes Technical Reviews to Become a Bank in Argentina",
+"fam": "other"
+},
+"n833e3c185a": {
+"cluster": "n9e8b32205e",
+"why": "Both cover Amazon's quarterly earnings release and the resulting 6% stock drop.",
+"at": "2026-10-29T20:24:35Z",
+"title": "Amazon Shares Fall Over 6% After Missing Quarterly Revenue Estimates",
+"fam": "earnings"
+},
+"n2e1378d1ef": {
+"cluster": "n2e1378d1ef",
+"why": null,
+"at": "2026-10-29T20:24:48Z",
+"title": "Walmart Commits $6 Billion to Expand Symbotic Automation Deal",
+"fam": "other"
+},
+"ncef95b82ce": {
+"cluster": "ncef95b82ce",
+"why": null,
+"at": "2026-10-29T20:29:52Z",
+"title": "Itaú BBA Upgrades Gerdau to Buy as Shares Surge",
+"fam": "m&a"
+},
+"n918a38f836": {
+"cluster": "n918a38f836",
+"why": null,
+"at": "2026-10-29T20:40:51Z",
+"title": "Brazil Federal State Enterprises Post Record September Deficit of R$ 2B",
+"fam": "macro-data"
+},
+"nae50b17ec6": {
+"cluster": "nae50b17ec6",
+"why": null,
+"at": "2026-10-29T20:50:59Z",
+"title": "Banana Exporter Uniban Launches 600-Hectare Plantation in Colombia",
+"fam": "commodity-prices"
+},
+"nb7b8a5ab90": {
+"cluster": "nb7b8a5ab90",
+"why": null,
+"at": "2026-10-29T20:53:41Z",
+"title": "Big Tech Accelerates AI Data Center Spending as Wall Street Weighs Costs",
+"fam": "other"
+},
+"n2bdc6357c8": {
+"cluster": "n2bdc6357c8",
+"why": null,
+"at": "2026-10-29T20:57:25Z",
+"title": "Brazilian Mall Operator Multiplan Posts 73% Q3 Net Profit Growth",
+"fam": "earnings"
+},
+"ncb82d56a24": {
+"cluster": "ncb82d56a24",
+"why": null,
+"at": "2026-10-29T21:00:00Z",
+"title": "Russian Diesel Shipment Aboard Malta-Flagged Tanker Heads to New York",
+"fam": "commodity-prices"
+},
+"n91261852d1": {
+"cluster": "n91261852d1",
+"why": null,
+"at": "2026-10-29T21:05:09Z",
+"title": "Alphabet Drops 12% on Negative Free Cash Flow of $9.06 Billion",
+"fam": "other"
+},
+"n44bd01ad70": {
+"cluster": "n44bd01ad70",
+"why": null,
+"at": "2026-10-29T21:12:45Z",
+"title": "Binance Suffers Multi-Billion Dollar Hack, Triggering Crypto Selloff",
+"fam": "crypto"
+},
+"n66399bdb2f": {
+"cluster": "n66399bdb2f",
+"why": null,
+"at": "2026-10-29T21:22:10Z",
+"title": "Intel Tumbles 19% Following Weak Guidance and Decline in AI Revenue",
+"fam": "earnings"
+},
+"n370caab08a": {
+"cluster": "n370caab08a",
+"why": null,
+"at": "2026-10-29T21:29:51Z",
+"title": "Alphabet Market Value Drops by $500 Billion Amid AI Search Concerns",
+"fam": "other"
+},
+"n2ecd689269": {
+"cluster": "n2ecd689269",
+"why": null,
+"at": "2026-10-29T21:30:00Z",
+"title": "Colombia's Nutresa Completes Acquisition of Venezuelan Unit Tio Rico",
+"fam": "m&a"
+},
+"n225bfb789a": {
+"cluster": "n225bfb789a",
+"why": null,
+"at": "2026-10-29T21:30:38Z",
+"title": "Petrobras Confirms Third Deepwater Oil Find in Foz do Amazonas Well",
+"fam": "commodity-prices"
+},
+"n2d6176f3b5": {
+"cluster": "n2d6176f3b5",
+"why": null,
+"at": "2026-10-29T21:36:00Z",
+"title": "Starbucks Shares Fall Despite Beating Key Sales Expectations",
+"fam": "other"
+},
+"n61b054b883": {
+"cluster": "n3ca0078a23",
+"why": "Both report the same massive cryptocurrency cyberattack involving Binance.",
+"at": "2026-10-29T21:36:34Z",
+"title": "Binance Investigates Potential $5 Billion Hack as Withdrawals Are Suspended",
+"fam": "crypto"
+},
+"n5656f871b8": {
+"cluster": "n5656f871b8",
+"why": null,
+"at": "2026-10-29T21:49:49Z",
+"title": "Petrobras, PetroChina and CNOOC Win Buzios Oil Auction in Brazil",
+"fam": "commodity-prices"
+},
+"n6d082fd13c": {
+"cluster": "n6d082fd13c",
+"why": null,
+"at": "2026-10-29T21:50:36Z",
+"title": "Colombia Central Bank Nine-Month Net Result Drops 45% to September",
+"fam": "rates"
+},
+"n52e514e2c5": {
+"cluster": "n5e37fd298d",
+"why": "Both report Alphabet's disappointing quarterly earnings and subsequent share drop.",
+"at": "2026-10-29T21:58:56Z",
+"title": "Alphabet Plunges 12.2% on Disappointing Quarterly Results, Dragging Down Nasdaq",
+"fam": "earnings"
+},
+"na1305ddaa6": {
+"cluster": "na1305ddaa6",
+"why": null,
+"at": "2026-10-29T22:00:00Z",
+"title": "Study Suggests China Holds Untapped Lithium Resources Near Battery Plants",
+"fam": "commodity-prices"
+},
+"n6dcb34c39c": {
+"cluster": "n6dcb34c39c",
+"why": null,
+"at": "2026-10-29T22:02:23Z",
+"title": "Colombia Files Fiscal Rescue Bill Proposing $45 Trillion Peso Cuts",
+"fam": "macro-data"
+},
+"ne8f1f268aa": {
+"cluster": "ne8f1f268aa",
+"why": null,
+"at": "2026-10-29T22:02:30Z",
+"title": "Chipotle Plans Further Expansion in Mexico City and Nuevo León",
+"fam": "other"
+},
+"n691193a76a": {
+"cluster": "n691193a76a",
+"why": null,
+"at": "2026-10-29T22:04:05Z",
+"title": "Argentina Central Bank Outlines Swap Strategy with China and US",
+"fam": "rates"
+},
+"n24c641073a": {
+"cluster": "nda2601db92",
+"why": "Both report Vale's third-quarter earnings results.",
+"at": "2026-10-29T22:17:00Z",
+"title": "Vale Net Profit Drops 54% to $1.25 Billion on Lower Iron Ore Prices",
+"fam": "earnings"
+},
+"n61c73e1eca": {
+"cluster": "n61c73e1eca",
+"why": null,
+"at": "2026-10-29T22:22:26Z",
+"title": "Capstone Copper Delivers Record EBITDA in Third Quarter 2026",
+"fam": "commodity-prices"
+},
+"n3ea593885c": {
+"cluster": "nc90bd4f898",
+"why": "Both report Klabin's third-quarter earnings results.",
+"at": "2026-10-29T22:23:10Z",
+"title": "Klabin Q3 Revenue Rises 3% as Cost Pressures Squeeze Margins",
+"fam": "earnings"
+},
+"n864775d1d0": {
+"cluster": "n864775d1d0",
+"why": null,
+"at": "2026-10-29T22:25:22Z",
+"title": "US Weighs Expanded Financing for Argentine Infrastructure Projects",
+"fam": "macro-data"
+},
+"n2d6e097f38": {
+"cluster": "n2d6e097f38",
+"why": null,
+"at": "2026-10-29T22:28:03Z",
+"title": "Canada PM Courts EU Leaders in Montreal to Diversify Trade Beyond US",
+"fam": "geopolitics"
+},
+"n3f9dcf9156": {
+"cluster": "n3f9dcf9156",
+"why": null,
+"at": "2026-10-29T22:28:10Z",
+"title": "Sudan Accuses Ethiopia and UAE of Drone Strikes on Energy Infrastructure",
+"fam": "geopolitics"
+},
+"n3d679a2565": {
+"cluster": "n3d679a2565",
+"why": null,
+"at": "2026-10-29T22:28:52Z",
+"title": "Braskem Petrochemical Spreads Plunge Up to 43% in Third Quarter",
+"fam": "commodity-prices"
+},
+"n590cdf7d3f": {
+"cluster": "n03e2edf838",
+"why": "Both report Microsoft's $25 billion bond issuance.",
+"at": "2026-10-29T22:41:00Z",
+"title": "Microsoft Plans $25 Billion Bond Sale to Fund Artificial Intelligence",
+"fam": "rates"
+},
+"nd8cd4eb207": {
+"cluster": "nd8cd4eb207",
+"why": null,
+"at": "2026-10-29T22:46:52Z",
+"title": "Nigeria Cabotage Vessel Fund Held in Naira Rather Than Dollars, Official Says",
+"fam": "macro-data"
+},
+"n0befc98458": {
+"cluster": "n0befc98458",
+"why": null,
+"at": "2026-10-29T22:51:34Z",
+"title": "Nigeria Showcases $7.5 Million Gates-Backed Artificial Intelligence Scaling Hub",
+"fam": "other"
+},
+"n34740e9af2": {
+"cluster": "n34740e9af2",
+"why": null,
+"at": "2026-10-29T22:51:39Z",
+"title": "Argentine Sovereign Bonds Rise as Country Risk Drops to 741 Basis Points",
+"fam": "rates"
+},
+"neb12fce820": {
+"cluster": "neb12fce820",
+"why": null,
+"at": "2026-10-29T22:53:24Z",
+"title": "Braskem Third-Quarter Main Chemical Sales in Brazil Fall 18%",
+"fam": "other"
+},
+"n00414f0401": {
+"cluster": "n00414f0401",
+"why": null,
+"at": "2026-10-29T22:59:44Z",
+"title": "Argentine Agro Bodies Launch Labor Certification for Soy and Beef Exports",
+"fam": "commodity-prices"
+},
+"n0b40a7a447": {
+"cluster": "n0b40a7a447",
+"why": null,
+"at": "2026-10-29T23:00:00Z",
+"title": "Polymarket Probes Suspicious Account Bets Placed on Israeli Election",
+"fam": "geopolitics"
+},
+"na72655bdd4": {
+"cluster": "na72655bdd4",
+"why": null,
+"at": "2026-10-29T23:00:00Z",
+"title": "Colombia Reallocates Future Budget Funds for Bogota Metro Line 2",
+"fam": "macro-data"
+},
+"nbd0a476e8e": {
+"cluster": "nbd0a476e8e",
+"why": null,
+"at": "2026-10-29T23:00:00Z",
+"title": "Middle East Supply Disruptions Upend Global Natural Gas Forecasts",
+"fam": "commodity-prices"
+},
+"n44d63789c7": {
+"cluster": "n44d63789c7",
+"why": null,
+"at": "2026-10-29T23:00:07Z",
+"title": "Anthropic Targets Valuation up to $2 Trillion in Planned Public Offering",
+"fam": "other"
+},
+"nc87b06a61f": {
+"cluster": "nc87b06a61f",
+"why": null,
+"at": "2026-10-29T23:14:56Z",
+"title": "Brazilian Luxury Furniture Manufacturer Kitchens Files for Judicial Recovery",
+"fam": "other"
+},
+"n6a77c56e8e": {
+"cluster": "n90ae254604",
+"why": "Both cover MicroStrategy's Q3 earnings report.",
+"at": "2026-10-29T23:16:47Z",
+"title": "MicroStrategy Shares Slide Despite Third-Quarter Earnings Per Share Beat",
+"fam": "earnings"
+},
+"ndd3b80ce68": {
+"cluster": "ndd3b80ce68",
+"why": null,
+"at": "2026-10-29T23:21:00Z",
+"title": "Intel Shares Drop Toward Steepest Loss in Two Years on PC Weakness",
+"fam": "other"
+},
+"n7d9a8d6584": {
+"cluster": "n7d9a8d6584",
+"why": null,
+"at": "2026-10-29T23:25:00Z",
+"title": "Colombia Proposes Slashing Income Tax Nearly in Half for New Tourism Investments",
+"fam": "macro-data"
+},
+"n5a14c50f5a": {
+"cluster": "n3ca0078a23",
+"why": "Both report on the massive Binance cyberattack and withdrawal halt.",
+"at": "2026-10-29T23:30:00Z",
+"title": "Binance Halts Withdrawals Amid Suspected $5.3 Billion Hack",
+"fam": "crypto"
+},
+"nbbfdf32382": {
+"cluster": "nbbfdf32382",
+"why": null,
+"at": "2026-10-29T23:33:53Z",
+"title": "Argentine Household Loan Delinquency Drops as Bank Refinancings Increase",
+"fam": "macro-data"
+},
+"n080d6682da": {
+"cluster": "n080d6682da",
+"why": null,
+"at": "2026-10-29T23:36:00Z",
+"title": "Amazon Shares Drop on Heavy Capex and Light Fourth-Quarter Guidance",
+"fam": "guidance"
+},
+"nd09bac323c": {
+"cluster": "nd09bac323c",
+"why": null,
+"at": "2026-10-29T23:39:33Z",
+"title": "Argentina Expands Bus Subsidies to Prevent National Fare Increases",
+"fam": "macro-data"
+},
+"n4779638015": {
+"cluster": "n4779638015",
+"why": null,
+"at": "2026-10-29T23:42:22Z",
+"title": "Reddit Mandates Log-Ins to Block AI Scraping as Search Traffic Declines",
+"fam": "other"
+},
+"n3f5a3ae80a": {
+"cluster": "n3ca0078a23",
+"why": "Both report on the same multi-billion dollar Binance cyberattack and its aftermath.",
+"at": "2026-10-29T23:42:43Z",
+"title": "Binance Pledges to Cover Losses After Multi-Billion Dollar Crypto Theft",
+"fam": "crypto"
+},
+"ne45f09463b": {
+"cluster": "ne45f09463b",
+"why": null,
+"at": "2026-10-29T23:43:27Z",
+"title": "Colombian Merchants Urge Elimination of 40% Tariff on Imported Clothing",
+"fam": "trade"
+},
+"nb7df74edfb": {
+"cluster": "nb7df74edfb",
+"why": null,
+"at": "2026-10-29T23:46:19Z",
+"title": "US Approves $30 Billion Financing Lines for Investments in Argentina",
+"fam": "regulation"
+},
+"n06787ff2c0": {
+"cluster": "n06787ff2c0",
+"why": null,
+"at": "2026-10-29T23:49:45Z",
+"title": "Alphabet Market Value Drops $500 Billion Amid Search Advertising Pressures",
+"fam": "other"
+},
+"nfe082b8d55": {
+"cluster": "nfe082b8d55",
+"why": null,
+"at": "2026-10-29T23:56:27Z",
+"title": "Colombian Food Producer La Fazenda Reorganizes Debt Amid Pork Price Drop",
+"fam": "other"
+},
+"n4d2426c2b3": {
+"cluster": "n4d2426c2b3",
+"why": null,
+"at": "2026-10-29T23:58:52Z",
+"title": "United States Evaluates Five Infrastructure and Mining Projects in Peru",
+"fam": "macro-data"
+},
+"n24e2bc8e28": {
+"cluster": "n24e2bc8e28",
+"why": null,
+"at": "2026-10-30T00:00:00Z",
+"title": "World Bank Identifies Off-Grid Solar as Cheapest Power for 398 Million",
+"fam": "commodity-prices"
+},
+"n071e55bc95": {
+"cluster": "n071e55bc95",
+"why": null,
+"at": "2026-10-30T00:05:39Z",
+"title": "African Development Bank Launches 2026-2030 Water Facility Strategy in Cairo",
+"fam": "macro-data"
+},
+"n301737082f": {
+"cluster": "n301737082f",
+"why": null,
+"at": "2026-10-30T00:06:16Z",
+"title": "Colombia Proposes Pension Calculation Changes Tied to Minimum Wage",
+"fam": "macro-data"
+},
+"na9fc5c39da": {
+"cluster": "na9fc5c39da",
+"why": null,
+"at": "2026-10-30T00:15:00Z",
+"title": "Intel Shares Fall 21% Following Israel Factory Explosion and Weak PC Demand",
+"fam": "other"
+},
+"n1c6c4c39c6": {
+"cluster": "n1c6c4c39c6",
+"why": null,
+"at": "2026-10-30T00:20:00Z",
+"title": "Oil Prices Rise on Potential US Military Actions in Middle East",
+"fam": "commodity-prices"
+},
+"naba881a1fe": {
+"cluster": "naba881a1fe",
+"why": null,
+"at": "2026-10-30T00:26:51Z",
+"title": "Colombia Submits Economic Recovery Bill to Congress",
+"fam": "macro-data"
+},
+"nb0a44ef5eb": {
+"cluster": "nb0a44ef5eb",
+"why": null,
+"at": "2026-10-30T00:40:00Z",
+"title": "Proposed Fed Rate Schedule Shift Triggers Treasury Market Volatility Warnings",
+"fam": "rates"
+},
+"n89870a07fd": {
+"cluster": "n89870a07fd",
+"why": null,
+"at": "2026-10-30T00:46:54Z",
+"title": "Brazil's Ibovespa Drops 1.06% as Banco Bradesco Slides and Real Weakens",
+"fam": "other"
+},
+"nda6996323d": {
+"cluster": "nda6996323d",
+"why": null,
+"at": "2026-10-30T00:47:32Z",
+"title": "Argentina Stocks and YPF Decline Amid Broader Commodity Movements",
+"fam": "other"
+},
+"n79d61700bb": {
+"cluster": "n79d61700bb",
+"why": null,
+"at": "2026-10-30T00:47:43Z",
+"title": "Colombia Stocks Fall and Peso Depreciates Ahead of Central Bank Decision",
+"fam": "rates"
+},
+"n8200e02d44": {
+"cluster": "n8200e02d44",
+"why": null,
+"at": "2026-10-30T00:47:56Z",
+"title": "Precious Metals Drop as Gold Falls 1.3% and Silver Slips 3.5%",
+"fam": "commodity-prices"
+},
+"n8cdf8bb99c": {
+"cluster": "n8cdf8bb99c",
+"why": null,
+"at": "2026-10-30T00:48:07Z",
+"title": "Copper Sector ETF Falls 1.5% as Freeport and Southern Copper Soften",
+"fam": "commodity-prices"
+},
+"nc6c3457515": {
+"cluster": "nc6c3457515",
+"why": null,
+"at": "2026-10-30T00:48:18Z",
+"title": "Lithium Equities Slide as LIT Fund Drops 2.8% on Albemarle and SQM Losses",
+"fam": "commodity-prices"
+},
+"n69f98aa548": {
+"cluster": "n69f98aa548",
+"why": null,
+"at": "2026-10-30T00:48:28Z",
+"title": "Mining Stocks Vale and Rio Tinto Decline in New York Trading",
+"fam": "commodity-prices"
+},
+"n3502eee235": {
+"cluster": "n3502eee235",
+"why": null,
+"at": "2026-10-30T00:48:37Z",
+"title": "Zinc Miner Nexa Gains 1.5% as Peru Mining Peers Shift",
+"fam": "commodity-prices"
+},
+"nf0bb46bfa0": {
+"cluster": "nf0bb46bfa0",
+"why": null,
+"at": "2026-10-30T00:48:48Z",
+"title": "Steelmakers Gerdau and ArcelorMittal Advance in Daily Trading",
+"fam": "other"
+},
+"nb151faed74": {
+"cluster": "nb151faed74",
+"why": null,
+"at": "2026-10-30T00:49:05Z",
+"title": "Agribusiness Equities Bunge and ADM Decline as Grain Funds Hold Steady",
+"fam": "commodity-prices"
+},
+"n4cdb51b857": {
+"cluster": "n0289e15691",
+"why": "Same Q3 earnings report coverage for Shell and TotalEnergies.",
+"at": "2026-10-30T01:00:00Z",
+"title": "Shell and TotalEnergies Report Profit Boost on European Refining Boom",
+"fam": "earnings"
+},
+"n4987c5434d": {
+"cluster": "n4987c5434d",
+"why": null,
+"at": "2026-10-30T01:06:10Z",
+"title": "US Stock Futures Sink as Amazon and Intel Earnings Underwhelm",
+"fam": "earnings"
+},
+"n0e739d5a4f": {
+"cluster": "n0e739d5a4f",
+"why": null,
+"at": "2026-10-30T01:09:00Z",
+"title": "Personnel and Pension Costs to Consume 73% of Brazil 2027 Defense Budget",
+"fam": "macro-data"
+},
+"ndb72dbf315": {
+"cluster": "ndb72dbf315",
+"why": null,
+"at": "2026-10-30T01:12:03Z",
+"title": "Anthropic Generates Over One-Third of SpaceX Q3 Revenue",
+"fam": "earnings"
+},
+"nebd312a70a": {
+"cluster": "nebd312a70a",
+"why": null,
+"at": "2026-10-30T01:16:13Z",
+"title": "Gold Hovers Near $4,000 as Inflation Data Revives Rate Hike Concerns",
+"fam": "rates"
+},
+"n3474058d7c": {
+"cluster": "n3474058d7c",
+"why": null,
+"at": "2026-10-30T01:24:20Z",
+"title": "Bayer Wins US Court Trial Over Roundup Herbicide Cancer Claims",
+"fam": "regulation"
+},
+"n72978f6b29": {
+"cluster": "n72978f6b29",
+"why": null,
+"at": "2026-10-30T01:33:22Z",
+"title": "Forum Energy Technologies Beats Third-Quarter Earnings and Revenue Forecasts",
+"fam": "earnings"
+},
+"nba9784091a": {
+"cluster": "n1c6c4c39c6",
+"why": "Both report oil prices rising due to potential U.S. military action in Middle East.",
+"at": "2026-10-30T01:40:06Z",
+"title": "Crude Oil Climbs on Prospects of U.S. Military Action Against Iran",
+"fam": "commodity-prices"
+},
+"ned2f665135": {
+"cluster": "ned2f665135",
+"why": null,
+"at": "2026-10-30T01:41:15Z",
+"title": "Argentina's Outgoing Energy Official Emphasizes RIGI Investment Limitations",
+"fam": "macro-data"
+},
+"n0d6df2cbee": {
+"cluster": "n0d6df2cbee",
+"why": null,
+"at": "2026-10-30T01:54:36Z",
+"title": "Yen Holds Steady Ahead of BOJ as AI Worries Fuel U.S. Treasury Rally",
+"fam": "rates"
+},
+"n300ab9e698": {
+"cluster": "n3ca0078a23",
+"why": "Both cover the major security breach and hack affecting crypto exchange Binance.",
+"at": "2026-10-30T01:59:36Z",
+"title": "Binance Confirms Major Security Breach, Freezes Over $2.5 Billion",
+"fam": "crypto"
+},
+"n81d7f1c038": {
+"cluster": "n81d7f1c038",
+"why": null,
+"at": "2026-10-30T02:01:30Z",
+"title": "FirstRand Trims Executive Bonuses Over UK Motor Finance Commission Scrutiny",
+"fam": "other"
+},
+"n610c05a6d6": {
+"cluster": "n610c05a6d6",
+"why": null,
+"at": "2026-10-30T02:01:45Z",
+"title": "South Africa Steps Back from Cross-Border Crypto Rules Following Public Pushback",
+"fam": "crypto"
+},
+"nad0a7789b7": {
+"cluster": "nad0a7789b7",
+"why": null,
+"at": "2026-10-30T02:02:42Z",
+"title": "Cooling Real Estate Market Shaves $5 Billion Off Victoria's Budget",
+"fam": "macro-data"
+},
+"n69862acca3": {
+"cluster": "n69862acca3",
+"why": null,
+"at": "2026-10-30T02:02:54Z",
+"title": "South Africa Offers US Poultry and Pork Access to Preserve AGOA Trade Status",
+"fam": "macro-data"
+},
+"n0bb719bf6f": {
+"cluster": "n0bb719bf6f",
+"why": null,
+"at": "2026-10-30T02:03:17Z",
+"title": "Rand Mutual Assurance Faces Misconduct Probe Over R32 Billion Asset Manager Mandate",
+"fam": "regulation"
+},
+"n0e1bf8f156": {
+"cluster": "n0e1bf8f156",
+"why": null,
+"at": "2026-10-30T02:04:30Z",
+"title": "Holley Acquires SXTH Element to Expand Toyota Performance Parts Business",
+"fam": "m&a"
+},
+"n5e5b956d23": {
+"cluster": "n5e5b956d23",
+"why": null,
+"at": "2026-10-30T02:06:41Z",
+"title": "South Africa Court Ruling Opens Door to State Compensation for Avian Flu Outbreak",
+"fam": "regulation"
+},
+"n6ca4d1af1f": {
+"cluster": "n6ca4d1af1f",
+"why": null,
+"at": "2026-10-30T02:07:28Z",
+"title": "South African Reserve Bank Expresses Confidence in Returning Inflation to 3%",
+"fam": "macro-data"
+},
+"n6f9d94f397": {
+"cluster": "n6f9d94f397",
+"why": null,
+"at": "2026-10-30T02:28:00Z",
+"title": "Nvidia's Expanding Portfolio of AI Investments Raises Market Scrutiny",
+"fam": "other"
+},
+"n713a889794": {
+"cluster": "n713a889794",
+"why": null,
+"at": "2026-10-30T02:30:00Z",
+"title": "Singapore Q3 Retrenchments Edge Up While Overall Employment Growth Accelerates",
+"fam": "earnings"
+},
+"n0511b59b68": {
+"cluster": "n0511b59b68",
+"why": null,
+"at": "2026-10-30T02:42:00Z",
+"title": "Sheng Siong Q3 Net Profit Rises 1.9% to S$44.6 Million on Store Expansion",
+"fam": "earnings"
+},
+"n98fd1e0e73": {
+"cluster": "n98fd1e0e73",
+"why": null,
+"at": "2026-10-30T03:00:10Z",
+"title": "Chinese Battery Makers See Demand Boost from Elevated Fossil Fuel Prices",
+"fam": "other"
+},
+"nbc4c08bdc7": {
+"cluster": "n0d6df2cbee",
+"why": "Covers the same Bank of Japan monetary policy statement release.",
+"at": "2026-10-30T03:02:00Z",
+"title": "Bank of Japan Issues Monetary Policy Statement and Adjusts ETF Sales Plan",
+"fam": "rates"
+},
+"n3109c1205d": {
+"cluster": "n3ca0078a23",
+"why": "Reports on the exact same Binance security breach incident.",
+"at": "2026-10-30T03:07:37Z",
+"title": "Binance Halts Transfers After Security Incident Threatens $6.3B in Losses",
+"fam": "crypto"
+},
+"nca989cc076": {
+"cluster": "nca989cc076",
+"why": null,
+"at": "2026-10-30T03:07:38Z",
+"title": "Binance Halts Withdrawals After Apparent Hack, Faces Up to $6.3B Loss",
+"fam": "crypto"
+},
+"n942ce0bad9": {
+"cluster": "n942ce0bad9",
+"why": null,
+"at": "2026-10-30T03:12:00Z",
+"title": "Global Stocks Tumble and Bonds Rally as Heavy AI Capital Spending Spooks Investors",
+"fam": "rates"
+},
+"n1e9645d183": {
+"cluster": "n1e9645d183",
+"why": null,
+"at": "2026-10-30T03:16:52Z",
+"title": "Colombia Pension Reform Debate Centers on Fiscal Cost of High-Income Subsidies",
+"fam": "macro-data"
+},
+"n05d1a17fad": {
+"cluster": "n05d1a17fad",
+"why": null,
+"at": "2026-10-30T03:30:00Z",
+"title": "Japan Foods Returns to Profit Following Outlets Reduction and Concept Pivot",
+"fam": "earnings"
+},
+"n4930536e98": {
+"cluster": "n3ca0078a23",
+"why": "Follow-up story on the same Binance security breach incident.",
+"at": "2026-10-30T03:36:11Z",
+"title": "Binance Suffers Suspected Multi-Billion-Dollar Breach",
+"fam": "crypto"
+},
+"n8ff559d96d": {
+"cluster": "n8ff559d96d",
+"why": null,
+"at": "2026-10-30T03:48:46Z",
+"title": "US Moves to Bar Chinese Telecom Operators from Direct Access to Phone Numbers",
+"fam": "geopolitics"
+},
+"n410345f0a1": {
+"cluster": "n0d6df2cbee",
+"why": "Reports on the same Bank of Japan monetary policy outcome.",
+"at": "2026-10-30T03:54:44Z",
+"title": "Bank of Japan Holds Policy Rates Steady and Signals Future Hikes",
+"fam": "rates"
+},
+"n3f35521158": {
+"cluster": "n3f35521158",
+"why": null,
+"at": "2026-10-30T04:00:30Z",
+"title": "Crude Oil Heads for Fourth Monthly Gain After Hormuz Tanker Attack",
+"fam": "geopolitics"
+},
+"nba04f03396": {
+"cluster": "nba04f03396",
+"why": null,
+"at": "2026-10-30T04:01:14Z",
+"title": "Malaysia Emerges as Global Hub for AI Data Center Investments",
+"fam": "other"
+},
+"n75732a8465": {
+"cluster": "n75732a8465",
+"why": null,
+"at": "2026-10-30T04:17:24Z",
+"title": "Bank of Japan Keeps Rates Steady as Inflation Hits 2% Target",
+"fam": "rates"
+},
+"nf5e9e8e594": {
+"cluster": "nf5e9e8e594",
+"why": null,
+"at": "2026-10-30T04:42:00Z",
+"title": "Binance Confirms $6.3 Billion Cryptocurrency Hack",
+"fam": "crypto"
+},
+"n9abaccb810": {
+"cluster": "n3ca0078a23",
+"why": "Follow-up on the same Binance hacker's wallet movements.",
+"at": "2026-10-30T04:50:42Z",
+"title": "Binance Hacker Splits $1.4 Billion in Bitcoin Across 19 Unfreezable Wallets",
+"fam": "crypto"
+},
+"n5c772f6c56": {
+"cluster": "n5c772f6c56",
+"why": null,
+"at": "2026-10-30T05:00:23Z",
+"title": "Brazil's Ibovespa records worst post-election weekly performance in 37 years",
+"fam": "macro-data"
+},
+"n43feeefdd7": {
+"cluster": "n43feeefdd7",
+"why": null,
+"at": "2026-10-30T05:00:42Z",
+"title": "Whirlpool reduces Black Friday promotions in Latin America amid margin pressures",
+"fam": "guidance"
+},
+"n07157bda10": {
+"cluster": "n07157bda10",
+"why": null,
+"at": "2026-10-30T05:00:45Z",
+"title": "Illegal Gold Mining Surges Around Johannesburg Amid Soaring Gold Prices",
+"fam": "commodity-prices"
+},
+"naaffc273d4": {
+"cluster": "naaffc273d4",
+"why": null,
+"at": "2026-10-30T05:00:45Z",
+"title": "Logistics provider JSL equity value dips below two years of cash reserves",
+"fam": "capital"
+},
+"n6a3b9eb5fc": {
+"cluster": "n6a3b9eb5fc",
+"why": null,
+"at": "2026-10-30T05:00:49Z",
+"title": "Alphabet shares plunge following quarterly financial results",
+"fam": "earnings"
+},
+"n50160d17a5": {
+"cluster": "n50160d17a5",
+"why": null,
+"at": "2026-10-30T05:04:45Z",
+"title": "Tanzania and Angola Agree to Boost Trade via Rail and Air Links",
+"fam": "macro-data"
+},
+"n72b92a5919": {
+"cluster": "n72b92a5919",
+"why": null,
+"at": "2026-10-30T05:04:53Z",
+"title": "Russia and Ethiopia Hail Surge in Bilateral Trade to $1.3 Billion",
+"fam": "geopolitics"
+},
+"n3852bf6cf3": {
+"cluster": "n3852bf6cf3",
+"why": null,
+"at": "2026-10-30T05:24:31Z",
+"title": "Evergrande Liquidators Sell Property Services Stake for $513 Million",
+"fam": "other"
+},
+"na541f4eb69": {
+"cluster": "na541f4eb69",
+"why": null,
+"at": "2026-10-30T05:25:25Z",
+"title": "Nigerian States Record 27% Rise in Tax Revenue",
+"fam": "earnings"
+},
+"n6513427ee7": {
+"cluster": "n6513427ee7",
+"why": null,
+"at": "2026-10-30T05:37:02Z",
+"title": "Lula Wins Brazilian Runoff as Markets React to Fiscal Impact",
+"fam": "macro-data"
+},
+"nb96cbda4ec": {
+"cluster": "nb96cbda4ec",
+"why": null,
+"at": "2026-10-30T05:40:00Z",
+"title": "Singapore semiconductor shares tumble following Wall Street tech sell-off",
+"fam": "earnings"
+},
+"n094ec307db": {
+"cluster": "n094ec307db",
+"why": null,
+"at": "2026-10-30T05:43:07Z",
+"title": "India's CoinDCX Curbs Crypto Futures Following Binance Liquidity Disruption",
+"fam": "crypto"
+},
+"n2b0b56e7d6": {
+"cluster": "n2b0b56e7d6",
+"why": null,
+"at": "2026-10-30T06:00:16Z",
+"title": "Brazilian agribusiness faces credit crunch as LCA concessions drop 40%",
+"fam": "capital"
+},
+"na0815f1b4a": {
+"cluster": "na0815f1b4a",
+"why": null,
+"at": "2026-10-30T06:00:17Z",
+"title": "US farm bankruptcies rise 19% in 2026 amid economic headwinds",
+"fam": "macro-data"
+},
+"nc567982ada": {
+"cluster": "nc567982ada",
+"why": null,
+"at": "2026-10-30T06:00:45Z",
+"title": "Brazil launches power transmission auction targeting R$ 8.9 billion investment",
+"fam": "capital"
+},
+"ncec9aba461": {
+"cluster": "ncec9aba461",
+"why": null,
+"at": "2026-10-30T06:00:48Z",
+"title": "BNDES doubles credit cap for Brazilian railway infrastructure projects",
+"fam": "capital"
+},
+"nbae6faf841": {
+"cluster": "nbae6faf841",
+"why": null,
+"at": "2026-10-30T06:00:56Z",
+"title": "Brazil tax calculation of 11.3% CBS raises fears of higher total VAT burden",
+"fam": "regulation"
+},
+"nc216336bd7": {
+"cluster": "nc216336bd7",
+"why": null,
+"at": "2026-10-30T06:08:22Z",
+"title": "UK Discount Retailer Poundland Faces Threat of Collapse",
+"fam": "other"
+},
+"ne9edff628a": {
+"cluster": "n1c6c4c39c6",
+"why": "Driven by the same Middle East tensions and military action concerns.",
+"at": "2026-10-30T06:20:00Z",
+"title": "Oil Heads for Fourth Monthly Gain Amid Escalating Middle East Tensions",
+"fam": "commodity-prices"
+},
+"n0ad2bee40c": {
+"cluster": "n0ad2bee40c",
+"why": null,
+"at": "2026-10-30T06:22:00Z",
+"title": "Crypto Selloff Wipes Out $1.5 Billion in Leveraged Positions",
+"fam": "crypto"
+},
+"n4f59d9adf3": {
+"cluster": "n4f59d9adf3",
+"why": null,
+"at": "2026-10-30T06:22:02Z",
+"title": "Nvidia's $3 Billion Investment in Meta Deepens AI Portfolio",
+"fam": "other"
+},
+"na45a0305fb": {
+"cluster": "na45a0305fb",
+"why": null,
+"at": "2026-10-30T06:30:23Z",
+"title": "Gold Drops Near $4,000 as Oil Prices Rise and Inflation Persists",
+"fam": "macro-data"
+},
+"n2c644e91d8": {
+"cluster": "n2c644e91d8",
+"why": null,
+"at": "2026-10-30T06:31:33Z",
+"title": "Google Clears 500 Hectares of Forest for Data Centers in Finland",
+"fam": "other"
+},
+"n1bf39e5749": {
+"cluster": "n1bf39e5749",
+"why": null,
+"at": "2026-10-30T06:56:10Z",
+"title": "Ghana Discusses First Nuclear Power Station Project With Rosatom",
+"fam": "geopolitics"
+},
+"n227cb7056d": {
+"cluster": "n227cb7056d",
+"why": null,
+"at": "2026-10-30T07:00:00Z",
+"title": "Singapore Survey Shows 75% of Employers Deploy AI for HR Functions",
+"fam": "macro-data"
+},
+"n09522730fa": {
+"cluster": "n09522730fa",
+"why": null,
+"at": "2026-10-30T07:00:07Z",
+"title": "China State Funds Pour Into ETFs as Stock Market Slips",
+"fam": "other"
+},
+"n6779c8bbcb": {
+"cluster": "n6779c8bbcb",
+"why": null,
+"at": "2026-10-30T07:00:44Z",
+"title": "Taboola Partners with Smartphone Manufacturer to Integrate Generative AI",
+"fam": "other"
+},
+"n28235f37be": {
+"cluster": "n28235f37be",
+"why": null,
+"at": "2026-10-30T07:00:47Z",
+"title": "UK Budget Raises Side-Hustle Tax-Free Trading Allowance to £3,000",
+"fam": "regulation"
+},
+"ne8ffa9dd32": {
+"cluster": "ne8ffa9dd32",
+"why": null,
+"at": "2026-10-30T07:00:52Z",
+"title": "Rio Tinto Halts Underground Operations at Major Copper Mine",
+"fam": "commodity-prices"
+},
+"n864ed2b2d2": {
+"cluster": "n864ed2b2d2",
+"why": null,
+"at": "2026-10-30T07:14:40Z",
+"title": "Nestlé Nigeria Seeks Approval for Waters Business Transfer to JV",
+"fam": "regulation"
+},
+"n2574b5a7ff": {
+"cluster": "n2574b5a7ff",
+"why": null,
+"at": "2026-10-30T07:14:41Z",
+"title": "Alpha Bank Posts Quarterly Profit 15% Above Forecasts",
+"fam": "earnings"
+},
+"n672cff6e59": {
+"cluster": "n672cff6e59",
+"why": null,
+"at": "2026-10-30T07:14:54Z",
+"title": "Seplat Discovers 19 Million Barrels of Oil in Imo State",
+"fam": "commodity-prices"
+},
+"n64fb26509d": {
+"cluster": "n1c6c4c39c6",
+"why": "Both report oil gains driven by US military action reports against Iran.",
+"at": "2026-10-30T07:15:05Z",
+"title": "Oil Gains on Reports US May Resume Military Strikes Against Iran",
+"fam": "commodity-prices"
+},
+"nc3e1996374": {
+"cluster": "nc3e1996374",
+"why": null,
+"at": "2026-10-30T07:18:57Z",
+"title": "Capgemini Raises 2026 Guidance on AI-Driven IT Demand",
+"fam": "guidance"
+},
+"n413519f8ad": {
+"cluster": "n413519f8ad",
+"why": null,
+"at": "2026-10-30T07:20:10Z",
+"title": "BP Q3 Underlying Profit Rises to $8.46 Billion on Refining Margins",
+"fam": "earnings"
+},
+"nb10e8f28ea": {
+"cluster": "nb10e8f28ea",
+"why": null,
+"at": "2026-10-30T07:21:57Z",
+"title": "Stora Enso Q3 Adjusted Operating Profit Beats Forecasts",
+"fam": "earnings"
+},
+"n4ef1cff814": {
+"cluster": "n4ef1cff814",
+"why": null,
+"at": "2026-10-30T07:23:35Z",
+"title": "Fugro Q3 EBITDA Slumps 30% on Offshore Wind Weakness",
+"fam": "earnings"
+},
+"n70372e35b9": {
+"cluster": "n70372e35b9",
+"why": null,
+"at": "2026-10-30T07:25:29Z",
+"title": "Mexico Sets Dates for El Buen Fin 2026 Discount Weekend",
+"fam": "macro-data"
+},
+"n41518b6345": {
+"cluster": "n41518b6345",
+"why": null,
+"at": "2026-10-30T07:30:00Z",
+"title": "Houthis Claim Strikes on Saudi Aramco Refineries and Abqaiq Facility",
+"fam": "commodity-prices"
+},
+"n3c1b46b4e2": {
+"cluster": "n3ca0078a23",
+"why": "Covers the ongoing Binance hack and security breach incident.",
+"at": "2026-10-30T07:30:52Z",
+"title": "Bitcoin declines following reported $6 billion hack on Binance exchange",
+"fam": "crypto"
+},
+"n007ebf87a8": {
+"cluster": "n007ebf87a8",
+"why": null,
+"at": "2026-10-30T07:32:09Z",
+"title": "Cadbury Nigeria Reports N14.48 Billion Pre-Tax Profit",
+"fam": "earnings"
+},
+"n550d8a71df": {
+"cluster": "n1c6c4c39c6",
+"why": "Covers oil price gains and supply risks from Middle East tensions.",
+"at": "2026-10-30T07:35:00Z",
+"title": "Crude oil advances toward fourth monthly gain following Hormuz tanker attack",
+"fam": "commodity-prices"
+},
+"n1de50ced37": {
+"cluster": "n1de50ced37",
+"why": null,
+"at": "2026-10-30T07:37:35Z",
+"title": "Argentina Postpones Fuel Tax Increases Until December",
+"fam": "regulation"
+},
+"n24cff212dc": {
+"cluster": "n24cff212dc",
+"why": null,
+"at": "2026-10-30T07:38:48Z",
+"title": "World Bank projects Luanda could surpass Lagos population by 2050",
+"fam": "macro-data"
+},
+"nc3b3f8e7bc": {
+"cluster": "nc3b3f8e7bc",
+"why": null,
+"at": "2026-10-30T07:42:41Z",
+"title": "President Tinubu defends $21.7 billion borrowing program for Nigeria",
+"fam": "capital"
+},
+"na8f6089902": {
+"cluster": "na8f6089902",
+"why": null,
+"at": "2026-10-30T07:54:07Z",
+"title": "Binance Hacker Dumps FUN and Smaller Tokens, Triggering 90% Price Crash",
+"fam": "crypto"
+},
+"n5c89c49932": {
+"cluster": "n5c89c49932",
+"why": null,
+"at": "2026-10-30T07:54:08Z",
+"title": "Yorkshire Water Chief Executive Nicola Shaw to Step Down in January",
+"fam": "other"
+},
+"n3a3be315d4": {
+"cluster": "n3a3be315d4",
+"why": null,
+"at": "2026-10-30T07:57:00Z",
+"title": "South Africa petrol and diesel prices projected to drop in November",
+"fam": "macro-data"
+},
+"ne0d1c268c2": {
+"cluster": "ne0d1c268c2",
+"why": null,
+"at": "2026-10-30T07:58:00Z",
+"title": "Wall Street banks hold back AI code generation over compliance risks",
+"fam": "regulation"
+},
+"n0d9586b3bb": {
+"cluster": "n0d9586b3bb",
+"why": null,
+"at": "2026-10-30T08:00:00Z",
+"title": "Bank of Japan Sets Timetable for US Dollar Funds-Supplying Operations",
+"fam": "other"
+},
+"ncad558660e": {
+"cluster": "ncad558660e",
+"why": null,
+"at": "2026-10-30T08:00:00Z",
+"title": "Higher interest rates favor Itaú while market sours on Bradesco post-election",
+"fam": "other"
+},
+"ncee6deb45a": {
+"cluster": "ncee6deb45a",
+"why": null,
+"at": "2026-10-30T08:00:00Z",
+"title": "Bank of Japan Updates Quarterly JGB Outright Purchase Schedule",
+"fam": "rates"
+},
+"n1826007a31": {
+"cluster": "n9e8b32205e",
+"why": "Reports on Amazon's Q3 earnings and AI spending.",
+"at": "2026-10-30T08:00:26Z",
+"title": "Amazon shares fall as third-quarter spending soars on AI infrastructure",
+"fam": "earnings"
+},
+"n39d21b642e": {
+"cluster": "n39d21b642e",
+"why": null,
+"at": "2026-10-30T08:01:40Z",
+"title": "Ucompany Invests 25 Million Reais in Biotechnology for Functional Beverages",
+"fam": "capital"
+},
+"ncb0390c502": {
+"cluster": "ncb0390c502",
+"why": null,
+"at": "2026-10-30T08:02:48Z",
+"title": "Binance Suffers Record $6.3 Billion Crypto Heist",
+"fam": "crypto"
+},
+"n3bfe7ba54f": {
+"cluster": "n3bfe7ba54f",
+"why": null,
+"at": "2026-10-30T08:03:33Z",
+"title": "Nigerian All-Share Index gains 0.47% as tech firm eTranzact surges 10%",
+"fam": "other"
+},
+"nd8bf437069": {
+"cluster": "nd8bf437069",
+"why": null,
+"at": "2026-10-30T08:09:04Z",
+"title": "East African Portland Cement full-year net profit declines 68.6%",
+"fam": "earnings"
+},
+"nbba8754eb9": {
+"cluster": "nbba8754eb9",
+"why": null,
+"at": "2026-10-30T08:12:23Z",
+"title": "NatWest shares decline following updated financial outlook",
+"fam": "earnings"
+},
+"n11db3de3da": {
+"cluster": "n11db3de3da",
+"why": null,
+"at": "2026-10-30T08:13:43Z",
+"title": "SPIE organic revenue growth accelerates on North-West European recovery",
+"fam": "earnings"
+},
+"nded3ff555f": {
+"cluster": "nded3ff555f",
+"why": null,
+"at": "2026-10-30T08:15:09Z",
+"title": "Spain's annual inflation rate holds steady at 4.9% in October",
+"fam": "macro-data"
+},
+"nf392f95214": {
+"cluster": "nf392f95214",
+"why": null,
+"at": "2026-10-30T08:15:13Z",
+"title": "Iron Ore Futures Slump Toward Lowest Monthly Close Since October 2022",
+"fam": "commodity-prices"
+},
+"n2e092ade78": {
+"cluster": "n2e092ade78",
+"why": null,
+"at": "2026-10-30T08:16:04Z",
+"title": "African fintech Grey plans credit products based on foreign currency salaries",
+"fam": "capital"
+},
+"n363d766915": {
+"cluster": "n363d766915",
+"why": null,
+"at": "2026-10-30T08:16:29Z",
+"title": "European equities slip as Amazon and Intel quarterly updates stoke AI cash concerns",
+"fam": "earnings"
+},
+"n411e9ea0c4": {
+"cluster": "n411e9ea0c4",
+"why": null,
+"at": "2026-10-30T08:16:39Z",
+"title": "CSN Grants China's Huaxin Exclusivity to Buy CSN Cimentos for R$12.7B",
+"fam": "m&a"
+},
+"nb1b12fe2c0": {
+"cluster": "nb1b12fe2c0",
+"why": null,
+"at": "2026-10-30T08:21:32Z",
+"title": "US Excludes South Africa from G20 Leaders Summit Invitation List",
+"fam": "geopolitics"
+},
+"n8223d54644": {
+"cluster": "n8223d54644",
+"why": null,
+"at": "2026-10-30T08:21:34Z",
+"title": "Safaricom Acts to Refund Idle M-Pesa Accounts Ahead of State Deadline",
+"fam": "regulation"
+},
+"n792baadfc2": {
+"cluster": "n792baadfc2",
+"why": null,
+"at": "2026-10-30T08:23:34Z",
+"title": "Spiking US Treasury Yields Drive Nervousness Across Global Bond Markets",
+"fam": "rates"
+},
+"n914558f631": {
+"cluster": "nf23db59b35",
+"why": "Follow-up details on YPF Q3 2026 earnings results.",
+"at": "2026-10-30T08:25:26Z",
+"title": "YPF Reports Q3 Net Profit of US$1.2 Billion",
+"fam": "earnings"
+},
+"n917a6f6626": {
+"cluster": "n917a6f6626",
+"why": null,
+"at": "2026-10-30T08:26:51Z",
+"title": "Brazil FGTS Approves R$ 144.5 Billion Housing Budget for 2027",
+"fam": "regulation"
+},
+"nc6757a5e83": {
+"cluster": "nc6757a5e83",
+"why": null,
+"at": "2026-10-30T08:27:19Z",
+"title": "UK Imposes New Investment Requirements on Foreign Defense Contractors",
+"fam": "regulation"
+},
+"n31bce18140": {
+"cluster": "n31bce18140",
+"why": null,
+"at": "2026-10-30T08:27:45Z",
+"title": "Türkiye Q3 Tourism Revenue Reaches $25.5 Billion",
+"fam": "macro-data"
+},
+"n6939dd3ee1": {
+"cluster": "n6939dd3ee1",
+"why": null,
+"at": "2026-10-30T08:28:44Z",
+"title": "Türkiye Economic Confidence Index Falls to 97.3 in October",
+"fam": "macro-data"
+},
+"n5289e0b4a6": {
+"cluster": "n5289e0b4a6",
+"why": null,
+"at": "2026-10-30T08:30:32Z",
+"title": "Afreximbank considers launching its first offshore yuan loan",
+"fam": "capital"
+},
+"nbd7c8bf13d": {
+"cluster": "nbd7c8bf13d",
+"why": null,
+"at": "2026-10-30T08:32:11Z",
+"title": "Abbey Bank Retains A3 Short-Term Credit Rating on Strong Liquidity",
+"fam": "other"
+},
+"nee7b3d2d67": {
+"cluster": "n4987c5434d",
+"why": "Same market drop following Amazon and Intel earnings.",
+"at": "2026-10-30T08:35:22Z",
+"title": "Nasdaq Futures Drop 2% Following Disappointing Amazon and Intel Earnings",
+"fam": "earnings"
+},
+"nffd1d12657": {
+"cluster": "nffd1d12657",
+"why": null,
+"at": "2026-10-30T08:36:52Z",
+"title": "Binance Hack and AI Spending Fears Trigger Tech and Crypto Selloff",
+"fam": "crypto"
+},
+"nf4b1ba8fac": {
+"cluster": "nf4b1ba8fac",
+"why": null,
+"at": "2026-10-30T08:39:00Z",
+"title": "Vamos Net Profit Surges 199% to R$ 150.9 Million in Q3",
+"fam": "earnings"
+},
+"nb71a750719": {
+"cluster": "nb71a750719",
+"why": null,
+"at": "2026-10-30T08:45:00Z",
+"title": "High Energy Prices Expected to Drive UK North Sea Oil and Gas Consolidation",
+"fam": "m&a"
+},
+"n15b6898ada": {
+"cluster": "n15b6898ada",
+"why": null,
+"at": "2026-10-30T08:45:16Z",
+"title": "Uganda Solicits Egyptian Investment for Infrastructure and Manufacturing",
+"fam": "other"
+},
+"na96724905b": {
+"cluster": "n3ca0078a23",
+"why": "Reports the same $6.3B Binance crypto hack.",
+"at": "2026-10-30T08:48:34Z",
+"title": "Binance Hit by Reported $6.3 Billion Crypto Hack",
+"fam": "crypto"
+},
+"n170038c03c": {
+"cluster": "n170038c03c",
+"why": null,
+"at": "2026-10-30T08:50:52Z",
+"title": "BUA Cement Nine-Month Pre-Tax Profit Rises 64% as Revenue Tops N1 Trillion",
+"fam": "earnings"
+},
+"ne31c0a141d": {
+"cluster": "ne31c0a141d",
+"why": null,
+"at": "2026-10-30T08:51:20Z",
+"title": "Acerinox Q3 EBITDA Beats Consensus Estimates by 8%",
+"fam": "earnings"
+},
+"n73be64a580": {
+"cluster": "n3ca0078a23",
+"why": "Covers the same Binance hack and resulting Bitcoin drop.",
+"at": "2026-10-30T08:52:00Z",
+"title": "Binance freezes assets following $6.3bn hack as Bitcoin drops",
+"fam": "crypto"
+},
+"ncc45f31f13": {
+"cluster": "ncc45f31f13",
+"why": null,
+"at": "2026-10-30T08:53:08Z",
+"title": "Dis-Chem earnings decline despite sales growth driven by rewards program",
+"fam": "earnings"
+},
+"n8343b13e98": {
+"cluster": "n8343b13e98",
+"why": null,
+"at": "2026-10-30T08:53:45Z",
+"title": "Australia Rethiinks Student Visa Rules as Enrolments Drop Threatens $1.4B",
+"fam": "regulation"
+},
+"n3e9f0c5f71": {
+"cluster": "n3e9f0c5f71",
+"why": null,
+"at": "2026-10-30T08:54:54Z",
+"title": "Türkiye R&D spending rises to 980 billion liras in 2025",
+"fam": "macro-data"
+},
+"nd9dd83736e": {
+"cluster": "nd9dd83736e",
+"why": null,
+"at": "2026-10-30T08:59:58Z",
+"title": "Nigerian cement majors Dangote, BUA, and HBM post combined N1.7tn 9M profit",
+"fam": "earnings"
+},
+"n9a61983f0f": {
+"cluster": "n9a61983f0f",
+"why": null,
+"at": "2026-10-30T09:00:00Z",
+"title": "Ibovespa declines following elections while investors await BOJ decision and jobs data",
+"fam": "macro-data"
+},
+"nf57d7400f3": {
+"cluster": "nf57d7400f3",
+"why": null,
+"at": "2026-10-30T09:00:00Z",
+"title": "Brazilian Treasury bond yields jump post-election as market volatility spikes",
+"fam": "rates"
+},
+"nfaa3149260": {
+"cluster": "nfaa3149260",
+"why": null,
+"at": "2026-10-30T09:00:00Z",
+"title": "ECB Publishes Results of Fourth-Quarter Survey of Professional Forecasters",
+"fam": "macro-data"
+},
+"nd78ab5190f": {
+"cluster": "nd78ab5190f",
+"why": null,
+"at": "2026-10-30T09:00:07Z",
+"title": "Kenya annual inflation ticks up to 7.3% in October on food and fuel costs",
+"fam": "macro-data"
+},
+"nd8d8a4ad6d": {
+"cluster": "nd8d8a4ad6d",
+"why": null,
+"at": "2026-10-30T09:00:20Z",
+"title": "Xpeng affiliate executive asserts Chinese eVTOL designs beat Tesla Roadster",
+"fam": "other"
+},
+"neac1e2b52d": {
+"cluster": "neac1e2b52d",
+"why": null,
+"at": "2026-10-30T09:01:25Z",
+"title": "Nigeria’s Tantalizers nearly doubles profit in nine-month period",
+"fam": "earnings"
+},
+"n85dfe738be": {
+"cluster": "n85dfe738be",
+"why": null,
+"at": "2026-10-30T09:01:49Z",
+"title": "New York Electric Ferry Stalls Over Port Charging Infrastructure Hurdles",
+"fam": "other"
+},
+"nc781278f81": {
+"cluster": "nc781278f81",
+"why": null,
+"at": "2026-10-30T09:02:47Z",
+"title": "Airtel Africa Posts $452 Million H1 Profit on Higher Data Revenue",
+"fam": "earnings"
+},
+"n2eff4d6bb3": {
+"cluster": "n2eff4d6bb3",
+"why": null,
+"at": "2026-10-30T09:04:00Z",
+"title": "Turkey Third-Quarter Tourism Revenues Rise 5% to $25.53 Billion",
+"fam": "macro-data"
+},
+"n2b71f7655c": {
+"cluster": "n2b71f7655c",
+"why": null,
+"at": "2026-10-30T09:04:36Z",
+"title": "S&P 500 Poised for Monthly Advance Despite Slide in AI Tech Leaders",
+"fam": "other"
+},
+"n9432a12386": {
+"cluster": "n9432a12386",
+"why": null,
+"at": "2026-10-30T09:05:35Z",
+"title": "Queensland court clears $1bn Australian coal mine following legal challenge",
+"fam": "regulation"
+},
+"nc82c370688": {
+"cluster": "nc82c370688",
+"why": null,
+"at": "2026-10-30T09:05:48Z",
+"title": "UK House Price Growth Slows to 0.5% Annually in October Amid Higher Rates",
+"fam": "macro-data"
+},
+"n71514b9a86": {
+"cluster": "n71514b9a86",
+"why": null,
+"at": "2026-10-30T09:06:22Z",
+"title": "NEM Insurance 9-Month Profit Jumps 30% on Investment Gains",
+"fam": "earnings"
+},
+"n2488ad67e0": {
+"cluster": "n5e37fd298d",
+"why": "Covers the market fallout from Alphabet's disappointing quarterly financial results.",
+"at": "2026-10-30T09:10:24Z",
+"title": "Asian stocks drop following tech decline led by Alphabet revenue shortfall",
+"fam": "earnings"
+},
+"n376f99f5d5": {
+"cluster": "n376f99f5d5",
+"why": null,
+"at": "2026-10-30T09:11:13Z",
+"title": "German Bunds head for best month since February on tech selloff safety bid",
+"fam": "macro-data"
+},
+"n3d853a807c": {
+"cluster": "n3ca0078a23",
+"why": "Reports on the major $6.3 billion hack on the Binance exchange.",
+"at": "2026-10-30T09:12:34Z",
+"title": "Crypto Exchange Binance Hit by Major $6.3 Billion Digital Asset Hack",
+"fam": "crypto"
+},
+"n0e5b7f136b": {
+"cluster": "n0e5b7f136b",
+"why": null,
+"at": "2026-10-30T09:12:42Z",
+"title": "Sanofi lifts 2026 growth targets and seeks M&A opportunities",
+"fam": "guidance"
+},
+"na5ba49be8b": {
+"cluster": "na5ba49be8b",
+"why": null,
+"at": "2026-10-30T09:16:10Z",
+"title": "Major US airlines challenge DRC travel disclosure rules over Ebola concerns",
+"fam": "regulation"
+},
+"ne2fa61d7bf": {
+"cluster": "ne2fa61d7bf",
+"why": null,
+"at": "2026-10-30T09:17:30Z",
+"title": "Brazil Unemployment Rate Falls to 5.2% in Quarter Ended September",
+"fam": "macro-data"
+},
+"n4500fb25d6": {
+"cluster": "n4500fb25d6",
+"why": null,
+"at": "2026-10-30T09:20:00Z",
+"title": "DBS report finds Asian ultra-wealthy families lack formal succession plans",
+"fam": "other"
+},
+"n057d53eed1": {
+"cluster": "n057d53eed1",
+"why": null,
+"at": "2026-10-30T09:21:00Z",
+"title": "Brazil cruise season starts with expanded capacity and projected employment gains",
+"fam": "labor"
+},
+"n3e7232a2fe": {
+"cluster": "n3e7232a2fe",
+"why": null,
+"at": "2026-10-30T09:23:34Z",
+"title": "Türkiye Energy Sector Investments Projected at 538 Billion Liras for 2027",
+"fam": "capital"
+},
+"nec7fe94a1d": {
+"cluster": "nec7fe94a1d",
+"why": null,
+"at": "2026-10-30T09:29:31Z",
+"title": "JSL Third-Quarter Profit Rises 12.6 Percent",
+"fam": "earnings"
+},
+"nb78187e3f8": {
+"cluster": "nb78187e3f8",
+"why": null,
+"at": "2026-10-30T09:30:30Z",
+"title": "German Economy Grows 0.2 Percent in Third Quarter",
+"fam": "macro-data"
+},
+"ncab90034e4": {
+"cluster": "ncab90034e4",
+"why": null,
+"at": "2026-10-30T09:30:36Z",
+"title": "Vamos Reports Q3 Net Income of R$150.9 Million, Up 199%",
+"fam": "earnings"
+},
+"na98f0d89ba": {
+"cluster": "na98f0d89ba",
+"why": null,
+"at": "2026-10-30T09:30:50Z",
+"title": "French Economy Unexpectedly Contracts in Third Quarter as Exports Slump",
+"fam": "macro-data"
+},
+"n4ea100d2eb": {
+"cluster": "n4ea100d2eb",
+"why": null,
+"at": "2026-10-30T09:33:51Z",
+"title": "Binance Hit by Suspected $6.3 Billion Hack Linked to North Korea",
+"fam": "crypto"
+},
+"na771fb53af": {
+"cluster": "na771fb53af",
+"why": null,
+"at": "2026-10-30T09:34:00Z",
+"title": "Taiwan Posts Record Third-Quarter GDP Growth of 14.36 Percent",
+"fam": "macro-data"
+},
+"n34ca2d847e": {
+"cluster": "n34ca2d847e",
+"why": null,
+"at": "2026-10-30T09:38:56Z",
+"title": "Vivo Confirms Non-Binding Talks to Acquire Internet Provider Vero",
+"fam": "m&a"
+},
+"n7424f8092d": {
+"cluster": "n90ae254604",
+"why": "Covers MicroStrategy's third-quarter earnings release and subsequent stock reaction.",
+"at": "2026-10-30T09:41:07Z",
+"title": "MicroStrategy CFO Resigns Amid Record Profit; MSTR Shares Fall 6%",
+"fam": "earnings"
+},
+"n2b331edf09": {
+"cluster": "n2b331edf09",
+"why": null,
+"at": "2026-10-30T09:42:58Z",
+"title": "Liberia Electricity Corporation Solicits Private Capital for Grid Upgrades",
+"fam": "capital"
+},
+"n118d25175d": {
+"cluster": "n118d25175d",
+"why": null,
+"at": "2026-10-30T09:44:05Z",
+"title": "Liberia Chamber of Mines Pushes for Greater Local Participation",
+"fam": "regulation"
+},
+"ndd77d6271d": {
+"cluster": "ndd77d6271d",
+"why": null,
+"at": "2026-10-30T09:44:46Z",
+"title": "Big Tech Shares Slump as AI Spending Jitters Deepen Wall Street Sell-Off",
+"fam": "earnings"
+},
+"n37935b0b7b": {
+"cluster": "n37935b0b7b",
+"why": null,
+"at": "2026-10-30T09:45:49Z",
+"title": "Liberia Unveils Plans for State Mining Firm and Gold Refinery",
+"fam": "regulation"
+},
+"nb15bf146e5": {
+"cluster": "nb15bf146e5",
+"why": null,
+"at": "2026-10-30T09:49:21Z",
+"title": "Presco Reports 8.5% Profit Growth to ₦151.5 Billion in First Nine Months",
+"fam": "earnings"
+},
+"n317dc8c322": {
+"cluster": "n3ca0078a23",
+"why": "Both report on the massive $6.3 billion Binance crypto hack.",
+"at": "2026-10-30T09:54:07Z",
+"title": "Bitcoin Drops Below $77,000 Following Massive Binance Hack",
+"fam": "crypto"
+},
+"n713ae713be": {
+"cluster": "n713ae713be",
+"why": null,
+"at": "2026-10-30T09:55:27Z",
+"title": "Uganda EAC Trade Deficit Widens to $809 Million on Surge in Imports",
+"fam": "macro-data"
+},
+"nc6ba6b1965": {
+"cluster": "nc6ba6b1965",
+"why": null,
+"at": "2026-10-30T09:56:30Z",
+"title": "East African Portland Cement Annual Profit Drops 68.6% to Sh1.58 Billion",
+"fam": "earnings"
+},
+"nb0745d317b": {
+"cluster": "nb0745d317b",
+"why": null,
+"at": "2026-10-30T09:56:36Z",
+"title": "Panama Assembly Advances $35.1 Billion Budget in Second Debate",
+"fam": "regulation"
+},
+"n844e3d8923": {
+"cluster": "n844e3d8923",
+"why": null,
+"at": "2026-10-30T09:57:44Z",
+"title": "Ghana Discusses First Nuclear Power Plant Construction with Russia Rosatom",
+"fam": "energy-supply"
+},
+"n9998ffd1ad": {
+"cluster": "n9998ffd1ad",
+"why": null,
+"at": "2026-10-30T09:59:12Z",
+"title": "Nigerian President Nominates Six Executive Directors for NMDPRA",
+"fam": "regulation"
+},
+"nf9110bbf50": {
+"cluster": "nf9110bbf50",
+"why": null,
+"at": "2026-10-30T10:00:00Z",
+"title": "ANZ Raises Brent Forecast to $105/bbl on Middle East Supply Constraints",
+"fam": "commodity-prices"
+},
+"n3f8bc9b30d": {
+"cluster": "n3f8bc9b30d",
+"why": null,
+"at": "2026-10-30T10:00:11Z",
+"title": "Eswatini and AICE Africa Launch AI Safety and Standards Centre",
+"fam": "regulation"
+},
+"n472719e61e": {
+"cluster": "n472719e61e",
+"why": null,
+"at": "2026-10-30T10:00:39Z",
+"title": "UN Delays Least Developed Status Exit for Bangladesh and Nepal",
+"fam": "regulation"
+},
+"n35a6b2c114": {
+"cluster": "n35a6b2c114",
+"why": null,
+"at": "2026-10-30T10:01:31Z",
+"title": "Absa Group Opens Dubai Office to Connect Gulf Capital with African Markets",
+"fam": "other"
+},
+"ne19586cc12": {
+"cluster": "ne19586cc12",
+"why": null,
+"at": "2026-10-30T10:10:29Z",
+"title": "Panama Diesel Prices Double to $5.82 a Gallon Under New Ceilings",
+"fam": "regulation"
+},
+"n44a14ee3a8": {
+"cluster": "n44a14ee3a8",
+"why": null,
+"at": "2026-10-30T10:10:53Z",
+"title": "VFD Group 9-Month Profit Jumps 96% to N13 Billion on Investment Growth",
+"fam": "earnings"
+},
+"n813181ba98": {
+"cluster": "n813181ba98",
+"why": null,
+"at": "2026-10-30T10:12:00Z",
+"title": "MeCure Industries Expands Assets to N93.35 Billion Amid Rising Debt",
+"fam": "earnings"
+},
+"nb9ba7cdbef": {
+"cluster": "nb9ba7cdbef",
+"why": null,
+"at": "2026-10-30T10:12:00Z",
+"title": "Foxconn and OpenAI Collaborate on AI Hardware as Executives Dismiss Bubble",
+"fam": "other"
+},
+"nf470a68869": {
+"cluster": "nf470a68869",
+"why": null,
+"at": "2026-10-30T10:12:05Z",
+"title": "Tanzania Seeks Private Sector Funding for $24 Billion of National Plan",
+"fam": "capital"
+},
+"nb46e962b5c": {
+"cluster": "nb46e962b5c",
+"why": null,
+"at": "2026-10-30T10:12:46Z",
+"title": "News Corp Provides Update on $1 Billion Stock Repurchase Program",
+"fam": "capital"
+},
+"nc1c2cfa642": {
+"cluster": "nc1c2cfa642",
+"why": null,
+"at": "2026-10-30T10:12:49Z",
+"title": "Citizens Reiterates Buy Rating on Ares Management on Strong Deployment Outlook",
+"fam": "other"
+},
+"n376f6a8ab6": {
+"cluster": "n376f6a8ab6",
+"why": null,
+"at": "2026-10-30T10:12:51Z",
+"title": "COPT Defense Properties Holds Buy Rating Amid Strong Defense Demand",
+"fam": "other"
+},
+"n9480650273": {
+"cluster": "n9480650273",
+"why": null,
+"at": "2026-10-30T10:13:06Z",
+"title": "Peru Congress Approves $2.4 Billion Supplementary Credit for Public Works",
+"fam": "regulation"
+},
+"nd0455479a9": {
+"cluster": "nd0455479a9",
+"why": null,
+"at": "2026-10-30T10:13:12Z",
+"title": "WisdomTree Shares Surge 11% Following Third-Quarter Earnings Beat",
+"fam": "earnings"
+},
+"n53125c5e43": {
+"cluster": "n53125c5e43",
+"why": null,
+"at": "2026-10-30T10:13:52Z",
+"title": "Euro Zone Economic Growth Beats Projections Again",
+"fam": "macro-data"
+},
+"n22c9a03e02": {
+"cluster": "n22c9a03e02",
+"why": null,
+"at": "2026-10-30T10:13:56Z",
+"title": "Banco de Chile Misses Q3 Earnings Estimates as Revenue Falls Short",
+"fam": "earnings"
+},
+"n4c6964b7fc": {
+"cluster": "n4c6964b7fc",
+"why": null,
+"at": "2026-10-30T10:14:22Z",
+"title": "Somalia Added to U.S. Coast Guard Port Security Risk List",
+"fam": "regulation"
+},
+"n0cc9fd4791": {
+"cluster": "n0cc9fd4791",
+"why": null,
+"at": "2026-10-30T10:14:47Z",
+"title": "Ghana Sets November 12 for Budget Presentation Amid Deficit Focus",
+"fam": "macro-data"
+},
+"n55367bd631": {
+"cluster": "n55367bd631",
+"why": null,
+"at": "2026-10-30T10:15:40Z",
+"title": "Zimbabwe Government Absorbs Village Health Workers Into National Payroll",
+"fam": "labor"
+},
+"ndb7897e182": {
+"cluster": "n411e9ea0c4",
+"why": "Both report CSN granting exclusivity to Huaxin for CSN Cimentos.",
+"at": "2026-10-30T10:17:00Z",
+"title": "CSN Enters Exclusive Deal with China's Huaxin for CSN Cimentos Sale",
+"fam": "m&a"
+},
+"n568de77c7f": {
+"cluster": "n568de77c7f",
+"why": null,
+"at": "2026-10-30T10:17:06Z",
+"title": "Brent Crude Surges 13% in October Amid Middle East Supply Threats",
+"fam": "energy-supply"
+},
+"nc9aaad68ab": {
+"cluster": "nc9aaad68ab",
+"why": null,
+"at": "2026-10-30T10:19:54Z",
+"title": "ArcelorMittal Reports Nearly $4 Billion Investment in Liberia",
+"fam": "capital"
+},
+"nf61d9d16de": {
+"cluster": "nf61d9d16de",
+"why": null,
+"at": "2026-10-30T10:20:14Z",
+"title": "Airtel Africa Doubles Capital Expenditure to $657 Million for Network Expansion",
+"fam": "capital"
+},
+"n746c6b963f": {
+"cluster": "n746c6b963f",
+"why": null,
+"at": "2026-10-30T10:20:51Z",
+"title": "US Investors Explore Long-Term Opportunities in Liberia's Mining and Energy",
+"fam": "capital"
+},
+"n12c3f6a0a3": {
+"cluster": "n12c3f6a0a3",
+"why": null,
+"at": "2026-10-30T10:21:18Z",
+"title": "Liberia President Seeks Commercial Code Amendments to Expand Financing",
+"fam": "regulation"
+},
+"n3dd46c650d": {
+"cluster": "n3dd46c650d",
+"why": null,
+"at": "2026-10-30T10:21:51Z",
+"title": "China Reaffirms Support for Liberia's Mining and Renewable Energy Sectors",
+"fam": "geopolitics"
+},
+"n0ec4526a8f": {
+"cluster": "n0ec4526a8f",
+"why": null,
+"at": "2026-10-30T10:22:11Z",
+"title": "CardinalStone Leads Listing of ₦728.98 Billion Power Sector Bonds on NGX and FMDQ",
+"fam": "capital"
+},
+"n8f67684d74": {
+"cluster": "n8f67684d74",
+"why": null,
+"at": "2026-10-30T10:23:08Z",
+"title": "Costa Rica Assembly Faces Bond Plan and 112 Bills in Special Sessions",
+"fam": "regulation"
+},
+"ncd649383f2": {
+"cluster": "ncd649383f2",
+"why": null,
+"at": "2026-10-30T10:26:44Z",
+"title": "Higher Yields Weigh on AI Stock Bull Market as Bond Markets Scrutinize Capex",
+"fam": "other"
+},
+"n5da80624fb": {
+"cluster": "n5da80624fb",
+"why": null,
+"at": "2026-10-30T10:27:02Z",
+"title": "Chevron Beats Q3 Estimates on Strong Refining Margins",
+"fam": "earnings"
+},
+"n4ee5412204": {
+"cluster": "n4ee5412204",
+"why": null,
+"at": "2026-10-30T10:27:14Z",
+"title": "Volkswagen Halts Electric Golf Development at Wolfsburg Plant, Reports Say",
+"fam": "other"
+},
+"ne65c5dac09": {
+"cluster": "ne65c5dac09",
+"why": null,
+"at": "2026-10-30T10:27:54Z",
+"title": "Gerresheimer Shares Jump After Q3 Revenue Rises 8%, FY26 Guidance Affirmed",
+"fam": "earnings"
+},
+"n7e405e8c35": {
+"cluster": "n7e405e8c35",
+"why": null,
+"at": "2026-10-30T10:28:31Z",
+"title": "Valero to Acquire Houston Refinery for $320.5 Million",
+"fam": "m&a"
+},
+"nde2d8a848c": {
+"cluster": "nde2d8a848c",
+"why": null,
+"at": "2026-10-30T10:30:13Z",
+"title": "Kenya Railways Targets Car Dealers with New SGR Freight Service",
+"fam": "other"
+},
+"n264d37a5ed": {
+"cluster": "n264d37a5ed",
+"why": null,
+"at": "2026-10-30T10:31:06Z",
+"title": "Eurozone Q3 GDP Surges 0.4%, Outpacing Expectations Amid Inflation Headwinds",
+"fam": "macro-data"
+},
+"na96d7dffcf": {
+"cluster": "na96d7dffcf",
+"why": null,
+"at": "2026-10-30T10:34:00Z",
+"title": "Amazon CEO Outlines Target for Two Trillion-Dollar Revenue Businesses",
+"fam": "guidance"
+},
+"nf99d16df42": {
+"cluster": "nf99d16df42",
+"why": null,
+"at": "2026-10-30T10:35:32Z",
+"title": "US Oil Industry Profits Exceed $130 Billion During Iran Conflict",
+"fam": "earnings"
+},
+"nfc7c181178": {
+"cluster": "nfc7c181178",
+"why": null,
+"at": "2026-10-30T10:36:09Z",
+"title": "Chinese Stocks Post Worst Monthly Drop Since 2016 Amid AI Selloff",
+"fam": "other"
+},
+"n086511c006": {
+"cluster": "n086511c006",
+"why": null,
+"at": "2026-10-30T10:37:21Z",
+"title": "German Economy Expands 0.2% in Third Quarter, Preliminary Data Shows",
+"fam": "macro-data"
+},
+"n414c750020": {
+"cluster": "n414c750020",
+"why": null,
+"at": "2026-10-30T10:40:54Z",
+"title": "Bank of Japan Keeps Interest Rate at 1.25%, Raises 2027 Inflation Outlook",
+"fam": "rates"
+},
+"n560a31513d": {
+"cluster": "n560a31513d",
+"why": null,
+"at": "2026-10-30T10:43:48Z",
+"title": "Kenya Annual Inflation Rises to 7.3% in October on Higher Food and Transport Costs",
+"fam": "macro-data"
+},
+"nb79d7e4189": {
+"cluster": "nb79d7e4189",
+"why": null,
+"at": "2026-10-30T10:44:57Z",
+"title": "Irani Reports R$56.5 Million Q3 Profit as Adjusted EBITDA Rises",
+"fam": "earnings"
+},
+"n3e9f1661d2": {
+"cluster": "n3e9f1661d2",
+"why": null,
+"at": "2026-10-30T10:45:40Z",
+"title": "Starlink Mobile Expansion Sparks Global Telecom Stock Selloff",
+"fam": "other"
+},
+"n1fa37f0a64": {
+"cluster": "n1fa37f0a64",
+"why": null,
+"at": "2026-10-30T10:50:00Z",
+"title": "Volkswagen and Dogus Otomotiv Sign Letter of Intent to Evaluate Production in Turkey",
+"fam": "m&a"
+},
+"nf98c93ff14": {
+"cluster": "nf98c93ff14",
+"why": null,
+"at": "2026-10-30T10:50:45Z",
+"title": "Dangote Fuel Exports Exceed Domestic Supply at 54.63 Million Litres Daily",
+"fam": "energy-supply"
+},
+"n117b90ec6e": {
+"cluster": "n117b90ec6e",
+"why": null,
+"at": "2026-10-30T11:00:01Z",
+"title": "Grupo Coril Targets Over 70 Million Soles in Net Profit for 2026",
+"fam": "guidance"
+},
+"na4138c6167": {
+"cluster": "na4138c6167",
+"why": null,
+"at": "2026-10-30T11:02:56Z",
+"title": "Brava Completes Transfer of 37.5% Stake in Papa-Terra Field to 3R",
+"fam": "m&a"
+},
+"n83294f35eb": {
+"cluster": "n83294f35eb",
+"why": null,
+"at": "2026-10-30T11:03:33Z",
+"title": "Usiminas Posts Third-Quarter Net Profit of 243 Million Reais",
+"fam": "earnings"
+},
+"n1dc2fab4f5": {
+"cluster": "n1dc2fab4f5",
+"why": null,
+"at": "2026-10-30T11:04:58Z",
+"title": "Shell Converts 1.23 Billion Raizen Ordinary Shares to Preferred Shares",
+"fam": "capital"
+},
+"n3c04e72035": {
+"cluster": "n3c04e72035",
+"why": null,
+"at": "2026-10-30T11:07:16Z",
+"title": "AutoNation Reports Third-Quarter Revenue Beat Despite Earnings Miss",
+"fam": "earnings"
+},
+"nf3d308e7a6": {
+"cluster": "nf3d308e7a6",
+"why": null,
+"at": "2026-10-30T11:07:30Z",
+"title": "Lear Corporation Reports Third-Quarter Earnings Beat with Revenue Below Estimates",
+"fam": "earnings"
+},
+"n13de698319": {
+"cluster": "n13de698319",
+"why": null,
+"at": "2026-10-30T11:07:56Z",
+"title": "HSI Logística Cuts Dividend Guidance Following Casas Bahia Default and Judicial Restructuring",
+"fam": "guidance"
+},
+"n7ab8fd05db": {
+"cluster": "n7ab8fd05db",
+"why": null,
+"at": "2026-10-30T11:08:00Z",
+"title": "Capri Holdings Q3 Earnings Top Estimates on Strong Revenue",
+"fam": "earnings"
+},
+"nf827f78827": {
+"cluster": "nf827f78827",
+"why": null,
+"at": "2026-10-30T11:08:56Z",
+"title": "European Natural Gas Prices Surge 40% in October Amid U.S.-Iran Military Escalation",
+"fam": "energy-supply"
+},
+"n2c74801eec": {
+"cluster": "n3ca0078a23",
+"why": "Reports the same Binance hack and resulting crypto market liquidations.",
+"at": "2026-10-30T11:09:24Z",
+"title": "Crypto Liquidations Reach $1.57 Billion Following Binance Hack and Token Declines",
+"fam": "crypto"
+},
+"nb316e904db": {
+"cluster": "nb316e904db",
+"why": null,
+"at": "2026-10-30T11:09:24Z",
+"title": "Fuel Shortages Persist Across Malawi Amid Missed Supply Deadline",
+"fam": "energy-supply"
+},
+"n7c8d302f81": {
+"cluster": "n7c8d302f81",
+"why": null,
+"at": "2026-10-30T11:10:10Z",
+"title": "Colgate-Palmolive Net Sales Beat Estimates Amid Volatile Operating Environment",
+"fam": "earnings"
+},
+"nade529af6b": {
+"cluster": "nade529af6b",
+"why": null,
+"at": "2026-10-30T11:11:34Z",
+"title": "Mozambique Invites Russian Investors to Explore Business Opportunities",
+"fam": "geopolitics"
+},
+"naee398e2e7": {
+"cluster": "n83294f35eb",
+"why": "Reports the exact same Q3 financial results for Usiminas.",
+"at": "2026-10-30T11:18:41Z",
+"title": "Usiminas Returns to Profitability in Q3 with R$243 Million Net Income",
+"fam": "earnings"
+},
+"na15f4548d6": {
+"cluster": "na15f4548d6",
+"why": null,
+"at": "2026-10-30T11:23:21Z",
+"title": "Brazilian Markets Face Prolonged Volatility Following Election and Ptax Flows",
+"fam": "macro-data"
+},
+"n3010357364": {
+"cluster": "n3010357364",
+"why": null,
+"at": "2026-10-30T11:29:00Z",
+"title": "Volkswagen Suspends Electric Golf Development as Cost Cuts Deepen",
+"fam": "guidance"
+},
+"ne02102ffd7": {
+"cluster": "ne02102ffd7",
+"why": null,
+"at": "2026-10-30T11:29:25Z",
+"title": "Binance Reports $6.3B Security Breach and Suspends Withdrawals",
+"fam": "crypto"
+},
+"n11efc423cc": {
+"cluster": "n11efc423cc",
+"why": null,
+"at": "2026-10-30T11:29:51Z",
+"title": "Intel Q3 Results Beat Estimates, but Weak Guidance Sparks Tech Selloff",
+"fam": "guidance"
+},
+"n4d0770e653": {
+"cluster": "n413519f8ad",
+"why": "Reports the same Q3 profit figures and earnings beat for BP.",
+"at": "2026-10-30T11:30:00Z",
+"title": "BP Posts Record Q3 Profit as War Boosts Refining and Trading Margins",
+"fam": "earnings"
+},
+"nc271289551": {
+"cluster": "nc271289551",
+"why": null,
+"at": "2026-10-30T11:30:31Z",
+"title": "Dangote Cement Nine-Month Profit Jumps 31% as Revenue Hits N3.8 Trillion",
+"fam": "earnings"
+},
+"n20cdb34a52": {
+"cluster": "n20cdb34a52",
+"why": null,
+"at": "2026-10-30T11:32:00Z",
+"title": "Dow on Track for Largest Monthly Lead Over Nasdaq Since 2022",
+"fam": "other"
+},
+"n298458eed8": {
+"cluster": "n411e9ea0c4",
+"why": "Reports the same exclusive deal to sell CSN Cimentos to Huaxin.",
+"at": "2026-10-30T11:33:22Z",
+"title": "CSN Agrees to Sell Cement Division to Huaxin to Reduce Leverage",
+"fam": "m&a"
+},
+"n05ccb95e4a": {
+"cluster": "n411e9ea0c4",
+"why": "Reports the exact same CSN Cimentos sale to Huaxin.",
+"at": "2026-10-30T11:34:11Z",
+"title": "CSN Enters Exclusive Talks to Sell CSN Cimentos to Huaxin for R$12.7B",
+"fam": "m&a"
+},
+"na864ac54a1": {
+"cluster": "na864ac54a1",
+"why": null,
+"at": "2026-10-30T11:34:53Z",
+"title": "Alianza Trust Renda to Sell Real Estate Asset to Coca-Cola FEMSA for R$140M",
+"fam": "m&a"
+},
+"ndb320fdcd0": {
+"cluster": "ndb320fdcd0",
+"why": null,
+"at": "2026-10-30T11:48:10Z",
+"title": "Moody's Downgrades Senegal Credit Rating for Fifth Consecutive Time",
+"fam": "macro-data"
+},
+"n8fc9599e3f": {
+"cluster": "n3ca0078a23",
+"why": "Reports the same $6.3 billion Binance cyberattack.",
+"at": "2026-10-30T11:49:28Z",
+"title": "Binance Suffers $6.3 Billion Cyberattack as Bitcoin Drops Below $77,000",
+"fam": "crypto"
+},
+"nb00495d74f": {
+"cluster": "n3ca0078a23",
+"why": "Covers trader reactions to the same Binance hack.",
+"at": "2026-10-30T11:51:26Z",
+"title": "Bitcoin Traders Respond Following Binance Security Breach",
+"fam": "crypto"
+},
+"nf3d16b16ba": {
+"cluster": "nf3d16b16ba",
+"why": null,
+"at": "2026-10-30T11:55:46Z",
+"title": "Angola Council of Ministers Reviews $40.9 Billion 2027 Budget Bill",
+"fam": "macro-data"
+},
+"n501405b876": {
+"cluster": "n501405b876",
+"why": null,
+"at": "2026-10-30T12:00:25Z",
+"title": "Nigerian Naira Gains Against Dollar as External Reserves Climb to $55.26bn",
+"fam": "macro-data"
+},
+"n0aef583197": {
+"cluster": "n0aef583197",
+"why": null,
+"at": "2026-10-30T12:02:15Z",
+"title": "Gambia Allocates One-Third of National Budget to Debt Servicing",
+"fam": "macro-data"
+},
+"nb8a757425c": {
+"cluster": "nb8a757425c",
+"why": null,
+"at": "2026-10-30T12:02:19Z",
+"title": "Lesotho Dam Agency Carries $8.5 Million in Compensation Arrears",
+"fam": "macro-data"
+},
+"n7d6c2667c9": {
+"cluster": "n7d6c2667c9",
+"why": null,
+"at": "2026-10-30T12:06:34Z",
+"title": "Brazil Unemployment Rate Falls to Record Low of 5.2% in Quarter Ended September",
+"fam": "macro-data"
+},
+"nb1799f7185": {
+"cluster": "nb1799f7185",
+"why": null,
+"at": "2026-10-30T12:07:42Z",
+"title": "Petrobras Confirms Third Oil Discovery in Ultra-Deep Waters off Amapá",
+"fam": "energy-supply"
+},
+"n29fdef7364": {
+"cluster": "n29fdef7364",
+"why": null,
+"at": "2026-10-30T12:13:02Z",
+"title": "Binance Allocates $6.34 Billion to Cover Record Crypto Hack Losses",
+"fam": "crypto"
+},
+"n9095074dc6": {
+"cluster": "n9095074dc6",
+"why": null,
+"at": "2026-10-30T12:15:19Z",
+"title": "Dominican Republic and Japan Launch RD$4.2 Billion Agricultural Project",
+"fam": "capital"
+},
+"n7674b3456d": {
+"cluster": "n7674b3456d",
+"why": null,
+"at": "2026-10-30T12:16:17Z",
+"title": "Brazil FGV Economic Uncertainty Index Declines 1.8 Points in October",
+"fam": "macro-data"
+},
+"n9c0f96b87f": {
+"cluster": "nb1799f7185",
+"why": "Reports the same third oil discovery by Petrobras.",
+"at": "2026-10-30T12:18:00Z",
+"title": "Petrobras Announces Third Oil Discovery at Mouth of Amazon River",
+"fam": "energy-supply"
+},
+"nc176254304": {
+"cluster": "nc176254304",
+"why": null,
+"at": "2026-10-30T12:22:00Z",
+"title": "South Africa Attracts R548 Billion in Special Economic Zone Investments",
+"fam": "capital"
+},
+"ncabfa11b4b": {
+"cluster": "ncabfa11b4b",
+"why": null,
+"at": "2026-10-30T12:23:14Z",
+"title": "Airtel Africa Reports 20.5% Increase in Half-Year Profit to $452M",
+"fam": "earnings"
+},
+"n243a72b14c": {
+"cluster": "n243a72b14c",
+"why": null,
+"at": "2026-10-30T12:25:36Z",
+"title": "Colombia President Proposes Elimination of Over 100 State Agencies",
+"fam": "macro-data"
+},
+"n0a9a28a166": {
+"cluster": "n0a9a28a166",
+"why": null,
+"at": "2026-10-30T12:25:40Z",
+"title": "NASA Accelerates Moon Station Program with $20 Billion Investment",
+"fam": "capital"
+},
+"n6e444c478d": {
+"cluster": "n6e444c478d",
+"why": null,
+"at": "2026-10-30T12:27:28Z",
+"title": "Binance Investigated Over Suspected $6.3 Billion Security Hack",
+"fam": "crypto"
+},
+"n2926e1ee57": {
+"cluster": "n2926e1ee57",
+"why": null,
+"at": "2026-10-30T12:30:00Z",
+"title": "Brent Crude Rises to $117 After Tanker Fire in Strait of Hormuz",
+"fam": "energy-supply"
+},
+"ndd3f1ab931": {
+"cluster": "ndd3f1ab931",
+"why": null,
+"at": "2026-10-30T12:30:44Z",
+"title": "Fluor Among US Firms Vying for Kenyan Critical Minerals Project",
+"fam": "capital"
+},
+"ndbd638b718": {
+"cluster": "ndbd638b718",
+"why": null,
+"at": "2026-10-30T12:31:41Z",
+"title": "Embraer Announces ADS Forward Split and Ratio Change",
+"fam": "capital"
+},
+"n54b59fe236": {
+"cluster": "n54b59fe236",
+"why": null,
+"at": "2026-10-30T12:33:36Z",
+"title": "Dangote Refinery Secures Fuel Supply Deal with Cameroon State Refiner",
+"fam": "energy-supply"
+},
+"n7e8c0c6bf5": {
+"cluster": "n7e8c0c6bf5",
+"why": null,
+"at": "2026-10-30T12:36:27Z",
+"title": "Canada Economic Growth Stalls in August with September Decline Expected",
+"fam": "macro-data"
+},
+"n7011d355c2": {
+"cluster": "n7011d355c2",
+"why": null,
+"at": "2026-10-30T12:42:59Z",
+"title": "Binance Investigates Security Breach After Attack on Hot Wallets",
+"fam": "crypto"
+},
+"na9db24be0b": {
+"cluster": "na9db24be0b",
+"why": null,
+"at": "2026-10-30T12:44:52Z",
+"title": "Dangote Sugar Swings to Profit with N78.17 Billion Pre-Tax Earnings in 9M",
+"fam": "earnings"
+},
+"n03c4ef0b96": {
+"cluster": "n03c4ef0b96",
+"why": null,
+"at": "2026-10-30T12:46:14Z",
+"title": "Eurozone Unemployment Rate Holds Steady at 6.5% in September",
+"fam": "macro-data"
+},
+"n520ce845b4": {
+"cluster": "n520ce845b4",
+"why": null,
+"at": "2026-10-30T12:48:40Z",
+"title": "Binance Suffers Record $6.3 Billion Crypto Heist Linked to North Korea",
+"fam": "crypto"
+},
+"ncf445e7869": {
+"cluster": "ncf445e7869",
+"why": null,
+"at": "2026-10-30T12:48:58Z",
+"title": "Coinbase Returns to Profitability as Investment Gains Offset Trading Weakness",
+"fam": "earnings"
+},
+"nb09396d11c": {
+"cluster": "ndd77d6271d",
+"why": "Reports the same Nasdaq futures drop over big tech AI spending concerns.",
+"at": "2026-10-30T12:49:12Z",
+"title": "Nasdaq Futures Fall Amid Surging AI Spending Concerns for Big Tech",
+"fam": "earnings"
+},
+"nd371fe29f1": {
+"cluster": "nd371fe29f1",
+"why": null,
+"at": "2026-10-30T12:49:48Z",
+"title": "Argentina Tax Agency ARCA Extends Income Tax Filing Deadlines",
+"fam": "regulation"
+},
+"nfe6390d504": {
+"cluster": "nfe6390d504",
+"why": null,
+"at": "2026-10-30T12:50:09Z",
+"title": "Canada’s Economy Stagnates for Second Month Ahead of September Contraction",
+"fam": "macro-data"
+},
+"nf390700f97": {
+"cluster": "nf390700f97",
+"why": null,
+"at": "2026-10-30T12:54:43Z",
+"title": "Reddit Shares Fall as Google AI Search Reductions Impact Traffic",
+"fam": "other"
+},
+"nf95adaabcf": {
+"cluster": "nf95adaabcf",
+"why": null,
+"at": "2026-10-30T13:00:00Z",
+"title": "Jumia Reports Two-Thirds of Kenyan Customers Located Outside Nairobi",
+"fam": "other"
+},
+"n0f893d854f": {
+"cluster": "n0f893d854f",
+"why": null,
+"at": "2026-10-30T13:04:36Z",
+"title": "Argentine Companies Seek Yuan-Denominated Loans to Lower Import Costs",
+"fam": "capital"
+},
+"nca8bdf3044": {
+"cluster": "nca8bdf3044",
+"why": null,
+"at": "2026-10-30T13:08:25Z",
+"title": "Bank of Japan Holds Interest Rate at 1.25% While Signaling December Hike",
+"fam": "rates"
+},
+"nb3a5d88b6c": {
+"cluster": "nb3a5d88b6c",
+"why": null,
+"at": "2026-10-30T13:10:00Z",
+"title": "Brazil Cruise Season Expects Over BRL 4 Billion in Revenue",
+"fam": "macro-data"
+},
+"n0c64d498e0": {
+"cluster": "n3ca0078a23",
+"why": "Covers the massive $6.3B Binance cyberattack and crypto market impact.",
+"at": "2026-10-30T13:12:00Z",
+"title": "Binance Confirms Massive Cyberattack Involving $6.3 Billion in Crypto",
+"fam": "crypto"
+},
+"nd270b22abf": {
+"cluster": "nd270b22abf",
+"why": null,
+"at": "2026-10-30T13:17:00Z",
+"title": "AMD stock slides following Intel earnings report on AI and PC market challenges",
+"fam": "earnings"
+},
+"nd55b442b46": {
+"cluster": "nd55b442b46",
+"why": null,
+"at": "2026-10-30T13:23:36Z",
+"title": "Colombia Proposed Economic Rescue Law Sparks Tax and Fiscal Debates",
+"fam": "regulation"
+},
+"nc930c4d861": {
+"cluster": "nc930c4d861",
+"why": null,
+"at": "2026-10-30T13:24:53Z",
+"title": "Binance Addresses Security Incident Following Multi-Billion Crypto Theft",
+"fam": "crypto"
+},
+"nc64219ec63": {
+"cluster": "nc64219ec63",
+"why": null,
+"at": "2026-10-30T13:27:39Z",
+"title": "Nigeria Deposits Instrument of Ratification to Join African Medicines Agency",
+"fam": "regulation"
+},
+"n590f90c268": {
+"cluster": "n590f90c268",
+"why": null,
+"at": "2026-10-30T13:28:23Z",
+"title": "Fintech OPay Begins NYSE Trading After $304 Million IPO",
+"fam": "capital"
+},
+"n0257224c7a": {
+"cluster": "n0257224c7a",
+"why": null,
+"at": "2026-10-30T13:30:00Z",
+"title": "Rio de Janeiro Office Vacancy Rate Drops to Lowest Level Since 2014",
+"fam": "macro-data"
+},
+"n36a0b074b5": {
+"cluster": "n36a0b074b5",
+"why": null,
+"at": "2026-10-30T13:30:00Z",
+"title": "Japan to allocate $7 billion to subsidize retail gasoline prices",
+"fam": "energy-supply"
+},
+"n495219cfe7": {
+"cluster": "n495219cfe7",
+"why": null,
+"at": "2026-10-30T13:36:00Z",
+"title": "Türkiye Begins 29.3 Billion Lira Interim Payouts for Liquidated Funds",
+"fam": "regulation"
+},
+"n6b15da54ad": {
+"cluster": "n83294f35eb",
+"why": "Covers the same Q3 earnings release and weak outlook.",
+"at": "2026-10-30T13:37:03Z",
+"title": "Usiminas Shares Plunge 7% Following Weak Earnings and Outlook",
+"fam": "earnings"
+},
+"n770828d3f6": {
+"cluster": "n770828d3f6",
+"why": null,
+"at": "2026-10-30T13:42:00Z",
+"title": "US voters express deep concern over national debt and high borrowing costs",
+"fam": "macro-data"
+},
+"nf8ab599a86": {
+"cluster": "nf8ab599a86",
+"why": null,
+"at": "2026-10-30T13:51:18Z",
+"title": "University Press Half-Year Pre-Tax Profit Falls 7.22%",
+"fam": "earnings"
+},
+"n663ecfadd3": {
+"cluster": "n663ecfadd3",
+"why": null,
+"at": "2026-10-30T13:51:44Z",
+"title": "Vale Reports Strong Third-Quarter Cash Generation on Copper Strength",
+"fam": "earnings"
+},
+"nc2cc4f5db0": {
+"cluster": "nc2cc4f5db0",
+"why": null,
+"at": "2026-10-30T13:58:22Z",
+"title": "Fortis Global Insurance Narrows Quarterly Loss on Recapitalisation",
+"fam": "earnings"
+},
+"n92f89cef9a": {
+"cluster": "n92f89cef9a",
+"why": null,
+"at": "2026-10-30T13:58:42Z",
+"title": "Nigerian Pension Regulator Seeks Reforms as Private Workers Face Poverty",
+"fam": "regulation"
+},
+"n60ed6501e4": {
+"cluster": "n60ed6501e4",
+"why": null,
+"at": "2026-10-30T14:00:00Z",
+"title": "Türkiye Lowers Electricity Subsidy Threshold to 3,000 kWh for 2027",
+"fam": "regulation"
+},
+"nc68c2fca17": {
+"cluster": "nc68c2fca17",
+"why": null,
+"at": "2026-10-30T14:00:00Z",
+"title": "Trump Considers Lifting Sanctions on Russian Sovereign Wealth Fund",
+"fam": "geopolitics"
+},
+"n5f3f7f8367": {
+"cluster": "n5f3f7f8367",
+"why": null,
+"at": "2026-10-30T14:00:15Z",
+"title": "Celeo, Neoenergia and Cymi Win Aneel Transmission Auction Worth R$8.9 Billion",
+"fam": "capital"
+},
+"n65c1e45b6c": {
+"cluster": "n65c1e45b6c",
+"why": null,
+"at": "2026-10-30T14:08:57Z",
+"title": "Argentina Registers First Soybean Operations Under 'Soja Visec' System",
+"fam": "commodity-prices"
+},
+"n88d246c306": {
+"cluster": "n88d246c306",
+"why": null,
+"at": "2026-10-30T14:09:04Z",
+"title": "BUA Foods Expands Gross Margin to 48.3% as Profit Rises",
+"fam": "earnings"
+},
+"n27750b2b37": {
+"cluster": "n9e8b32205e",
+"why": "Both report on Amazon's Q3 earnings and heavy AI spending.",
+"at": "2026-10-30T14:14:31Z",
+"title": "Tech Stocks Slide as Amazon Cloud Growth Highlights Heavy AI Spending",
+"fam": "earnings"
+},
+"n0144256187": {
+"cluster": "n0144256187",
+"why": null,
+"at": "2026-10-30T14:15:06Z",
+"title": "Colombian Peso Rises Ahead of Central Bank Meeting Amid Rate Hike Expectations",
+"fam": "rates"
+},
+"n83c049d0cd": {
+"cluster": "n83c049d0cd",
+"why": null,
+"at": "2026-10-30T14:20:35Z",
+"title": "Dominican Republic Breaks Ground on $2.38 Billion Yanuna Tourism Project",
+"fam": "capital"
+},
+"n3d7d70432a": {
+"cluster": "n3d7d70432a",
+"why": null,
+"at": "2026-10-30T14:30:00Z",
+"title": "European Natural Gas Prices Top 101 Euros Amid Storage Concerns",
+"fam": "energy-supply"
+},
+"nbded20a027": {
+"cluster": "nbded20a027",
+"why": null,
+"at": "2026-10-30T14:34:15Z",
+"title": "Petrobras, CNOOC, and Petrochina Win 10th Brazilian State Spot Oil Auction",
+"fam": "energy-supply"
+},
+"n036002cc69": {
+"cluster": "n036002cc69",
+"why": null,
+"at": "2026-10-30T14:34:32Z",
+"title": "Argentine Government Increases Bus Subsidies to Freeze AMBA Fares Until January",
+"fam": "regulation"
+},
+"n1787f22cee": {
+"cluster": "n1787f22cee",
+"why": null,
+"at": "2026-10-30T14:34:49Z",
+"title": "Nigerian Local Governments Receive N4.3 Trillion from Federation Account",
+"fam": "macro-data"
+},
+"n7d83b0caea": {
+"cluster": "n8200e02d44",
+"why": "Continuation of the ongoing precious metals market rout.",
+"at": "2026-10-30T14:34:50Z",
+"title": "Gold and Silver Prices Plunge in Extended Market Rout",
+"fam": "commodity-prices"
+},
+"n9833be7008": {
+"cluster": "n9833be7008",
+"why": null,
+"at": "2026-10-30T14:38:00Z",
+"title": "Brazil Federal Public Debt Rises 0.97% in September to BRL 9.4 Trillion",
+"fam": "macro-data"
+},
+"n338b8d7f8f": {
+"cluster": "n338b8d7f8f",
+"why": null,
+"at": "2026-10-30T14:38:52Z",
+"title": "Proposed Colombian Rescue Law Aims to Raise VAT on Food and Inputs to 19%",
+"fam": "regulation"
+},
+"na03ec82cf9": {
+"cluster": "n4987c5434d",
+"why": "Covers Wall Street tech slump driven by Amazon and Intel earnings.",
+"at": "2026-10-30T14:39:48Z",
+"title": "Wall Street Opens Lower as Tech Stocks Slump on AI Spending Concerns",
+"fam": "earnings"
+},
+"n61b556dab2": {
+"cluster": "n61b556dab2",
+"why": null,
+"at": "2026-10-30T14:40:19Z",
+"title": "Colombian Government Proposes Wealth Tax Elimination by 2031",
+"fam": "regulation"
+},
+"n686d1d37ce": {
+"cluster": "n686d1d37ce",
+"why": null,
+"at": "2026-10-30T14:42:54Z",
+"title": "Nigeria's Lagos-Calabar Highway to Boost GDP by 2% and Create 250,000 Jobs",
+"fam": "other"
+},
+"n760674c0f2": {
+"cluster": "n760674c0f2",
+"why": null,
+"at": "2026-10-30T14:43:00Z",
+"title": "Reddit Shares Tumble 25% After Issuing Lower-Than-Expected Revenue Outlook",
+"fam": "guidance"
+},
+"n920b79014e": {
+"cluster": "n2926e1ee57",
+"why": "Covers the same Strait of Hormuz tanker attacks and oil surge.",
+"at": "2026-10-30T14:44:52Z",
+"title": "Oil Surges on Hormuz Tanker Attacks, Heading for Fourth Monthly Gain",
+"fam": "energy-supply"
+},
+"n031d7d44b9": {
+"cluster": "n83294f35eb",
+"why": "Reports on the same Usiminas Q3 earnings and stock fall.",
+"at": "2026-10-30T14:47:31Z",
+"title": "Usiminas Shares Fall After Q3 Results Disappoint Market Expectations",
+"fam": "earnings"
+},
+"nbfda286a45": {
+"cluster": "nbfda286a45",
+"why": null,
+"at": "2026-10-30T14:50:03Z",
+"title": "Broadcom Shares Slide Amid Broader Technology Sector Pressures",
+"fam": "other"
+},
+"n2a322b1532": {
+"cluster": "n2a322b1532",
+"why": null,
+"at": "2026-10-30T14:51:16Z",
+"title": "Capital Clean Energy Q3 Earnings and Revenue Beat Estimates",
+"fam": "earnings"
+},
+"nd8b35cda12": {
+"cluster": "nd8b35cda12",
+"why": null,
+"at": "2026-10-30T14:51:49Z",
+"title": "Apollo Global Management Stock Hits 52-Week Low at $24.99",
+"fam": "other"
+},
+"n730c343808": {
+"cluster": "n730c343808",
+"why": null,
+"at": "2026-10-30T14:52:34Z",
+"title": "Hashdex Nasdaq CME Crypto Index ETF Enters Agreement with Jane Street",
+"fam": "other"
+},
+"n2bed0d42f1": {
+"cluster": "n2bed0d42f1",
+"why": null,
+"at": "2026-10-30T14:54:24Z",
+"title": "Fed's Barkin Says Central Bank Direction Is Straightforward, Pace is Key",
+"fam": "rates"
+},
+"n2550466f04": {
+"cluster": "n2550466f04",
+"why": null,
+"at": "2026-10-30T14:54:25Z",
+"title": "Jefferies Upgrades Rivian to Buy, Citing Recent Sell-Off as Entry Point",
+"fam": "other"
+},
+"nf8d243cdd6": {
+"cluster": "nf8d243cdd6",
+"why": null,
+"at": "2026-10-30T14:54:45Z",
+"title": "Saudi Arabia Intercepts and Destroys Drone Near Holy City",
+"fam": "geopolitics"
+},
+"nb98bb7867e": {
+"cluster": "nb98bb7867e",
+"why": null,
+"at": "2026-10-30T14:58:53Z",
+"title": "Brazil Unemployment Rate Falls to 14-Year Low of 5.2% as Services Inflation Persists",
+"fam": "macro-data"
+},
+"nd5118d069c": {
+"cluster": "nd5118d069c",
+"why": null,
+"at": "2026-10-30T15:00:21Z",
+"title": "Vale Executive Highlights Attractive Share Buyback Potential Amid Low Valuation",
+"fam": "capital"
+},
+"nf16f6e7c36": {
+"cluster": "nf16f6e7c36",
+"why": null,
+"at": "2026-10-30T15:01:36Z",
+"title": "First HoldCo 9-Month Loan Recoveries Surge 1,503% to N94.31 Billion",
+"fam": "earnings"
+},
+"n8b09723429": {
+"cluster": "n8b09723429",
+"why": null,
+"at": "2026-10-30T15:02:08Z",
+"title": "Rio Bravo Recebíveis Real Estate Fund Announces B3 Ticker Change",
+"fam": "other"
+},
+"nab594be07c": {
+"cluster": "n3ca0078a23",
+"why": "Both report on the massive $6 billion+ cyberattack and hack on Binance.",
+"at": "2026-10-30T15:06:02Z",
+"title": "Binance Loses Over $6 Billion in Major Crypto Hack",
+"fam": "crypto"
+},
+"nf91a1bfbbc": {
+"cluster": "nf91a1bfbbc",
+"why": null,
+"at": "2026-10-30T15:11:44Z",
+"title": "Colombia Proposes 'Rescue Law' Overhauling Income Tax and Corporate Burdens",
+"fam": "regulation"
+},
+"nce74c24767": {
+"cluster": "nce74c24767",
+"why": null,
+"at": "2026-10-30T15:12:29Z",
+"title": "Nasdaq Faces $2 Trillion Wipeout in October Amid AI Spending Fears",
+"fam": "macro-data"
+},
+"nc956c1f0c3": {
+"cluster": "nc956c1f0c3",
+"why": null,
+"at": "2026-10-30T15:12:44Z",
+"title": "Canada’s Budget Deficit Almost Halves to C$5.36 Billion in Early 2026/27",
+"fam": "macro-data"
+},
+"n8e99aa6b88": {
+"cluster": "n8e99aa6b88",
+"why": null,
+"at": "2026-10-30T15:12:57Z",
+"title": "FedEx Freight Shares Surge Following Quarterly Beat and Analyst Backing",
+"fam": "earnings"
+},
+"nb219d15b41": {
+"cluster": "n5da80624fb",
+"why": "Both report on Chevron's Q3 earnings driven by refining margins.",
+"at": "2026-10-30T15:13:12Z",
+"title": "Exxon and Chevron Post Strong Earnings Driven by War-Driven Refining Surge",
+"fam": "earnings"
+},
+"ne8edeba645": {
+"cluster": "ne8edeba645",
+"why": null,
+"at": "2026-10-30T15:13:12Z",
+"title": "Panasonic Raises Full-Year Profit Guidance by 20% After Strong Quarter",
+"fam": "guidance"
+},
+"n2bf05c9072": {
+"cluster": "n2bf05c9072",
+"why": null,
+"at": "2026-10-30T15:14:00Z",
+"title": "West Virginia Pursues Data Center Development Amid Nationwide Resistance",
+"fam": "regulation"
+},
+"nf32d427b65": {
+"cluster": "nf32d427b65",
+"why": null,
+"at": "2026-10-30T15:14:19Z",
+"title": "Brazilian Labor Court Orders Meta to Remove Content Encouraging Electoral Harassment",
+"fam": "regulation"
+},
+"n62b2835906": {
+"cluster": "n62b2835906",
+"why": null,
+"at": "2026-10-30T15:17:01Z",
+"title": "Binance Hit by $6.3 Billion Crypto Heist Linked to North Korea",
+"fam": "crypto"
+},
+"n31c49a6ea3": {
+"cluster": "n31c49a6ea3",
+"why": null,
+"at": "2026-10-30T15:17:08Z",
+"title": "Brazil FGTS Council Extends Birthday-Withdrawal Loan Collateral Rule",
+"fam": "regulation"
+},
+"n10f8b77271": {
+"cluster": "n10f8b77271",
+"why": null,
+"at": "2026-10-30T15:17:53Z",
+"title": "ExxonMobil Increases Stake in Mozambique Rovuma LNG Project",
+"fam": "m&a"
+},
+"neb97de9d32": {
+"cluster": "neb97de9d32",
+"why": null,
+"at": "2026-10-30T15:18:52Z",
+"title": "Credit Direct Expands Into Embedded Finance to Broaden Access",
+"fam": "other"
+},
+"n17ef45dd56": {
+"cluster": "n17ef45dd56",
+"why": null,
+"at": "2026-10-30T15:20:01Z",
+"title": "Zenith Bank 9-Month Pre-Tax Profit Rises to N928.8B on Lower Impairments",
+"fam": "earnings"
+},
+"n9d55300b3e": {
+"cluster": "n9d55300b3e",
+"why": null,
+"at": "2026-10-30T15:20:09Z",
+"title": "Fintech OPay Debuts on NYSE in $4 Billion IPO",
+"fam": "capital"
+},
+"n9a5a6654a6": {
+"cluster": "n9a5a6654a6",
+"why": null,
+"at": "2026-10-30T15:24:27Z",
+"title": "Syngenta 9-Month Global Sales Fall 5% Amid Latin American Ag Pressures",
+"fam": "earnings"
+},
+"n2c7f06725b": {
+"cluster": "n2c7f06725b",
+"why": null,
+"at": "2026-10-30T15:27:31Z",
+"title": "Nigerian Breweries Eliminates Accumulated Losses, Boosting Dividend Hopes",
+"fam": "earnings"
+},
+"n5435833992": {
+"cluster": "n5435833992",
+"why": null,
+"at": "2026-10-30T15:30:00Z",
+"title": "Japan Forecast to Surpass China as World's Top LNG Importer",
+"fam": "commodity-prices"
+},
+"nd97631b509": {
+"cluster": "nd97631b509",
+"why": null,
+"at": "2026-10-30T15:30:52Z",
+"title": "DA Davidson Reiterates Neutral Rating on Amazon Based on AWS Growth",
+"fam": "other"
+},
+"naf200f0713": {
+"cluster": "naf200f0713",
+"why": null,
+"at": "2026-10-30T15:30:57Z",
+"title": "Uganda Inflation Rises to 3-Year High Following Currency Slump",
+"fam": "macro-data"
+},
+"na99bd7898a": {
+"cluster": "na99bd7898a",
+"why": null,
+"at": "2026-10-30T15:31:37Z",
+"title": "Itaú BBA Cuts Recommendation and Price Target for BTG Pactual",
+"fam": "other"
+},
+"nf08da3fffe": {
+"cluster": "nf08da3fffe",
+"why": null,
+"at": "2026-10-30T15:31:58Z",
+"title": "Peru MEF Advances Public-Private Dialogue to Boost Amazon Investments",
+"fam": "regulation"
+},
+"n3c44e9ab56": {
+"cluster": "n3c44e9ab56",
+"why": null,
+"at": "2026-10-30T15:33:02Z",
+"title": "Argentine Country Risk Rises Past 750 Points Amid Tech Sell-Off",
+"fam": "macro-data"
+},
+"n46e660eae2": {
+"cluster": "n46e660eae2",
+"why": null,
+"at": "2026-10-30T15:34:33Z",
+"title": "Italy October Inflation Rises to 5.4% as Q3 GDP Stagnates",
+"fam": "macro-data"
+},
+"n66b6570598": {
+"cluster": "n66b6570598",
+"why": null,
+"at": "2026-10-30T15:35:00Z",
+"title": "Coffee Sector Alarmed by Proposed VAT Hike in Colombia's Fiscal Bill",
+"fam": "regulation"
+},
+"n73d90294ff": {
+"cluster": "n11efc423cc",
+"why": "Same Intel Q3 earnings and weak Q4 guidance event.",
+"at": "2026-10-30T15:41:18Z",
+"title": "Intel Shares Plunge Following Weak Fourth-Quarter Guidance",
+"fam": "guidance"
+},
+"n3a298203b9": {
+"cluster": "n3ca0078a23",
+"why": "Same Binance $6.3B hack and CEO response.",
+"at": "2026-10-30T15:42:08Z",
+"title": "Binance CEO Assures Asset Safety After Massive Hack, Promises Withdrawals",
+"fam": "crypto"
+},
+"n489511f6e2": {
+"cluster": "n489511f6e2",
+"why": null,
+"at": "2026-10-30T15:45:26Z",
+"title": "Colombia September Unemployment Rate Drops to 8%",
+"fam": "macro-data"
+},
+"nc5a61e4ea8": {
+"cluster": "n3ca0078a23",
+"why": "Follow-up on the same Binance hack and reserves.",
+"at": "2026-10-30T15:58:38Z",
+"title": "Binance Reserves $6.34 Billion Following Cyberattack",
+"fam": "crypto"
+},
+"n584655ea7a": {
+"cluster": "n584655ea7a",
+"why": null,
+"at": "2026-10-30T16:03:19Z",
+"title": "U.S. Customs Releases Ethiopia-Made Solar Cell Shipments After Review",
+"fam": "trade"
+},
+"n7ee93d5a72": {
+"cluster": "n7ee93d5a72",
+"why": null,
+"at": "2026-10-30T16:05:01Z",
+"title": "BUA Foods Posts Pre-Tax Profit Growth on Cost Reductions",
+"fam": "earnings"
+},
+"n81c6f12c04": {
+"cluster": "n81c6f12c04",
+"why": null,
+"at": "2026-10-30T16:06:19Z",
+"title": "Meta Reaches Settlement With Teen Over Allegations of Platform Harm",
+"fam": "regulation"
+},
+"n12c90267ba": {
+"cluster": "n12c90267ba",
+"why": null,
+"at": "2026-10-30T16:07:36Z",
+"title": "Nestoil Repays $100 Million of Bank Debt Following Anti-Corruption Intervention",
+"fam": "capital"
+},
+"n9a2fbaa37f": {
+"cluster": "n9a2fbaa37f",
+"why": null,
+"at": "2026-10-30T16:10:40Z",
+"title": "Nestlé Nigeria Seeks Approval to Transfer Waters Unit to New Joint Venture",
+"fam": "m&a"
+},
+"nef587668e7": {
+"cluster": "nef587668e7",
+"why": null,
+"at": "2026-10-30T16:11:05Z",
+"title": "Colombia Central Bank Holds Interest Rate at 12.25%",
+"fam": "rates"
+},
+"n1300073917": {
+"cluster": "n81c6f12c04",
+"why": "Both cover Meta settling a lawsuit with a teen over platform harm.",
+"at": "2026-10-30T16:11:21Z",
+"title": "Meta Settles Social Media Addiction Lawsuit to Avoid Trial",
+"fam": "regulation"
+},
+"n2fd7bfc22a": {
+"cluster": "n2fd7bfc22a",
+"why": null,
+"at": "2026-10-30T16:14:18Z",
+"title": "Brighthouse Financial Stock Drops to 52-Week Low",
+"fam": "other"
+},
+"n5fe45b949b": {
+"cluster": "n5fe45b949b",
+"why": null,
+"at": "2026-10-30T16:30:20Z",
+"title": "Israel Election Results Show Netanyahu Bloc Loses Knesset Majority",
+"fam": "geopolitics"
+},
+"nc421d639f4": {
+"cluster": "nc421d639f4",
+"why": null,
+"at": "2026-10-30T16:31:17Z",
+"title": "Binance Prepares Withdrawal Restart Following $6.3 Billion Security Breach",
+"fam": "crypto"
+},
+"nbbadf0a947": {
+"cluster": "nbbadf0a947",
+"why": null,
+"at": "2026-10-30T16:34:29Z",
+"title": "Federal Reserve Officials Signal Further Interest Rate Hikes Ahead",
+"fam": "rates"
+},
+"n23935abb42": {
+"cluster": "n23935abb42",
+"why": null,
+"at": "2026-10-30T16:35:34Z",
+"title": "Ghana Economy Grows to GH¢1.4 Trillion Amid Job Creation Concerns",
+"fam": "macro-data"
+},
+"ne940762ca7": {
+"cluster": "n413519f8ad",
+"why": "Both report BP's Q3 profit of $8.46 billion on refining margins.",
+"at": "2026-10-30T16:49:00Z",
+"title": "BP Reports 18-Year High Quarterly Profit of $8.46B on Higher Refining Margins",
+"fam": "earnings"
+},
+"n5e75f904a1": {
+"cluster": "n3f35521158",
+"why": "Both cover crude oil price gains following the Hormuz tanker attack.",
+"at": "2026-10-30T16:51:00Z",
+"title": "Oil Prices Climb Near $120 Amid Escalating U.S.-Iran Tensions",
+"fam": "geopolitics"
+},
+"n1c0baed02d": {
+"cluster": "n1c0baed02d",
+"why": null,
+"at": "2026-10-30T16:59:48Z",
+"title": "Aiteo, Shell, AFC and Lenders Reach Settlement in $1.9 Billion OML 29 Dispute",
+"fam": "m&a"
+},
+"n9e9ff07728": {
+"cluster": "n9e9ff07728",
+"why": null,
+"at": "2026-10-30T17:00:00Z",
+"title": "Venezuela Appoints Oliver Blanco Foreign Minister in Government Reshuffle",
+"fam": "geopolitics"
+},
+"nc5ef8c0ef7": {
+"cluster": "nc5ef8c0ef7",
+"why": null,
+"at": "2026-10-30T17:05:15Z",
+"title": "TotalEnergies Agrees to Sell 40% Nigerian Offshore Stake to SAPETRO",
+"fam": "m&a"
+},
+"nbad525a57b": {
+"cluster": "n3ca0078a23",
+"why": "Both report the massive $6.3 billion Binance cyberattack.",
+"at": "2026-10-30T17:07:20Z",
+"title": "Binance Suffers $6.3 Billion Hack Amid Rising AI-Driven Cyberattacks",
+"fam": "crypto"
+},
+"n122dfdf3b7": {
+"cluster": "n122dfdf3b7",
+"why": null,
+"at": "2026-10-30T17:09:06Z",
+"title": "Nigerian Exchange Market Capitalization Reaches Record N165.11 Trillion",
+"fam": "other"
+},
+"n382574826a": {
+"cluster": "n382574826a",
+"why": null,
+"at": "2026-10-30T17:11:07Z",
+"title": "Vale Sees Cost Relief in Q4 2026 Following Third-Quarter Oil Price Pressures",
+"fam": "guidance"
+},
+"n9d9bc9bd6c": {
+"cluster": "n9d9bc9bd6c",
+"why": null,
+"at": "2026-10-30T17:12:25Z",
+"title": "CD&R Pursues Buyout of Payments Processor Global Payments",
+"fam": "m&a"
+},
+"nf62f4efa1a": {
+"cluster": "n3ca0078a23",
+"why": "Reports the same $6.3B Binance cyberattack and withdrawal halt.",
+"at": "2026-10-30T17:13:55Z",
+"title": "Binance Halts Withdrawals Following $6.3 Billion Cyberattack",
+"fam": "crypto"
+},
+"n0bae4dc040": {
+"cluster": "n0bae4dc040",
+"why": null,
+"at": "2026-10-30T17:21:00Z",
+"title": "Lula Victory Seen Benefiting Argentine Exports to US",
+"fam": "trade"
+},
+"nfe3781b902": {
+"cluster": "nfe3781b902",
+"why": null,
+"at": "2026-10-30T17:21:26Z",
+"title": "Chilean State Oil Company ENAP Doubles Profit to $1.11 Billion",
+"fam": "earnings"
+},
+"nd836b93797": {
+"cluster": "nd836b93797",
+"why": null,
+"at": "2026-10-30T17:21:38Z",
+"title": "Argentina Delays Scheduled Fuel Tax Hike to December",
+"fam": "regulation"
+},
+"nd46b6463c0": {
+"cluster": "nd46b6463c0",
+"why": null,
+"at": "2026-10-30T17:21:49Z",
+"title": "Panama Offers to Host US-Cuba Talks After UN Embargo Call",
+"fam": "geopolitics"
+},
+"n523ba7ee23": {
+"cluster": "n523ba7ee23",
+"why": null,
+"at": "2026-10-30T17:22:01Z",
+"title": "Guatemala Business Federation Rejects Record $25 Billion Budget",
+"fam": "regulation"
+},
+"n1dc68eb7a8": {
+"cluster": "n1dc68eb7a8",
+"why": null,
+"at": "2026-10-30T17:22:12Z",
+"title": "Guatemala October Survey Projects 4.42% Inflation for End of 2026",
+"fam": "macro-data"
+},
+"n30f44dfab4": {
+"cluster": "n30f44dfab4",
+"why": null,
+"at": "2026-10-30T17:25:35Z",
+"title": "South Africa Police Flag 331 High-Risk Voting Stations for Local Elections",
+"fam": "geopolitics"
+},
+"n1b47340d87": {
+"cluster": "n5da80624fb",
+"why": "Reports Exxon's strong Q3 earnings and refining surge.",
+"at": "2026-10-30T17:27:04Z",
+"title": "ExxonMobil Reports Third-Quarter Profit of $15.4 Billion",
+"fam": "earnings"
+},
+"n6e6ebcf59e": {
+"cluster": "n6e6ebcf59e",
+"why": null,
+"at": "2026-10-30T17:39:37Z",
+"title": "BTG Pactual Files Request with Central Bank to Operate Regulated Crypto",
+"fam": "regulation"
+},
+"ndb231a9734": {
+"cluster": "ndb231a9734",
+"why": null,
+"at": "2026-10-30T17:39:43Z",
+"title": "Binance Seeks to Recover $6.3 Billion Stolen in North Korea-Linked Hack",
+"fam": "crypto"
+},
+"n58f4780ddb": {
+"cluster": "n3ca0078a23",
+"why": "Discusses the same $6.3B Binance hack event.",
+"at": "2026-10-30T17:41:10Z",
+"title": "Binance Discloses $6.3 Billion Crypto Hack, the Largest on Record",
+"fam": "crypto"
+},
+"n9201e96e67": {
+"cluster": "n4987c5434d",
+"why": "Covers the tech sell-off driven by Amazon and Intel earnings.",
+"at": "2026-10-30T17:43:28Z",
+"title": "Tech Sell-Off Erases Nearly $1 Trillion from US Markets After Weak Earnings",
+"fam": "earnings"
+},
+"n41667120ad": {
+"cluster": "n64f3336579",
+"why": "Reports on the Brazilian real's sharp market movements amid fiscal concerns.",
+"at": "2026-10-30T17:43:45Z",
+"title": "Brazilian Real Surges Past R$5.44, Posting Largest Weekly Gain Since 2008",
+"fam": "macro-data"
+},
+"nf5d6138d4f": {
+"cluster": "nf5d6138d4f",
+"why": null,
+"at": "2026-10-30T17:44:00Z",
+"title": "US Worker Compensation Grows Slower Than Inflation for Second Straight Quarter",
+"fam": "labor"
+},
+"ndc21b596c8": {
+"cluster": "n64f3336579",
+"why": "All stories discuss the same market decline following the Brazilian election.",
+"at": "2026-10-30T17:44:53Z",
+"title": "Brazil's Ibovespa Plunges in Worst Month and Week Since 2022 and 2020",
+"fam": "macro-data"
+},
+"nedf8181a92": {
+"cluster": "nedf8181a92",
+"why": null,
+"at": "2026-10-30T17:47:01Z",
+"title": "Colombia Central Bank to Buy $2 Billion Directly From Government",
+"fam": "capital"
+},
+"n0f0824e403": {
+"cluster": "n0f0824e403",
+"why": null,
+"at": "2026-10-30T18:02:18Z",
+"title": "Julius Berger Diversification Segment Loses N25.8 Billion in 9M",
+"fam": "earnings"
+},
+"n0735475201": {
+"cluster": "n0735475201",
+"why": null,
+"at": "2026-10-30T18:02:46Z",
+"title": "Brazil Summons Argentine Diplomat Over Flávio Bolsonaro's Departure",
+"fam": "geopolitics"
+},
+"n1a97445bc7": {
+"cluster": "n1a97445bc7",
+"why": null,
+"at": "2026-10-30T18:09:00Z",
+"title": "Microsoft Outpaces Cloud Rivals as Analysts Cite Strong Financial Position",
+"fam": "other"
+},
+"n7f67c25b27": {
+"cluster": "n7f67c25b27",
+"why": null,
+"at": "2026-10-30T18:10:48Z",
+"title": "American Express Issues $3 Billion in New Notes",
+"fam": "capital"
+},
+"ndd9f1ed369": {
+"cluster": "ndd9f1ed369",
+"why": null,
+"at": "2026-10-30T18:17:38Z",
+"title": "Argentina Country Risk Hits 2026 High at 777 Points",
+"fam": "commodity-prices"
+},
+"ne196ccabf6": {
+"cluster": "ne196ccabf6",
+"why": null,
+"at": "2026-10-30T18:18:09Z",
+"title": "Venezuela Opposition Leader Machado Plans Country-Wide Tour",
+"fam": "geopolitics"
+},
+"nf1074e7b92": {
+"cluster": "nf1074e7b92",
+"why": null,
+"at": "2026-10-30T18:19:21Z",
+"title": "Nigerian Government Begins N50,000 Monthly Cash Relief Program",
+"fam": "regulation"
+},
+"n53689cd489": {
+"cluster": "n53689cd489",
+"why": null,
+"at": "2026-10-30T18:20:50Z",
+"title": "CATL Enters Argentina With Focus on Mining and Data Centers",
+"fam": "m&a"
+},
+"nd501a55242": {
+"cluster": "nd501a55242",
+"why": null,
+"at": "2026-10-30T18:21:00Z",
+"title": "Specialized Prosecutors Appeal Dismissal of Milei Case Over $LIBRA Token",
+"fam": "regulation"
+},
+"n071ea86a7f": {
+"cluster": "n3ca0078a23",
+"why": "Both stories report on Binance's response to the same $6.3 billion hack.",
+"at": "2026-10-30T18:21:01Z",
+"title": "Binance to Reimburse Customers Following $6.3 Billion Hack",
+"fam": "crypto"
+},
+"n1fdcd6f842": {
+"cluster": "n1fdcd6f842",
+"why": null,
+"at": "2026-10-30T18:23:57Z",
+"title": "Rio Tinto Advances Lithium Direct Extraction Operations in Argentina",
+"fam": "other"
+},
+"n94f29f9774": {
+"cluster": "n5da80624fb",
+"why": "Both report on the same Chevron Q3 earnings release.",
+"at": "2026-10-30T18:30:00Z",
+"title": "Chevron Q3 Net Income Rises to $9.9 Billion, Beating Wall Street Estimates",
+"fam": "earnings"
+},
+"nae398b8e9b": {
+"cluster": "nae398b8e9b",
+"why": null,
+"at": "2026-10-30T18:36:01Z",
+"title": "BUA Foods 9-Month Profit Rises to N450 Billion Amid Revenue Drop",
+"fam": "earnings"
+},
+"n1a19705dbb": {
+"cluster": "n1a19705dbb",
+"why": null,
+"at": "2026-10-30T18:36:27Z",
+"title": "Bank of America Sued Over Mandatory Employee Arbitration Rules",
+"fam": "regulation"
+},
+"ne958bdd592": {
+"cluster": "ne958bdd592",
+"why": null,
+"at": "2026-10-30T18:39:31Z",
+"title": "Assurant Stock Hits 52-Week Low at $16.50",
+"fam": "earnings"
+},
+"n585e38f042": {
+"cluster": "n585e38f042",
+"why": null,
+"at": "2026-10-30T18:44:34Z",
+"title": "Dover Raises Tender Offer Cap to $300 Million for Note Purchase",
+"fam": "capital"
+},
+"n0f20833753": {
+"cluster": "n0f20833753",
+"why": null,
+"at": "2026-10-30T18:45:19Z",
+"title": "Parque Arauco Reports 18.6% Q3 Revenue Growth Across Operations",
+"fam": "earnings"
+},
+"n4cdc7696c4": {
+"cluster": "n4cdc7696c4",
+"why": null,
+"at": "2026-10-30T18:48:26Z",
+"title": "Colombia Central Bank Keeps Benchmark Interest Rate Unchanged at 12.25%",
+"fam": "rates"
+},
+"n618594d3b3": {
+"cluster": "n618594d3b3",
+"why": null,
+"at": "2026-10-30T18:51:55Z",
+"title": "Chilli Beans files for extrajudicial recovery to renegotiate R$ 340 million debt",
+"fam": "capital"
+},
+"ne4af0bb391": {
+"cluster": "ne4af0bb391",
+"why": null,
+"at": "2026-10-30T18:52:38Z",
+"title": "ADM Tronics Raises $1.55 Million and Appoints Former Siemens CEO",
+"fam": "capital"
+},
+"ne31b2fb50a": {
+"cluster": "ne31b2fb50a",
+"why": null,
+"at": "2026-10-30T18:53:41Z",
+"title": "Vale Shares Rank Among Top Ibovespa Gainers Despite Weak Q3 Results",
+"fam": "earnings"
+},
+"n06d0b96090": {
+"cluster": "n06d0b96090",
+"why": null,
+"at": "2026-10-30T18:59:15Z",
+"title": "Capital Economics Warns Post-Election Rate Spike Threatens Brazil GDP",
+"fam": "macro-data"
+},
+"n0ddd089175": {
+"cluster": "n0ddd089175",
+"why": null,
+"at": "2026-10-30T19:00:34Z",
+"title": "Binance targets crypto withdrawal resumption following record $6.3 billion hack",
+"fam": "crypto"
+},
+"n91a836fc29": {
+"cluster": "n91a836fc29",
+"why": null,
+"at": "2026-10-30T19:00:42Z",
+"title": "Raízen shareholders approve restructuring plan and sugar-ethanol unit segregation",
+"fam": "m&a"
+},
+"n9a73d99c31": {
+"cluster": "n9a73d99c31",
+"why": null,
+"at": "2026-10-30T19:06:25Z",
+"title": "US SEC Monitoring Corporate Disclosures Regarding Artificial Intelligence",
+"fam": "regulation"
+},
+"n371ed08a24": {
+"cluster": "n371ed08a24",
+"why": null,
+"at": "2026-10-30T19:07:03Z",
+"title": "Argentina Country Risk Rises Toward 800 Points Amid Global Market Slump",
+"fam": "macro-data"
+},
+"n75d11dc815": {
+"cluster": "n3ca0078a23",
+"why": "Both report on the major Binance hack and its market impact.",
+"at": "2026-10-30T19:15:01Z",
+"title": "Bitcoin Price Drops 5% Following Major Binance Hack",
+"fam": "crypto"
+},
+"n4a153ee63a": {
+"cluster": "n4a153ee63a",
+"why": null,
+"at": "2026-10-30T19:17:14Z",
+"title": "Intel Reports 78% Surge in AI and Data Center Revenue, Issues Weak Guidance",
+"fam": "earnings"
+}
+}
+}
