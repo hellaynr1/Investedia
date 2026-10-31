@@ -17,8 +17,17 @@ pool = [dict(r, cluster=r['id']) for r in recs if r['at'] < START]
 todo = [r for r in recs if r['at'] >= START]
 story = lambda r: {'id': r['id'], 'published_at': r['at'], 'headline': r.get('title'), 'summary': summ.get(r['id']) or '', 'event_type': r.get('fam'),
                    'impacts': [{'asset': {'id': a['id']}} for a in r.get('assets', []) if a.get('id')], 'entities': []}
-res = {'start': START, 'articles': len(todo), 'asked': 0, 'joined': 0, 'errors': 0, 'batches': 0, 'assign': {}}
+res = {'start': START, 'articles': len(todo), 'asked': 0, 'joined': 0, 'errors': 0, 'batches': 0, 'assign': {}, 'rule': 'strict-2'}
+try:  # resume a run of the same rule that hit the time limit
+    old = json.load(open(OUT))
+    if old.get('rule') == res['rule'] and old.get('start') == START: res = old
+except Exception: pass
 for i in range(0, len(todo), BATCH):
+    if all(r['id'] in res['assign'] for r in todo[i:i + BATCH]):
+        for r in todo[i:i + BATCH]:
+            a = res['assign'][r['id']]
+            pool.append({'id': r['id'], 'at': r['at'], 'title': r.get('title'), 'fam': r.get('fam'), 'cluster': a['cluster'], 'assets': [{'id': x['id']} for x in r.get('assets', []) if x.get('id')]})
+        continue
     batch = [story(r) for r in todo[i:i + BATCH]]
     out = E.assign(batch, pool, robot.gemini)
     res['asked'] += out['asked']; res['joined'] += out['joined']; res['errors'] += 1 if out.get('error') else 0; res['batches'] += 1

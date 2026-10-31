@@ -20,8 +20,11 @@ WINDOW = timedelta(hours=72)
 PROMPT = """You group financial news stories into events. For each NEW story below, decide whether it reports the SAME specific occurrence as one
 of its numbered candidate events: the same hack, the same earnings release, the same deal, the same court ruling, the same policy decision,
 the same outage. Follow-ups and new developments of that same occurrence count as the same event. A DIFFERENT occurrence involving the same
-company or asset (another quarter's results, another deal, another lawsuit, a separate incident) is NOT the same event. Sharing a company,
-a sector or a market move is not enough. If you are not sure, answer null.
+company or asset (another quarter's results, another deal, another lawsuit, a separate incident, a preview before the occurrence, a
+resignation or other new announcement around it) is NOT the same event. Sharing a company, a sector or a market move is not enough.
+Price-move and market-wrap stories ("oil rises", "gold falls", "stocks slide", "currency weakens") join an event ONLY when the story is
+mainly about that specific occurrence (e.g. "Bitcoin falls after the Binance hack"); moves driven by ongoing tensions, expectations,
+sentiment or several causes stay separate, as do moves on different days. If there is any ambiguity, answer null.
 
 Return ONLY a JSON array: [{{"story": <story number>, "event": <candidate number or null>, "why": "<max 15 words>"}}] with one object per new story.
 
