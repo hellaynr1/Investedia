@@ -76,4 +76,4 @@ jobs:
           # one chain only: if a newer run of this workflow already exists (cron or another chain), it carries on and this one stops
           mine=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .created_at)
           newer=$(gh run list -R "${{ github.repository }}" --workflow priority-news.yml --limit 20 --json createdAt --jq "[.[] | select(.createdAt > \"$mine\")] | length")
-          if [ "$newer" = "0" ]; then gh workflow run priority-news.yml -R "${{ github.repository }}" --ref main; else echo "a newer run exists: it continues the chain"; fi
+          if [ "$newer" = "0" ]; then for i in 1 2 3; do gh workflow run priority-news.yml -R "${{ github.repository }}" --ref main && break; sleep 20; done; else echo "a newer run exists: it continues the chain"; fi
