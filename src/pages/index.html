@@ -67,11 +67,32 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 .hn-ci .eps{font:500 12px var(--mono,monospace);color:var(--fg-3);text-align:right}.hn-ci .eps b{display:block;color:var(--fg);font-size:13px}
 .hn-ci img.lg{width:30px;height:30px;border-radius:7px;background:#fff;padding:3px;object-fit:contain}.hn-lgc{width:40px;height:40px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#fff;flex:none}.hn-lgc .ai-t,.hn-lgc .ai-i{width:100%!important;height:100%!important;border-radius:50%!important}.hn-lgc .ai-i{object-fit:contain;padding:7px;box-sizing:border-box;background:#fff}.hn-lgc .ai-t{background:#26262b;color:#e5e5ea;font-size:13px}
 @media (max-width:900px){.hn-cal{grid-template-columns:1fr}.hn-mk{grid-template-columns:1fr 1fr}#hnClock{display:none}.hn-m{padding:11px 12px;gap:9px}}
+/* night / day: a small moon (dark theme) or sun (light theme) above the headline; the switch is animated with the globe */
+.hn-cel{position:absolute;z-index:2;width:64px;height:64px;pointer-events:none;left:0;top:0}
+.hn-cel img{position:absolute;inset:0;width:100%;height:100%;transition:opacity .7s cubic-bezier(.65,0,.35,1),transform .9s cubic-bezier(.65,0,.35,1)}
+.hn-cel .moon{filter:drop-shadow(0 0 14px rgba(190,205,235,.28))}
+.hn-cel .sun{border-radius:50%;box-shadow:0 0 30px 10px rgba(255,190,90,.35),0 0 80px 30px rgba(255,214,150,.25)}
+.hn-cel .sun{opacity:0;transform:translateY(26px) scale(.9)}
+:root[data-theme="light"] .hn-cel .moon{opacity:0;transform:translate(-18px,-22px) scale(.92)}
+:root[data-theme="light"] .hn-cel .sun{opacity:1;transform:none}
+@media (max-width:900px){.hn-cel{width:48px;height:48px}.hn-cel .moon{filter:drop-shadow(0 0 10px rgba(200,215,245,.45)) brightness(1.15)}}
+html.theme-anim,html.theme-anim *{transition:background-color .7s ease,border-color .7s ease,color .7s ease!important}
+html.theme-anim .hn-cel img{transition:opacity .7s cubic-bezier(.65,0,.35,1),transform .9s cubic-bezier(.65,0,.35,1)!important}
+@media (prefers-reduced-motion:reduce){.hn-cel img{transition:none!important}}
+/* day hero: light veil, light search and chips */
+:root[data-theme="light"] .hn-hero::after{background:linear-gradient(90deg,var(--bg) 0%,rgba(247,247,248,.82) 28%,transparent 55%),linear-gradient(0deg,var(--bg),transparent 22%)}
+:root[data-theme="light"] .hn-hero .hn-search{background:rgba(255,255,255,.72);border-color:rgba(10,10,11,.12)}
+:root[data-theme="light"] .hn-pop a{background:rgba(255,255,255,.6);border-color:rgba(10,10,11,.12)}
+:root[data-theme="light"] .hn-pop a:hover{background:rgba(255,255,255,.9)}
+:root[data-theme="light"] .hn-tick{background:rgba(255,255,255,.75)}
+@media (max-width:900px){:root[data-theme="light"] .hn-hero.hv-a::after{background:linear-gradient(180deg,rgba(247,247,248,.9) 0,rgba(247,247,248,.5) 34%,transparent 55%,transparent 82%,var(--bg) 100%)}
+:root[data-theme="light"] .hn-hero.hv-a .hn-tick{background:linear-gradient(0deg,rgba(255,255,255,.92),rgba(255,255,255,.4))}}
 </style>
 <link rel="stylesheet" href="assets/home-news.css"><link rel="stylesheet" href="assets/since-news.css">
 <section class="hn-hero" aria-label="Live news globe">
   <iframe id="hnGlobe" title="Live news globe"></iframe>
   <a class="hn-open" href="/assets/globe/news.html" aria-label="Open the globe"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg><span class="t">Open globe</span><span class="ar" aria-hidden="true">→</span></a>
+  <div class="hn-cel" id="hnCel" aria-hidden="true"><img class="moon" src="assets/sky/moon-a.webp" alt="" width="64" height="64" decoding="async"><img class="sun" src="assets/sky/sun-d1.webp" alt="" width="64" height="64" decoding="async"></div>
   <div class="hn-copy"><div class="hn">
     <span class="hn-live" id="hnLive"><i></i>Live</span>
     <h1 class="hn-title" id="hnTitle"><b>Invest with clarity.</b><span>See the world move.</span></h1>
@@ -97,6 +118,21 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
   <div class="hn-band"><div><h2>Follow the countries and companies you care about.</h2><p>Their economy figures, rate decisions and market-moving news, analysed with precision.</p></div><button class="hn-btn hn-pri" type="button" data-auth="up">Create a free account</button></div>
   <p class="hn-disc">Summaries are written with the help of AI from each source's own reporting. Every article links to its source. Not investment advice.</p>
 </div>
+<script>
+// night / day: place the moon/sun above the headline, and tell the globe when the theme changes so it animates with the page
+(() => {
+  const cel = document.getElementById('hnCel'), hero = document.querySelector('.hn-hero'), reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const place = () => { const h = hnTitle.getBoundingClientRect(), r = hero.getBoundingClientRect(), ph = innerWidth <= 900;
+    cel.style.transform = `translate(${h.left - r.left + (ph ? h.width * .74 : 300)}px,${h.top - r.top - (ph ? 52 : 96)}px)`; };
+  addEventListener('resize', () => requestAnimationFrame(place)); addEventListener('load', place); document.fonts?.ready.then(() => requestAnimationFrame(place)); requestAnimationFrame(place);
+  let cur = document.documentElement.dataset.theme, tm;
+  const tell = instant => hnGlobe.contentWindow?.postMessage({ type: 'inv-theme', theme: document.documentElement.dataset.theme, dur: 1000, instant }, location.origin);
+  hnGlobe.addEventListener('load', () => tell(true));
+  new MutationObserver(() => { const t = document.documentElement.dataset.theme; if (t === cur) return; cur = t;
+    if (!reduce()) { document.documentElement.classList.add('theme-anim'); clearTimeout(tm); tm = setTimeout(() => document.documentElement.classList.remove('theme-anim'), 1000); }
+    tell(reduce()); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+</script>
 <script>
 // two lines exactly: shrink the title until the longer line fits next to the globe (PC) or the screen (phone)
 function fitTitle() { const h = hnTitle, lim = innerWidth > 900 ? 540 : Math.min(document.documentElement.clientWidth, innerWidth) - 48;
