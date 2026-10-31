@@ -798,7 +798,7 @@ let IND = {}; fetch('industries.json').then(r => r.json()).then(d => { IND = d.b
 // Canonical identity: the registry is the single source of truth. An impact asset is usable only when the robot stamped it with a
 // registry id (assetForImpact); a Globe stock can be a sector peer only when industries.json (built from the registry) lists it.
 const trusted = a => !!a && !!(a.id || (IND[a.s] && IND[a.s].id));
-const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { main: ph ? 5 : 8, ripple: ph ? 2 : 4 } : { main: ph ? 10 : 15, ripple: ph ? 5 : 10 }; };
+const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { main: ph ? 9 : 11, ripple: ph ? 2 : 4 } : { main: ph ? 10 : 15, ripple: ph ? 5 : 10 }; };
 const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells
 function strokeArc(pts, col, alpha, width, glow, phase, dash) {
   ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha.toFixed(3)})`; ctx.lineCap = 'round'; if (dash) ctx.setLineDash(dash);
@@ -854,9 +854,6 @@ function archiveThreads(max, onlyId, focus) {
   return out;
 }
 const cappedBy = cap => { const n = {}; return ks => { if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; }; };
-function onFront(pts) { const v = pts.filter(p => p[2]); if (v.length < pts.length) return false;
-  if (pts[0][3] != null && (Math.min(pts[0][3], pts.at(-1)[3]) < .25 || Math.min(...pts.map(p => p[3])) < .12)) return false;  // ends clearly on the front, arc never skimming the horizon  // both ends and the whole arc on the visible face: never a line running into the horizon
-  const a = v[0], b = v[v.length - 1], m = v[v.length >> 1]; return Math.hypot(a[0] - b[0], a[1] - b[1]) + Math.hypot(a[0] - m[0], a[1] - m[1]) > R * .1; }
 function updateNetwork() {
   events = [];
   for (const article of shown) {
@@ -886,11 +883,11 @@ function drawConnections(t, focus, country) {
   const ph = k => reduce ? null : (t / 4200 + k * .17) % 1;
   const related = e => focus ? e.article === focus : sym ? touches_(e, sym) : iso ? e.article.location.country === country.name : false;
   const mains = [], cap = cappedBy(EMBED ? 2 : 3);
-  if (CONNON || sel) for (const e of events) { if (mains.length >= B.main) break; if (related(e)) continue; const pts = arcPts(e.article, e.target, 32); if (onFront(pts) && cap(['a' + e.article.location.country, 't' + geoKey(e.target)])) mains.push([e, pts]); }
+  if (CONNON || sel) for (const e of events) { if (mains.length >= B.main) break; if (related(e)) continue; const pts = arcPts(e.article, e.target, 32); if (cap(['a' + e.article.location.country, 't' + geoKey(e.target)])) mains.push([e, pts]); }
   const ripples = [];  // default: only the single strongest ripple per event, and only for the strongest events
-  if (CONNON || sel) for (const [e] of mains) { if (ripples.length >= B.ripple) break; const r = e.ripples[0]; if (!r) continue; const pts = arcPts(e.article, r.target, 28); if (onFront(pts)) ripples.push([r, pts]); }
-  if (!EMBED && SECTORON) mains.forEach(([e]) => e.sectors.forEach(s => { const pts = arcPts(e.target, s.target, 26); if (onFront(pts)) strokeArc(pts, SECTOR, .42 * fade, 1, false, null, [3, 4]); }));
-  if (!EMBED && STORYON) storyLines.forEach(({ a, b }) => { const pts = arcPts(a, b, 28); if (onFront(pts)) strokeArc(pts, MAIN, .2 * fade, .9, false, null); });
+  if (CONNON || sel) for (const [e] of mains) { if (ripples.length >= B.ripple) break; const r = e.ripples[0]; if (!r) continue; ripples.push([r, arcPts(e.article, r.target, 28)]); }
+  if (!EMBED && SECTORON) mains.forEach(([e]) => e.sectors.forEach(s => { strokeArc(arcPts(e.target, s.target, 26), SECTOR, .42 * fade, 1, false, null, [3, 4]); }));
+  if (!EMBED && STORYON) storyLines.forEach(({ a, b }) => { strokeArc(arcPts(a, b, 28), MAIN, .2 * fade, .9, false, null); });
   const label = (e, points, a, sel2) => {  // price label (green/red live here, not in the line); clicking it selects the asset
     if (EMBED || !sel) return;
     const seen = points.filter(p => p[2] && p[0] > globeBox.left + 34 && p[0] < globeBox.right - 34 && p[1] > globeBox.top + 30 && p[1] < globeBox.bottom - 30);
@@ -911,13 +908,13 @@ function drawConnections(t, focus, country) {
   for (const e of chosen) {
     const pts = arcPts(e.article, e.target, 32), isMain = !sym || e.asset.s === sym;
     if (focus || sym) {
-      e.sectors.filter(s => !sym || e.asset.s === sym || s.a.s === sym).forEach(s => { const sp = arcPts(e.target, s.target, 26); if (!onFront(sp)) return; strokeArc(sp, SECTOR, .7, 1.2, false, null, [3, 4]); label(e, sp, s.a, true); lineWhy.push(['Sector spread', `${e.asset.n} → ${s.a.n}`, s.why]); });
-      e.ripples.filter(r => !sym || e.asset.s === sym || r.a.s === sym).forEach((r, k) => { const rp = arcPts(e.article, r.target, 28); if (!onFront(rp)) return; strokeArc(rp, RIPPLE, .75, 1.3, false, ph(k)); label(e, rp, r.a); lineWhy.push(['Ripple', `${e.article.headline.slice(0, 48)}… → ${r.a.n}`, r.why]); if (!EMBED) arcHits.push({ ...e, impact: r.impact, asset: r.a, target: r.target, points: rp }); });
+      e.sectors.filter(s => !sym || e.asset.s === sym || s.a.s === sym).forEach(s => { const sp = arcPts(e.target, s.target, 26); strokeArc(sp, SECTOR, .7, 1.2, false, null, [3, 4]); label(e, sp, s.a, true); lineWhy.push(['Sector spread', `${e.asset.n} → ${s.a.n}`, s.why]); });
+      e.ripples.filter(r => !sym || e.asset.s === sym || r.a.s === sym).forEach((r, k) => { const rp = arcPts(e.article, r.target, 28); strokeArc(rp, RIPPLE, .75, 1.3, false, ph(k)); label(e, rp, r.a); lineWhy.push(['Ripple', `${e.article.headline.slice(0, 48)}… → ${r.a.n}`, r.why]); if (!EMBED) arcHits.push({ ...e, impact: r.impact, asset: r.a, target: r.target, points: rp }); });
     }
-    if (isMain && onFront(pts)) { if (strokeArc(pts, MAIN, 1, 2.4, true, ph(0))) visibleArcs++; label(e, pts, e.asset); lineWhy.push(['Main impact', `${e.article.headline.slice(0, 48)}… → ${e.asset.s}`, 'primary affected asset of the article']); if (!EMBED && e.impact) arcHits.push({ ...e, points: pts }); }
+    if (isMain) { if (strokeArc(pts, MAIN, 1, 2.4, true, ph(0))) visibleArcs++; label(e, pts, e.asset); lineWhy.push(['Main impact', `${e.article.headline.slice(0, 48)}… → ${e.asset.s}`, 'primary affected asset of the article']); if (!EMBED && e.impact) arcHits.push({ ...e, points: pts }); }
   }
   if (focus || sym) archiveThreads(6, sym ? idOfSym(sym) : null, sym ? null : focus)
-    .forEach(({ a, b, why }) => { const sp = arcPts(a, b, 28); if (!onFront(sp)) return; strokeArc(sp, MAIN, .3, 1, false, null); lineWhy.push(['Story thread', `${a.headline.slice(0, 30)}… → ${b.headline.slice(0, 30)}…`, why]); });
+    .forEach(({ a, b, why }) => { const sp = arcPts(a, b, 28); strokeArc(sp, MAIN, .3, 1, false, null); lineWhy.push(['Story thread', `${a.headline.slice(0, 30)}… → ${b.headline.slice(0, 30)}…`, why]); });
   if (sym) { const a = assetBy(sym), tg = a && assetTarget(a); if (tg) { const [x, y, z] = proj(tg.phi, tg.lam); if (z > 0) {  // contextual asset marker, only while selected
     ctx.save(); ctx.strokeStyle = 'rgba(255,122,26,.95)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 9, 0, 7); ctx.stroke(); ctx.fillStyle = 'rgba(255,122,26,.25)'; ctx.fill(); ctx.restore(); } } }
   cv.dataset.arcCount = String(visibleArcs); cv.dataset.why = JSON.stringify(lineWhy);
@@ -1554,18 +1551,23 @@ $('play').onclick = () => { F.win = '7d'; press($('wins'), '7d'); play = { start
 
 // ===== Draw =====
 function vec(phi, lam) { return [Math.cos(phi) * Math.cos(lam), Math.cos(phi) * Math.sin(lam), Math.sin(phi)]; }
-function arcPts(a, b, n = 56, lift = 0) {  // lift > 0: a taller arc that rises out past the globe's outline (homepage blue lines)
-  const A = vec(a.phi, a.lam), B = vec(b.phi, b.lam), dot = Math.max(-1, Math.min(1, A[0] * B[0] + A[1] * B[1] + A[2] * B[2])), om = Math.acos(dot), so = Math.sin(om) || 1, out = [];
-  if (om < .00001) { const p=proj(a.phi,a.lam,1); return [[p[0],p[1],p[2]>0],[p[0],p[1],p[2]>0]]; }
-  for (let i = 0; i <= n; i++) {
+// Arcs are attached to the globe: each arc's shape (latitude, longitude, height above the surface) depends only on its two places and is
+// computed once; every frame only re-projects it. A point is hidden only when the globe is physically in front of it (behind the sphere
+// AND inside its outline), so far-side parts are occluded and come back as the globe turns. Rotation never adds, removes or shortens a line.
+const ARC = new Map();
+function arcGeom(a, b, n, lift) {
+  const key = `${a.phi.toFixed(5)},${a.lam.toFixed(5)}>${b.phi.toFixed(5)},${b.lam.toFixed(5)}/${n}/${lift}`; let g = ARC.get(key); if (g) return g;
+  const A = vec(a.phi, a.lam), B = vec(b.phi, b.lam), dot = Math.max(-1, Math.min(1, A[0] * B[0] + A[1] * B[1] + A[2] * B[2])), om = Math.acos(dot), so = Math.sin(om) || 1;
+  g = [];
+  if (om < .00001) g.push([a.phi, a.lam, 1], [a.phi, a.lam, 1]);
+  else for (let i = 0; i <= n; i++) {
     const k = i / n, f1 = Math.sin((1 - k) * om) / so, f2 = Math.sin(k * om) / so, v = [A[0] * f1 + B[0] * f2, A[1] * f1 + B[1] * f2, A[2] * f1 + B[2] * f2];
-    // The lift follows the surface: it is full in the middle of the front face and flattens to zero as the arc nears the edge of the globe,
-    // so the line runs down onto the rim and carries on over it instead of ending in the sky.
-    const phi = Math.asin(v[2]), lam = Math.atan2(v[1], v[0]), zS = proj(phi, lam, 1)[2], f = Math.max(0, Math.min(1, zS / .3));
-    const h = 1 + Math.sin(Math.PI * k) * (lift ? lift * Math.min(1, .35 + om * .8) : Math.min(.15, .05 + om * .09) * f), p = proj(phi, lam, h);
-    out.push([p[0], p[1], zS > 0 || (lift > 0 && p[2] > -.2 && Math.hypot(p[0] - cx, p[1] - cy) > R), zS]);
+    g.push([Math.asin(Math.max(-1, Math.min(1, v[2]))), Math.atan2(v[1], v[0]), 1 + Math.sin(Math.PI * k) * (lift ? lift * Math.min(1, .35 + om * .8) : Math.min(.1, .03 + om * .06))]);
   }
-  return out;
+  if (ARC.size > 4000) ARC.clear(); ARC.set(key, g); return g;
+}
+function arcPts(a, b, n = 56, lift = 0) {  // lift > 0: a taller arc (homepage hero lines)
+  return arcGeom(a, b, n, lift).map(([phi, lam, h]) => { const p = proj(phi, lam, h); return [p[0], p[1], p[2] > 0 || Math.hypot(p[0] - cx, p[1] - cy) > R, p[2]]; });
 }
 function ringPath(rr, fill) {
   // fill: points behind the globe are pulled onto its edge, and the outline follows the edge (an arc) between them, so shapes never cut across the globe
