@@ -24,7 +24,7 @@
     root.innerHTML = `<div class="tr2-two">
       <section class="tr2-box"><div class="tr2-k">Live Prediction Track Record</div>
         ${a ? `<div class="tr2-big">${a.pct}%</div><div class="tr2-sub">${a.text}</div>` : `<div class="tr2-big building">Building — ${n.judged} of ${U.NEED} judged calls</div><div class="tr2-bar"><i style="width:${Math.min(100, 100 * n.judged / U.NEED)}%"></i></div><div class="tr2-sub">No accuracy is shown until ${U.NEED} calls are judged.</div>`}
-        <div class="tr2-note">Every call is frozen before its outcome and scored from the earliest time it can be proven public, then judged on the first traded price at least 24 hours later in the asset’s own market session.${since ? ` Live since ${since}.` : ''}</div></section>
+        <div class="tr2-note">Every call is frozen before its outcome and scored from the earliest time it can be proven public, then judged on the first traded price at least 24 hours later in the asset’s own market session. Call result reads “down” as sold: a fall is a gain.${since ? ` Live since ${since}.` : ''}</div></section>
       <section class="tr2-box"><div class="tr2-k">Historical Prediction Track Record</div>
         ${concept ? '<div class="tr2-big">XX%<span class="tr2-ill">ILLUSTRATIVE</span></div><div class="tr2-sub">X,XXX backtested predictions</div>' : '<div class="tr2-big building">In validation</div><div class="tr2-sub">Backtested predictions using only the information available at the time. Nothing is published until they pass the published quality gates.</div>'}
         <div class="tr2-note">Research data, kept separate. Never combined with the live record.</div></section></div>

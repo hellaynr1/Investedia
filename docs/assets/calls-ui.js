@@ -17,6 +17,11 @@
   const said = c => `<span class="cx-said ${c.dir}">said ${c.dir === 'up' ? '↑ up' : '↓ down'}</span>`;
   const conf = c => c.conf ? `<span class="cx-conf">${esc(c.conf)} confidence</span>` : '';
   const start = c => Date.parse(c.start || c.created);
+  // result of the call, not the asset's move: "down" is read as sold, so a fall is a gain and a rise is a loss
+  const gain = c => Number.isFinite(c.move) ? (c.dir === 'down' ? -c.move : c.move) : null;
+  const moved = c => `${esc(c.name)} ${c.move > 0 ? 'rose' : c.move < 0 ? 'fell' : 'was unchanged'}${c.move ? ' ' + Math.abs(c.move).toFixed(2) + '%' : ''}`;
+  const resBox = (c, big) => { const g = gain(c); if (g === null) return `<span class="cx-rb na${big ? ' big' : ''}"><b>—</b><small>${c.res === 'pending' ? 'waiting' : 'no result'}</small></span>`;
+    return `<span class="cx-rb ${c.res === 'flat' ? 'na' : g > 0 ? 'up' : 'dn'}${big ? ' big' : ''}" title="${moved(c)}"><b>${pct(g)}</b><small>${moved(c)}</small></span>`; };
 
   // load the ledger and its joins; returns live calls (legacy calls never count as live)
   async function load(root = 'assets/globe/') {
@@ -60,33 +65,32 @@
     s += `<line x1="${xs}" x2="${xs}" y1="${pad[0] - 2}" y2="${H - pad[2]}" class="cx-mark call"/>`;
     if (big) s += `<text x="${xs + 6}" y="${pad[0] + 8}" class="cx-lbl">${c.art && Math.abs(c.art - c.t) > 5 * MIN ? 'Investedia call (proven)' : 'Article posted · Investedia call'}</text>`;
     if (c.base) s += `<circle cx="${X(c.base[0] * MIN)}" cy="${Y(c.base[1])}" r="${big ? 4 : 2.6}" fill="#e4e4e7" stroke="#0A0A0B" stroke-width="2"/>`;
-    if (c.end) { const ex = X(c.end[0] * MIN), ey = Y(c.end[1]); s += `<circle cx="${ex}" cy="${ey}" r="${big ? 5 : 3.2}" fill="${col}" stroke="#0A0A0B" stroke-width="2"/>`; if (big) s += `<text x="${ex - 8}" y="${ey - 10}" class="cx-lbl" text-anchor="end">Outcome measured ${pct(c.move || 0)}</text>`; }
+    if (c.end) { const ex = X(c.end[0] * MIN), ey = Y(c.end[1]); s += `<circle cx="${ex}" cy="${ey}" r="${big ? 5 : 3.2}" fill="${col}" stroke="#0A0A0B" stroke-width="2"/>`; if (big) s += `<text x="${ex - 8}" y="${ey - 10}" class="cx-lbl" text-anchor="end">Call result ${pct(gain(c) || 0)}</text>`; }
     if (big) s += `<text x="${pad[3]}" y="${H - 6}" class="cx-ax">${esc(when(pts[0][0]))}</text><text x="${W - pad[1]}" y="${H - 6}" class="cx-ax" text-anchor="end">${esc(when(pts.at(-1)[0]))}</text>`;
     return s + '</svg>';
   }
   const href = c => `call.html?id=${encodeURIComponent(c.id)}&sym=${encodeURIComponent(c.sym)}`;
   function card(c) {
-    const mv = Number.isFinite(c.move) ? `<span class="cx-move ${c.move > 0 ? 'up' : c.move < 0 ? 'down' : ''}">${pct(c.move)}</span>` : '<span class="cx-move muted">—</span>';
     return `<a class="cx-card" href="${href(c)}">
       <div class="cx-top"><span class="cx-tk">${esc(tk(c))}</span><span class="cx-name">${esc(c.name)}</span>${badge(c)}</div>
       <h3 class="cx-h">${esc(c.h)}</h3>
-      <div class="cx-meta">${said(c)}${conf(c)}<span class="cx-t" title="${esc(when(c.t))}">${c.art ? 'article ' + esc(when(c.art)) : esc(when(c.t))}</span>${mv}</div>
+      <div class="cx-meta">${said(c)}${conf(c)}<span class="cx-t" title="${esc(when(c.t))}">${c.art ? 'article ' + esc(when(c.art)) : esc(when(c.t))}</span>${resBox(c)}</div>
       ${chart(c)}</a>`;
   }
   const due = c => { const d = c.t + 24 * HR; return d > Date.now() ? `checked in ~${Math.max(1, Math.round((d - Date.now()) / HR))} h` : 'waiting for its market to reopen'; };
-  const row = c => `<a class="tr2-row" href="${href(c)}"><small class="tr2-when">${esc(when(c.t))}</small><span><h4>${esc(c.h)}</h4><small><span class="cx-tk">${esc(tk(c))}</span> ${esc(c.name)} · ${said(c)}${c.conf ? ' · ' + esc(c.conf) : ''}${c.res === 'pending' ? ' · ' + due(c) : ''}</small></span>${Number.isFinite(c.move) ? `<span class="cx-move ${c.move > 0 ? 'up' : 'down'}">${pct(c.move)}</span>` : '<span></span>'}${badge(c)}</a>`;
+  const row = c => `<a class="tr2-row" href="${href(c)}"><small class="tr2-when">${esc(when(c.t))}</small><span><h4>${esc(c.h)}</h4><small><span class="cx-tk">${esc(tk(c))}</span> ${esc(c.name)} · ${said(c)}${c.conf ? ' · ' + esc(c.conf) : ''}${c.res === 'pending' ? ' · ' + due(c) : ''}</small></span>${Number.isFinite(c.move) ? resBox(c) : '<span></span>'}${badge(c)}</a>`;
   function detail(c) {
     const rows = [['Asset', `${esc(c.name)} · <b>${esc(tk(c))}</b>`], ['Article posted', c.art ? esc(when(c.art)) : '<span class="muted">not in the news archive</span>'],
       ['Investedia call (proven start)', esc(when(c.t))], ['Prediction', said(c)], ['Confidence', c.conf ? esc(c.conf) : '<span class="muted">not recorded</span>'],
       ['Baseline', c.base ? `${c.base[1]} · ${esc(when(c.base[0] * MIN))}` : '<span class="muted">—</span>'],
-      ['Outcome', c.end ? `${pct(c.move)} · ${esc(when(c.end[0] * MIN))}` : c.res === 'pending' ? esc(due(c)) : esc(c.why || '—')], ['Result', badge(c)],
+      ['Call result', c.end ? `${resBox(c, true)} <span class="muted">measured ${esc(when(c.end[0] * MIN))}</span>` : c.res === 'pending' ? esc(due(c)) : esc(c.why || '—')], ['Result', badge(c)],
       ['Model', `Investedia Prediction Model · <span class="muted">${esc(ENGINE(c.ver))}</span>`], c.fam ? ['Event type', esc(FAM[c.fam] || c.fam)] : null];
     return `<div class="cx-detail"><div class="cx-dh"><span class="cx-tk">${esc(tk(c))}</span>${badge(c)}</div>
       <h2>${c.url ? `<a href="${esc(c.url)}" rel="noopener" target="_blank">${esc(c.h)} ↗</a>` : `<a href="story.html?id=${encodeURIComponent(c.id)}">${esc(c.h)}</a>`}</h2>
       ${c.src ? `<p class="cx-fine" style="margin:-8px 0 12px">${esc(c.src)}</p>` : ''}
       <div class="cx-bigchart">${chart(c, { w: 720, h: 280, big: true })}${c.path ? `<p class="cx-fine">Price path: ${esc(c.path.src === 'exchange bars' ? 'traded prices from the asset’s own exchange session (5-minute bars, thinned to 30 minutes), stored when the call was judged' : 'prices recorded by Investedia’s price robot so far; the full path is stored when the call is judged')}. Nothing is interpolated.</p>` : ''}</div>
       <dl class="cx-dl">${rows.filter(Boolean).map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
-      <p class="cx-fine">The call was frozen before its outcome and is scored from the earliest time it can be proven public. No exit or target signal was recorded for this call, so none is shown.</p></div>`;
+      <p class="cx-fine">Call result reads the call like a trade: “up” as bought, “down” as sold, so a fall after a “down” call is a gain. The call was frozen before its outcome and is scored from the earliest time it can be proven public. No exit or target signal was recorded for this call, so none is shown.</p></div>`;
   }
-  window.CallsUI = { esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
+  window.CallsUI = { gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
 })();
