@@ -56,3 +56,9 @@ img[src*="/flags/"]{object-fit:cover}
 /* currency button shows the symbol only (e.g. $, €, £): a round button like the others */
 .hdr-tools .pf-btn{min-width:36px;width:auto;padding:0 10px;font:600 15px/1 var(--sans,inherit)!important;letter-spacing:0}
 @media(max-width:900px){.hdr-tools .pf-btn{min-width:34px;height:34px;padding:0 9px;font-size:14px!important}}
+
+/* phones: light/dark button in the header, currency in the menu */
+@media(max-width:900px){.hdr-tools #theme-btn{display:inline-grid!important}}
+.drawer-cur{display:flex;align-items:center;justify-content:space-between;padding:10px 4px;border-bottom:1px solid var(--line-soft);font-size:16px;font-weight:500}
+@media(min-width:901px){.drawer-cur{display:none}}
+.drawer-cur .pf-btn{height:36px!important;min-width:36px;padding:0 10px!important;border-radius:999px;font-size:15px!important}
