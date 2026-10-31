@@ -10,12 +10,13 @@ Track record (schema 2): every implication stamped at creation (created_at, vers
 assets/globe/news-ledger.json as a frozen "pending" call the first time a run sees it; later runs judge that frozen copy, never the current
 story, so a call cannot be changed after the outcome. Back-filled implications are not scorable. Schema-1 calls are kept and marked legacy.
 The call is the direction the article implied (up or down; mixed and unclear are not calls).
-Outcome rule (outcome-v2, from 2026-10-31):
+Outcome rule (outcome-v3, from 2026-10-31; outcome-v2 verdicts are kept under 'prev'):
 - start = the later of created_at and the first time the call is provably public (git history / the news file it was first seen in);
   nothing is ever scored from an earlier time than we can prove.
-- baseline = the prevailing traded price at start (last exchange bar at or before start, at most 4 days old; none = unresolved), from the asset's own
-  exchange session bars (Yahoo 5-minute chart), so each market's real hours, weekends and holidays apply.
-- end = the first traded price at least 24 hours after start, at most 4 calendar days after start; none by then = "unresolved".
+- entry = the first traded price AT OR AFTER start, from the asset's own exchange session bars (Yahoo 5-minute chart), so no price
+  movement that happened before publication (overnight or after-hours gaps) is ever credited; none within 4 days = "unresolved".
+- end = the first traded price at least 24 hours after the entry, at most 4 calendar days after that; none by then = "unresolved".
+- benchmark: the move of the asset's market index over the same entry -> end window ('mkt'), where a relevant index exists.
 "hit" = the asset moved the implied way by at least 0.3%, "miss" = it moved the other way by at least 0.3%, "flat" = it moved less
 than 0.3% either way (not counted in the hit rate). The ledger, not the live news file, decides which symbols are still tracked:
 every pending call is recorded and judged until it is hit, miss, flat or unresolved, even after its article has left the feed.
@@ -30,7 +31,18 @@ G = os.path.join(ROOT, 'assets', 'globe')
 KEEP = timedelta(hours=72)
 HORIZON = timedelta(hours=24)
 MAX_AGE = timedelta(days=4)   # end price must exist within 4 calendar days of start, else the call is unresolved
-RULE = 'outcome-v2'
+RULE = 'outcome-v3'
+# market index per listing (benchmark: did the call beat simply following the market?)
+BENCH_SUFFIX = {'.L': '^FTSE', '.PA': '^FCHI', '.DE': '^GDAXI', '.AS': '^AEX', '.MC': '^IBEX', '.MI': 'FTSEMIB.MI', '.SW': '^SSMI', '.SA': '^BVSP', '.MX': '^MXX',
+                '.HK': '^HSI', '.T': '^N225', '.KS': '^KS11', '.TO': '^GSPTSE', '.AX': '^AXJO', '.NS': '^NSEI', '.SS': '000001.SS', '.SZ': '399001.SZ', '.ST': '^OMX', '.HE': '^OMXH25', '.AT': 'GD.AT'}
+
+
+def bench_of(sym):
+    if sym.startswith('^') or sym.endswith(('=F', '=X')) or (len(sym) == 6 and sym.isalpha() and sym.isupper()): return None  # indices, futures, FX: no separate market
+    if sym.endswith('-USD'): return None if sym == 'BTC-USD' else 'BTC-USD'
+    for suf, ix in BENCH_SUFFIX.items():
+        if sym.endswith(suf): return ix
+    return None if '.' in sym else '^GSPC'
 UA = {'User-Agent': 'Mozilla/5.0'}
 MINOR = {'GBp': .01, 'GBX': .01, 'ZAc': .01, 'USX': .01, 'ILA': .01, 'KWF': .001}  # minor units -> main currency, as in update_news_prices
 FLAT = 0.3
@@ -140,25 +152,27 @@ def call_start(c):
 def judge(series, ledger, now, paths=None, fetch=bars):
     """Judge pending calls from their FROZEN fields (direction, symbol, proven start time), never from the current story.
     Only outcome fields (move, res, base, end, judged, rule) are written; prediction fields are never edited. Returns how many were judged."""
-    judged = 0
+    judged, bench = 0, {}
     for c in ledger.get('calls', []):
         if c.get('res') != 'pending' or c.get('legacy'):
             continue
         t0 = call_start(c).timestamp()
         if now.timestamp() - t0 < HORIZON.total_seconds():
             continue
-        pts = fetch(c['sym'], t0 - 4 * 86400, min(now.timestamp(), t0 + MAX_AGE.total_seconds()) + 3600)
+        pts = fetch(c['sym'], t0 - 6 * 3600, min(now.timestamp(), t0 + 2 * MAX_AGE.total_seconds() + HORIZON.total_seconds()) + 3600)
         if pts is None:  # source failed: retry next run; give up only well after the window has closed
-            if now.timestamp() - t0 > MAX_AGE.total_seconds() + 2 * 86400:
+            if now.timestamp() - t0 > 2 * MAX_AGE.total_seconds() + HORIZON.total_seconds() + 2 * 86400:
                 c.update(res='unresolved', why='no price data available', rule=RULE, judged=now.strftime('%Y-%m-%dT%H:%M:%SZ')); judged += 1
             continue
-        before = [p for p in pts if p[0] <= t0 and t0 - p[0] <= MAX_AGE.total_seconds()]
-        base = before[-1] if before else None  # the prevailing price at the proven start; a later price is never used as the baseline
-        end = next((p for p in pts if p[0] >= t0 + HORIZON.total_seconds() and p[0] <= t0 + MAX_AGE.total_seconds()), None)
-        if not base or not end or end[0] <= base[0]:
+        base = next((p for p in pts if t0 <= p[0] <= t0 + MAX_AGE.total_seconds()), None)  # entry: first traded price at or after publication
+        if not base:
             if now.timestamp() - t0 > MAX_AGE.total_seconds():
-                c.update(res='unresolved', why='no traded price within 4 days of the call' if base else 'no traded price at the call time', rule=RULE,
-                         judged=now.strftime('%Y-%m-%dT%H:%M:%SZ')); judged += 1
+                c.update(res='unresolved', why='no traded price within 4 days of the call', rule=RULE, judged=now.strftime('%Y-%m-%dT%H:%M:%SZ')); judged += 1
+            continue
+        end = next((p for p in pts if base[0] + HORIZON.total_seconds() <= p[0] <= base[0] + HORIZON.total_seconds() + MAX_AGE.total_seconds()), None)
+        if not end:
+            if now.timestamp() - base[0] > HORIZON.total_seconds() + MAX_AGE.total_seconds():
+                c.update(res='unresolved', why='no traded price within 4 days after the 24-hour horizon', rule=RULE, judged=now.strftime('%Y-%m-%dT%H:%M:%SZ')); judged += 1
             continue
         move = (end[1] / base[1] - 1) * 100
         out = dict(base=[int(base[0] // 60), round(base[1], 6)], end=[int(end[0] // 60), round(end[1], 6)], rule=RULE, judged=now.strftime('%Y-%m-%dT%H:%M:%SZ'))
@@ -166,6 +180,11 @@ def judge(series, ledger, now, paths=None, fetch=bars):
             c.update(res='void', why='price series break (|move| > 50%)', **out)
         else:
             c.update(move=round(move, 2), res='flat' if abs(move) < FLAT else 'hit' if (move > 0) == (c['dir'] == 'up') else 'miss', **out)
+            bx = bench_of(c['sym'])
+            if bx:  # benchmark: the market index over the same window (prevailing index price at entry and at end)
+                bp = bench.get(bx) if bx in bench else bench.setdefault(bx, fetch(bx, now.timestamp() - 20 * 86400, now.timestamp()))
+                b0 = [p for p in bp or [] if p[0] <= base[0]]; b1 = [p for p in bp or [] if p[0] <= end[0]]
+                if b0 and b1 and b1[-1][0] > b0[-1][0]: c['mkt'] = {'sym': bx, 'move': round((b1[-1][1] / b0[-1][1] - 1) * 100, 2)}
         if paths is not None:  # the verified path around the call, kept permanently (exchange bars only, thinned to ~30-minute steps)
             win = [p for p in pts if t0 - 6 * 3600 <= p[0] <= end[0]]; keep, last = [], None
             for p in win:

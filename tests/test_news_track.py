@@ -81,7 +81,7 @@ class Ledger(unittest.TestCase):
 
     def series(self, end_price, end_hours=25):
         pm = self.pm
-        return {'A': [[pm(self.PUB - timedelta(minutes=5)), 100.0], [pm(self.PUB + timedelta(hours=end_hours)), end_price]]}
+        return {'A': [[pm(self.PUB + timedelta(minutes=10)), 100.0], [pm(self.PUB + timedelta(hours=end_hours)), end_price]]}
 
     def judge(self, story, series):
         ledger = {'schema': 2, 'calls': []}
