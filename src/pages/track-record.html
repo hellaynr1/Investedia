@@ -10,7 +10,7 @@
 (async () => {
   if (window.UI && UI.newsNav) UI.newsNav('track');
   const U = window.CallsUI, root = document.getElementById('tr'), q = new URLSearchParams(location.search), concept = q.get('concept') === '1';
-  const { calls: everything, live_since } = await U.load(), all = everything.filter(c => !c.bt), btAll = everything.filter(c => c.bt);
+  let { calls: everything, live_since } = await U.load(), all = everything.filter(c => !c.bt), btAll = everything.filter(c => c.bt);
   const WIN = [['7', '7D'], ['30', '30D'], ['90', '90D'], ['0', 'All']];
   const F = [['all', 'All'], ['hit', 'Hits'], ['miss', 'Misses'], ['flat', 'No clear move'], ['pending', 'Pending'], ['up', 'Long calls'], ['down', 'Short calls']].concat(U.PREV ? [] : [['bt', 'Backtest']]);
   let win = q.get('w') || '0', cur = 'all', lim = 30;
@@ -43,5 +43,6 @@
     const m = document.getElementById('more'); if (m) m.onclick = () => { lim += 30; draw(); };
   };
   draw();
+  U.watch(async () => { ({ calls: everything, live_since } = await U.load()); all = everything.filter(c => !c.bt); btAll = everything.filter(c => c.bt); draw(); });
 })();
 </script>

@@ -10,7 +10,7 @@
 (async () => {
   if (window.UI && UI.newsNav) UI.newsNav('impl');
   const U = window.CallsUI, longBench = U.longBench, root = document.getElementById('im'), q = new URLSearchParams(location.search);
-  const { calls: all, live_since } = await U.load(), live = all.filter(c => c.res !== 'void'), btAll = all.filter(c => c.bt);
+  let { calls: all, live_since } = await U.load(), live = all.filter(c => c.res !== 'void'), btAll = all.filter(c => c.bt);
   const WIN = [['1', '24H'], ['7', '7D'], ['30', '30D'], ['0', 'All']], F = [['all', 'All'], ['hit', 'Confirmed'], ['miss', 'Other way'], ['flat', 'No clear move'], ['pending', 'Pending']];
   let win = q.get('w') || (U.PREV ? '7' : '30'), cur = q.get('f') || 'all', lim = 12;
   const draw = () => {
@@ -29,5 +29,6 @@
     const m = document.getElementById('more'); if (m) m.onclick = () => { lim += 12; draw(); };
   };
   draw();
+  U.watch(async () => { ({ calls: all, live_since } = await U.load()); live = all.filter(c => c.res !== 'void'); btAll = all.filter(c => c.bt); draw(); });
 })();
 </script>

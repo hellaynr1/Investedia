@@ -1,4 +1,4 @@
-name: Prediction engine v5 (live calls, every ~30 min)
+name: Prediction engine v5 (live calls; started right after new news, and every 5 min)
 # New stories since V5_LIVE_SINCE go through engine v5 (research/ENGINE-V5-CANDIDATE.md). Records are frozen once and committed, so
 # every call's creation time is proven by git; due calls are judged once with outcome-v4. Writes only the v5 files.
 on:
@@ -20,6 +20,11 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python3 -m engine.live_v5
+      - name: Deliver to the Worker first (fast path; git below stays the permanent record)
+        env:
+          WORKER_URL: ${{ vars.WORKER_URL }}
+          NEWS_INGEST_TOKEN: ${{ secrets.NEWS_INGEST_TOKEN }}
+        run: python3 tools/push-calls-to-worker.py
       - name: Publish
         run: |
           git config user.name "github-actions[bot]"

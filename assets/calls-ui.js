@@ -43,9 +43,20 @@
   // load the ledger and its joins; returns live calls (legacy calls never count as live)
   // which record: the current engine (v5) by default; ?engine=previous shows the archived calls of the previous engine
   const PREV = new URLSearchParams(location.search).get('engine') === 'previous';
+  // fast path: the newest calls come from the Cloudflare Worker (KV) seconds after they are frozen; the static file is the fallback
+  const WORKER = (window.INV_LIVE_URL || '').replace(/\/ticker\/?$/, '');
+  const liveOK = () => !!WORKER && !PREV && (!window.InvConsent || window.InvConsent.allows('live'));
+  let lastTag = null;
+  const fromWorker = () => liveOK() ? fetch(WORKER + '/v1/calls').then(r => { if (!r.ok) throw 0; lastTag = r.headers.get('ETag') || lastTag; return r.json(); }).catch(() => null) : Promise.resolve(null);
+  // poll every ~45 s while the tab is visible; the browser revalidates with the ETag (304, no download) and onChange runs only on new data
+  function watch(onChange, ms = 45000) {
+    if (!liveOK()) return;
+    setInterval(async () => { if (document.hidden) return; const before = lastTag; const L = await fromWorker(); if (L && lastTag && lastTag !== before) onChange(); }, ms);
+  }
   async function load(root = 'assets/globe/') {
     const get = u => fetch(root + u, { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
-    const [L, P, T, A, G] = await Promise.all([get(PREV ? 'news-ledger.json' : 'v5-ledger.json'), get('call-paths.json'), get('news-track.json'), get('news-archive.json'), get('logos.json')]);
+    const W = await fromWorker();
+    const [L, P, T, A, G] = await Promise.all([W ? Promise.resolve(W) : get(PREV ? 'news-ledger.json' : 'v5-ledger.json'), get('call-paths.json'), get('news-track.json'), get('news-archive.json'), get('logos.json')]);
     LOGOS = G || {};
     const B = PREV ? {} : await get('v5-backtest.json');  // v5 rules applied after the fact to past news: shown, always marked Backtest, never counted as live
     const calls = (L.calls || []).concat(B.calls || []).filter(c => c && !c.legacy && c.sym && (c.dir === 'up' || c.dir === 'down'));
@@ -121,5 +132,5 @@
     : `<p class="cx-eng">Calls from <b>Prediction Engine v5</b>${live_since ? ` since ${new Date(live_since).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}: it only makes a call when the price has not already moved that way before the call. <a href="${location.pathname.split('/').pop()}?engine=previous">Previous engine’s calls</a></p>`;
   const btStats = (cs, win) => { const j = cs.filter(c => c.bt && (!win || c.window === win) && (c.res === 'hit' || c.res === 'miss'));
     return { n: j.length, pct: j.length ? Math.round(100 * j.filter(c => c.res === 'hit').length / j.length) : null, up: longBench(j), pending: cs.filter(c => c.bt && (!win || c.window === win) && c.res === 'pending').length }; };
-  window.CallsUI = { btStats, longBench, engineNote, PREV, gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
+  window.CallsUI = { watch, btStats, longBench, engineNote, PREV, gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
 })();

@@ -7,7 +7,7 @@ const TTL = 3, TOP = 100;
 const cors = (req) => {
   const o = req.headers.get('Origin') || '';
   const ok = ALLOWED.includes(o) || /^http:\/\/localhost(:\d+)?$/.test(o);
-  return { 'Access-Control-Allow-Origin': ok ? o : ALLOWED[0], 'Vary': 'Origin', 'Access-Control-Allow-Methods': 'GET, OPTIONS', 'Access-Control-Max-Age': '86400' };
+  return { 'Access-Control-Allow-Origin': ok ? o : ALLOWED[0], 'Vary': 'Origin', 'Access-Control-Allow-Methods': 'GET, OPTIONS', 'Access-Control-Allow-Headers': 'If-None-Match', 'Access-Control-Max-Age': '86400' };
 };
 
 // One call returns every Coinbase spot product with price, 24h change, 24h range, volume and market cap.
@@ -26,6 +26,7 @@ async function snapshot() {
 // ---- Non-crypto prices, news and globe: /v1 (see v1/). Provider adapters live in providers/. ----
 import { refresh, handlePrices, handleStatus } from './v1/prices.js';
 import { refreshNews, handleNews, handleGlobe, ingestNews } from './v1/news.js';
+import { ingestCalls, readCalls } from './v1/calls.js';
 export { refresh };
 const json = (h, status, body, cache = 'no-store') => new Response(JSON.stringify(body), { status, headers: { ...h, 'Content-Type': 'application/json', 'Cache-Control': cache } });
 
@@ -41,6 +42,23 @@ export default {
     if (req.method === 'POST' && url.pathname === '/v1/ingest/news') {
       let r; try { r = await ingestNews(req, env); } catch (e) { console.log(JSON.stringify({ route: 'ingest', error: String(e).slice(0, 200) })); r = { status: 500, body: { error: 'internal' } }; }
       return json({}, r.status, r.body);
+    }
+    if (req.method === 'POST' && url.pathname === '/v1/ingest/calls') {
+      let r; try { r = await ingestCalls(req, env); } catch (e) { console.log(JSON.stringify({ route: 'ingest-calls', error: String(e).slice(0, 200) })); r = { status: 500, body: { error: 'internal' } }; }
+      if (r.status === 200 && r.body.written) ctx.waitUntil(caches.default.delete(new Request(url.origin + '/v1/calls#v1', { method: 'GET' })));
+      return json({}, r.status, r.body);
+    }
+    if (req.method === 'GET' && url.pathname === '/v1/calls') {
+      // 10 s edge cache; ETag so a browser that already has the latest list gets a tiny 304
+      const cache = caches.default, key = new Request(url.origin + '/v1/calls#v1', { method: 'GET' });
+      let text, etag, hit = await cache.match(key);
+      if (hit) { text = await hit.text(); etag = hit.headers.get('ETag'); }
+      else { const r = await readCalls(env); if (!r) return json(h, 404, { error: 'no live calls yet' });
+        text = r.text; etag = r.etag ? `"${r.etag}"` : null;
+        ctx.waitUntil(cache.put(key, new Response(text, { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=10', ...(etag ? { ETag: etag } : {}) } }))); }
+      const base = { ...h, 'Cache-Control': 'public, max-age=10', ...(etag ? { ETag: etag } : {}), 'Access-Control-Expose-Headers': 'ETag' };
+      if (etag && req.headers.get('If-None-Match') === etag) return new Response(null, { status: 304, headers: base });
+      return new Response(text, { headers: { ...base, 'Content-Type': 'application/json' } });
     }
     if (req.method === 'GET' && ['/v1/prices', '/v1/status', '/v1/news', '/v1/globe'].includes(url.pathname)) {
       // 15 s shared edge cache in front of KV: many visitors cost one KV read per location per 15 s
@@ -73,7 +91,7 @@ export default {
 // on this repository only). Without it nothing happens.
 async function dispatch(env, t) {
   if (!env.DISPATCH_TOKEN) return { skipped: 'no token' };
-  const min = new Date(t || Date.now()).getUTCMinutes(), wf = ['priority-news.yml'].concat(min % 10 < 5 ? ['engine-v5.yml'] : []), out = {};
+  const min = new Date(t || Date.now()).getUTCMinutes(), wf = ['priority-news.yml', 'engine-v5.yml'], out = {};
   for (const w of wf) {
     const r = await fetch(`https://api.github.com/repos/hellaynr1/Investedia/actions/workflows/${w}/dispatches`, { method: 'POST',
       headers: { Authorization: `Bearer ${env.DISPATCH_TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'investedia-live-alarm', 'Content-Type': 'application/json' },
