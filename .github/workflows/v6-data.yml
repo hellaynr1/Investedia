@@ -1,0 +1,28 @@
+name: v6 data (engine research)
+# Runs only on engine-v6. Track A: point-in-time 8-K index from SEC full-text search. Resumable; saves after every run.
+on:
+  push:
+    branches: [engine-v6]
+    paths: [tools/v6/**, .github/workflows/v6-data.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: v6-data, cancel-in-progress: false }
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python3 tools/v6/efts_index.py --from 2022-01-01 --to 2026-10-20 --minutes 270
+      - name: Save
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add research/v6 || true
+          git diff --cached --quiet && exit 0
+          git commit -q -m "v6 8-K point-in-time index [skip ci]"
+          for i in 1 2 3 4 5; do git pull -q --rebase origin engine-v6 && git push -q origin HEAD:engine-v6 && exit 0; sleep $((RANDOM % 20 + 5)); done
