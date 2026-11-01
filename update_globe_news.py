@@ -156,6 +156,10 @@ FEEDS = [  # official press releases: (url, source name, hint)
 ]
 
 NEWS_FEEDS = [  # publisher business feeds (headline + link + their own short description; no rate limits, unlike GDELT)
+    # press wires: companies' own announcements, minutes before news sites write them up (added 2026-11-01; GlobeNewswire and the
+    # Business Wire public feed refuse automated readers, so PR Newswire's earnings and M&A lists only)
+    ('https://www.prnewswire.com/rss/financial-services-latest-news/earnings-list.rss', 'PR Newswire'),
+    ('https://www.prnewswire.com/rss/financial-services-latest-news/acquisitions-mergers-and-takeovers-list.rss', 'PR Newswire'),
     ('https://feeds.bbci.co.uk/news/business/rss.xml', 'BBC News'),
     ('https://www.theguardian.com/business/rss', 'The Guardian'),
     ('https://rss.nytimes.com/services/xml/rss/nyt/Business.xml', 'The New York Times'),
@@ -223,7 +227,7 @@ def balance(cands, limit=140):
     return reserved + rest[:max(0, limit - len(reserved))]
 
 
-PRIORITY_NEWS = {'BBC News', 'The Guardian', 'MarketWatch', 'The New York Times', 'CoinDesk', 'OilPrice.com'}  # fast publisher feeds kept in the small priority tier
+PRIORITY_NEWS = {'BBC News', 'The Guardian', 'MarketWatch', 'The New York Times', 'CoinDesk', 'OilPrice.com', 'PR Newswire'}  # fast publisher feeds kept in the small priority tier
 
 
 def rss(tier='broad'):
