@@ -58,7 +58,7 @@
     const W = await fromWorker();
     const [L, P, T, A, G] = await Promise.all([W ? Promise.resolve(W) : get(PREV ? 'news-ledger.json' : 'v5-ledger.json'), get('call-paths.json'), get('news-track.json'), get('news-archive.json'), get('logos.json')]);
     LOGOS = G || {};
-    const B = PREV ? {} : await get('v5-backtest.json');  // v5 rules applied after the fact to past news: shown, always marked Backtest, never counted as live
+    const B = {};  // backtest calls are not shown on the site  // v5 rules applied after the fact to past news: shown, always marked Backtest, never counted as live
     const calls = (L.calls || []).concat(B.calls || []).filter(c => c && !c.legacy && c.sym && (c.dir === 'up' || c.dir === 'down'));
     const days = [...new Set(calls.map(c => (c.start || c.created || '').slice(0, 10)).filter(Boolean))];
     const ev = await Promise.all(days.map(d => get(`events/${d}.json`)));
