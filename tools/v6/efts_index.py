@@ -10,14 +10,16 @@ UA = 'InvestediaResearch/1.0 (+https://investedia.com; info@investedia.com)'
 _last = [0.0]
 
 
-def get(url, tries=5):
+def get(url, tries=8):
     for k in range(tries):
         w = 0.12 - (time.time() - _last[0])
         if w > 0: time.sleep(w)
         _last[0] = time.time()
         try:
-            with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': UA}), timeout=30) as r: return json.load(r)
-        except Exception: time.sleep(3 * (k + 1))
+            with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': UA}), timeout=30) as r: j = json.load(r)
+            if 'hits' in j: return j  # an error answer (rate limit, timeout) has no hits: wait and retry
+        except Exception: pass
+        time.sleep(10 * (k + 1))
     raise RuntimeError('efts failed: ' + url)
 
 
@@ -51,7 +53,8 @@ def main():
         k = d.isoformat()
         if k not in man and d.weekday() < 5:
             if time.time() > t_end: print('time budget used; resume next run', flush=True); break
-            rows = day(k)
+            try: rows = day(k)
+            except RuntimeError as e: print('skip for now:', e, flush=True); d += timedelta(days=1); continue
             with gzip.open(os.path.join(OUT, f'8k-{k[:7]}.jsonl.gz'), 'at') as f:
                 for r in rows: f.write(json.dumps(r, separators=(',', ':')) + '\n')
             man[k] = len(rows); json.dump(man, open(man_p, 'w'))
