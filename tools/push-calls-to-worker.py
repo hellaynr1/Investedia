@@ -2,7 +2,7 @@
 within seconds, without waiting for a commit and a Pages deploy. Git stays the permanent record. Never fails the run."""
 import json, os, sys, urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-url, token = os.environ.get('WORKER_URL', '').strip().rstrip('/'), os.environ.get('NEWS_INGEST_TOKEN', '').strip()
+url, token = (os.environ.get('WORKER_URL', '').strip() or 'https://investedia-live.adonaykabeya10.workers.dev').rstrip('/'), os.environ.get('NEWS_INGEST_TOKEN', '').strip()
 if not url or not token: print('worker calls ingest not configured: skipped'); sys.exit(0)
 try:
     body = open(os.path.join(ROOT, 'assets', 'globe', 'v5-ledger.json'), 'rb').read()
