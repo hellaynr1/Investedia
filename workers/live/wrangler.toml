@@ -10,7 +10,7 @@ binding = "PRICES"
 [triggers]
 # Prices every 2 minutes. The news cron (every 5 minutes) is OFF: the benchmark showed the news job can exceed the free plan's 10 ms CPU limit
 # (see README). To try it anyway: add "*/5 * * * *" to crons and set NEWS_CRON = "on" under [vars].
-crons = ["*/2 * * * *"]
+crons = ["*/2 * * * *", "*/5 * * * *"]  # */5: alarm clock for the GitHub robots (dispatch); the news job itself stays off unless NEWS_CRON = "on"
 
 # Free plan limits: 10 ms CPU and 50 subrequests per invocation, 1000 KV writes a day. v1/prices.js stays inside them (about 15 calls per run).
 [observability]

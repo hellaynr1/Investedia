@@ -1,0 +1,33 @@
+name: Publish the Cloudflare Worker
+# Publishes workers/live to Cloudflare (no terminal needed) and passes it its two secrets from GitHub:
+# INGEST_TOKEN (= GitHub secret NEWS_INGEST_TOKEN) and DISPATCH_TOKEN (= GitHub secret CF_DISPATCH_TOKEN).
+on:
+  push:
+    branches: [main]
+    paths: [workers/live/**, .github/workflows/cf-worker.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: Tests
+        working-directory: workers/live
+        run: npm test
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: workers/live
+          secrets: |
+            INGEST_TOKEN
+            DISPATCH_TOKEN
+        env:
+          INGEST_TOKEN: ${{ secrets.NEWS_INGEST_TOKEN }}
+          DISPATCH_TOKEN: ${{ secrets.CF_DISPATCH_TOKEN }}

@@ -32,7 +32,7 @@ const json = (h, status, body, cache = 'no-store') => new Response(JSON.stringif
 export default {
   async scheduled(event, env, ctx) {
     const log = (o) => console.log(JSON.stringify(o)), fail = (k) => (e) => log({ cron: k, error: String(e).slice(0, 200) });
-    if (event.cron === '*/5 * * * *') { if (env.NEWS_CRON === 'on') ctx.waitUntil(refreshNews(env).then(r => log({ cron: 'news', fetched: r.fetched, candidates: r.candidates, added: r.added, wrote: r.wrote, gemini_ok: r.gemini_ok, feeds_failed: r.feeds_failed })).catch(fail('news'))); }
+    if (event.cron === '*/5 * * * *') { ctx.waitUntil(dispatch(env, event.scheduledTime).then(r => log({ cron: 'dispatch', ...r })).catch(fail('dispatch'))); if (env.NEWS_CRON === 'on') ctx.waitUntil(refreshNews(env).then(r => log({ cron: 'news', fetched: r.fetched, candidates: r.candidates, added: r.added, wrote: r.wrote, gemini_ok: r.gemini_ok, feeds_failed: r.feeds_failed })).catch(fail('news'))); }
     else ctx.waitUntil(refresh(env).then(r => log({ cron: 'prices', ok: r.ok, sent: r.sent, wrote: r.wrote, changed: r.changed, reason: r.reason })).catch(fail('prices')));
   },
   async fetch(req, env, ctx) {
@@ -67,3 +67,18 @@ export default {
     return new Response(body, { headers: { ...h, 'Content-Type': 'application/json', 'Cache-Control': `public, max-age=${TTL}` } });
   }
 };
+
+// Alarm clock for the GitHub robots: GitHub's own schedule often starts runs 10-40 minutes late. Every 5 minutes this starts the
+// priority news run, and every 10 minutes the prediction engine (v5). Needs the DISPATCH_TOKEN secret (fine-grained, Actions: write
+// on this repository only). Without it nothing happens.
+async function dispatch(env, t) {
+  if (!env.DISPATCH_TOKEN) return { skipped: 'no token' };
+  const min = new Date(t || Date.now()).getUTCMinutes(), wf = ['priority-news.yml'].concat(min % 10 < 5 ? ['engine-v5.yml'] : []), out = {};
+  for (const w of wf) {
+    const r = await fetch(`https://api.github.com/repos/hellaynr1/Investedia/actions/workflows/${w}/dispatches`, { method: 'POST',
+      headers: { Authorization: `Bearer ${env.DISPATCH_TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'investedia-live-alarm', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ref: 'main' }) });
+    out[w] = r.status;
+  }
+  return out;
+}
