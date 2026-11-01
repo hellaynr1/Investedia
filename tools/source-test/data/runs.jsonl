@@ -213,3 +213,8 @@
 {"at": "2026-11-01T02:29:52Z", "source": "eurostat-news", "ok": true, "http": 200, "ms": 418, "n": 11, "error": null}
 {"at": "2026-11-01T02:29:52Z", "source": "ons", "ok": true, "http": 200, "ms": 304, "n": 10, "error": null}
 {"at": "2026-11-01T02:29:52Z", "source": "statcan", "ok": true, "http": 200, "ms": 444, "n": 288, "error": null}
+{"at": "2026-11-01T03:29:37Z", "source": "pib", "ok": true, "http": 200, "ms": 458, "n": 20, "error": null}
+{"at": "2026-11-01T03:29:37Z", "source": "eurostat-releases", "ok": true, "http": 200, "ms": 424, "n": 11, "error": null}
+{"at": "2026-11-01T03:29:37Z", "source": "eurostat-news", "ok": true, "http": 200, "ms": 398, "n": 11, "error": null}
+{"at": "2026-11-01T03:29:37Z", "source": "ons", "ok": true, "http": 200, "ms": 486, "n": 10, "error": null}
+{"at": "2026-11-01T03:29:37Z", "source": "statcan", "ok": true, "http": 200, "ms": 383, "n": 288, "error": null}
