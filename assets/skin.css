@@ -62,3 +62,13 @@ img[src*="/flags/"]{object-fit:cover}
 .drawer-cur{display:flex;align-items:center;justify-content:space-between;padding:10px 4px;border-bottom:1px solid var(--line-soft);font-size:16px;font-weight:500}
 @media(min-width:901px){.drawer-cur{display:none}}
 .drawer-cur .pf-btn{height:36px!important;min-width:36px;padding:0 10px!important;border-radius:999px;font-size:15px!important}
+
+/* Style G (2026-11-01): quieter, more institutional. No violet/orange glow, solid cards instead of glass, grey section labels,
+   squarer chips, neutral selected tab, slimmer header. The globe keeps the visual spectacle. */
+html:not([data-theme=light]) body::before{display:none!important}
+:root{--line:#26262B;--accent-soft:rgba(255,122,26,.10)}
+html:not([data-theme=light]) :is(.mh-bt,.mh-tbl,.mh-ic3,.mh-p,.ap-card,.ap-ch,.cx-card,.tr2-box,.hn-box,.cx-sum){background:#121214!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.hn-eyebrow,.res-label{color:#71717A!important}
+.hn-pop a,.cx-filters button{border-radius:6px!important}
+.cx-seg button[aria-pressed=true]{background:var(--card-hi)!important;color:var(--fg)!important}
+:root{--head:56px}.hdr .wrap{height:56px}
