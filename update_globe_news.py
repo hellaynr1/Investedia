@@ -150,6 +150,9 @@ FEEDS = [  # official press releases: (url, source name, hint)
     ('https://www.bok.or.kr/eng/bbs/E0000634/news.rss', 'Bank of Korea', 'Bank of Korea news, Seoul, South Korea'),
     ('https://www.riksbank.se/en-gb/rss/press-releases/', 'Sveriges Riksbank', 'Riksbank press release, Stockholm, Sweden'),
     ('https://www.rba.gov.au/rss/rss-cb-media-releases.xml', 'Reserve Bank of Australia', 'Reserve Bank of Australia media release, Sydney, Australia'),
+    # Eurostat euro indicators only (headline GDP, inflation, unemployment, trade): kept after the 48 h source test, 2026-11-01
+    ('https://ec.europa.eu/eurostat/en/search?p_p_id=estatsearchportlet_WAR_estatsearchportlet&p_p_lifecycle=2&p_p_state=maximized&p_p_mode=view&p_p_resource_id=atom&_estatsearchportlet_WAR_estatsearchportlet_collection=CAT_PREREL',
+     'Eurostat', 'Eurostat euro indicators release, Luxembourg, European Union'),
 ]
 
 NEWS_FEEDS = [  # publisher business feeds (headline + link + their own short description; no rate limits, unlike GDELT)
