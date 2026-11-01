@@ -1,0 +1,22 @@
+{
+ "2022-02": {
+  "rows": 0,
+  "with_actual": 0,
+  "with_rev": 0,
+  "error": null
+ },
+ "2024-02": {
+  "rows": 0,
+  "with_actual": 0,
+  "with_rev": 0,
+  "error": null
+ },
+ "2026-08": {
+  "rows": 0,
+  "with_actual": 0,
+  "with_rev": 0,
+  "error": null
+ },
+ "upgrade_downgrade_AAPL": "not in free plan",
+ "recommendation_trends_AAPL": 4
+}
