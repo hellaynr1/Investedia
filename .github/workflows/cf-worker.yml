@@ -20,14 +20,17 @@ jobs:
         working-directory: workers/live
         run: npm test
       - name: Deploy
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: workers/live
-          secrets: |
-            INGEST_TOKEN
-            DISPATCH_TOKEN
+        working-directory: workers/live
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           INGEST_TOKEN: ${{ secrets.NEWS_INGEST_TOKEN }}
           DISPATCH_TOKEN: ${{ secrets.CF_DISPATCH_TOKEN }}
+        run: |
+          W="npx --yes wrangler@4"
+          # the KV store for prices: reuse it if it exists, else create it, and write its id into the config for this run
+          id=$(cd /tmp && $W kv namespace list 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{const a=JSON.parse(s);const n=a.find(x=>/PRICES/.test(x.title));if(n)console.log(n.id)}catch{}})')
+          if [ -z "$id" ]; then (cd /tmp && $W kv namespace create PRICES); id=$(cd /tmp && $W kv namespace list | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const a=JSON.parse(s);console.log(a.find(x=>/PRICES/.test(x.title)).id)})'); fi
+          sed -i "s|^binding = \"PRICES\"|binding = \"PRICES\"\nid = \"$id\"|" wrangler.toml
+          $W deploy
+          printf '{"INGEST_TOKEN":"%s","DISPATCH_TOKEN":"%s"}' "$INGEST_TOKEN" "$DISPATCH_TOKEN" > /tmp/s.json && $W secret bulk /tmp/s.json; rm -f /tmp/s.json
