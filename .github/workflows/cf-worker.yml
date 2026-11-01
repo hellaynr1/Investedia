@@ -33,4 +33,5 @@ jobs:
           if [ -z "$id" ]; then (cd /tmp && $W kv namespace create PRICES); id=$(cd /tmp && $W kv namespace list | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const a=JSON.parse(s);console.log(a.find(x=>/PRICES/.test(x.title)).id)})'); fi
           sed -i "s|^binding = \"PRICES\"|binding = \"PRICES\"\nid = \"$id\"|" wrangler.toml
           $W deploy
-          printf '{"INGEST_TOKEN":"%s","DISPATCH_TOKEN":"%s"}' "$INGEST_TOKEN" "$DISPATCH_TOKEN" > /tmp/s.json && $W secret bulk /tmp/s.json; rm -f /tmp/s.json
+          node -e 'const e=process.env,o={};for(const k of ["INGEST_TOKEN","DISPATCH_TOKEN"]){const v=(e[k]||"").trim();if(v)o[k]=v;else console.error("missing GitHub secret for "+k)}require("fs").writeFileSync("/tmp/s.json",JSON.stringify(o))'
+          $W secret bulk /tmp/s.json; rm -f /tmp/s.json
