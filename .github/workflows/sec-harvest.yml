@@ -1,0 +1,48 @@
+name: SEC 8-K history (engine research)
+# Runs only on the engine-v6 branch. Collects the 8-K filings of the registry's US companies since 2021 (time, items, press release),
+# in 3 parallel year groups, resumable; re-runs itself until every quarter is done. Never touches main or the site.
+on:
+  push:
+    branches: [engine-v6]
+    paths: [tools/sec/**, .github/workflows/sec-harvest.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+concurrency: { group: sec-harvest, cancel-in-progress: false }
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        span: [["2021Q1", "2022Q2"], ["2022Q3", "2023Q4"], ["2024Q1", "2025Q2"], ["2025Q3", "2026Q4"]]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python3 tools/sec/harvest.py --from ${{ matrix.span[0] }} --to ${{ matrix.span[1] }} --minutes 270
+      - name: Save
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add research/sec || true
+          git diff --cached --quiet && exit 0
+          git commit -q -m "SEC 8-K history ${{ matrix.span[0] }}-${{ matrix.span[1] }} [skip ci]"
+          for i in 1 2 3 4 5; do git pull -q --rebase origin engine-v6 && git push -q origin HEAD:engine-v6 && exit 0; sleep $((RANDOM % 20 + 5)); done
+  more:
+    needs: harvest
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: engine-v6 }
+      - name: Re-run until all quarters are done
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          n=$(ls research/sec/*.done 2>/dev/null | wc -l)
+          echo "$n quarters done"
+          [ "$n" -ge 23 ] && exit 0
+          gh workflow run sec-harvest.yml --ref engine-v6
