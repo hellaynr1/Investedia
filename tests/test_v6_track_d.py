@@ -101,3 +101,128 @@ class TrackD(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+
+class ModelResearch(unittest.TestCase):
+    def test_unpopulated_cohort_blocks_training(self):
+        from tools.v6.train import research
+        with self.assertRaisesRegex(ValueError,'insufficient cohort'):research([])
+
+    def test_json_inference_and_unknown_feature(self):
+        from engine.v6.model import predict,encode
+        model={'feature_names':['guidance_direction=raised'],'scales':[1], 'drop':[],
+               'material':{'coef':[1],'intercept':1},'positive':{'coef':[1],'intercept':1},
+               'calibration_material':[1,0],'calibration_positive':[1,0],
+               'thresholds':{'material':.5,'direction':.5}}
+        p=predict(model,{'guidance_direction':{'value':'raised'}})
+        self.assertEqual(p['direction'],'long');self.assertFalse(p['score_is_probability'])
+        with self.assertRaises(ValueError):encode({'future_return':{'value':10}})
+        with self.assertRaises(ValueError):encode({'eps_surprise_pct':{'value':float('nan')}})
+
+    def test_bootstrap_reproducible(self):
+        from tools.v6.evaluate import cluster_interval
+        rows=[{'call':{'cluster_id':str(i)},'outcome':{'res':'hit' if i%2 else 'miss'}} for i in range(10)]
+        self.assertEqual(cluster_interval(rows),cluster_interval(rows))
+        self.assertEqual(cluster_interval(rows)['clusters'],10)
+
+    def test_material_and_sign_training_roundtrip(self):
+        from tools.v6.train import fit,evaluate
+        from engine.v6.model import predict
+        def cohort(year,n):
+            result=[]
+            for i in range(n):
+                t=f'{year}-03-12T20:00:00Z'; c=call()
+                for k in ('information_public_at','prediction_generated_at','public_call_at','frozen_at'):c[k]=t
+                c.update(event_id=f'{year}-{i}',cluster_id=f'{year}-{i}')
+                v=[-5,0,5][i%3]
+                c['features']={'eps_surprise_pct':{'value':v,'available_at':t,'source_published_at':t,
+                                                   'source_updated_at':t,'source_kind':'as-filed'}}
+                result.append({'call':c,'split':'TRAIN' if year==2023 else 'VALIDATION',
+                               'outcome':{'relative_res':'flat' if v==0 else 'hit' if v>0 else 'miss',
+                                          'relative_move_pct':v,'exit':[f'{year}-03-14T20:00:00Z',100]}})
+            return result
+        tr,va=cohort(2023,120),cohort(2024,60)
+        m=fit(tr,va)
+        self.assertEqual(m['feature_names'],['eps_surprise_pct'])
+        self.assertEqual(evaluate(m,va)['eligible'],60)
+        self.assertEqual(predict(m,{'eps_surprise_pct':{'value':5}})['direction'],'long')
+
+
+class AdditionalGuards(unittest.TestCase):
+    def test_early_close_and_dst(self):
+        from tools.v6.outcomes import session_time
+        self.assertEqual(session_time('2024-11-29',16).hour,18)
+        self.assertEqual(session_time('2024-07-03',16).hour,17)
+        self.assertEqual(session_time('2024-06-03',9,30).hour,13)
+        self.assertEqual(session_time('2024-01-03',9,30).hour,14)
+
+    def test_public_info_must_precede_prediction(self):
+        c=call();c['information_public_at']='2024-01-13T00:00:00Z'
+        with self.assertRaises(ValueError):guard(c)
+
+    def test_feature_after_prediction_before_publication_is_rejected(self):
+        c=call();c['public_call_at']='2024-01-12T22:00:00Z'
+        c['features']={'eps_surprise_pct':{'value':10,'available_at':'2024-01-12T21:00:00Z',
+                     'source_published_at':c['prediction_generated_at'],
+                     'source_updated_at':c['prediction_generated_at'],'source_kind':'as-filed'}}
+        with self.assertRaises(ValueError):guard(c)
+
+    def test_no_view_and_old_missing_calendar(self):
+        c=call();c['direction']='none';p=prices()
+        self.assertEqual(calculate_daily(c,p,p,{},'2024-01-18T22:00:00Z')['res'],'no-view')
+        c['direction']='long'
+        self.assertEqual(calculate_daily(c,{}, {},{},'2024-02-18T22:00:00Z')['res'],'unresolved')
+
+    def test_train_rejects_cluster_overlap_and_duplicate_events(self):
+        from tools.v6.train import validate
+        c=call();a={'call':c,'split':'VALIDATION','outcome':{}}
+        with self.assertRaisesRegex(ValueError,'duplicate'):validate([a,a])
+        b=copy.deepcopy(a);b['split']='TRAIN';b['call']['event_id']='earlier'
+        for k in ('information_public_at','prediction_generated_at','public_call_at','frozen_at'):
+            b['call'][k]='2023-03-12T20:00:00Z'
+        with self.assertRaisesRegex(ValueError,'cluster'):validate([b,a])
+
+
+class NoViewResearch(unittest.TestCase):
+    def test_abstention_retains_independent_target(self):
+        from tools.v6.evaluate import redirect
+        c=call();c['direction']='none';c['tier']='none';p=prices()
+        o=calculate_daily(c,p,p,{},'2024-01-18T22:00:00Z')
+        self.assertEqual(o['res'],'no-view');self.assertEqual(o['research_long_res'],'hit')
+        self.assertEqual(redirect({'call':c,'outcome':o},'short')['outcome']['res'],'miss')
+
+    def test_abstention_missing_prices_has_no_guessed_label(self):
+        c=call();c['direction']='none';c['tier']='none'
+        o=calculate_daily(c,{}, {},{},'2024-02-18T22:00:00Z')
+        self.assertEqual(o['res'],'no-view');self.assertEqual(o['research_long_res'],'unresolved')
+
+
+class DatasetIntegration(unittest.TestCase):
+    def run_dataset(self,base):
+        import contextlib,io
+        from unittest.mock import patch
+        from tools.v6.evaluate import main
+        with patch('sys.argv',['evaluate','--base',str(base),'--as-of','2024-01-18T22:00:00Z']),contextlib.redirect_stdout(io.StringIO()):
+            main()
+
+    def test_repeatability_and_rejection_audit(self):
+        import gzip,json,tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory);(base/'prices').mkdir()
+            p=prices()
+            for symbol in ('SPY','A'):
+                with gzip.open(base/'prices'/f'{symbol}.json.gz','wt') as f:json.dump(p,f)
+            # Enough observed dates to pass the boundary embargo.
+            p['d'][:0]=[[f'2024-01-{d:02}',100,101,99,100,10] for d in (2,3,4,5,8)]
+            with gzip.open(base/'prices/SPY.json.gz','wt') as f:json.dump(p,f)
+            c=call();bad=copy.deepcopy(c);bad['event_id']='bad';bad['features']={'future_return':{'value':10}}
+            (base/'frozen-calls.jsonl').write_text('\n'.join(json.dumps(r) for r in (c,c,bad)))
+            self.run_dataset(base)
+            metrics=(base/'evaluation/metrics.json').read_bytes()
+            results=json.loads(metrics)
+            self.assertEqual(results['accepted_rows'],1);self.assertEqual(results['rejected_rows'],2)
+            self.assertEqual(results['splits']['VALIDATION']['raw']['judged'],1)
+            self.run_dataset(base)
+            self.assertEqual(metrics,(base/'evaluation/metrics.json').read_bytes())
+            self.assertEqual(len(list((base/'evaluation/runs').iterdir())),1)

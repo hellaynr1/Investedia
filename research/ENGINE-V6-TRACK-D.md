@@ -56,3 +56,49 @@ No trained model or thresholds are frozen by this work. OOS is locked until a
 separate development/validation freeze exists; no OOS candidate selection occurs.
 Historical sample building still needs timestamp/document provenance and a
 point-in-time sector mapping. Cache counts are inventory, not evaluated calls.
+
+## Training candidate
+
+`python3 -m tools.v6.train` fits regularized two-stage logistic models using
+TRAIN-only feature vocabulary/scales, Platt calibration on 2024, and a validation
+coverage-versus-quality grid. Threshold selection maximizes signed abnormal
+return subject to at least 20% coverage and 30 accepted validation calls. These
+are declared engineering safeguards, not validated product thresholds. Individual
+and group ablations refit the models; training-positive/validation-negative
+comparisons are flagged. Validation selection is optimistic and is never called
+OOS evidence. A minimum 100/50 train/validation cohort, class counts and cluster
+counts block meaningless fitting. No model is frozen or published by this command.
+Inference is JSON coefficients + standard-library deterministic math; training
+requires scikit-learn/numpy (already available here). No paid infrastructure.
+
+Extraction audit: the index contains **zero Exhibit 99 document entries**. EFTS
+root-form filtering appears to retain only primary 8-K documents, while Track C
+requires EX-99 candidates. Exhibit discovery and acceptance-time provenance must
+be repaired upstream before historical extraction can populate this pipeline.
+No Anthropic request was issued during this work.
+
+## Verification and completion status
+
+The offline tooling is implemented; the end-to-end historical research is **not
+complete**. Zero provenance-complete calls means no fitted model, no empirical
+ablation result, no validated threshold, and no holdout superiority claim. Remaining
+work is real dataset construction after Exhibit 99/timestamp repair, validated
+point-in-time sector assignment, then development/calibration/freeze and OOS.
+Market/sector-follow and v5 baselines still need pre-call contextual inputs.
+LightGBM comparison is deferred until the logistic baseline has real data.
+The existing extractor's quoted rates and budget accounting were not validated
+against Anthropic billing; no manifest means actual spending/failures are unknown.
+
+Validation: the new Track D tests cover outcomes, sessions/DST/early closes,
+missing data, split breaks, No View research targets, chronological splits,
+leakage, cohort guards, deterministic inference and bootstrap, and a synthetic
+train/validation coefficient roundtrip (test data only, not research evidence).
+The broader Python suite has one unchanged failure in
+`test_legal_pages.LegalPages.test_footer_links_and_signup_destinations`:
+it treats `mailto:jobs@investedia.com` as a file path. The test and footer file
+are byte-identical to audited HEAD. Existing Worker tests pass. Site build passes;
+generated changes were restored because the task has no UI changes.
+
+An optional, manual-only `v6-evaluate.yml` runs offline checks and uploads a
+seven-day research artifact. It has read-only repository permissions, an engine-v6
+ref guard, no API secrets, no schedule, and no deployment or repository pushes.

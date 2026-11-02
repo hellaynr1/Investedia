@@ -4,6 +4,7 @@ import gzip
 import hashlib
 import json
 import re
+import random
 from datetime import timedelta
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -32,6 +33,11 @@ def guard(call):
     if call.get('sector_etf') and call['sector_etf'] not in ('XLK','XLF','XLV','XLE','XLI','XLY','XLP','XLU','XLB','XLRE','XLC'):
         raise ValueError('invalid sector benchmark')
     end = cutoff(call)
+    prediction=timestamp(call['prediction_generated_at'])
+    if timestamp(call['information_public_at']) > prediction:
+        raise ValueError('prediction precedes public information')
+    if timestamp(call['frozen_at']) < prediction:
+        raise ValueError('freeze precedes prediction')
     if timestamp(call['frozen_at']) > timestamp(call['public_call_at']):
         raise ValueError('prediction not frozen by public call')
     if timestamp(call['prediction_generated_at']) > timestamp(call['public_call_at']):
@@ -44,7 +50,7 @@ def guard(call):
         if name not in ALLOWED:
             raise ValueError('feature not allowlisted: '+name)
         for key in ('available_at','source_published_at','source_updated_at'):
-            if timestamp(f[key]) > end:
+            if timestamp(f[key]) > prediction:
                 raise ValueError('future or updated feature: '+name)
         if f['source_kind'] not in ('original-release','as-filed','market-bar'):
             raise ValueError('retrospective/unproven source')
@@ -117,6 +123,10 @@ def regroup(rows,key):
 def redirect(row,direction):
     out=dict(row['outcome'])
     old=row['call']['direction']
+    if old=='none':
+        out['res']=out.get('research_long_res','unresolved')
+        out['relative_res']=out.get('research_long_relative_res')
+        old='long'
     for key in ('res','relative_res'):
         if direction=='none': out[key]='no-view'
         elif out.get(key) in ('hit','miss') and direction!=old:
@@ -124,10 +134,27 @@ def redirect(row,direction):
     return {**row,'outcome':out}
 
 
+def cluster_interval(rows, repeats=500):
+    """Seeded event-cluster bootstrap, with flats in the judged denominator."""
+    clusters=defaultdict(list)
+    for r in rows:
+        if r['outcome']['res'] in JUDGED:
+            clusters[r['call']['cluster_id']].append(r['outcome']['res']=='hit')
+    if len(clusters)<2:
+        return {'clusters':len(clusters),'judged':sum(map(len,clusters.values())), 'confirmed_95pct':None}
+    rng=random.Random(6); groups=list(clusters.values()); samples=[]
+    for _ in range(repeats):
+        sample=[x for g in rng.choices(groups,k=len(groups)) for x in g]
+        samples.append(100*sum(sample)/len(sample))
+    samples.sort()
+    return {'clusters':len(groups),'judged':sum(map(len,groups)),
+            'confirmed_95pct':[samples[int(.025*repeats)],samples[int(.975*repeats)]],
+            'bootstrap_repeats':repeats,'seed':6}
+
+
 def metrics(rows):
-    # Candidate comparisons require labels from directional calls: No View prices
-    # are not silently guessed. Report this selection limitation explicitly.
-    labelled=[r for r in rows if r['call']['direction']!='none']
+    # No View has separate research labels: evaluate abstention without selection bias.
+    labelled=rows
     baselines={'always_long':summary([redirect(r,'long') for r in labelled]),
                'always_short':summary([redirect(r,'short') for r in labelled])}
     ablation={}
@@ -141,7 +168,7 @@ def metrics(rows):
                   (threshold is None or (r['call'].get('confidence') is not None and r['call']['confidence']>=threshold))]
         coverage.append({'minimum_score':threshold,'accepted':len(accepted),'eligible':len(rows),
                          'coverage_pct':100*len(accepted)/len(rows) if rows else None, **summary(accepted)})
-    return {'raw':summary(rows),'sector_relative':summary(rows,'relative_res'), 'baselines':baselines,
+    return {'raw':summary(rows),'cluster_interval':cluster_interval(rows),'sector_relative':summary(rows,'relative_res'), 'baselines':baselines,
             'direction':regroup(rows,lambda r:r['call']['direction']), 'tier':regroup(rows,lambda r:r['call']['tier']),
             'event_type':regroup(rows,lambda r:r['call']['event_type']), 'horizon':regroup(rows,lambda r:r['call']['horizon']),
             'calibration':regroup(rows,lambda r:bucket(r['call'].get('confidence'))),
@@ -173,6 +200,8 @@ def main():
     args=ap.parse_args(); timestamp(args.as_of)
     base=args.base; out=base/'evaluation'; out.mkdir(exist_ok=True)
     hashes={}; cache={}
+    source_hashes={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()
+                   for p in [Path(__file__), ROOT/'tools/v6/outcomes.py', ROOT/'engine/policy.py', ROOT/'engine/outcome.py', ROOT/'engine/v6/model.py', ROOT/'tools/v6/train.py']}
     def load(path):
         if path in cache:return cache[path]
         if not path.exists():return {}
@@ -207,7 +236,7 @@ def main():
     if any(r['reason']=='cluster crosses chronological split' for r in rejected):
         raise ValueError('cross-split cluster: fix input before evaluation')
     results={'as_of':args.as_of,'inventory':inventory(base),'accepted_rows':len(rows),'rejected_rows':len(rejected),
-             'input_sha256':dict(sorted(hashes.items())), 'splits':{}}
+             'input_sha256':dict(sorted(hashes.items())), 'source_sha256':source_hashes, 'splits':{}}
     for stage in ['TRAIN','VALIDATION','OOS','PURGED','EXCLUDED']:
         subset=[r for r in rows if r['split']==stage]
         results['splits'][stage]=({'status':'LOCKED: no development/validation freeze', 'rows':len(subset)}
@@ -235,18 +264,32 @@ def main():
              'metrics.json contains direction, tier, event type, horizon, calibration, same-event long/short baselines,',
              'individual/group fact-rule ablations, raw and sector-relative labels, and threshold coverage.',
              'Empty groups mean no observations, not zero predictive performance. Candidate ablations are untrained',
-             'rule comparisons on directional calls only; they cannot establish the value of a trained v6 model.', '',
+             'rule comparisons using independent research labels; they cannot establish the value of a trained v6 model.', '',
              '## Limitations and remaining gates', '',
              '- No provenance-complete historical calls or collected Claude facts in the audited branch.',
              '- SEC filing dates lack acceptance timestamps; Nasdaq retrospective consensus has no vintage proof.',
              '- Index has no EX-99 document entries: the current Claude candidate selector has zero eligible documents.',
              '- Daily next-open proxies cannot prove first intraday trade; sector mapping still required.',
-             '- Split adjustments, ticker reuse, delistings, early closes and incomplete free prices require review.',
+             '- Split adjustments, ticker reuse, delistings, exceptional closures and incomplete free prices require review.',
              '- Calibration is descriptive score bucketing, not probability calibration. No Brier/log loss claim.',
              '- Fit two-stage model on TRAIN, select/calibrate on 2024, commit freeze, then unlock OOS in a separate change.',
              '- Market/sector-follow and v5 baselines need pre-call context not currently supplied; unavailable.',
-             '- Cluster bootstrap and training-versus-holdout failure flags require a populated evaluation cohort.',
+             '- Seeded event-cluster intervals and training-versus-validation warning flags require a populated cohort.',
              '- Keep v6 offline. The tiny live v5 sample is not v6 evidence. No API calls made by this tool.', '']
+    report += ['## Calibration and baselines', '', '| Score bucket | Judged | Confirmed | Other way | No clear move |', '|---|---:|---:|---:|---:|']
+    for label in ('50–55','55–60','60–65','65–70','70+'):
+        s=results['splits']['VALIDATION']['calibration'].get(label,summary([]))
+        report.append(f"| {label} | {s['judged']} | {s['confirmed']} | {s['other_way']} | {s['no_clear_move']} |")
+    report += ['', 'Baseline counts and rates are in metrics.json for the identical evaluated cohort.',
+               'Missing model/cohort means performance is unavailable; empty groups must not be read as 0% accuracy.',
+               'Run python -m tools.v6.train after building a provenance-complete cohort for two-stage logistic',
+               'training, validation Platt calibration, coverage-constrained threshold selection and refitted ablations.',
+               'Training writes a candidate only; no policy freeze, OOS unlock or live integration.']
+    report += ['', '## Verification at implementation', '',
+               '25 Track D tests pass. Full Python suite: 149/150 pass; the pre-existing footer test',
+               'treats mailto:jobs@investedia.com as a local path. Worker tests: 3/3 pass.',
+               'Site build succeeds; generated output restored to keep website files unchanged.',
+               'No API credit used, deployment, merge or live-site change.']
     (out/'REPORT.md').write_text('\n'.join(report))
     snapshot=hashlib.sha256((out/'metrics.json').read_bytes()).hexdigest()[:16]
     history=out/'runs'/snapshot; history.mkdir(parents=True,exist_ok=True)

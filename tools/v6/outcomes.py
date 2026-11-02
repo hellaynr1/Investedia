@@ -39,10 +39,14 @@ def calculate_trades(call, bars, as_of):
 
 
 def session_time(day, hour, minute=0):
-    return datetime.combine(datetime.fromisoformat(day).date(), time(hour, minute), NY).astimezone(timezone.utc)
+    d=datetime.fromisoformat(day).date()
+    # Regular NYSE half-days; full holidays are absent from the observed SPY calendar.
+    early=(d.month==11 and d.weekday()==4 and 23<=d.day<=29) or (d.month,d.day) in ((7,3),(12,24))
+    if hour==16 and early: hour=13
+    return datetime.combine(d, time(hour, minute), NY).astimezone(timezone.utc)
 
 
-def calculate_daily(call, prices, market, sector, as_of):
+def _calculate_daily(call, prices, market, sector, as_of):
     """Observed SPY dates define sessions, including holidays. Never extrapolate."""
     now, start = timestamp(as_of), cutoff(call)
     out = {'res': 'pending', 'relative_res': None, 'rule': RULE,
@@ -93,3 +97,13 @@ def calculate_daily(call, prices, market, sector, as_of):
         out.update(sector_move_pct=sm, relative_move_pct=rel, relative_threshold_pct=floor,
                    relative_res=verdict(rel, max(floor, 1e-12)))
     return out
+
+
+def calculate_daily(call, prices, market, sector, as_of):
+    """No View keeps its abstention verdict but still collects independent research labels."""
+    if call['direction']!='none':
+        return _calculate_daily(call,prices,market,sector,as_of)
+    label=_calculate_daily({**call,'direction':'long'},prices,market,sector,as_of)
+    return {**label, 'research_long_res':label['res'],
+            'research_long_relative_res':label.get('relative_res'),
+            'res':'no-view','relative_res':'no-view'}

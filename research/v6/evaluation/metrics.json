@@ -15,6 +15,14 @@
     "uncollected_batches": 0
   },
   "rejected_rows": 0,
+  "source_sha256": {
+    "engine/outcome.py": "5bf5dd08cbb24cf800b871761ccccc32916f00ae108cbe74aac69f383e200341",
+    "engine/policy.py": "86fd774ffeb71c55b2e14e007acef1e289834f22c990c277fe694dc2dc8661bc",
+    "engine/v6/model.py": "993a99ec50d2f9c909f4272fc7add9b139d1bbf809e57f0822bcec7d77ec9893",
+    "tools/v6/evaluate.py": "1b17e31df93cea61342780c585aedc1d22fcf4bd4a9d905d5df3eb97fb1766db",
+    "tools/v6/outcomes.py": "42b80772c8c4d37eb08e9b0de41ba77228881a5787a43daa7347b3c75c9d71e7",
+    "tools/v6/train.py": "8fecd9807c36eaf860db514a03065852b0eb7830b2fc846d3a18a8d07523c009"
+  },
   "splits": {
     "EXCLUDED": {
       "ablation": {
@@ -672,6 +680,11 @@
         }
       },
       "calibration": {},
+      "cluster_interval": {
+        "clusters": 0,
+        "confirmed_95pct": null,
+        "judged": 0
+      },
       "coverage_quality": [
         {
           "accepted": 0,
@@ -1571,6 +1584,11 @@
         }
       },
       "calibration": {},
+      "cluster_interval": {
+        "clusters": 0,
+        "confirmed_95pct": null,
+        "judged": 0
+      },
       "coverage_quality": [
         {
           "accepted": 0,
@@ -2466,6 +2484,11 @@
         }
       },
       "calibration": {},
+      "cluster_interval": {
+        "clusters": 0,
+        "confirmed_95pct": null,
+        "judged": 0
+      },
       "coverage_quality": [
         {
           "accepted": 0,
@@ -3361,6 +3384,11 @@
         }
       },
       "calibration": {},
+      "cluster_interval": {
+        "clusters": 0,
+        "confirmed_95pct": null,
+        "judged": 0
+      },
       "coverage_quality": [
         {
           "accepted": 0,

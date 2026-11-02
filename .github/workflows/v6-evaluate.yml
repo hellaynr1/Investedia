@@ -1,0 +1,34 @@
+name: v6 offline evaluation
+# Explicitly invoked, no schedule, no model API, no writes to the repository or site.
+on:
+  workflow_dispatch:
+    inputs:
+      as_of:
+        description: 'Reproducible UTC cutoff (ISO 8601 with timezone)'
+        required: true
+        default: '2026-11-02T00:00:00Z'
+permissions:
+  contents: read
+jobs:
+  evaluate:
+    if: github.ref == 'refs/heads/engine-v6'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: engine-v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install scikit-learn==1.8.0
+      - run: python3 -m unittest discover -s tests -p 'test_v6*.py' -v
+      - run: python3 -m tools.v6.evaluate --as-of "$V6_AS_OF"
+        env:
+          V6_AS_OF: ${{ inputs.as_of }}
+      - run: python3 -m tools.v6.train
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v6-offline-evaluation
+          path: research/v6/evaluation
+          retention-days: 7
