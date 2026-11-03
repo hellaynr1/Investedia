@@ -1,5 +1,5 @@
 name: v6 SEC exhibit discovery (no model API)
-# Manual research job only. Does not deploy or submit Claude batches.
+# Bounded research job only. Does not deploy or submit Claude batches.
 on:
   workflow_dispatch:
     inputs:
@@ -22,9 +22,29 @@ jobs:
         with:
           python-version: '3.12'
       - run: python3 -m unittest discover -s tests -p 'test_v6_exhibits.py' -v
-      - run: python3 -m tools.v6.exhibits --import-legacy --minutes 35 --max-filings "$V6_MAX_FILINGS"
+      - run: python3 -m tools.v6.exhibits --import-legacy --minutes "$V6_MINUTES" --max-filings "$V6_MAX_FILINGS"
         env:
-          V6_MAX_FILINGS: ${{ inputs.max_filings }}
+          V6_MAX_FILINGS: ${{ inputs.max_filings || '20' }}
+          V6_MINUTES: ${{ github.event_name == 'push' && '3' || '35' }}
+      - name: Show actual discovery result
+        if: always()
+        run: |
+          python3 - <<'PYCODE' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          path = Path('research/v6/exhibits/runs.jsonl')
+          print('# SEC Exhibit 99 discovery — engine-v6 research')
+          print('No deployment. No model API calls.')
+          if path.exists():
+              result = json.loads(path.read_text().splitlines()[-1])
+              print('\n| Check | Actual result |\n|---|---:|')
+              for name in ('attempts', 'indexes_cached', 'exhibit_entries_added', 'errors', 'api_cost_usd'):
+                  print(f"| {name} | {result[name]} |")
+              if result.get('last_error'):
+                  print('\nDownload error: ' + result['last_error']['error'])
+          else:
+              print('No discovery run completed. Inspect the job logs.')
+          PYCODE
       - uses: actions/upload-artifact@v4
         if: always()
         with:

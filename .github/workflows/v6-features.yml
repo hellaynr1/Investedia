@@ -2,11 +2,17 @@ name: v6 features (engine research)
 # Track C on the engine-v6 branch: Finnhub structured features (cached). Never touches main or the site.
 on:
   schedule:
-    - cron: "23 */3 * * *"   # collect finished Claude batches, fetch more texts, submit the next batch
+    - cron: "23 */3 * * *"   # free cached sources; paid Claude extraction is manual opt-in only
   push:
     branches: [engine-v6]
     paths: [tools/v6/claude_extract.py, tools/v6/finnhub.py, tools/v6/earnings_nasdaq.py, .github/workflows/v6-features.yml]
   workflow_dispatch:
+    inputs:
+      run_claude:
+        description: Explicitly allow budget-capped Claude extraction
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: write
 concurrency: { group: v6-features, cancel-in-progress: false }
@@ -20,7 +26,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: python3 tools/v6/earnings_nasdaq.py
-      - run: pip install -q anthropic && python3 tools/v6/claude_extract.py
+      - name: Claude extraction (explicit manual opt-in only)
+        if: github.event_name == 'workflow_dispatch' && inputs.run_claude == true
+        run: pip install -q anthropic && python3 tools/v6/claude_extract.py
         env: { ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}", V6_CLAUDE_BUDGET: "4.5" }
       - run: python3 tools/v6/finnhub.py
         env: { FINNHUB_KEY: "${{ secrets.FINNHUB_KEY }}" }
