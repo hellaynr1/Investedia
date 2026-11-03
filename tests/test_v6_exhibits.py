@@ -46,6 +46,16 @@ class Exhibits(unittest.TestCase):
         for target in (b'https://evil.example/release.htm',b'/Archives/edgar/data/2/other/release.htm',b'../release.htm'):
             with self.assertRaises(ValueError):parse_index(PAGE.replace(b'href="release.htm"',b'href="'+target+b'"'),ROW,index_url(ROW))
 
+    def test_sec_inline_viewer_link_resolves_to_verified_attachment(self):
+        path=index_url(ROW).rsplit('/',1)[0].replace('https://www.sec.gov','')+'/release.htm'
+        wrapped=PAGE.replace(b'href="release.htm"',f'href="/ix?doc={path}"'.encode())
+        self.assertEqual(parse_index(wrapped,ROW,index_url(ROW))['docs'][-1]['file'],'release.htm')
+
+    def test_sec_viewer_cannot_escape_host_or_accession(self):
+        for target in ('https://evil.example/release.htm','/Archives/edgar/data/2/other/release.htm'):
+            wrapped=PAGE.replace(b'href="release.htm"',f'href="/ix?doc={target}"'.encode())
+            with self.assertRaises(ValueError):parse_index(wrapped,ROW,index_url(ROW))
+
     def test_cache_resume_and_original_index_untouched(self):
         with tempfile.TemporaryDirectory() as tmp:
             base=Path(tmp);prepare(base);original=(base/'index/8k-2024-03.jsonl.gz').read_bytes()

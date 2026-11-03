@@ -72,6 +72,13 @@ def parse_index(raw,row,url):
         if not EX99.fullmatch(kind):continue
         for link in cells[2]['links']:
             target=urllib.parse.urlparse(urllib.parse.urljoin(url,link))
+            # SEC sometimes wraps an inline exhibit link in its own iXBRL viewer.
+            # Resolve only the SEC viewer's document parameter, then apply the same
+            # host/accession checks as direct attachment links.
+            if target.hostname=='www.sec.gov' and target.path.rstrip('/') in ('/ix','/ixviewer/doc/action'):
+                documents=urllib.parse.parse_qs(target.query).get('doc',[])
+                if len(documents)!=1:raise ValueError('ambiguous SEC viewer document')
+                target=urllib.parse.urlparse(urllib.parse.urljoin(url,documents[0]))
             path=urllib.parse.unquote(target.path)
             if target.hostname!='www.sec.gov' or path.rsplit('/',1)[0]!=urllib.parse.urlparse(url).path.rsplit('/',1)[0]:
                 raise ValueError('attachment outside expected SEC accession')

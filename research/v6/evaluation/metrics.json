@@ -1,6 +1,6 @@
 {
   "accepted_rows": 0,
-  "as_of": "2026-11-03T00:00:00Z",
+  "as_of": "2026-11-03T00:40:20Z",
   "input_sha256": {
     "prices/SPY.json.gz": "a4be17f05849577ebe35168d73b9cac831166b67c19f395b8af965acddcdd305"
   },
@@ -22,7 +22,7 @@
     "engine/policy.py": "86fd774ffeb71c55b2e14e007acef1e289834f22c990c277fe694dc2dc8661bc",
     "engine/v6/model.py": "993a99ec50d2f9c909f4272fc7add9b139d1bbf809e57f0822bcec7d77ec9893",
     "tools/v6/evaluate.py": "9bd9de8f4c166cbb61e0a1221cb4077665f1e7664518f3a9e268ac831f3dcff5",
-    "tools/v6/exhibits.py": "9837b3831673ca074881e8fc2a4316e5916da71344d1a925276511286a61ee94",
+    "tools/v6/exhibits.py": "fb22ff4aceb24b810aa155831d1862366478e2fc83f809058e30879c00ec509e",
     "tools/v6/outcomes.py": "42b80772c8c4d37eb08e9b0de41ba77228881a5787a43daa7347b3c75c9d71e7",
     "tools/v6/train.py": "8fecd9807c36eaf860db514a03065852b0eb7830b2fc846d3a18a8d07523c009"
   },
