@@ -23,8 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     env:
-      # One-time transfer of the verified sample; clear after importing it.
-      V6_REUSE_RUN: ${{ inputs.reuse_run_id || '41696800244' }}
+      V6_REUSE_RUN: ${{ inputs.reuse_run_id || '' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,6 +34,7 @@ jobs:
             /tests/test_v6_exhibits.py
             /research/v6/index/
             /research/v6/exhibits/
+            /research/v6/text/
             /research/sec/
       - uses: actions/setup-python@v5
         with:
@@ -43,8 +43,8 @@ jobs:
       - if: env.V6_REUSE_RUN == ''
         run: python3 -m tools.v6.exhibits --import-legacy --minutes "$V6_MINUTES" --max-filings "$V6_MAX_FILINGS"
         env:
-          V6_MAX_FILINGS: ${{ inputs.max_filings || '20' }}
-          V6_MINUTES: ${{ github.event_name == 'push' && '3' || '35' }}
+          V6_MAX_FILINGS: ${{ inputs.max_filings || '500' }}
+          V6_MINUTES: ${{ github.event_name == 'push' && '10' || '35' }}
       - name: Download completed discovery artifact
         if: env.V6_REUSE_RUN != ''
         uses: actions/download-artifact@v4
@@ -66,11 +66,16 @@ jobs:
                       archive.write(path, str(path.relative_to(source)))
           PYCODE
           python3 -m tools.v6.import_exhibits /tmp/v6-sec-completed.zip --run-id "$V6_REUSE_RUN"
+      - name: Cache readable Exhibit 99 text (no model API)
+        run: python3 tools/v6/claude_extract.py --fetch-only
+        env:
+          V6_FETCH_MAX: '500'
       - name: Save verified SEC cache to research branch only
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
           git add research/v6/exhibits
+          if [ -d research/v6/text ]; then git add research/v6/text; fi
           git diff --cached --quiet && exit 0
           git commit -m "v6 verified SEC exhibit cache [skip ci]"
           git pull --rebase origin engine-v6
