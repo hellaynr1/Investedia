@@ -2,10 +2,11 @@
   "OOS": "LOCKED",
   "TRAIN_judged": 0,
   "VALIDATION_judged": 0,
-  "as_of": "2026-11-03T18:33:37Z",
+  "as_of": "2026-11-03T19:01:56Z",
   "claude_api_cost_this_run_usd": 0,
   "dataset_rows": 0,
   "deployment": false,
+  "github_discovery_run": "https://github.com/hellaynr1/Investedia/actions/runs/41696800244",
   "holdout_confirmed_rate": null,
   "model_training": {
     "OOS": "LOCKED",
@@ -13,25 +14,26 @@
     "reason": "insufficient cohort: need >=100 TRAIN / >=50 VALIDATION and both signs plus flats",
     "status": "BLOCKED"
   },
+  "next_batch_run": "https://github.com/hellaynr1/Investedia/actions/runs/41698672765",
   "rejected_rows": 0,
   "sec_download": {
     "api_cost_usd": 0,
-    "at": "2026-11-03T18:33:58.613055+00:00",
-    "attempts": 1,
-    "errors": 1,
-    "exhibit_entries_added": 0,
-    "indexes_cached": 0,
+    "at": "2026-11-03T18:59:48.005674+00:00",
+    "attempts": 173,
+    "errors": 3,
+    "exhibit_entries_added": 196,
+    "indexes_cached": 170,
     "last_error": {
-      "adsh": "0001477932-22-000046",
-      "at": "2026-11-03T18:33:58.612502+00:00",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      "adsh": "0000006201-22-000004",
+      "at": "2026-11-03T18:59:48.005634+00:00",
+      "error": "attachment outside expected SEC accession"
     }
   },
-  "status": "BLOCKED",
+  "status": "COLLECTED_DATA_MODEL_NOT_VALIDATED",
   "tests": {
     "failed": 1,
     "failure": "pre-existing mailto footer test",
-    "passed": 159,
-    "total": 160
+    "passed": 163,
+    "total": 164
   }
 }

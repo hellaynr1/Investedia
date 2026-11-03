@@ -1,0 +1,3635 @@
+{
+  "accepted_rows": 0,
+  "as_of": "2026-11-03T19:01:56Z",
+  "input_sha256": {
+    "prices/SPY.json.gz": "a4be17f05849577ebe35168d73b9cac831166b67c19f395b8af965acddcdd305"
+  },
+  "inventory": {
+    "claude_tracked_cost_usd": null,
+    "claude_unique_extractions": 0,
+    "duplicate_fact_rows": 0,
+    "extraction_failures": null,
+    "filing_indexes_discovered": 190,
+    "filings_with_acceptance_timestamp": 22380,
+    "filings_with_exhibit99": 176,
+    "price_files": 6385,
+    "sec_filings": 330824,
+    "uncollected_batches": 0
+  },
+  "rejected_rows": 0,
+  "source_sha256": {
+    "engine/outcome.py": "5bf5dd08cbb24cf800b871761ccccc32916f00ae108cbe74aac69f383e200341",
+    "engine/policy.py": "86fd774ffeb71c55b2e14e007acef1e289834f22c990c277fe694dc2dc8661bc",
+    "engine/v6/model.py": "993a99ec50d2f9c909f4272fc7add9b139d1bbf809e57f0822bcec7d77ec9893",
+    "tools/v6/evaluate.py": "9bd9de8f4c166cbb61e0a1221cb4077665f1e7664518f3a9e268ac831f3dcff5",
+    "tools/v6/exhibits.py": "fb22ff4aceb24b810aa155831d1862366478e2fc83f809058e30879c00ec509e",
+    "tools/v6/outcomes.py": "42b80772c8c4d37eb08e9b0de41ba77228881a5787a43daa7347b3c75c9d71e7",
+    "tools/v6/train.py": "8fecd9807c36eaf860db514a03065852b0eb7830b2fc846d3a18a8d07523c009"
+  },
+  "splits": {
+    "EXCLUDED": {
+      "ablation": {
+        "all_facts": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "buyback_usd_m": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "capital_returns": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_premium_pct": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_role": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_value_usd_m": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "dividend_change": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "earnings": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "eps_surprise_pct": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "executives": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "financing_type": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "full": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance_direction": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance_vs_previous": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "issuance": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "litigation_outcome": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_change": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_planned": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_role": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "reg_outcome": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "regulatory_court": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "takeover": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      },
+      "baselines": {
+        "always_long": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "always_short": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      },
+      "calibration": {},
+      "cluster_interval": {
+        "clusters": 0,
+        "confirmed_95pct": null,
+        "judged": 0
+      },
+      "coverage_quality": [
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": null,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 50,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 55,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 60,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 65,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 70,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      ],
+      "direction": {},
+      "event_type": {},
+      "horizon": {},
+      "raw": {
+        "confirmed": 0,
+        "confirmed_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "judged": 0,
+        "no_clear_move": 0,
+        "no_clear_move_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "no_view": 0,
+        "other_way": 0,
+        "other_way_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "pending": 0,
+        "total": 0,
+        "unresolved": 0,
+        "void": 0
+      },
+      "sector_relative": {
+        "confirmed": 0,
+        "confirmed_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "judged": 0,
+        "no_clear_move": 0,
+        "no_clear_move_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "no_view": 0,
+        "other_way": 0,
+        "other_way_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "pending": 0,
+        "total": 0,
+        "unresolved": 0,
+        "void": 0
+      },
+      "tier": {}
+    },
+    "OOS": {
+      "rows": 0,
+      "status": "LOCKED: no development/validation freeze"
+    },
+    "PURGED": {
+      "ablation": {
+        "all_facts": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "buyback_usd_m": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "capital_returns": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_premium_pct": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_role": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_value_usd_m": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "dividend_change": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "earnings": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "eps_surprise_pct": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "executives": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "financing_type": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "full": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance_direction": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance_vs_previous": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "issuance": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "litigation_outcome": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_change": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_planned": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_role": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "reg_outcome": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "regulatory_court": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "takeover": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      },
+      "baselines": {
+        "always_long": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "always_short": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      },
+      "calibration": {},
+      "cluster_interval": {
+        "clusters": 0,
+        "confirmed_95pct": null,
+        "judged": 0
+      },
+      "coverage_quality": [
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": null,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 50,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 55,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 60,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 65,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 70,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      ],
+      "direction": {},
+      "event_type": {},
+      "horizon": {},
+      "raw": {
+        "confirmed": 0,
+        "confirmed_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "judged": 0,
+        "no_clear_move": 0,
+        "no_clear_move_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "no_view": 0,
+        "other_way": 0,
+        "other_way_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "pending": 0,
+        "total": 0,
+        "unresolved": 0,
+        "void": 0
+      },
+      "sector_relative": {
+        "confirmed": 0,
+        "confirmed_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "judged": 0,
+        "no_clear_move": 0,
+        "no_clear_move_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "no_view": 0,
+        "other_way": 0,
+        "other_way_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "pending": 0,
+        "total": 0,
+        "unresolved": 0,
+        "void": 0
+      },
+      "tier": {}
+    },
+    "TRAIN": {
+      "ablation": {
+        "all_facts": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "buyback_usd_m": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "capital_returns": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_premium_pct": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_role": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_value_usd_m": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "dividend_change": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "earnings": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "eps_surprise_pct": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "executives": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "financing_type": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "full": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance_direction": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance_vs_previous": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "issuance": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "litigation_outcome": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_change": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_planned": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_role": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "reg_outcome": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "regulatory_court": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "takeover": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      },
+      "baselines": {
+        "always_long": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "always_short": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      },
+      "calibration": {},
+      "cluster_interval": {
+        "clusters": 0,
+        "confirmed_95pct": null,
+        "judged": 0
+      },
+      "coverage_quality": [
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": null,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 50,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 55,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 60,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 65,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 70,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      ],
+      "direction": {},
+      "event_type": {},
+      "horizon": {},
+      "raw": {
+        "confirmed": 0,
+        "confirmed_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "judged": 0,
+        "no_clear_move": 0,
+        "no_clear_move_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "no_view": 0,
+        "other_way": 0,
+        "other_way_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "pending": 0,
+        "total": 0,
+        "unresolved": 0,
+        "void": 0
+      },
+      "sector_relative": {
+        "confirmed": 0,
+        "confirmed_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "judged": 0,
+        "no_clear_move": 0,
+        "no_clear_move_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "no_view": 0,
+        "other_way": 0,
+        "other_way_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "pending": 0,
+        "total": 0,
+        "unresolved": 0,
+        "void": 0
+      },
+      "tier": {}
+    },
+    "VALIDATION": {
+      "ablation": {
+        "all_facts": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "buyback_usd_m": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "capital_returns": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_premium_pct": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_role": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "deal_value_usd_m": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "dividend_change": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "earnings": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "eps_surprise_pct": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "executives": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "financing_type": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "full": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance_direction": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "guidance_vs_previous": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "issuance": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "litigation_outcome": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_change": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_planned": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "mgmt_role": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "reg_outcome": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "regulatory_court": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "takeover": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      },
+      "baselines": {
+        "always_long": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        "always_short": {
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "judged": 0,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      },
+      "calibration": {},
+      "cluster_interval": {
+        "clusters": 0,
+        "confirmed_95pct": null,
+        "judged": 0
+      },
+      "coverage_quality": [
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": null,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 50,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 55,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 60,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 65,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        },
+        {
+          "accepted": 0,
+          "confirmed": 0,
+          "confirmed_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "coverage_pct": null,
+          "eligible": 0,
+          "judged": 0,
+          "minimum_score": 70,
+          "no_clear_move": 0,
+          "no_clear_move_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "no_view": 0,
+          "other_way": 0,
+          "other_way_rate": {
+            "denominator": 0,
+            "n": 0,
+            "pct": null
+          },
+          "pending": 0,
+          "total": 0,
+          "unresolved": 0,
+          "void": 0
+        }
+      ],
+      "direction": {},
+      "event_type": {},
+      "horizon": {},
+      "raw": {
+        "confirmed": 0,
+        "confirmed_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "judged": 0,
+        "no_clear_move": 0,
+        "no_clear_move_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "no_view": 0,
+        "other_way": 0,
+        "other_way_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "pending": 0,
+        "total": 0,
+        "unresolved": 0,
+        "void": 0
+      },
+      "sector_relative": {
+        "confirmed": 0,
+        "confirmed_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "judged": 0,
+        "no_clear_move": 0,
+        "no_clear_move_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "no_view": 0,
+        "other_way": 0,
+        "other_way_rate": {
+          "denominator": 0,
+          "n": 0,
+          "pct": null
+        },
+        "pending": 0,
+        "total": 0,
+        "unresolved": 0,
+        "void": 0
+      },
+      "tier": {}
+    }
+  }
+}

@@ -20,3 +20,12 @@ cohort guard and test suite were actually executed; a synthetic test fixture is
 not counted as a historical call. The environment still omits www.sec.gov from
 its enforced allowlist. That runtime access must be fixed before exhibit data
 can populate the research dataset. No approval was bypassed.
+
+## Later collection update
+
+GitHub research runs subsequently resolved the data-access route: 190 filing
+indexes, 216 Exhibit 99 documents in 176 filings, and 176 cached release excerpts
+are now saved on engine-v6. Three discovery errors remain for review. All cached
+index-source and excerpt hashes were independently checked. This supersedes the
+SEC access blocker for collection through GitHub Actions; local SEC access remains
+blocked. The frozen-call dataset is still empty, so model validation is unfinished.

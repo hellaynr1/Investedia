@@ -67,3 +67,12 @@ Verification: all 8 new discovery tests and all 25 existing Track D tests pass.
 Full Python suite: 157/158 pass; the only failure remains the unchanged
 `test_footer_links_and_signup_destinations` mailto-path assertion. Site build
 passes; its 92 generated file changes were restored so no website files changed.
+
+## Update: GitHub research runner succeeded
+
+Local SEC requests remain policy-blocked, but the repository's GitHub Actions
+research runner successfully collected and verified the first 20 indexes / 20
+Exhibit 99 documents in 17 filings. See V6-GITHUB-DISCOVERY.md and
+V6-EXHIBIT-RESULTS.md for run links and real examples. The current workflow can
+persist cache data only to engine-v6 and cache text in explicit --fetch-only mode.
+This supersedes the initial manual-only/read-only workflow description above.

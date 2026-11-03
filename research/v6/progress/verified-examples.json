@@ -1,0 +1,38 @@
+[
+  {
+    "symbol": "TSLA",
+    "filing_date": "2022-01-03",
+    "accepted_at": "2022-01-03T11:06:42+00:00",
+    "type": "EX-99.1",
+    "file": "tsla-ex991_6.htm",
+    "index_url": "https://www.sec.gov/Archives/edgar/data/1318605/000156459022000009/0001564590-22-000009-index.html",
+    "document_url": "https://www.sec.gov/Archives/edgar/data/1318605/000156459022000009/tsla-ex991_6.htm"
+  },
+  {
+    "symbol": "MRNA",
+    "filing_date": "2022-01-04",
+    "accepted_at": "2022-01-04T13:00:44+00:00",
+    "type": "EX-99.1",
+    "file": "exhibit991lettertosharehol.htm",
+    "index_url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285222000004/0001682852-22-000004-index.html",
+    "document_url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285222000004/exhibit991lettertosharehol.htm"
+  },
+  {
+    "symbol": "WEX",
+    "filing_date": "2022-01-04",
+    "accepted_at": "2022-01-04T13:05:14+00:00",
+    "type": "EX-99.1",
+    "file": "a52557193ex99_1.htm",
+    "index_url": "https://www.sec.gov/Archives/edgar/data/1309108/000115752322000007/0001157523-22-000007-index.html",
+    "document_url": "https://www.sec.gov/Archives/edgar/data/1309108/000115752322000007/a52557193ex99_1.htm"
+  },
+  {
+    "symbol": "T",
+    "filing_date": "2022-01-05",
+    "accepted_at": "2022-01-05T11:46:04+00:00",
+    "type": "EX-99.1",
+    "file": "exhibit991pressreleaseofat.htm",
+    "index_url": "https://www.sec.gov/Archives/edgar/data/732717/000073271722000004/0000732717-22-000004-index.html",
+    "document_url": "https://www.sec.gov/Archives/edgar/data/732717/000073271722000004/exhibit991pressreleaseofat.htm"
+  }
+]

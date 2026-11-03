@@ -1,15 +1,15 @@
 # v6 Track D evaluation
 
-As of 2026-11-03T18:33:37Z. Informational research; not investment advice.
+As of 2026-11-03T19:01:56Z. Informational research; not investment advice.
 
 Status: OFFLINE. No trained/frozen v6 model; OOS locked. No claim of improvement.
 
 ## Cache inventory
 
 - sec_filings: 330824
-- filings_with_acceptance_timestamp: 22198
-- filing_indexes_discovered: 0
-- filings_with_exhibit99: 0
+- filings_with_acceptance_timestamp: 22380
+- filing_indexes_discovered: 190
+- filings_with_exhibit99: 176
 - claude_unique_extractions: 0
 - duplicate_fact_rows: 0
 - claude_tracked_cost_usd: unknown / not recorded
@@ -56,7 +56,7 @@ rule comparisons using independent research labels; they cannot establish the va
 
 - No provenance-complete historical calls or collected Claude facts in the audited branch.
 - SEC filing dates lack acceptance timestamps; Nasdaq retrospective consensus has no vintage proof.
-- Verified Exhibit 99 filings in this checkout: 0; discovery requires SEC access.
+- Verified Exhibit 99 filings in this checkout: 176; discovery requires SEC access.
 - Daily next-open proxies cannot prove first intraday trade; sector mapping still required.
 - Split adjustments, ticker reuse, delistings, exceptional closures and incomplete free prices require review.
 - Calibration is descriptive score bucketing, not probability calibration. No Brier/log loss claim.
