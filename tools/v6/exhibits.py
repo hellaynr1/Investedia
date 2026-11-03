@@ -81,7 +81,9 @@ def parse_index(raw,row,url):
                 target=urllib.parse.urlparse(urllib.parse.urljoin(url,documents[0]))
             path=urllib.parse.unquote(target.path)
             if target.hostname!='www.sec.gov' or path.rsplit('/',1)[0]!=urllib.parse.urlparse(url).path.rsplit('/',1)[0]:
-                raise ValueError('attachment outside expected SEC accession')
+                # Preserve the link shape for review when an official index uses
+                # an unexpected wrapper. Never follow an unverified target.
+                raise ValueError('attachment outside expected SEC accession: '+link[:300])
             filename=path.rsplit('/',1)[-1]
             if not re.fullmatch(r'[A-Za-z0-9_.\-]+',filename):raise ValueError('unsafe exhibit filename')
             doc={'file':filename,'type':kind,'description':cells[1]['text']}
@@ -152,7 +154,7 @@ def run(base,minutes,max_filings,fetcher=fetch,start='2022-01-01',end='2026-10-2
     have=metadata(base);deadline=time.monotonic()+minutes*60;last=0;attempts=complete=exhibits=errors=0
     candidates=sorted((r for r in filings(base) if r.get('tickers') and set(r.get('items') or [])&ITEMS
                        and start<=r.get('filed','')<=end),key=lambda r:('2.02' not in r['items'],r['filed'],r['adsh']))
-    failure=None
+    failure=None;failures=[]
     for r in candidates:
         if have.get(r['adsh'],{}).get('status')=='complete':continue
         if attempts>=max_filings or time.monotonic()>=deadline:break
@@ -167,13 +169,13 @@ def run(base,minutes,max_filings,fetcher=fetch,start='2022-01-01',end='2026-10-2
             source.write_bytes(gzip.compress(raw,mtime=0))
             append_record(base,entry);have[r['adsh']]=entry;complete+=1;exhibits+=len(entry['docs'])
         except (ValueError,KeyError,IndexError,urllib.error.URLError,TimeoutError) as exc:
-            errors+=1;failure={'adsh':r['adsh'],'error':str(exc),'at':now()}
+            errors+=1;failure={'adsh':r['adsh'],'error':str(exc),'at':now()};failures.append(failure)
             # Access denials are not successful "no exhibits" results. Stop instead of hammering SEC.
             if (isinstance(exc,urllib.error.HTTPError) and exc.code in (403,429)) or re.search(r'\b(403|429)\b',str(exc)):break
             if errors>=3:break
         if complete and complete%100==0:print(f'{complete} indexes cached; {exhibits} Exhibit 99 entries',flush=True)
     summary={'at':now(),'attempts':attempts,'indexes_cached':complete,'exhibit_entries_added':exhibits,
-             'errors':errors,'last_error':failure,'api_cost_usd':0}
+             'errors':errors,'last_error':failure,'failures':failures,'api_cost_usd':0}
     path=base/'exhibits'/'runs.jsonl';path.parent.mkdir(parents=True,exist_ok=True)
     with path.open('a') as f:f.write(json.dumps(summary,sort_keys=True)+'\n')
     return summary
