@@ -1,5 +1,5 @@
 name: v6 SEC exhibit discovery (no model API)
-# Bounded research job only. Does not deploy or submit Claude batches.
+# Bounded research job only. Records unexpected SEC links; no Claude batches or deployment.
 on:
   push:
     branches: [engine-v6]
