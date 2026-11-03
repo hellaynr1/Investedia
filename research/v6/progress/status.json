@@ -1,0 +1,30 @@
+{
+  "inventory": {
+    "archived_excerpts": 9110,
+    "claude_tracked_cost_usd": null,
+    "claude_unique_extractions": 0,
+    "duplicate_fact_rows": 0,
+    "extraction_failures": null,
+    "filing_indexes_discovered": 0,
+    "filings_with_acceptance_timestamp": 22198,
+    "filings_with_exhibit99": 0,
+    "judged_v6_calls": 0,
+    "price_files": 6385,
+    "sec_filings": 330824,
+    "uncollected_batches": 0
+  },
+  "latest_discovery_run": {
+    "api_cost_usd": 0,
+    "at": "2026-11-03T18:18:09.108760+00:00",
+    "attempts": 1,
+    "errors": 1,
+    "exhibit_entries_added": 0,
+    "indexes_cached": 0,
+    "last_error": {
+      "adsh": "0001477932-22-000046",
+      "at": "2026-11-03T18:18:09.108518+00:00",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    }
+  },
+  "performance_claim": "Unavailable: no validated holdout result"
+}
