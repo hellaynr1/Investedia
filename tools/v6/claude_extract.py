@@ -5,10 +5,13 @@ Budget guard: stops when the tracked spend reaches V6_CLAUDE_BUDGET (default $4.
 Steps per run: (1) fetch missing press-release texts (SEC, fair-access rate) -> research/v6/text/; (2) submit one batch of up to
 V6_BATCH_SIZE filings not yet extracted; (3) collect finished batches -> research/v6/facts/YYYY-MM.jsonl.
 Needs ANTHROPIC_API_KEY.  python3 tools/v6/claude_extract.py"""
-import glob, gzip, html, json, os, re, time, urllib.request
-import anthropic
+import argparse, glob, gzip, hashlib, html, json, os, re, sys, time, urllib.request
+from pathlib import Path
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, ROOT)
+from tools.v6.exhibits import filings, EX99
+
 IDX, TXT, FACTS = (os.path.join(ROOT, 'research', 'v6', d) for d in ('index', 'text', 'facts'))
 MAN = os.path.join(FACTS, 'manifest.json')
 MODEL, BUDGET = 'claude-haiku-5-5', float(os.environ.get('V6_CLAUDE_BUDGET', 4.5))
@@ -47,14 +50,16 @@ def sec(url):
     except Exception: return None
 
 
-def candidates():
-    for p in sorted(glob.glob(os.path.join(IDX, '8k-*.jsonl.gz'))):
-        with gzip.open(p, 'rt') as f:
-            for l in f:
-                r = json.loads(l)
-                if not r.get('tickers') or not set(r.get('items') or []) & ITEMS or (r.get('filed') or '') > '2026-10-20': continue
-                ex = next((d['file'] for d in r.get('docs') or [] if (d.get('type') or '').upper().startswith('EX-99')), None)
-                if ex: yield r, ex
+def candidates(base=None):
+    """Merge verified attachment metadata without rewriting the original SEC index."""
+    for r in filings(Path(base) if base is not None else Path(ROOT)/'research/v6'):
+        if not r.get('tickers') or not set(r.get('items') or []) & ITEMS or (r.get('filed') or '') > '2026-10-20': continue
+        docs=[d for d in r.get('docs') or [] if EX99.fullmatch(d.get('type') or '')
+              and Path(d.get('file','')).suffix.lower() in ('.htm','.html','.txt')]
+        # Prefer a press release to presentation slides; deterministic tie break.
+        docs.sort(key=lambda d: ('press release' not in d.get('description','').lower(),
+                                 'presentation' in d.get('description','').lower(),d['file']))
+        if docs: yield r, docs[0]['file']
 
 
 def text_path(adsh): return os.path.join(TXT, adsh[:10], adsh + '.txt.gz')
@@ -72,11 +77,25 @@ def fetch_texts(todo):
         t = re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', raw))).strip()[:MAX_CHARS]
         os.makedirs(os.path.dirname(p), exist_ok=True)
         with gzip.open(p, 'wt') as f: f.write(t)
+        proof={'adsh':r['adsh'],'file':ex,'source_url':f"https://www.sec.gov/Archives/edgar/data/{cik}/{r['adsh'].replace('-', '')}/{ex}",
+               'filing_accepted_at':r.get('filing_accepted_at'),
+               'source_sha256':hashlib.sha256(raw.encode('latin-1')).hexdigest(),
+               'source_capture_limit_bytes':800000,'source_capture_may_be_truncated':len(raw.encode('latin-1'))>=800000,
+               'excerpt_sha256':hashlib.sha256(t.encode()).hexdigest(),
+               'retrieved_at':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
+               'truncated':True,'max_chars':MAX_CHARS}
+        with open(p+'.json','w') as f:json.dump(proof,f,sort_keys=True)
         n += 1
     return n
 
 
 def main():
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--fetch-only',action='store_true',help='SEC text caching only; never imports or calls Anthropic')
+    args=ap.parse_args()
+    if args.fetch_only:
+        todo=sorted(candidates(),key=lambda x:('2.02' not in x[0]['items'],x[0]['filed']))
+        print('eligible filings',len(todo),'new texts',fetch_texts(todo));return
+    import anthropic
     os.makedirs(FACTS, exist_ok=True)
     man = json.load(open(MAN)) if os.path.exists(MAN) else {'spent_usd': 0.0, 'batches': {}, 'done': []}
     done = set(man['done']); pending = {a for b in man['batches'].values() if b['state'] != 'collected' for a in b['ids']}

@@ -9,6 +9,7 @@ from datetime import timedelta
 from collections import Counter, defaultdict
 from pathlib import Path
 from tools.v6.outcomes import timestamp, cutoff, calculate_daily
+from tools.v6.exhibits import filings, metadata
 
 ROOT = Path(__file__).resolve().parents[2]
 GROUPS = {
@@ -177,18 +178,20 @@ def metrics(rows):
 
 def inventory(base):
     ids=set(); exhibits=set(); fact_ids=set(); fact_rows=0
-    for p in sorted((base/'index').glob('*.gz')):
-        with gzip.open(p,'rt') as f:
-            for line in f:
-                r=json.loads(line); ids.add(r['adsh'])
-                if any((d.get('type') or '').startswith('EX-99') for d in r['docs']):exhibits.add(r['adsh'])
+    accepted=0
+    for r in filings(base):
+        ids.add(r['adsh'])
+        accepted+=bool(r.get('filing_accepted_at'))
+        if any((d.get('type') or '').startswith('EX-99') for d in r['docs']):exhibits.add(r['adsh'])
+    discovery=metadata(base)
     for p in sorted((base/'facts').glob('*.jsonl')):
         for line in p.read_text().splitlines():
             fact_ids.add(json.loads(line)['adsh']); fact_rows+=1
     man_path=base/'facts'/'manifest.json'
     man=json.loads(man_path.read_text()) if man_path.exists() else {}
     batches=man.get('batches',{}).values()
-    return {'sec_filings':len(ids),'filings_with_exhibit99':len(exhibits),'claude_unique_extractions':len(fact_ids),
+    return {'sec_filings':len(ids),'filings_with_acceptance_timestamp':accepted,
+            'filing_indexes_discovered':sum(r['status']=='complete' for r in discovery.values()),'filings_with_exhibit99':len(exhibits),'claude_unique_extractions':len(fact_ids),
             'duplicate_fact_rows':fact_rows-len(fact_ids),'claude_tracked_cost_usd':man.get('spent_usd'),
             'extraction_failures':None, 'uncollected_batches':sum(b.get('state')!='collected' for b in batches),
             'price_files':len(list((base/'prices').glob('*.gz')))}
@@ -201,7 +204,7 @@ def main():
     base=args.base; out=base/'evaluation'; out.mkdir(exist_ok=True)
     hashes={}; cache={}
     source_hashes={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()
-                   for p in [Path(__file__), ROOT/'tools/v6/outcomes.py', ROOT/'engine/policy.py', ROOT/'engine/outcome.py', ROOT/'engine/v6/model.py', ROOT/'tools/v6/train.py']}
+                   for p in [Path(__file__), ROOT/'tools/v6/outcomes.py', ROOT/'engine/policy.py', ROOT/'engine/outcome.py', ROOT/'engine/v6/model.py', ROOT/'tools/v6/train.py', ROOT/'tools/v6/exhibits.py']}
     def load(path):
         if path in cache:return cache[path]
         if not path.exists():return {}
@@ -268,7 +271,7 @@ def main():
              '## Limitations and remaining gates', '',
              '- No provenance-complete historical calls or collected Claude facts in the audited branch.',
              '- SEC filing dates lack acceptance timestamps; Nasdaq retrospective consensus has no vintage proof.',
-             '- Index has no EX-99 document entries: the current Claude candidate selector has zero eligible documents.',
+             f"- Verified Exhibit 99 filings in this checkout: {results['inventory']['filings_with_exhibit99']}; discovery requires SEC access.",
              '- Daily next-open proxies cannot prove first intraday trade; sector mapping still required.',
              '- Split adjustments, ticker reuse, delistings, exceptional closures and incomplete free prices require review.',
              '- Calibration is descriptive score bucketing, not probability calibration. No Brier/log loss claim.',

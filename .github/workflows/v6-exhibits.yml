@@ -1,0 +1,33 @@
+name: v6 SEC exhibit discovery (no model API)
+# Manual research job only. Does not deploy or submit Claude batches.
+on:
+  workflow_dispatch:
+    inputs:
+      max_filings:
+        description: Maximum uncached filing indexes to request
+        default: '3000'
+        required: true
+permissions:
+  contents: read
+jobs:
+  discover:
+    if: github.ref == 'refs/heads/engine-v6'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: engine-v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m unittest discover -s tests -p 'test_v6_exhibits.py' -v
+      - run: python3 -m tools.v6.exhibits --import-legacy --minutes 35 --max-filings "$V6_MAX_FILINGS"
+        env:
+          V6_MAX_FILINGS: ${{ inputs.max_filings }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v6-sec-exhibits
+          path: research/v6/exhibits
+          retention-days: 7
