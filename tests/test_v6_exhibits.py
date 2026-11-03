@@ -8,7 +8,7 @@ import urllib.error
 from pathlib import Path
 from unittest.mock import patch
 from tools.v6.exhibits import parse_index,index_url,acceptance,run,filings,import_legacy,metadata
-from tools.v6.claude_extract import candidates
+from tools.v6.claude_extract import candidates,fetch_texts
 
 ROW={'adsh':'0000000001-24-000001','filed':'2024-03-12','ciks':['0000000001'],
      'tickers':['TEST'],'items':['2.02'],'docs':[{'file':'main.htm','type':'8-K'}]}
@@ -55,6 +55,25 @@ class Exhibits(unittest.TestCase):
         for target in ('https://evil.example/release.htm','/Archives/edgar/data/2/other/release.htm'):
             wrapped=PAGE.replace(b'href="release.htm"',f'href="/ix?doc={target}"'.encode())
             with self.assertRaises(ValueError):parse_index(wrapped,ROW,index_url(ROW))
+
+    def test_sec_cross_filer_cik_keeps_exact_accession(self):
+        accession=ROW['adsh'].replace('-','')
+        link=f'/Archives/edgar/data/4515/{accession}/release.htm'
+        page=PAGE.replace(b'href="release.htm"',f'href="{link}"'.encode())
+        doc=parse_index(page,ROW,index_url(ROW))['docs'][-1]
+        self.assertEqual(doc['cik'],'4515')
+        with tempfile.TemporaryDirectory() as tmp:
+            base=Path(tmp);prepare(base)
+            self.assertEqual(run(base,1,1,fetcher=lambda url:page)['indexes_cached'],1)
+            selected=list(candidates(base))[0][0]
+            self.assertEqual(selected['exhibit_cik'],'4515')
+            urls=[]
+            def fake_sec(url):urls.append(url);return '<p>Original release</p>'
+            with patch('tools.v6.claude_extract.sec',side_effect=fake_sec),patch('tools.v6.claude_extract.text_path',return_value=str(base/'release.txt.gz')):
+                self.assertEqual(fetch_texts([(selected,'release.htm')]),1)
+            self.assertIn('/data/4515/'+accession+'/release.htm',urls[0])
+        wrong=link.replace(accession,'000000000124000002')
+        with self.assertRaises(ValueError):parse_index(PAGE.replace(b'href="release.htm"',f'href="{wrong}"'.encode()),ROW,index_url(ROW))
 
     def test_cache_resume_and_original_index_untouched(self):
         with tempfile.TemporaryDirectory() as tmp:

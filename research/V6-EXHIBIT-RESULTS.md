@@ -36,3 +36,19 @@ Before scaling collection, inspect the rejected attachment-link variants.
 The current collector conservatively stops at three errors. Fact extraction,
 provenance-complete frozen historical calls, training, calibration/freeze and
 OOS validation remain unfinished. No success percentage is supported yet.
+
+## Diagnostic collection, 2026-11-03 19:21 UTC
+
+Run [41701905302](https://github.com/hellaynr1/Investedia/actions/runs/41701905302)
+added 262 verified indexes, 343 Exhibit 99 documents and 244 readable excerpts
+at $0 model API cost. Cumulative cache: **452 verified indexes, 559 Exhibit 99
+documents in 421 filings, and 420 cached excerpts**. One eligible exhibit text
+was temporarily unavailable and remains retryable. All 452 accession-page hashes,
+acceptance clocks and extracted document lists were independently rechecked.
+
+The three rejected links exposed an official SEC cross-filer pattern: the
+attachment is under a different numeric CIK directory but the exact same
+accession. The discovery/parser fix requires the SEC host, numeric CIK and exact
+accession; the text fetcher uses that attachment CIK. It never follows a different
+accession or external host. The three failed filings have not yet been retried
+with this fix; no result from that retry is included in these totals.

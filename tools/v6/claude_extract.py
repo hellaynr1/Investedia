@@ -59,7 +59,9 @@ def candidates(base=None):
         # Prefer a press release to presentation slides; deterministic tie break.
         docs.sort(key=lambda d: ('press release' not in d.get('description','').lower(),
                                  'presentation' in d.get('description','').lower(),d['file']))
-        if docs: yield r, docs[0]['file']
+        if docs:
+            selected=docs[0]
+            yield {**r,'exhibit_cik':selected.get('cik') or r['ciks'][0]},selected['file']
 
 
 def text_path(adsh): return os.path.join(TXT, adsh[:10], adsh + '.txt.gz')
@@ -71,7 +73,7 @@ def fetch_texts(todo):
         p = text_path(r['adsh'])
         if os.path.exists(p): continue
         if n >= FETCH_MAX: break
-        cik = str(int(r['ciks'][0])) if r.get('ciks') else None
+        cik = str(int(r.get('exhibit_cik') or r['ciks'][0])) if r.get('ciks') else None
         raw = sec(f"https://www.sec.gov/Archives/edgar/data/{cik}/{r['adsh'].replace('-', '')}/{ex}") if cik else None
         if not raw: continue
         t = re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', raw))).strip()[:MAX_CHARS]

@@ -80,13 +80,14 @@ def parse_index(raw,row,url):
                 if len(documents)!=1:raise ValueError('ambiguous SEC viewer document')
                 target=urllib.parse.urlparse(urllib.parse.urljoin(url,documents[0]))
             path=urllib.parse.unquote(target.path)
-            if target.hostname!='www.sec.gov' or path.rsplit('/',1)[0]!=urllib.parse.urlparse(url).path.rsplit('/',1)[0]:
+            attachment=re.fullmatch(r'/Archives/edgar/data/(\d+)/('+row['adsh'].replace('-','')+r')/([A-Za-z0-9_.\-]+)',path)
+            if target.hostname!='www.sec.gov' or not attachment or target.query or target.fragment:
                 # Preserve the link shape for review when an official index uses
                 # an unexpected wrapper. Never follow an unverified target.
                 raise ValueError('attachment outside expected SEC accession: '+link[:300])
-            filename=path.rsplit('/',1)[-1]
-            if not re.fullmatch(r'[A-Za-z0-9_.\-]+',filename):raise ValueError('unsafe exhibit filename')
+            filename=attachment.group(3)
             doc={'file':filename,'type':kind,'description':cells[1]['text']}
+            if int(attachment.group(1))!=int(row['ciks'][0]):doc['cik']=attachment.group(1)
             if doc not in docs:docs.append(doc)
     if not primary:raise ValueError('primary 8-K document table absent')
     return {'adsh':row['adsh'],'filed':row['filed'],'status':'complete',
