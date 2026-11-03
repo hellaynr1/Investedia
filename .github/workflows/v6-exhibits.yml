@@ -1,6 +1,9 @@
 name: v6 SEC exhibit discovery (no model API)
 # Bounded research job only. Does not deploy or submit Claude batches.
 on:
+  push:
+    branches: [engine-v6]
+    paths: [.github/workflows/v6-exhibits.yml]
   workflow_dispatch:
     inputs:
       max_filings:
