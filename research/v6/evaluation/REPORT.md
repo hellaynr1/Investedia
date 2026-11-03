@@ -1,6 +1,6 @@
 # v6 Track D evaluation
 
-As of 2026-11-03T00:40:20Z. Informational research; not investment advice.
+As of 2026-11-03T18:33:37Z. Informational research; not investment advice.
 
 Status: OFFLINE. No trained/frozen v6 model; OOS locked. No claim of improvement.
 
