@@ -10,25 +10,71 @@ on:
         description: Maximum uncached filing indexes to request
         default: '3000'
         required: true
+      reuse_run_id:
+        description: Reuse a completed SEC artifact instead of fetching SEC again
+        required: false
+        default: ''
 permissions:
-  contents: read
+  contents: write
+  actions: read
 jobs:
   discover:
     if: github.ref == 'refs/heads/engine-v6'
     runs-on: ubuntu-latest
     timeout-minutes: 50
+    env:
+      # One-time transfer of the verified sample; clear after importing it.
+      V6_REUSE_RUN: ${{ inputs.reuse_run_id || '41696800244' }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: engine-v6
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/v6/
+            /tests/test_v6_exhibits.py
+            /research/v6/index/
+            /research/v6/exhibits/
+            /research/sec/
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: python3 -m unittest discover -s tests -p 'test_v6_exhibits.py' -v
-      - run: python3 -m tools.v6.exhibits --import-legacy --minutes "$V6_MINUTES" --max-filings "$V6_MAX_FILINGS"
+      - if: env.V6_REUSE_RUN == ''
+        run: python3 -m tools.v6.exhibits --import-legacy --minutes "$V6_MINUTES" --max-filings "$V6_MAX_FILINGS"
         env:
           V6_MAX_FILINGS: ${{ inputs.max_filings || '20' }}
           V6_MINUTES: ${{ github.event_name == 'push' && '3' || '35' }}
+      - name: Download completed discovery artifact
+        if: env.V6_REUSE_RUN != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: v6-sec-exhibits
+          path: /tmp/v6-sec-completed
+          run-id: ${{ env.V6_REUSE_RUN }}
+          github-token: ${{ github.token }}
+      - name: Verify and import artifact evidence
+        if: env.V6_REUSE_RUN != ''
+        run: |
+          python3 - <<'PYCODE'
+          import zipfile
+          from pathlib import Path
+          source = Path('/tmp/v6-sec-completed')
+          with zipfile.ZipFile('/tmp/v6-sec-completed.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+              for path in sorted(source.rglob('*')):
+                  if path.is_file():
+                      archive.write(path, str(path.relative_to(source)))
+          PYCODE
+          python3 -m tools.v6.import_exhibits /tmp/v6-sec-completed.zip --run-id "$V6_REUSE_RUN"
+      - name: Save verified SEC cache to research branch only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add research/v6/exhibits
+          git diff --cached --quiet && exit 0
+          git commit -m "v6 verified SEC exhibit cache [skip ci]"
+          git pull --rebase origin engine-v6
+          git push origin HEAD:engine-v6
       - name: Show actual discovery result
         if: always()
         run: |
