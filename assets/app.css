@@ -1172,3 +1172,23 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 /* theme switch: the old page stays still while the new one is revealed in a circle (see ui.js switchTheme) */
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
 ::view-transition-new(root){z-index:2}
+
+/* footer (Style F, 2026-11-04): reference layout: tagline row, five link columns, follow row, one legal line */
+.ftr{border-top:1px solid var(--line);margin-top:72px;background:var(--bg)}
+.ftr .wrap{padding-top:44px}
+.ftr-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.ftr-brand{font-size:24px;font-weight:650;letter-spacing:-.02em}
+.ftr-tag{margin:0;color:var(--fg-2);font-size:20px;letter-spacing:-.01em}
+.ftr-cols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:28px;padding:32px 0}
+.ftr h6{margin:0 0 14px;font-size:14px;font-weight:600;color:var(--fg)}
+.ftr ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.ftr ul a{color:var(--fg-2);font-size:13.5px;line-height:1.4}
+.ftr ul a:hover{color:var(--fg)}
+.ftr-follow{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:24px 0;border-top:1px solid var(--line)}
+.ftr-follow b{font-size:14px;font-weight:600}
+.ftr-socials{display:flex;gap:10px;flex-wrap:wrap}
+.ftr-socials .icon-btn{width:40px;height:40px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center}
+.ftr-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 0 32px;border-top:1px solid var(--line);color:var(--fg-3);font-size:12.5px}
+.ftr-bottom a{color:var(--fg-2)}
+@media (max-width:900px){.ftr-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.ftr-head{flex-direction:column;align-items:flex-start}}
+@media (max-width:520px){.ftr-cols{grid-template-columns:1fr 1fr}.ftr-bottom{flex-direction:column;gap:8px}}
