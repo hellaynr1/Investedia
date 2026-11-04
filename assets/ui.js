@@ -476,6 +476,14 @@
   });
   ftr.querySelector('.ftr-top-btn')?.addEventListener('click', () => scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
+  // scroll reveal: sections fade and rise in once as they enter the view; grid items follow in a short stagger.
+  // Only opacity/transform (GPU), each element animates once, nothing hidden without JS, and none with reduced motion.
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.addEventListener('DOMContentLoaded', () => {
+    const SEL = 'main section:not(.hn-hero), .hn-sec, .hn-band, .ftr .wrap, .grid3 > *, .cx-grid > *, .hn-ctys > *, .whys > *, .tr2-two > *, .tr2-kpis > *, .res-strip';
+    const els = [...document.querySelectorAll(SEL)].filter(e => !e.closest('.hn-hero'));
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('rv-in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .06 });
+    els.forEach(e => { const r = e.getBoundingClientRect(); if (r.top < innerHeight * .92) return; e.classList.add('rv'); const i = [...(e.parentElement?.children || [])].indexOf(e); if (i > 0 && i < 8 && e.parentElement.matches('.grid3,.cx-grid,.hn-ctys,.whys,.tr2-two,.tr2-kpis')) e.style.transitionDelay = (i * 60) + 'ms'; io.observe(e); });
+  });
 
   // ---------- charts ----------
   // Sparkline as an inline SVG string

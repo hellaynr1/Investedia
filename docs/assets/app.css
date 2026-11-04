@@ -1231,3 +1231,10 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .ftr-lang{position:relative;padding-right:30px}
 .ftr-lang select{-webkit-appearance:none;appearance:none;background:transparent!important;border:0!important;box-shadow:none!important;padding:0;font-weight:500}
 .ftr-lang::after{content:'';position:absolute;right:12px;top:50%;width:7px;height:7px;border-right:1.6px solid var(--fg-2);border-bottom:1.6px solid var(--fg-2);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+
+/* scroll reveal (see ui.js): fade + 14px rise, once per element */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+.rv.rv-in{opacity:1;transform:none}
+/* small hover lifts on cards (border/colour only, no jumping) */
+.hn-card,.cx-card,.hn-box{transition:border-color .18s ease,background-color .18s ease}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1!important;transform:none!important;transition:none!important}}
