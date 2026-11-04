@@ -684,7 +684,7 @@
   au.className = 'palette auth'; au.hidden = true;
   au.innerHTML = `<div class="palette-box auth-box" role="dialog" aria-modal="true" aria-labelledby="au-t">
     <button class="icon-btn pop-x" type="button" aria-label="Close">${icon('x')}</button>
-    <div class="auth-head"><span class="wm" aria-label="Investedia">Invested<span class="i">i</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Follow countries and companies, news alerts and the daily brief. Free.</p></div>
+    <div class="auth-head"><span class="wm" translate="no" aria-label="Investedia">Invested<span class="i">i</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Follow countries and companies, news alerts and the daily brief. Free.</p></div>
     <button class="btn auth-google" type="button">${gIcon}<span>Continue with Google</span></button>
     <div class="auth-or"><span>or with email</span></div>
     <form class="auth-f" novalidate>
@@ -769,7 +769,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(au);
     if (gated) { const g = document.createElement('section'); g.className = 'gate';
-      g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your ${page === 'watchlist' ? 'watchlist' : 'profile'}</h1><p class="muted">Your profile and watchlist can be saved to your account. Country and article follows are stored on this device; email alerts are not activated by following.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
+      g.innerHTML = `<span class="wm" translate="no" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your ${page === 'watchlist' ? 'watchlist' : 'profile'}</h1><p class="muted">Your profile and watchlist can be saved to your account. Country and article follows are stored on this device; email alerts are not activated by following.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
       document.querySelector('main').prepend(g); }
     document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); document.querySelector('.drawer.open') && document.querySelector('.menu-toggle').click(); openAuth(b.dataset.auth || 'up'); });
     document.addEventListener('click', e => { const b = e.target.closest('[data-logout]'); if (!b) return; e.preventDefault(); b.disabled = true; try { localStorage.removeItem('inv-owner'); } catch {} sbLoad().then(c => c.auth.signOut()).catch(() => {}).finally(() => location.href = 'index.html'); });
