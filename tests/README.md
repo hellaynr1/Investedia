@@ -21,14 +21,8 @@ python3 tests/contrast-check.py
 
 Network fixtures record optional requests then substitute deterministic font/logo/rate/event responses. They prevent test analytics from being submitted and isolate provider outages; they do not prove provider uptime or validate provider accounts. Real saved article/data files are used. Authenticated account actions, genuine outgoing email, live infrastructure/region/RLS/retention settings and manual assistive-technology testing require the owner/provider review described in the release checklist. Service workers are blocked in functional suites to isolate the currently built code; their source cache policy and CORE inventory are reviewed separately. A deployed worker upgrade still needs an installation/update smoke test.
 
-## Live translation verification
+## Native translation checks
 
-The normal `footer-translation.spec.mjs` tests provider loading and failure handling with a contract fixture. It does **not** establish that Google's real service works.
+Run `node tests/native-locale-engine.spec.mjs` for the DOM engine contract and `node tests/native-translation.spec.mjs` for real first-party language packs. Both use the browser environment variables and local docs server documented above. Historical `footer-translation.spec.mjs` and `translation-live.spec.mjs` commands now run the native suite. There are no external translator scripts or Google provider fixtures in the real-pack suite.
 
-For an opt-in check that requires actual translated page text, run with the normal browser-test environment variables and the local docs server:
-
-```sh
-TEST_BASE_URL=http://127.0.0.1:8771 node tests/translation-live.spec.mjs
-```
-
-This connects to Google's real translator at desktop and phone widths, checks that the page heading changes while its URL stays unchanged, then restores English. There is no provider mock. A network denial, a rejected widget, or unchanged English must fail this check. A failure does not by itself distinguish those causes.
+`python3 tools/check-locales.py` checks all six packs against the current source catalogue and flags altered numbers and storage identifiers. `tools/collect-locale-text.mjs` refreshes the public UI/article text catalogue after UI changes. `.github/workflows/native-locales.yml` generates missing strings through the existing secured Gemini secret, caches the results, validates them, and mirrors them into docs/. It also updates translations after successful news workflows. Visitors never call the provider.

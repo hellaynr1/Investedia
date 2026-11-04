@@ -122,6 +122,7 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 // two lines exactly: shrink the title until the longer line fits next to the globe (PC) or the screen (phone)
 function fitTitle() { const h = hnTitle, lim = innerWidth > 900 ? 540 : Math.min(document.documentElement.clientWidth, innerWidth) - 48;
   for (let f = 60; f >= 22; f--) { h.style.fontSize = f + 'px'; if (Math.max(...[...h.children].map(c => c.offsetWidth)) <= lim) break; } }
+window.addEventListener('inv-language-change', fitTitle);
 const isPhone = () => innerWidth <= 900;
 document.querySelector('.hn-hero').classList.add('hv-a');
 // phone: the globe is centred exactly in the free space between the search bar and the news ticker (side to side and top to bottom), a little smaller than the screen width

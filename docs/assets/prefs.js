@@ -41,7 +41,7 @@
     const curs = [{ v: '', t: 'Automatic', sub: auto, flag: FLAG[auto] }, ...cs.map(c => ({ v: c, t: c, sub: cn.of(c), flag: FLAG[c] }))];
     dd.innerHTML = `<div class="pf-h"><b>Region and currency</b><small>Saved on this device only.</small></div>
       <div class="pf-f"><span>Region</span>${combo('region', regs, P.region)}</div>
-      <label class="pf-f"><span>Language</span><select class="select" data-k="lang">${Object.entries(LANGS).map(([k, v]) => `<option value="${k}"${k === P.lang ? ' selected' : ''}>${v}</option>`).join('')}</select><small>Sets number and date format. Translated articles are coming.</small></label>
+      <label class="pf-f"><span>Language</span><select class="select" data-k="lang">${Object.entries(LANGS).map(([k, v]) => `<option value="${k}"${k === P.lang ? ' selected' : ''}>${v}</option>`).join('')}</select><small>Sets number and date format.</small></label>
       <div class="pf-f"><span>Currency</span>${combo('cur', curs, P.cur)}<small>Converts prices quoted in US dollars. Index levels, currency pairs and non-US stocks keep their own units.</small></div>`;
     const set = (k, v) => { P[k] = v; if (k === 'region') { P.cur = ''; P.lang = P.lang === g.lang || !saved.lang ? REG[v][1] : P.lang; } saved = P; save(); emit(); };
     dd.querySelector('select').onchange = e => set('lang', e.target.value);

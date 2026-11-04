@@ -4,6 +4,10 @@ on:
     branches: [preview/native-translation]
     paths: [assets/locales/source.json, tools/build-locales.py, .github/workflows/native-locales.yml]
   workflow_dispatch:
+  workflow_run:
+    workflows: ['Broad news (every 30 min)', 'Priority news (every ~10 min)']
+    types: [completed]
+    branches: [main]
 permissions:
   contents: write
 concurrency:
@@ -11,6 +15,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   translate:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -23,6 +28,8 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python3 tools/build-locales.py
+      - name: Validate translation completeness and numbers
+        run: python3 tools/check-locales.py
       - name: Mirror and save translations to this branch
         run: |
           mkdir -p docs/assets/locales

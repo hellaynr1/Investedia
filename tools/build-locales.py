@@ -20,7 +20,23 @@ def generate(texts,language,key):
 def main():
  parser=argparse.ArgumentParser();parser.add_argument('--languages',default=','.join(LANGS));args=parser.parse_args()
  key=os.getenv('GEMINI_API_KEY');assert key,'GEMINI_API_KEY must be configured securely in GitHub Actions'
- sources=json.loads((ROOT/'assets/locales/source.json').read_text())
+ source_path=ROOT/'assets/locales/source.json'
+ sources=set(json.loads(source_path.read_text()))
+ def visit(value):
+  if isinstance(value,str):
+   import re
+   text=re.sub(r'\s+',' ',value).strip()
+   if 1<len(text)<3000 and re.search(r'[a-zA-Z]{2}',text) and not re.match(r'https?://|^[a-f0-9]{20,}$',text):sources.add(text)
+  elif isinstance(value,list):
+   for item in value:visit(item)
+  elif isinstance(value,dict):
+   for name,item in value.items():
+    if name in {'title','headline','summary','why','why_it_matters','analysis','implications','description','text','body'}:visit(item)
+ for filename in ['news-live.json','news-archive.json']:
+  data=json.loads((ROOT/'assets/globe'/filename).read_text())
+  for article in data.get('stories',[]):visit(article)
+ sources=sorted(sources)
+ source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2)+'\n')
  for lang in args.languages.split(','):
   path=ROOT/f'assets/locales/{lang}.json';pack=json.loads(path.read_text()) if path.exists() else {'language':lang,'strings':{}}
   missing=[s for s in sources if s not in pack['strings']];batch=[];size=0

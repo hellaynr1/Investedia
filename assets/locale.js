@@ -4,7 +4,7 @@
  const root=new URL('locales/',document.currentScript.src),languages=['en','fr','nl','de','es','it','pt'];
  const skip='script,style,noscript,svg,canvas,code,pre,.brand,[translate="no"],[data-i18n-skip],.ftr-lang,.csel-menu';
  const originals=new WeakMap(),attributes=new WeakMap(),packs=new Map();
- let language='en',strings={},observer,busy=false,request=0;
+ let language='en',strings={},observer,busy=false,request=0,titleSource=document.title,titleOutput=document.title;
  const normalize=s=>s.replace(/\s+/g,' ').trim();
  const translate=s=>{const key=normalize(s);return Object.hasOwn(strings,key)?s.match(/^\s*/)[0]+strings[key]+s.match(/\s*$/)[0]:s;};
  function text(node){
@@ -28,6 +28,8 @@
  function apply(){
   if(!document.body||busy)return;busy=true;observer?.disconnect();
   try{
+   if(document.title!==titleOutput)titleSource=document.title;
+   titleOutput=translate(titleSource);if(document.title!==titleOutput)document.title=titleOutput;
    element(document.body);
    const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT);
    let node;while(node=walk.nextNode())if(node.nodeType===3)text(node);else element(node);
@@ -38,13 +40,14 @@
  function schedule(){if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;apply();});}}
  async function setLanguage(next,{remember=true}={}){
   if(!languages.includes(next))throw Error('Unsupported language');
+  if(next===language)return;
   const ticket=++request;let dictionary={};
   if(next!=='en'){
    if(!packs.has(next)){
     const response=await fetch(new URL(next+'.json',root));
     if(!response.ok)throw Error('Language pack unavailable');
     const pack=await response.json();
-    if(pack.language!==next||!pack.strings||Object.values(pack.strings).some(v=>typeof v!=='string'))throw Error('Invalid language pack');
+    if(pack.language!==next||!pack.strings||typeof pack.strings!=='object'||Array.isArray(pack.strings)||Object.values(pack.strings).some(v=>typeof v!=='string'))throw Error('Invalid language pack');
     packs.set(next,pack.strings);
    }
    dictionary=packs.get(next);
@@ -53,7 +56,9 @@
   language=next;strings=dictionary;
   if(remember)document.cookie='inv-lang='+next+'; Path=/; Max-Age=31536000; SameSite=Lax'+(location.protocol==='https:'?'; Secure':'');
   apply();window.dispatchEvent(new CustomEvent('inv-language-change',{detail:{language}}));
+  for(const frame of document.querySelectorAll('iframe'))frame.contentWindow?.postMessage({type:'investedia-language',language},location.origin);
  }
+ window.addEventListener('message',event=>{if(event.origin===location.origin&&event.data?.type==='investedia-language'&&languages.includes(event.data.language))setLanguage(event.data.language,{remember:false}).catch(()=>{});});
  window.InvLocale={setLanguage,get language(){return language},normalize};
  function start(){
   observer=new MutationObserver(schedule);apply();
