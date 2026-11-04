@@ -1192,3 +1192,26 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .ftr-bottom a{color:var(--fg-2)}
 @media (max-width:900px){.ftr-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.ftr-head{flex-direction:column;align-items:flex-start}}
 @media (max-width:520px){.ftr-cols{grid-template-columns:1fr 1fr}.ftr-bottom{flex-direction:column;gap:8px}}
+
+/* footer B (2026-11-04): card panel; phone sections fold into tap-to-open rows */
+.ftr{background:transparent;border:0;margin-top:72px}
+.ftr .wrap{position:relative;margin:0 auto 28px;border:1px solid var(--line);border-radius:20px;background:var(--card);padding:36px 40px 0;overflow:hidden}
+.ftr .wrap::before{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,122,26,.55),transparent)}
+.ftr-head{align-items:center!important}
+.ftr-tag{flex:1;text-align:right;font-size:17px!important}
+.ftr-top-btn{height:34px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--fg-2);font-size:12.5px;white-space:nowrap}
+.ftr-top-btn:hover{color:var(--fg);border-color:var(--fg-3)}
+.ftr-col summary{list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:default}
+.ftr-col summary::-webkit-details-marker{display:none}
+.ftr-chev{display:none}
+.ftr-socials .icon-btn{transition:border-color .15s,color .15s,background .15s}
+.ftr-socials .icon-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+@media (max-width:760px){
+ .ftr .wrap{margin:0 12px 20px;padding:24px 18px 0;border-radius:16px}
+ .ftr-head{flex-direction:row!important;flex-wrap:wrap;gap:10px!important}.ftr-tag{order:3;flex-basis:100%;text-align:left;font-size:14px!important}
+ .ftr-cols{grid-template-columns:1fr!important;gap:0!important;padding:6px 0 10px!important}
+ .ftr-col{border-bottom:1px solid var(--line)}.ftr-col summary{cursor:pointer;min-height:48px}.ftr-col h6{margin:0!important}
+ .ftr-chev{display:block;width:9px;height:9px;border-right:1.6px solid var(--fg-3);border-bottom:1.6px solid var(--fg-3);transform:rotate(45deg);transition:transform .2s;margin-right:4px}
+ .ftr-col[open] .ftr-chev{transform:rotate(-135deg)}.ftr-col ul{padding:0 0 14px}
+ .ftr-follow{flex-direction:column;align-items:flex-start!important;gap:12px!important}
+}
