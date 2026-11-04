@@ -112,7 +112,7 @@
 
   // ---------- brand ----------
   const mark = `<svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" fill="#000"/><path d="M0 31 11 24.5l7 4.5 10-10 12 6.5V40H0z" fill="#1e1e21"/><path d="M0 28 11 21.5l7 4.5 10-10 12 6.5" fill="none" stroke="#FF7A1A" stroke-width="4"/></svg>`;
-  const brand = `<a class="brand" href="index.html" aria-label="Investedia home">${mark}<b>Invested<span class="i">i</span>a</b></a>`;
+  const brand = `<a class="brand notranslate" translate="no" href="index.html" aria-label="Investedia home">${mark}<b>Invested<span class="i">i</span>a</b></a>`;
 
   // ---------- header ----------
   // Mega-menu content per market category: link columns + popular assets
@@ -257,7 +257,18 @@
   const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>', moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
   const setTheme = t => { document.documentElement.dataset.theme = t; document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'light' ? '#FFFFFF' : '#0A0A0B'); tb.innerHTML = t === 'light' ? moon : sun; try { localStorage.setItem('inv-theme', t); } catch {} };
   let th = 'dark'; try { th = localStorage.getItem('inv-theme') || 'dark'; } catch {}
-  setTheme(th); window.setInvTheme = setTheme; tb.onclick = () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
+  // animated switch: the new theme spreads in a circle from the button that was pressed (View Transitions; GPU-composited, smooth on
+  // phones). Browsers without it, and reduced motion, switch instantly.
+  const switchTheme = (t, from) => {
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) return setTheme(t);
+    const r = from?.getBoundingClientRect(), x = r ? r.left + r.width / 2 : innerWidth - 40, y = r ? r.top + r.height / 2 : 30;
+    const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const vt = document.startViewTransition(() => setTheme(t));
+    vt.ready.then(() => document.documentElement.animate({ clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${end}px at ${x}px ${y}px)`] },
+      { duration: 650, easing: 'cubic-bezier(.65,0,.35,1)', pseudoElement: '::view-transition-new(root)' })).catch(() => {});
+  };
+  setTheme(th); window.setInvTheme = setTheme; window.switchInvTheme = switchTheme;
+  tb.onclick = () => switchTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light', tb);
 
   const onScrollHdr = () => hdr.classList.toggle('scrolled', scrollY > 8); addEventListener('scroll', onScrollHdr, { passive: true }); onScrollHdr();
   document.addEventListener('DOMContentLoaded', () => { const m = document.querySelector('main'); if (m) { m.id = m.id || 'main'; if (!('onpagereveal' in window)) m.classList.add('enter'); } });
@@ -308,10 +319,20 @@
   drawer.innerHTML = `${page === 'home' ? '' : `<a class="search-btn" href="assets/globe/news.html">${icon('search')}<span>Search assets, countries &amp; articles</span></a>`}
     <a href="index.html">Home</a><a href="assets/globe/news.html">Globe</a><details class="nn-drawer-news"><summary>News ${icon('chev')}</summary>${InvNewsMenu.html('nn-mobile')}</details><a href="markets.html">Markets</a><a href="education.html">Learn</a>
     <details><summary>Tools ${icon('chev')}</summary>${tools.map(([, t, , h]) => `<a href="${h}">${t}</a>`).join('')}</details><a href="about.html">About</a>
+    <button class="drawer-theme" type="button"><span>Light mode</span><i aria-hidden="true"></i></button>
+    <div class="drawer-cur"><span>Currency</span><span class="dc-host"></span></div>
     <div class="drawer-acct guest-only"><p>Save your watchlist and alerts on every device.</p><button class="btn btn-primary" type="button" data-auth="up">Create free account</button><button class="btn btn-ghost" type="button" data-auth="in">Log in</button></div>
     <div class="drawer-acct member-only"><a class="owner-only" href="admin.html">Analytics dashboard</a><a href="profile.html">Profile &amp; notifications</a><button class="btn btn-ghost" type="button" data-logout>Log out</button></div>`;
   hdr.after(drawer);
   const mt = hdr.querySelector('.menu-toggle');
+  // light / dark switch in the phone menu (the header button is hidden on small phones); closes the menu first so the switch is seen
+  const dth = drawer.querySelector('.drawer-theme'), paintDth = () => { const l = document.documentElement.dataset.theme === 'light'; dth.firstElementChild.textContent = l ? 'Dark mode' : 'Light mode'; dth.lastElementChild.innerHTML = l ? moon : sun; };
+  paintDth(); new MutationObserver(paintDth).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  dth.onclick = () => { const t = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'; closeDrawer(); setTimeout(() => switchTheme(t, dth.lastElementChild), 200); };
+  // phones: the light/dark button sits in the header (like on PC) and the currency picker moves into the menu
+  const pfHome = () => hdr.querySelector('.hdr-tools'), dcHost = drawer.querySelector('.dc-host'), phoneQ = matchMedia('(max-width: 900px)');
+  const placePf = () => { const w = document.querySelector('.pf-wrap'); if (!w) return; if (phoneQ.matches) { if (w.parentNode !== dcHost) dcHost.append(w); } else if (w.parentNode === dcHost) pfHome().prepend(w); };
+  placePf(); phoneQ.addEventListener?.('change', placePf);
   function closeDrawer() { if(drawer.classList.contains('open')) modalClose(drawer); drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.classList.remove('is-open'); document.body.style.overflow = ''; }
   mt.onclick = () => { const o = !drawer.classList.contains('open'); if(o)modalOpen(drawer);else modalClose(drawer); drawer.classList.toggle('open', o); mt.setAttribute('aria-expanded', o); mt.classList.toggle('is-open', o); mt.setAttribute('aria-label', o ? 'Close menu' : 'Open menu'); document.body.style.overflow = o ? 'hidden' : ''; if(o)drawer.querySelector('a').focus(); };
 
@@ -432,17 +453,32 @@
   // ---------- footer ----------
   const ftr = document.createElement('footer');
   ftr.className = 'ftr';
-  ftr.innerHTML = `<div class="wrap"><div class="ftr-top">
-    <div>${brand}<p class="muted" style="margin:14px 0 0;max-width:34ch">Financial news and market intelligence for investors.</p>
-      <div class="socials"><a class="icon-btn" href="https://www.instagram.com/investedia/" aria-label="Instagram">${icon('ig')}</a></div></div>
-    <div><h6>News</h6><ul><li><a href="index.html">Home</a></li><li><a href="assets/globe/news.html">Globe</a></li><li><a href="news.html">News</a></li><li><a href="analysis.html">Analysis</a></li></ul></div>
-    <div><h6>Learn</h6><ul><li><a href="education.html">Education</a></li></ul></div>
-    <div><h6>Tools</h6><ul>${tools.map(([, t, , h]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h6>Company</h6><ul><li><a href="about.html">About</a></li><li><a href="about.html#story">Our background</a></li><li><a href="about.html#app">Get the app</a></li><li><a href="contact.html">Contact</a></li><li><a href="mailto:jobs@investedia.com">Jobs</a></li><li><a href="mailto:partners@investedia.com">Partnerships</a></li><li><a href="mailto:feedback@investedia.com">Feedback &amp; suggestions</a></li></ul></div>
-    <div class="ftr-legal"><h6>Legal</h6><ul><li><a href="legal.html">Legal hub</a></li><li><a href="legal-notice.html">Legal notice</a></li><li><a href="terms.html">Terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="cookies.html">Cookies</a></li><li><a href="disclaimer.html">Disclaimer</a></li><li><a href="ai-disclosure.html">AI use</a></li><li><a href="sources.html">Sources</a></li><li><a href="copyright.html">Copyright & takedown</a></li><li><a href="editorial-policy.html">Editorial policy</a></li><li><a href="corrections.html">Corrections</a></li><li><a href="affiliate-disclosure.html">Advertising & affiliates</a></li><li><a href="accessibility.html">Accessibility</a></li><li><a href="contact.html">Contact</a></li><li><button type="button" data-cookie-settings>Cookie settings</button></li></ul></div>
-  </div>
-  <div class="ftr-bottom"><span>© ${new Date().getFullYear()} Investedia · <a href="legal-notice.html">Legal notice</a> · <a href="disclaimer.html">Not investment advice.</a></span><span>Data: Yahoo Finance, FRED & Coinbase. <a href="sources.html">Sources & attributions</a>.</span></div></div>`;
-  document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
+  ftr.innerHTML = `<div class="wrap">
+    <div class="ftr-head"><div class="ftr-brand">${brand}</div><p class="ftr-tag">Invest with clarity.</p><button type="button" class="ftr-top-btn" aria-label="Back to top">Back to top <span aria-hidden="true">↑</span></button></div>
+    <div class="ftr-meta"><span class="ftr-socials"><a class="icon-btn" href="https://www.linkedin.com/company/investedia/" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.4V9h3.4v1.6c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4a2.1 2.1 0 1 1 0-4.1 2.1 2.1 0 0 1 0 4.1zM7.1 20.5H3.6V9h3.5v11.5z"/></svg></a><a class="icon-btn" href="https://x.com/investedia" aria-label="X" title="X"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M18.2 2H21l-6.5 7.4L22 22h-6.1l-4.8-6.3L5.6 22H2.8l7-8L2 2h6.2l4.3 5.7L18.2 2zm-1.1 18h1.7L7 3.9H5.2L17.1 20z"/></svg></a><a class="icon-btn" href="https://www.youtube.com/@investedia" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg></a><a class="icon-btn" href="https://www.instagram.com/investedia/" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a><a class="icon-btn" href="mailto:contact@investedia.com" aria-label="Email contact@investedia.com" title="contact@investedia.com"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></span><label class="ftr-lang"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg><select aria-label="Language"><option value="en">English</option><option value="fr">Français</option><option value="nl">Nederlands</option><option value="de">Deutsch</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option></select></label><p class="ftr-data">Market data: Yahoo Finance, FRED &amp; Coinbase. Company filings: SEC EDGAR. News summaries are written with AI from each source’s reporting. <a href="sources.html">All sources</a></p></div>
+    <nav class="ftr-cols" aria-label="Footer"><details class="ftr-col" open><summary><h6>News</h6><span class="ftr-chev" aria-hidden="true"></span></summary><ul><li><a href="news.html">Latest news</a></li><li><a href="assets/globe/news.html">Globe</a></li><li><a href="implications.html">Market Implications</a></li><li><a href="track-record.html">Track Record</a></li></ul></details><details class="ftr-col" open><summary><h6>Markets</h6><span class="ftr-chev" aria-hidden="true"></span></summary><ul><li><a href="markets.html">Markets</a></li><li><a href="calendar.html">Economic Calendar</a></li><li><a href="screener.html">Stock Screener</a></li><li><a href="movers.html">Market Heatmaps</a></li></ul></details><details class="ftr-col" open><summary><h6>Learn</h6><span class="ftr-chev" aria-hidden="true"></span></summary><ul><li><a href="education.html">Education</a></li></ul></details><details class="ftr-col" open><summary><h6>Company</h6><span class="ftr-chev" aria-hidden="true"></span></summary><ul><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li><li><a href="about.html#app">Get the app</a></li></ul></details><details class="ftr-col" open><summary><h6>Legal</h6><span class="ftr-chev" aria-hidden="true"></span></summary><ul><li><a href="terms.html">Terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="cookies.html">Cookies</a></li><li><a href="disclaimer.html">Disclaimer</a></li><li><a href="legal.html">All legal</a></li></ul></details></nav>
+    `;
+  // phones: footer sections fold into tap-to-open rows; wider screens: always open
+  const ftrQ = matchMedia('(max-width: 760px)'), ftrFold = () => ftr.querySelectorAll('.ftr-col').forEach(d => { d.open = !ftrQ.matches; });
+  ftrFold(); ftrQ.addEventListener?.('change', ftrFold);
+  // Native first-party translation (assets/locale.js + assets/locales/<lang>.json); no third-party script, no proxy.
+  const ftrLang = ftr.querySelector('.ftr-lang select');
+  const syncLang = () => { if (window.InvLocale) ftrLang.value = InvLocale.language; };
+  ftrLang.addEventListener('change', () => { const want = ftrLang.value; window.InvLocale?.setLanguage(want).catch(() => { ftrLang.value = 'en'; }); });
+  addEventListener('inv-language-change', syncLang);
+  ftr.querySelector('.ftr-top-btn')?.addEventListener('click', () => scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.append(ftr);
+    syncLang();
+  });
+  // scroll reveal: sections fade and rise in once as they enter the view; grid items follow in a short stagger.
+  // Only opacity/transform (GPU), each element animates once, nothing hidden without JS, and none with reduced motion.
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.addEventListener('DOMContentLoaded', () => {
+    const SEL = 'main section:not(.hn-hero), .hn-sec, .hn-band, .ftr .wrap, .grid3 > *, .cx-grid > *, .hn-ctys > *, .whys > *, .tr2-two > *, .tr2-kpis > *, .res-strip';
+    const els = [...document.querySelectorAll(SEL)].filter(e => !e.closest('.hn-hero'));
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('rv-in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .06 });
+    els.forEach(e => { const r = e.getBoundingClientRect(); if (r.top < innerHeight * .92) return; e.classList.add('rv'); const i = [...(e.parentElement?.children || [])].indexOf(e); if (i > 0 && i < 8 && e.parentElement.matches('.grid3,.cx-grid,.hn-ctys,.whys,.tr2-two,.tr2-kpis')) e.style.transitionDelay = (i * 60) + 'ms'; io.observe(e); });
+  });
 
   // ---------- charts ----------
   // Sparkline as an inline SVG string
@@ -648,7 +684,7 @@
   au.className = 'palette auth'; au.hidden = true;
   au.innerHTML = `<div class="palette-box auth-box" role="dialog" aria-modal="true" aria-labelledby="au-t">
     <button class="icon-btn pop-x" type="button" aria-label="Close">${icon('x')}</button>
-    <div class="auth-head"><span class="wm" aria-label="Investedia">Invested<span class="i">i</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Follow countries and companies, news alerts and the daily brief. Free.</p></div>
+    <div class="auth-head"><span class="wm" translate="no" aria-label="Investedia">Invested<span class="i">i</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Follow countries and companies, news alerts and the daily brief. Free.</p></div>
     <button class="btn auth-google" type="button">${gIcon}<span>Continue with Google</span></button>
     <div class="auth-or"><span>or with email</span></div>
     <form class="auth-f" novalidate>
@@ -733,7 +769,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(au);
     if (gated) { const g = document.createElement('section'); g.className = 'gate';
-      g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your ${page === 'watchlist' ? 'watchlist' : 'profile'}</h1><p class="muted">Your profile and watchlist can be saved to your account. Country and article follows are stored on this device; email alerts are not activated by following.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
+      g.innerHTML = `<span class="wm" translate="no" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your ${page === 'watchlist' ? 'watchlist' : 'profile'}</h1><p class="muted">Your profile and watchlist can be saved to your account. Country and article follows are stored on this device; email alerts are not activated by following.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
       document.querySelector('main').prepend(g); }
     document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); document.querySelector('.drawer.open') && document.querySelector('.menu-toggle').click(); openAuth(b.dataset.auth || 'up'); });
     document.addEventListener('click', e => { const b = e.target.closest('[data-logout]'); if (!b) return; e.preventDefault(); b.disabled = true; try { localStorage.removeItem('inv-owner'); } catch {} sbLoad().then(c => c.auth.signOut()).catch(() => {}).finally(() => location.href = 'index.html'); });

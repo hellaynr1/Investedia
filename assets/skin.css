@@ -52,3 +52,23 @@ html:not([data-theme=light]) :is(.mh-bt,.mh-tbl,.mh-ic3,.mh-p,.ap-card,.ap-ch){b
 img[src*="/flags/us.svg"],img[src*="/flags/au.svg"],img[src*="/flags/nz.svg"],img[src*="/flags/my.svg"],img[src*="/flags/lr.svg"],img[src*="/flags/cu.svg"],img[src*="/flags/pr.svg"],img[src*="/flags/uy.svg"],img[src*="/flags/cl.svg"],img[src*="/flags/ky.svg"],img[src*="/flags/tw.svg"],img[src*="/flags/ck.svg"],img[src*="/flags/fk.svg"],img[src*="/flags/gs.svg"],img[src*="/flags/hm.svg"],img[src*="/flags/io.svg"],img[src*="/flags/sh.svg"],img[src*="/flags/tc.svg"],img[src*="/flags/vg.svg"],img[src*="/flags/bm.svg"],img[src*="/flags/ai.svg"],img[src*="/flags/ms.svg"],img[src*="/flags/pn.svg"],img[src*="/flags/ws.svg"],img[src*="/flags/nu.svg"],img[src*="/flags/to.svg"],img[src*="/flags/as.svg"],img[src*="/flags/gu.svg"],img[src*="/flags/vi.svg"],img[src*="/flags/um.svg"],img[src*="/flags/tv.svg"],img[src*="/flags/ki.svg"],img[src*="/flags/fj.svg"],img[src*="/flags/ve.svg"],img[src*="/flags/mh.svg"]{object-position:22% 50%}
 img[src*="/flags/"]{object-fit:cover}
 .notif-ic img,.ai-i[src*="/flags/"],.pk-i .ic img,.hn-lgc img{object-fit:cover!important;padding:0!important;background:none!important}
+
+/* currency button shows the symbol only (e.g. $, €, £): a round button like the others */
+.hdr-tools .pf-btn{min-width:36px;width:auto;padding:0 10px;font:600 15px/1 var(--sans,inherit)!important;letter-spacing:0}
+@media(max-width:900px){.hdr-tools .pf-btn{min-width:34px;height:34px;padding:0 9px;font-size:14px!important}}
+
+/* phones: light/dark button in the header, currency in the menu */
+@media(max-width:900px){.hdr-tools #theme-btn{display:inline-grid!important}}
+.drawer-cur{display:flex;align-items:center;justify-content:space-between;padding:10px 4px;border-bottom:1px solid var(--line-soft);font-size:16px;font-weight:500}
+@media(min-width:901px){.drawer-cur{display:none}}
+.drawer-cur .pf-btn{height:36px!important;min-width:36px;padding:0 10px!important;border-radius:999px;font-size:15px!important}
+
+/* Style G (2026-11-01): quieter, more institutional. No violet/orange glow, solid cards instead of glass, grey section labels,
+   squarer chips, neutral selected tab, slimmer header. The globe keeps the visual spectacle. */
+html:not([data-theme=light]) body::before{display:none!important}
+:root{--line:#26262B;--accent-soft:rgba(255,122,26,.10)}
+html:not([data-theme=light]) :is(.mh-bt,.mh-tbl,.mh-ic3,.mh-p,.ap-card,.ap-ch,.cx-card,.tr2-box,.hn-box,.cx-sum){background:#121214!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.hn-eyebrow,.res-label{color:#71717A!important}
+.cx-filters button{border-radius:6px!important}
+.cx-seg button[aria-pressed=true]{background:var(--card-hi)!important;color:var(--fg)!important}
+:root{--head:56px}.hdr .wrap{height:56px}

@@ -1,0 +1,29 @@
+name: Build native language packs
+on:
+  push:
+    branches: [native-i18n]
+    paths: [assets/locales/source.json, tools/build-locales.py]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: {group: native-locales, cancel-in-progress: false}
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q anthropic
+      - name: Translate missing UI strings (Claude Haiku, capped)
+        env: {ANTHROPIC_API_KEY: '${{ secrets.ANTHROPIC_API_KEY }}', LOCALE_BUDGET_USD: '0.60'}
+        run: python3 tools/build-locales.py
+      - run: python3 tools/check-locales.py
+        continue-on-error: true
+      - name: Save packs
+        run: |
+          mkdir -p docs/assets/locales && cp assets/locales/*.json docs/assets/locales/
+          git config user.name 'github-actions[bot]'; git config user.email '41898283+github-actions[bot]@users.noreply.github.com'
+          git add assets/locales docs/assets/locales; git diff --cached --quiet && exit 0
+          git commit -m 'Generate native translation packs'; git pull --rebase origin "${GITHUB_REF_NAME}"; git push origin "HEAD:${GITHUB_REF_NAME}"

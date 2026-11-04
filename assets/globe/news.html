@@ -122,6 +122,7 @@ h1 span{color:var(--fg-3)}
 /* Hover preview */
 .hover{position:fixed;z-index:5;width:280px;padding:12px;border-radius:14px;pointer-events:none;display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:start;box-shadow:0 18px 50px rgba(0,0,0,.5);opacity:0;transform:translateY(4px);transition:opacity .14s,transform .14s}
 .hover.on{opacity:1;transform:none}
+.hover.pin{pointer-events:auto;cursor:pointer}
 .hover.brief{width:340px;display:block;padding:16px}.brief-head{display:flex;align-items:center;gap:10px;padding-bottom:10px}.brief-head .flag{width:22px;height:16px;border-radius:2px;object-fit:cover}.brief-head h3{margin:0;font-size:16px}.brief-head span{margin-left:auto;font-size:12px;color:var(--fg-3)}
 .brief-line{padding:9px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.35;font-weight:650}.brief-index{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding-top:10px;font-size:12.5px;color:var(--fg-3)}.brief-next{margin-top:8px;font-size:12px;color:var(--fg-3)}.brief-next b{color:var(--fg);font-weight:650}
 .hover .art{width:52px;height:52px;border-radius:9px}
@@ -365,7 +366,8 @@ h1 span{color:var(--fg-3)}
 
 @media (prefers-reduced-motion:reduce){html[data-panel] .panel{transition:none}}
 .embed body,.embed{background:transparent}
-.embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom,.embed .dock,.embed .peek,.embed .fsheet,.embed .fs-back,.embed .layers,.embed .ddrow{display:none!important}
+.embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .dock,.embed .peek,.embed .fsheet,.embed .fs-back,.embed .layers,.embed .ddrow{display:none!important}
+.embed .zoom{right:24px;bottom:96px;top:auto}
 .embed #cv{touch-action:pan-y}  /* the page scrolls from anywhere next to the globe; a finger that lands ON the globe is claimed in JS (touchstart below) so it spins first */
 
 /* Atlas-style floating glass: segmented category + region bars, richer news panel */
@@ -475,6 +477,7 @@ h1 span{color:var(--fg-3)}
 .up-day{margin:14px 0 4px;font:600 12px 'Geist Mono',ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-3)}.up-row{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;width:100%;padding:11px 0;border:0;border-top:1px solid var(--line);background:none;color:inherit;text-align:left}.up-row .flag{width:24px;height:16px;border-radius:2px;object-fit:cover}.up-main b{display:block;font-size:14.5px}.up-main small{color:var(--fg-3);font-size:13px}.up-in{color:#fbbf24;font-weight:700;font-size:13px;white-space:nowrap}.up-list{display:grid}
 @media(max-width:760px){.ddrow{display:grid;grid-template-columns:1fr;margin-top:0}.fsheet .dd-btn{width:100%;justify-content:flex-start}.fsheet .dd-btn .dd-car{margin-left:auto}.fsheet .dd-menu{position:static;margin-top:8px;min-width:0;width:100%;box-shadow:none}.up-main small,.up-in,.up-day,.mine-nm small,.mine-foot{font-size:14px}.dd-btn{font-size:15px}}
 </style>
+<script src="../locale.js"></script>
 </head>
 <body>
 <a class="globe-skip" href="#pbody">Skip to article panel</a><canvas id="cv" aria-label="3D globe of financial and business news. Use the article list in the panel to browse by keyboard."></canvas>
@@ -901,7 +904,7 @@ function drawConnections(t, focus, country) {
   mains.forEach(([e, pts], i) => {
     const top = !EMBED && !sel && i < 3;
     if (strokeArc(pts, MAIN, (EMBED ? .85 : top ? .95 : .7) * fade, EMBED ? 1.4 : top ? 2 : 1.5, top, top ? ph(i) : null)) visibleArcs++;
-    if (!EMBED && e.impact) arcHits.push({ ...e, points: pts });
+    if (e.impact) arcHits.push({ ...e, points: pts });
   });
   // the selection (an event or an asset): its main line brightest, then ripples, sector spread and story threads, each with its reason
   const chosen = focus ? events.filter(related).slice(0, 1) : sym ? events.filter(related).slice(0, 8) : iso ? events.filter(related).slice(0, 8) : [];
@@ -1182,7 +1185,7 @@ function setZ(z, x, y, anchor) {
 }
 
 // ===== Interaction state =====
-let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
+let pinned = null, hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
 // pointer: drag to rotate, pinch / wheel / double-click / buttons to zoom, tap to select
 const touches = new Map(); let pinch = null, drag = null, spin = null;  // spin: momentum after a drag is released (degrees per ms)
 // In the homepage embed a pinch must zoom the globe only: the page behind must not scroll with it. Two fingers cancel the browser's scrolling,
@@ -1224,15 +1227,17 @@ function endPointer(e) {
 }
 cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
 cv.addEventListener('pointerleave', () => { if (!drag && !phone()) hideHover(); });
-cv.addEventListener('wheel', e => { if (EMBED && !e.ctrlKey) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
+cv.addEventListener('wheel', e => { if (EMBED && !e.ctrlKey && !onGlobe(e.clientX, e.clientY)) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
 cv.addEventListener('selectstart', e => e.preventDefault()); cv.addEventListener('dragstart', e => e.preventDefault());
 cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) setZ(Zt < ZMAX - .1 ? Zt * 1.8 : 1, e.clientX, e.clientY); });
 $('zin').onclick = () => setZ(Zt * 1.6); $('zout').onclick = () => setZ(Zt / 1.6);
 
 let cTimer = null, lastX = 0, lastY = 0;
+addEventListener('keydown', e => { if (e.key === 'Escape' && pinned) hideHover(); });
 addEventListener('wheel', () => { clearTimeout(cTimer); hideHover(); }, { passive: true });
 function pick(x, y, r) { let best = null, bd = r * r; for (const d of drawn) { const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < bd) { bd = q; best = d; } } return best; }
 function hoverAt(x, y) {
+  if (pinned) return;  // an article popup opened by a click stays until you click elsewhere or press Escape
   cv.style.cursor = !EMBED || onGlobe(x, y) ? 'grab' : 'default';  // full Globe page: hand everywhere; homepage: only over the globe
   const ex = !EMBED && (exPick(x, y) || upPick(x, y)); if (ex) { $('hover').classList.remove('on'); return; }
   const edge=arcPick(x,y); arcHover=edge || null;
@@ -1246,7 +1251,7 @@ function hoverAt(x, y) {
   if (c === hoverCountry) return;
   hoverCountry = c; clearTimeout(cTimer); $('hover').classList.remove('on');
   if (c && !EMBED) cTimer = setTimeout(() => { if (hoverCountry !== c || drag) return; const hv = $('hover');
-    hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); placeHover(lastX, lastY + 6); }, 650);
+    hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); placeHover(lastX, lastY + 6); }, 160);
 }
 function showHover(d) {
   const hv = $('hover');
@@ -1260,9 +1265,9 @@ function showHover(d) {
   }
 }
 function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.offsetHeight; let l = x + 16, t = y - h / 2; if (l + w > innerWidth - 12) l = x - w - 16; t = Math.max(12, Math.min(innerHeight - h - 12, t)); hv.style.left = l + 'px'; hv.style.top = t + 'px'; }
-function hideHover() { delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
+function hideHover() { $('hover').classList.remove('pin'); pinned = null; delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
 function tap(x, y, touch) {
-  if (touch) hideHover();
+  if (pinned) hideHover(); else if (touch) hideHover();
   const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
   const ex = !EMBED && exPick(x, y); if (ex) { window.InvPeek?.open(ex.e.ix); return; }
   const pr=!EMBED&&pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);if(pr&&pr.asset&&selectAsset(pr.asset.s)){arcHover=null;return;}  // a price label selects its asset
@@ -1273,7 +1278,8 @@ function tap(x, y, touch) {
   const g = inv(x, y), c = g && countryAt(g[0], g[1]);
   if (c) { if (phone() && !EMBED) { const hv = $('hover'); hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); hv.dataset.country = c.name; return; } return openCountry(c); }
 }
-$('hover').addEventListener('click', e => { const n = $('hover').dataset.country; if (n && byName[n] && $('hover').classList.contains('brief')) { $('hover').classList.remove('on'); delete $('hover').dataset.country; openCountry(byName[n]); } });
+$('hover').addEventListener('click', e => { if (pinned) { const d = pinned; hideHover(); return d.list.length === 1 ? openStory(d.list[0]) : openPlace(d.list); }
+   const n = $('hover').dataset.country; if (n && byName[n] && $('hover').classList.contains('brief')) { $('hover').classList.remove('on'); delete $('hover').dataset.country; openCountry(byName[n]); } });
 
 // ===== Panel =====
 const panel = $('panel'), pbody = $('pbody'); size(); new MutationObserver(() => { if (!phone()) size(); }).observe(panel, { attributes: true, attributeFilter: ['class'] }); let view = { k: 'top' }, hist = [];
@@ -1602,6 +1608,13 @@ const GB = Object.assign({}, GB0, ({
   M: { rim: .85, rimRGB: '140,144,154', rimW: 1.8, glow: '255,122,26,.42', blur: 16, atm: .14, atmRGB: '255,122,26' },   // graphite rim with an orange glow (mixed)
   E: { rim: .5, rimRGB: '255,255,255', rimW: 1, glow: '255,255,255,.18', blur: 16, atm: .05, atmRGB: '235,240,255' },       // glass: white hairline
   F: { rim: .9, rimRGB: '120,124,134', rimW: 2, glow: '0,0,0,0', blur: 0, atm: .04, atmRGB: '120,124,134' } })[new URLSearchParams(location.search).get('gb')], (g => g === null ? {} : { grid: +g })(new URLSearchParams(location.search).get('gr')));  // ?gr=0..2 previews the grid strength
+// Day globe (light theme): a palette swap applied ONCE when the theme changes, nothing extra per frame. The homepage's circular theme
+// reveal animates the change; the sky is rebuilt once (its cache key includes the palette).
+const GB_NIGHT = Object.assign({}, GB), GB_DAY = { s0: '#d3e1f2', s1: '#b4cae6', atm: .3, atmRGB: '62,112,196', rgb: '28,38,54', land: .2, line: .25, rim: 1, rimRGB: '36,58,100', rimW: 1.6, glow: '56,108,200,.42', blur: 14 };
+let DAY = false;
+const setDay = on => { DAY = !!on; Object.assign(GB, on ? GB_DAY : GB_NIGHT); };
+try { if (localStorage.getItem('inv-theme') === 'light') setDay(true); } catch {}
+addEventListener('message', e => { if (e.origin === location.origin && e.data && e.data.type === 'inv-theme') setDay(e.data.theme === 'light'); });
 // Star field behind the globe (preview: ?st=1 sparse, 2 dense with a soft galaxy band, 3 dense + slow twinkle and parallax). Off by default.
 const STARS = 1;  // chosen: sparse stars, no twinkle
 const P = new URLSearchParams(location.search), ARC_A = +P.get('arc') || .4, STAR_MONO = !P.has('color');  // previews: ?arc=0.3 stronger connections, ?smono black-and-white stars
@@ -1610,7 +1623,8 @@ const starList = (() => { let seed = 7; const rnd = () => (seed = (seed * 16807)
   return Array.from({ length: n }, () => { const big = rnd() > .93, band = STARS > 1 && rnd() < .38; const x = rnd(), y = band ? Math.min(1, Math.max(0, .78 - x * .55 + (rnd() - .5) * .22)) : rnd();
     return { x, y, r: SM === 2 ? 1.2 + rnd() * 1.1 : SM === 3 ? .6 + rnd() * .65 : big ? 1.6 + rnd() * 1.2 : .8 + rnd() * .9, a: SM === 2 ? .7 + rnd() * .3 : SM === 3 ? .28 + rnd() * .42 : .45 + rnd() * .55, ph: rnd() * 6.28, sp: .4 + rnd() * 1.2, warm: (!STAR_MONO && rnd() > .82), d: .15 + rnd() * .85 }; }); })();
 // Desktop look (chosen design B): a near-black grey globe background and dimmer stars. The outline, glow and grid are unchanged. Phones are untouched.
-if (innerWidth > 760) Object.assign(GB, { s0: '#161618', s1: '#050506', glow: '255,122,26,.6', blur: 22 });  // desktop: a bit more orange glow around the outline
+if (innerWidth > 760) Object.assign(GB, EMBED ? { s0: '#17171b', s1: '#0a0a0d', glow: '255,122,26,.6', blur: 22 } : { s0: '#161618', s1: '#050506', glow: '255,122,26,.6', blur: 22 });  // homepage: the globe page's look, a little darker  // desktop: a bit more orange glow around the outline
+Object.assign(GB_NIGHT, GB);  // the dark palette snapshot must include the desktop colours above (the theme message restores it)
 const STAR_DIM = innerWidth > 760 ? (P.has('sd') ? +P.get('sd') : .95) : 1;  // desktop stars: brighter than before (.4 was too faint), still subdued
 // Galaxy preview (?gx=1 violet band, 2 warm nebula, 3 spiral galaxy, 4 nebula + spiral). Drawn once into an offscreen canvas per size, then copied each frame: cheap for scrolling and dragging.
 const GALAXY = 0;  // Milky Way / galaxy concepts removed; only the stars remain  // desktop: nebula + spiral mix. Phones: no galaxy or Milky Way, only the thin stars
@@ -1634,7 +1648,7 @@ function drawSky() {
   if (key !== skyKey) {
     skyKey = key; skyCv = document.createElement('canvas'); skyCv.width = W; skyCv.height = H;
     const real = ctx; ctx = skyCv.getContext('2d');
-    try { drawGalaxy(); drawStars(0); } finally { ctx = real; }
+    try { if (DAY) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#c4d6ee'); g.addColorStop(.55, '#d9e5f4'); g.addColorStop(1, '#ebf1f9'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); } else { drawGalaxy(); drawStars(0); } } finally { ctx = real; }
   }
   ctx.drawImage(skyCv, 0, 0, W, H);
 }
@@ -1742,7 +1756,7 @@ function frame(t) {
     if (s.flag && d.z > .35 && (n === 1 || d.same)) {
       const lx = d.x + (n > 1 ? 21 : 12), al = a * Math.min(1, (d.z - .35) * 4);
       ctx.font = '650 9px Inter,sans-serif'; ctx.fillStyle = `rgba(255,140,50,${al})`; ctx.fillText(FLAG[s.flag].toUpperCase(), lx, d.y - 6);
-      ctx.font = '500 11.5px Inter,sans-serif'; ctx.fillStyle = `rgba(255,255,255,${.92 * al})`; ctx.fillText(s.location.place.split(',')[0], lx, d.y + 7);
+      ctx.font = '500 11.5px Inter,sans-serif'; ctx.fillStyle = DAY ? `rgba(24,24,28,${.88 * al})` : `rgba(255,255,255,${.92 * al})`; ctx.fillText(s.location.place.split(',')[0], lx, d.y + 7);
     }
   }
   // connection pills (asset + real % move) are drawn last so map markers never cover them

@@ -150,9 +150,16 @@ FEEDS = [  # official press releases: (url, source name, hint)
     ('https://www.bok.or.kr/eng/bbs/E0000634/news.rss', 'Bank of Korea', 'Bank of Korea news, Seoul, South Korea'),
     ('https://www.riksbank.se/en-gb/rss/press-releases/', 'Sveriges Riksbank', 'Riksbank press release, Stockholm, Sweden'),
     ('https://www.rba.gov.au/rss/rss-cb-media-releases.xml', 'Reserve Bank of Australia', 'Reserve Bank of Australia media release, Sydney, Australia'),
+    # Eurostat euro indicators only (headline GDP, inflation, unemployment, trade): kept after the 48 h source test, 2026-11-01
+    ('https://ec.europa.eu/eurostat/en/search?p_p_id=estatsearchportlet_WAR_estatsearchportlet&p_p_lifecycle=2&p_p_state=maximized&p_p_mode=view&p_p_resource_id=atom&_estatsearchportlet_WAR_estatsearchportlet_collection=CAT_PREREL',
+     'Eurostat', 'Eurostat euro indicators release, Luxembourg, European Union'),
 ]
 
 NEWS_FEEDS = [  # publisher business feeds (headline + link + their own short description; no rate limits, unlike GDELT)
+    # press wires: companies' own announcements, minutes before news sites write them up (added 2026-11-01; GlobeNewswire and the
+    # Business Wire public feed refuse automated readers, so PR Newswire's earnings and M&A lists only)
+    ('https://www.prnewswire.com/rss/financial-services-latest-news/earnings-list.rss', 'PR Newswire'),
+    ('https://www.prnewswire.com/rss/financial-services-latest-news/acquisitions-mergers-and-takeovers-list.rss', 'PR Newswire'),
     ('https://feeds.bbci.co.uk/news/business/rss.xml', 'BBC News'),
     ('https://www.theguardian.com/business/rss', 'The Guardian'),
     ('https://rss.nytimes.com/services/xml/rss/nyt/Business.xml', 'The New York Times'),
@@ -220,7 +227,7 @@ def balance(cands, limit=140):
     return reserved + rest[:max(0, limit - len(reserved))]
 
 
-PRIORITY_NEWS = {'BBC News', 'The Guardian', 'MarketWatch', 'The New York Times', 'CoinDesk', 'OilPrice.com'}  # fast publisher feeds kept in the small priority tier
+PRIORITY_NEWS = {'BBC News', 'The Guardian', 'MarketWatch', 'The New York Times', 'CoinDesk', 'OilPrice.com', 'PR Newswire'}  # fast publisher feeds kept in the small priority tier
 
 
 def rss(tier='broad'):

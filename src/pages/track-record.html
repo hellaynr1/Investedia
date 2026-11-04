@@ -10,8 +10,8 @@
 (async () => {
   if (window.UI && UI.newsNav) UI.newsNav('track');
   const U = window.CallsUI, root = document.getElementById('tr'), q = new URLSearchParams(location.search), concept = q.get('concept') === '1';
-  const [{ calls: all, live_since }, early] = await Promise.all([U.load(), U.loadEarly()]);
-  let ecur = 'all', elim = 40;
+  const [{ calls: everything, live_since }, early] = await Promise.all([U.load(), U.loadEarly()]);
+  let all = everything.filter(c => !c.bt), btAll = everything.filter(c => c.bt), ecur = 'all', elim = 40;
   const WIN = [['7', '7D'], ['30', '30D'], ['90', '90D'], ['0', 'All']];
   const F = [['all', 'All'], ['hit', 'Hits'], ['miss', 'Misses'], ['flat', 'No clear move'], ['pending', 'Pending'], ['up', 'Long calls'], ['down', 'Short calls']];
   let win = q.get('w') || '0', cur = 'all', lim = 30;
@@ -50,8 +50,9 @@
   };
   const draw = () => {
     const cs = all.filter(c => U.inWin(c, +win)), scored = cs.filter(c => c.res !== 'void'), n = U.counts(scored), a = U.acc(n, U.NEED);
-    const sel = c => cur === 'all' || c.res === cur || c.dir === cur, hist = cs.filter(sel);
+    const sel = c => cur === 'all' || c.res === cur || c.dir === cur || (cur === 'bt' && c.bt), hist = cs.filter(sel).concat(cur === 'all' || cur === 'bt' ? btAll.filter(c => U.inWin(c, +win)) : []).filter((c, i, a) => cur !== 'bt' || c.bt);
     const fams = [...new Set(scored.map(c => c.fam || 'other'))].sort((x, y) => scored.filter(c => (c.fam || 'other') === y).length - scored.filter(c => (c.fam || 'other') === x).length);
+    const lb = U.longBench(scored);
     root.innerHTML = `<div class="tr2-two">
       <section class="tr2-box"><div class="tr2-k">Live Prediction Track Record · current methodology</div>
         ${a ? `<div class="tr2-big">${a.pct}%</div><div class="tr2-sub">${a.text}</div>` : `<div class="tr2-big building">Building — ${n.judged} of ${U.NEED} judged calls</div><div class="tr2-bar"><i style="width:${Math.min(100, 100 * n.judged / U.NEED)}%"></i></div><div class="tr2-sub">No accuracy is shown until ${U.NEED} calls are judged.</div>`}
@@ -62,7 +63,7 @@
       <div class="tr2-kpis six">${[['Judged', n.judged], ['Hits', n.hit, 'ok'], ['Misses', n.miss, 'no'], ['No clear move', n.flat], ['Pending', n.pending, 'wait'], ['Unresolved', n.unresolved]].map(([l, v, k]) => `<div class="tr2-kpi ${k || ''}"><b>${v}</b><span>${l}</span></div>`).join('')}</div>
       ${U.benchBlock(scored, U.NEED)}
       <div class="tr2-groups">${group('Direction', [['Long calls', scored.filter(c => c.dir === 'up')], ['Short calls', scored.filter(c => c.dir === 'down')]])}
-        ${group('Confidence', ['high', 'medium', 'low'].map(k => [k[0].toUpperCase() + k.slice(1), scored.filter(c => c.conf === k)]))}
+        ${U.PREV ? group('Confidence', ['high', 'medium', 'low'].map(k => [k[0].toUpperCase() + k.slice(1), scored.filter(c => c.conf === k)])) : group('Tier', [['Priority Insights', scored.filter(c => c.tier === 'priority')], ['Market Views', scored.filter(c => c.tier !== 'priority')]])}
         ${group('Event type', fams.slice(0, 8).map(f => [U.FAM[f] || f, scored.filter(c => (c.fam || 'other') === f)]))}</div>
       <h2 class="cx-sec">Every call <small class="muted">· ${hist.length}</small></h2>
       <div class="cx-filters">${F.map(([k, l]) => `<button type="button" data-f="${k}" aria-pressed="${k === cur}">${l}</button>`).join('')}</div>
@@ -76,5 +77,6 @@
     const m = document.getElementById('more'); if (m) m.onclick = () => { lim += 30; draw(); };
   };
   draw();
+  U.watch(async () => { ({ calls: everything, live_since } = await U.load()); all = everything.filter(c => !c.bt); btAll = everything.filter(c => c.bt); draw(); });
 })();
 </script>

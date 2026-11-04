@@ -1163,3 +1163,85 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .hn-tick a{flex:0 0 auto;display:flex;align-items:center}.hn-tick .hn{overflow-x:auto;scrollbar-width:none}
 
 .owner-placeholder{background:#472400;color:#ffbd8a;border:1px dashed #ff7a1a;padding:2px 4px;border-radius:3px;overflow-wrap:anywhere}
+
+/* phone menu: light / dark mode (shows the mode you switch to) */
+.drawer-theme{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px 4px;border:0;border-bottom:1px solid var(--line-soft);background:none;color:var(--fg);font:inherit;font-size:16px;font-weight:500;cursor:pointer;text-align:left}
+.drawer-theme i{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);flex:none;color:var(--fg)}
+.drawer-theme i svg{width:18px;height:18px}
+
+/* theme switch: the old page stays still while the new one is revealed in a circle (see ui.js switchTheme) */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){z-index:2}
+
+/* footer (Style F, 2026-11-04): reference layout: tagline row, five link columns, follow row, one legal line */
+.ftr{border-top:1px solid var(--line);margin-top:72px;background:var(--bg)}
+.ftr .wrap{padding-top:44px}
+.ftr-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.ftr-brand{font-size:24px;font-weight:650;letter-spacing:-.02em}
+.ftr-tag{margin:0;color:var(--fg-2);font-size:20px;letter-spacing:-.01em}
+.ftr-cols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:28px;padding:32px 0}
+.ftr h6{margin:0 0 14px;font-size:14px;font-weight:600;color:var(--fg)}
+.ftr ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.ftr ul a{color:var(--fg-2);font-size:13.5px;line-height:1.4}
+.ftr ul a:hover{color:var(--fg)}
+.ftr-follow{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:24px 0;border-top:1px solid var(--line)}
+.ftr-follow b{font-size:14px;font-weight:600}
+.ftr-socials{display:flex;gap:10px;flex-wrap:wrap}
+.ftr-socials .icon-btn{width:40px;height:40px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center}
+.ftr-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 0 32px;border-top:1px solid var(--line);color:var(--fg-3);font-size:12.5px}
+.ftr-bottom a{color:var(--fg-2)}
+@media (max-width:900px){.ftr-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.ftr-head{flex-direction:column;align-items:flex-start}}
+@media (max-width:520px){.ftr-cols{grid-template-columns:1fr 1fr}.ftr-bottom{flex-direction:column;gap:8px}}
+
+/* footer B (2026-11-04): card panel; phone sections fold into tap-to-open rows */
+.ftr{background:transparent;border:0;margin-top:72px}
+.ftr .wrap{position:relative;margin:0 auto 28px;border:1px solid var(--line);border-radius:20px;background:var(--card);padding:36px 40px 0;overflow:hidden}
+.ftr .wrap::before{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,122,26,.55),transparent)}
+.ftr-head{align-items:center!important}
+.ftr-tag{flex:1;text-align:right;font-size:17px!important}
+.ftr-top-btn{height:34px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--fg-2);font-size:12.5px;white-space:nowrap}
+.ftr-top-btn:hover{color:var(--fg);border-color:var(--fg-3)}
+.ftr-col summary{list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:default}
+.ftr-col summary::-webkit-details-marker{display:none}
+.ftr-chev{display:none}
+.ftr-socials .icon-btn{transition:border-color .15s,color .15s,background .15s}
+.ftr-socials .icon-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+@media (max-width:760px){
+ .ftr .wrap{margin:0 12px 20px;padding:24px 18px 0;border-radius:16px}
+ .ftr-head{flex-direction:row!important;flex-wrap:wrap;gap:10px!important}.ftr-tag{order:3;flex-basis:100%;text-align:left;font-size:14px!important}
+ .ftr-cols{grid-template-columns:1fr!important;gap:0!important;padding:6px 0 10px!important}
+ .ftr-col{border-bottom:1px solid var(--line)}.ftr-col summary{cursor:pointer;min-height:48px}.ftr-col h6{margin:0!important}
+ .ftr-chev{display:block;width:9px;height:9px;border-right:1.6px solid var(--fg-3);border-bottom:1.6px solid var(--fg-3);transform:rotate(45deg);transition:transform .2s;margin-right:4px}
+ .ftr-col[open] .ftr-chev{transform:rotate(-135deg)}.ftr-col ul{padding:0 0 14px}
+ .ftr-follow{flex-direction:column;align-items:flex-start!important;gap:12px!important}
+}
+
+/* footer: TradingView-style order: brand, socials, language, data credits, then link columns */
+.ftr-meta{display:grid;gap:16px;padding:24px 0;border-bottom:1px solid var(--line)}
+.ftr-meta .ftr-socials{gap:18px}
+.ftr-meta .ftr-socials .icon-btn{width:auto;height:auto;min-height:0;border:0;background:none;padding:2px;color:var(--fg)}
+.ftr-meta .ftr-socials .icon-btn svg{width:22px;height:22px}
+.ftr-meta .ftr-socials .icon-btn:hover{color:var(--accent);background:none}
+.ftr-lang{display:inline-flex;align-items:center;gap:8px;width:max-content;height:38px;padding:0 6px 0 12px;border:1px solid var(--line);border-radius:10px;color:var(--fg)}
+.ftr-lang select{background:transparent;border:0;color:inherit;font:inherit;font-size:14px;padding:0 4px;cursor:pointer}
+.ftr-lang select option{color:#111}
+.ftr-data{margin:0;max-width:72ch;color:var(--fg-3);font-size:12.5px;line-height:1.6}.ftr-data a{color:var(--accent)}
+.ftr h6{color:var(--fg-3)!important;font-size:11.5px!important;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.ftr ul a{color:var(--fg)!important;font-size:14px}.ftr ul a:hover{color:var(--accent)!important}
+.ftr-lang{position:relative;padding-right:30px}
+.ftr-lang select{-webkit-appearance:none;appearance:none;background:transparent!important;border:0!important;box-shadow:none!important;padding:0;font-weight:500}
+.ftr-lang::after{content:'';position:absolute;right:12px;top:50%;width:7px;height:7px;border-right:1.6px solid var(--fg-2);border-bottom:1.6px solid var(--fg-2);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+
+/* scroll reveal (see ui.js): fade + 14px rise, once per element */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+.rv.rv-in{opacity:1;transform:none}
+/* small hover lifts on cards (border/colour only, no jumping) */
+.hn-card,.cx-card,.hn-box{transition:border-color .18s ease,background-color .18s ease}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1!important;transform:none!important;transition:none!important}}
+
+/* In-page translation retains Google's own widget and attribution. */
+.ftr-lang[hidden],.ftr-translate[hidden],.ftr-original[hidden],.ftr-translate-status[hidden]{display:none!important}
+.ftr-translate{max-width:100%;padding:10px 12px;background:#fff;color:#111;border-radius:10px;width:max-content}
+.ftr-translate select{max-width:100%;min-height:44px;color:#111;background:#fff}
+.ftr-original{width:max-content;max-width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--fg);font:inherit;cursor:pointer}
+.ftr-translate-status{max-width:60ch;margin:0;color:var(--fg-2);font-size:13px;line-height:1.5}

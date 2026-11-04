@@ -76,3 +76,7 @@ svg.cx-chart{display:block;overflow:visible}.cx-chart.empty{display:flex;align-i
 .tr2-v1{margin:-6px 0 16px !important;font-size:13px !important;color:#a1a1aa !important;border-left:2px solid rgba(201,179,138,.4);padding-left:10px}
 .tr2-row.dup{opacity:.6}
 @media(max-width:760px){.tr2-bt{grid-template-columns:1fr 1fr}}
+
+.cx-eng{margin:-6px 0 18px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--fg-2);font-size:13.5px;line-height:1.5}.cx-eng a{color:var(--accent);white-space:nowrap}
+.cx-bench{display:block;margin-top:4px;color:var(--fg-3);font-size:13px}
+.cx-bt{display:inline-block;margin-right:6px;padding:1px 7px;border-radius:999px;border:1px dashed var(--fg-3);color:var(--fg-3);font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;vertical-align:2px}

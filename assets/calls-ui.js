@@ -6,7 +6,7 @@
 (function () {
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const MIN = 60000, HR = 3600000, DAY = 864e5, NEED = 50, SUB = 30;
-  const ENGINE = v => ({ 'impact-gemini-v1': 'Prediction Engine v1', 'impact-gemini-v2': 'Prediction Engine v2', 'impact-gemini-v3': 'Prediction Engine v3' })[v] || 'Prediction Engine v1';
+  const ENGINE = v => ({ 'impact-gemini-v1': 'Prediction Engine v1', 'impact-gemini-v2': 'Prediction Engine v2', 'impact-gemini-v3': 'Prediction Engine v3', 'pe-v5': 'Prediction Engine v5' })[v] || 'Prediction Engine v1';
   const RES = { hit: ['ok', '✓', 'Hit'], miss: ['no', '✕', 'Miss'], flat: ['na', '–', 'No clear move'], pending: ['wait', '◷', 'Waiting for price'], unresolved: ['na', '?', 'Unresolved'], void: ['na', '!', 'Excluded'] };
   const FAM = { earnings: 'Earnings', guidance: 'Guidance', 'm&a': 'M&A', regulation: 'Regulation', rates: 'Rates', 'macro-data': 'Macro data', 'commodity-prices': 'Commodities', 'energy-supply': 'Energy supply', geopolitics: 'Geopolitics', crypto: 'Crypto', capital: 'Capital markets', trade: 'Trade', labor: 'Labour', other: 'Other' };
   const ago = t => { const m = Math.round((Date.now() - t) / MIN); return m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
@@ -41,11 +41,25 @@
     return `<span class="cx-rb ${c.res === 'flat' ? 'na' : g > 0 ? 'up' : 'dn'}${big ? ' big' : ''}" title="${moved(c)}"><b>${pct(g)}</b></span>`; };
 
   // load the ledger and its joins; returns live calls (legacy calls never count as live)
+  // which record: the current engine (v5) by default; ?engine=previous shows the archived calls of the previous engine
+  const PREV = new URLSearchParams(location.search).get('engine') === 'previous';
+  // fast path: the newest calls come from the Cloudflare Worker (KV) seconds after they are frozen; the static file is the fallback
+  const WORKER = (window.INV_LIVE_URL || '').replace(/\/ticker\/?$/, '');
+  const liveOK = () => !!WORKER && !PREV && (!window.InvConsent || window.InvConsent.allows('live'));
+  let lastTag = null;
+  const fromWorker = () => liveOK() ? fetch(WORKER + '/v1/calls').then(r => { if (!r.ok) throw 0; lastTag = r.headers.get('ETag') || lastTag; return r.json(); }).catch(() => null) : Promise.resolve(null);
+  // poll every ~45 s while the tab is visible; the browser revalidates with the ETag (304, no download) and onChange runs only on new data
+  function watch(onChange, ms = 45000) {
+    if (!liveOK()) return;
+    setInterval(async () => { if (document.hidden) return; const before = lastTag; const L = await fromWorker(); if (L && lastTag && lastTag !== before) onChange(); }, ms);
+  }
   async function load(root = 'assets/globe/') {
     const get = u => fetch(root + u, { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
-    const [L, P, T, A, G] = await Promise.all([get('news-ledger.json'), get('call-paths.json'), get('news-track.json'), get('news-archive.json'), get('logos.json')]);
+    const W = await fromWorker();
+    const [L, P, T, A, G] = await Promise.all([W ? Promise.resolve(W) : get(PREV ? 'news-ledger.json' : 'v5-ledger.json'), get('call-paths.json'), get('news-track.json'), get('news-archive.json'), get('logos.json')]);
     LOGOS = G || {};
-    const calls = (L.calls || []).filter(c => c && !c.legacy && c.sym && (c.dir === 'up' || c.dir === 'down'));
+    const B = {};  // backtest calls are not shown on the site  // v5 rules applied after the fact to past news: shown, always marked Backtest, never counted as live
+    const calls = (L.calls || []).concat(B.calls || []).filter(c => c && !c.legacy && c.sym && (c.dir === 'up' || c.dir === 'down'));
     const days = [...new Set(calls.map(c => (c.start || c.created || '').slice(0, 10)).filter(Boolean))];
     const ev = await Promise.all(days.map(d => get(`events/${d}.json`)));
     const fam = {}; ev.forEach(e => (e.events || []).forEach(x => { fam[x.id] = x.fam; }));
@@ -56,7 +70,7 @@
       const p = P[c.id + '|' + c.sym];
       c.path = p ? { pts: p.pts, src: 'exchange bars' } : (T.s && T.s[c.sym] ? { pts: T.s[c.sym], src: 'recorded so far' } : null);
     }
-    return { calls: calls.sort((a, b) => b.t - a.t), rule: L.outcome_rule, live_since: L.live_since };
+    return { backtest: B, calls: calls.sort((a, b) => b.t - a.t), rule: L.outcome_rule, live_since: L.live_since, engine: PREV ? 'previous' : 'v5' };
   }
   const inWin = (c, days) => !days || c.t >= Date.now() - days * DAY;
   const counts = cs => { const n = { hit: 0, miss: 0, flat: 0, pending: 0, unresolved: 0, void: 0 }; cs.forEach(c => { n[c.res] = (n[c.res] || 0) + 1; }); n.judged = n.hit + n.miss + n.flat; n.clear = n.hit + n.miss; return n; };
@@ -87,16 +101,17 @@
     if (big) s += `<text x="${pad[3]}" y="${H - 6}" class="cx-ax">${esc(when(pts[0][0]))}</text><text x="${W - pad[1]}" y="${H - 6}" class="cx-ax" text-anchor="end">${esc(when(pts.at(-1)[0]))}</text>`;
     return s + '</svg>';
   }
-  const href = c => `call.html?id=${encodeURIComponent(c.id)}&sym=${encodeURIComponent(c.sym)}`;
+  const href = c => `call.html?id=${encodeURIComponent(c.id)}&sym=${encodeURIComponent(c.sym)}${PREV ? '&engine=previous' : ''}`;
+  const btTag = c => c.bt ? `<span class="cx-bt" title="Backtest">Backtest</span>` : '';
   function card(c) {
     return `<a class="cx-card" href="${href(c)}">
-      <div class="cx-top">${logo(c)}<span class="cx-tk">${esc(tk(c))}</span><span class="cx-name">${esc(c.name)}</span>${badge(c)}</div>
+      <div class="cx-top">${logo(c)}<span class="cx-tk">${esc(tk(c))}</span><span class="cx-name">${esc(c.name)}</span>${btTag(c)}${badge(c)}</div>
       <h3 class="cx-h">${esc(c.h)}</h3>
       <div class="cx-meta">${said(c)}${conf(c)}<span class="cx-t" title="${esc(when(c.t))}">${c.art ? 'article ' + esc(when(c.art)) : esc(when(c.t))}</span>${resBox(c)}</div>
       ${chart(c)}</a>`;
   }
   const due = c => { const d = c.t + 24 * HR; return d > Date.now() ? `checked in ~${Math.max(1, Math.round((d - Date.now()) / HR))} h` : 'waiting for its market to reopen'; };
-  const row = c => `<a class="tr2-row" href="${href(c)}"><small class="tr2-when">${esc(when(c.t))}</small><span><h4>${esc(c.h)}</h4><small>${logo(c)}<span class="cx-tk">${esc(tk(c))}</span> ${esc(c.name)} · ${said(c)}${c.conf ? ' · ' + esc(c.conf) : ''}${c.res === 'pending' ? ' · ' + due(c) : ''}</small></span>${Number.isFinite(c.move) ? resBox(c) : '<span></span>'}${badge(c)}</a>`;
+  const row = c => `<a class="tr2-row" href="${href(c)}"><small class="tr2-when">${esc(when(c.t))}</small><span><h4>${btTag(c)}${esc(c.h)}</h4><small>${logo(c)}<span class="cx-tk">${esc(tk(c))}</span> ${esc(c.name)} · ${said(c)}${c.conf ? ' · ' + esc(c.conf) : ''}${c.res === 'pending' ? ' · ' + due(c) : ''}</small></span>${Number.isFinite(c.move) ? resBox(c) : '<span></span>'}${badge(c)}</a>`;
   function detail(c) {
     const rows = [['Asset', `${esc(c.name)} · <b>${esc(tk(c))}</b>`], ['Article posted', c.art ? esc(when(c.art)) : '<span class="muted">not in the news archive</span>'],
       ['Investedia call (proven start)', esc(when(c.t))], ['Prediction', said(c)], ['Confidence', c.conf ? esc(c.conf) : '<span class="muted">not recorded</span>'],
@@ -142,5 +157,12 @@
       <div><span>Follow the market index</span><b>${f(B.ixBase)}</b><small>${B.ixN ? `on ${B.ixN} calls with an index (Investedia ${f(B.ixModel)}) · ${pFmt(B.pIx)}` : 'no calls with an index yet'}</small></div></div>
       <p class="tr2-note">An edge is only claimed when Investedia beats every baseline with p &lt; 0.05. Paired tests on the same calls; p-values are two-sided.</p></div>`;
   }
-  window.CallsUI = { bench, benchBlock, wilson, binomTwo, pFmt, loadEarly, earlyRow, gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB };
+  // the same judged calls, if one had simply bet that every asset goes up: the bar a real edge must clear
+  const longBench = cs => { const j = cs.filter(c => (c.res === 'hit' || c.res === 'miss') && typeof c.move === 'number'); return j.length ? Math.round(100 * j.filter(c => c.move > 0).length / j.length) : null; };
+  const engineNote = (live_since) => PREV
+    ? `<p class="cx-eng">Archived calls of the <b>previous prediction engine</b>, kept unchanged. <a href="${location.pathname.split('/').pop()}">See Prediction Engine v5 →</a></p>`
+    : `<p class="cx-eng">Calls from <b>Prediction Engine v5</b>${live_since ? ` since ${new Date(live_since).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}: it only makes a call when the price has not already moved that way before the call. <a href="${location.pathname.split('/').pop()}?engine=previous">Previous engine’s calls</a></p>`;
+  const btStats = (cs, win) => { const j = cs.filter(c => c.bt && (!win || c.window === win) && (c.res === 'hit' || c.res === 'miss'));
+    return { n: j.length, pct: j.length ? Math.round(100 * j.filter(c => c.res === 'hit').length / j.length) : null, up: longBench(j), pending: cs.filter(c => c.bt && (!win || c.window === win) && c.res === 'pending').length }; };
+  window.CallsUI = { watch, btStats, longBench, engineNote, PREV, gain, resBox, esc, load, inWin, counts, acc, chart, card, row, detail, badge, said, conf, ago, when, pct, ENGINE, FAM, MIN, DAY, NEED, SUB, bench, benchBlock, wilson, binomTwo, pFmt, loadEarly, earlyRow };
 })();

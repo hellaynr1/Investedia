@@ -36,6 +36,7 @@ jobs:
         run: python3 tools/push-news-to-worker.py
       - name: Publish (only when something changed)
         env:
+          GH_TOKEN: ${{ github.token }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           NEWS_TIER: priority
         run: |
@@ -46,7 +47,7 @@ jobs:
           git diff --cached --quiet -- assets/globe/news-live.json && { git reset -q; git checkout -q -- assets/globe docs/assets/globe; exit 0; }
           git commit -q -m "Priority news"
           for i in 1 2 3; do
-            git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && { gh workflow run engine-v5.yml -R "${{ github.repository }}" --ref "${GITHUB_REF_NAME}" || true; exit 0; }
             # another news writer committed the same files meanwhile: start again from the latest data instead of failing
             git rebase --abort 2>/dev/null || true
             git fetch -q origin "${GITHUB_REF_NAME}" && git reset -q --hard "origin/${GITHUB_REF_NAME}"

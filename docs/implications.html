@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="assets/consent.css?v=97aa98d47c">
-<script src="assets/consent.js?v=97aa98d47c"></script>
+<link rel="stylesheet" href="assets/consent.css?v=44cf22c6da">
+<script src="assets/consent.js?v=44cf22c6da"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Investedia Recent market implications</title>
 <meta name="description" content="See how the market reacted to recent Investedia calls: confirmed calls, misses and pending outcomes.">
@@ -22,8 +22,8 @@
 <meta name="twitter:description" content="See how the market reacted to recent Investedia calls: confirmed calls, misses and pending outcomes.">
 <meta name="twitter:image" content="https://investedia.com/assets/og-default.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/app.css?v=97aa98d47c">
-<link rel="stylesheet" href="assets/skin.css?v=97aa98d47c">
+<link rel="stylesheet" href="assets/app.css?v=44cf22c6da">
+<link rel="stylesheet" href="assets/skin.css?v=44cf22c6da">
 <link rel="apple-touch-icon" href="assets/app/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,17 +46,18 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <script src="assets/quotes.js"></script>
 <script src="assets/news.js"></script>
-<script src="assets/mock.js?v=97aa98d47c"></script>
-<link rel="stylesheet" href="assets/news-menu.css?v=97aa98d47c">
-<script src="assets/live-config.js?v=97aa98d47c"></script>
-<script src="assets/live-data.js?v=97aa98d47c" defer></script>
-<script src="assets/prefs.js?v=97aa98d47c"></script>
-<script src="assets/peek.js?v=97aa98d47c"></script>
-<script src="assets/sectors.js?v=97aa98d47c"></script>
-<script src="assets/news-menu.js?v=97aa98d47c"></script>
-<script src="assets/ui.js?v=97aa98d47c"></script>
-<script src="assets/news-alerts.js?v=97aa98d47c" defer></script>
-<script src="assets/calls-ui.js?v=97aa98d47c"></script>
+<script src="assets/mock.js?v=44cf22c6da"></script>
+<link rel="stylesheet" href="assets/news-menu.css?v=44cf22c6da">
+<script src="assets/live-config.js?v=44cf22c6da"></script>
+<script src="assets/live-data.js?v=44cf22c6da" defer></script>
+<script src="assets/prefs.js?v=44cf22c6da"></script>
+<script src="assets/peek.js?v=44cf22c6da"></script>
+<script src="assets/sectors.js?v=44cf22c6da"></script>
+<script src="assets/news-menu.js?v=44cf22c6da"></script>
+<script src="assets/locale.js?v=44cf22c6da"></script>
+<script src="assets/ui.js?v=44cf22c6da"></script>
+<script src="assets/news-alerts.js?v=44cf22c6da" defer></script>
+<script src="assets/calls-ui.js?v=44cf22c6da"></script>
 <main class="wrap" id="main-content" tabindex="-1">
 <link rel="stylesheet" href="assets/calls-ui.css">
 <nav class="subnav" id="news-nav"></nav>
@@ -68,13 +69,14 @@
 <script>
 (async () => {
   if (window.UI && UI.newsNav) UI.newsNav('impl');
-  const U = window.CallsUI, root = document.getElementById('im'), q = new URLSearchParams(location.search);
-  const { calls: all } = await U.load(), live = all.filter(c => c.res !== 'void');
+  const U = window.CallsUI, longBench = U.longBench, root = document.getElementById('im'), q = new URLSearchParams(location.search);
+  let { calls: all, live_since } = await U.load(), live = all.filter(c => c.res !== 'void'), btAll = all.filter(c => c.bt);
   const WIN = [['1', '24H'], ['7', '7D'], ['30', '30D'], ['0', 'All']], F = [['all', 'All'], ['hit', 'Confirmed'], ['miss', 'Other way'], ['flat', 'No clear move'], ['pending', 'Pending']];
-  let win = q.get('w') || '7', cur = q.get('f') || 'all', lim = 12;
+  let win = q.get('w') || (U.PREV ? '7' : '30'), cur = q.get('f') || 'all', lim = 12;
   const draw = () => {
-    const cs = live.filter(c => U.inWin(c, +win)), n = U.counts(cs), a = U.acc(n, U.NEED), sel = c => cur === 'all' || c.res === cur;
+    const cs = live.filter(c => U.inWin(c, +win)), n = U.counts(cs.filter(c => !c.bt)), a = U.acc(n, U.NEED), bs = U.btStats(btAll), nb = cs.filter(c => c.bt).length, sel = c => cur === 'all' || c.res === cur;
     const done = cs.filter(c => ['hit', 'miss', 'flat'].includes(c.res) && sel(c)).sort((x, y) => (y.end ? y.end[0] : 0) - (x.end ? x.end[0] : 0)), wait = cs.filter(c => c.res === 'pending' && sel(c));
+    const lb = longBench(cs.filter(c => !c.bt));
     root.innerHTML = `<div class="cx-bar"><div class="cx-seg" role="group" aria-label="Time window">${WIN.map(([k, l]) => `<button type="button" data-w="${k}" aria-pressed="${k === win}">${l}</button>`).join('')}</div></div>
       <div class="cx-sum"><div class="ok"><b>${n.hit}</b><span>Confirmed</span></div><div class="no"><b>${n.miss}</b><span>Went the other way</span></div><div><b>${n.flat}</b><span>No clear move</span></div><div class="wait"><b>${n.pending}</b><span>Pending</span></div></div>
       <p class="cx-acc">${a ? `<b>${a.pct}%</b> resolved accuracy · ${a.text}` : `Resolved accuracy appears after ${U.NEED} judged calls · ${n.judged} judged in this window so far`}<br><span class="muted">Call result reads each call as a position: a long gains when the price rises, a short gains when it falls.</span></p>
@@ -87,6 +89,7 @@
     const m = document.getElementById('more'); if (m) m.onclick = () => { lim += 12; draw(); };
   };
   draw();
+  U.watch(async () => { ({ calls: all, live_since } = await U.load()); live = all.filter(c => c.res !== 'void'); btAll = all.filter(c => c.bt); draw(); });
 })();
 </script>
 </main>
