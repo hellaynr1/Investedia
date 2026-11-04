@@ -122,6 +122,7 @@ h1 span{color:var(--fg-3)}
 /* Hover preview */
 .hover{position:fixed;z-index:5;width:280px;padding:12px;border-radius:14px;pointer-events:none;display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:start;box-shadow:0 18px 50px rgba(0,0,0,.5);opacity:0;transform:translateY(4px);transition:opacity .14s,transform .14s}
 .hover.on{opacity:1;transform:none}
+.hover.pin{pointer-events:auto;cursor:pointer}
 .hover.brief{width:340px;display:block;padding:16px}.brief-head{display:flex;align-items:center;gap:10px;padding-bottom:10px}.brief-head .flag{width:22px;height:16px;border-radius:2px;object-fit:cover}.brief-head h3{margin:0;font-size:16px}.brief-head span{margin-left:auto;font-size:12px;color:var(--fg-3)}
 .brief-line{padding:9px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.35;font-weight:650}.brief-index{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding-top:10px;font-size:12.5px;color:var(--fg-3)}.brief-next{margin-top:8px;font-size:12px;color:var(--fg-3)}.brief-next b{color:var(--fg);font-weight:650}
 .hover .art{width:52px;height:52px;border-radius:9px}
@@ -1183,7 +1184,7 @@ function setZ(z, x, y, anchor) {
 }
 
 // ===== Interaction state =====
-let hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
+let pinned = null, hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
 // pointer: drag to rotate, pinch / wheel / double-click / buttons to zoom, tap to select
 const touches = new Map(); let pinch = null, drag = null, spin = null;  // spin: momentum after a drag is released (degrees per ms)
 // In the homepage embed a pinch must zoom the globe only: the page behind must not scroll with it. Two fingers cancel the browser's scrolling,
@@ -1231,9 +1232,11 @@ cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (
 $('zin').onclick = () => setZ(Zt * 1.6); $('zout').onclick = () => setZ(Zt / 1.6);
 
 let cTimer = null, lastX = 0, lastY = 0;
+addEventListener('keydown', e => { if (e.key === 'Escape' && pinned) hideHover(); });
 addEventListener('wheel', () => { clearTimeout(cTimer); hideHover(); }, { passive: true });
 function pick(x, y, r) { let best = null, bd = r * r; for (const d of drawn) { const q = (d.x - x) ** 2 + (d.y - y) ** 2; if (q < bd) { bd = q; best = d; } } return best; }
 function hoverAt(x, y) {
+  if (pinned) return;  // an article popup opened by a click stays until you click elsewhere or press Escape
   cv.style.cursor = !EMBED || onGlobe(x, y) ? 'grab' : 'default';  // full Globe page: hand everywhere; homepage: only over the globe
   const ex = !EMBED && (exPick(x, y) || upPick(x, y)); if (ex) { $('hover').classList.remove('on'); return; }
   const edge=arcPick(x,y); arcHover=edge || null;
@@ -1261,20 +1264,21 @@ function showHover(d) {
   }
 }
 function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.offsetHeight; let l = x + 16, t = y - h / 2; if (l + w > innerWidth - 12) l = x - w - 16; t = Math.max(12, Math.min(innerHeight - h - 12, t)); hv.style.left = l + 'px'; hv.style.top = t + 'px'; }
-function hideHover() { delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
+function hideHover() { $('hover').classList.remove('pin'); pinned = null; delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
 function tap(x, y, touch) {
-  if (touch) hideHover();
+  if (pinned) hideHover(); else if (touch) hideHover();
   const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
   const ex = !EMBED && exPick(x, y); if (ex) { window.InvPeek?.open(ex.e.ix); return; }
   const pr=!EMBED&&pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);if(pr&&pr.asset&&selectAsset(pr.asset.s)){arcHover=null;return;}  // a price label selects its asset
   const edge=arcPick(x,y);if(edge){arcHover=null;openStory(edge.article);return;}
 
   const d = pick(x, y, touch ? 26 : 16);
-  if (d) { hideHover(); if (d.list.length === 1) return openStory(d.list[0]); if (d.same || Z >= ZMAX - .2) return openPlace(d.list); return flyTo(d.lo, d.la, Math.min(ZMAX, Z * 2.2)); }
+  if (d) { hideHover(); if (EMBED) { showHover(d); const hv = $('hover'); hv.classList.add('pin'); pinned = d; placeHover(d.x, d.y); return; } if (d.list.length === 1) return openStory(d.list[0]); if (d.same || Z >= ZMAX - .2) return openPlace(d.list); return flyTo(d.lo, d.la, Math.min(ZMAX, Z * 2.2)); }
   const g = inv(x, y), c = g && countryAt(g[0], g[1]);
   if (c) { if (phone() && !EMBED) { const hv = $('hover'); hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); hv.dataset.country = c.name; return; } return openCountry(c); }
 }
-$('hover').addEventListener('click', e => { const n = $('hover').dataset.country; if (n && byName[n] && $('hover').classList.contains('brief')) { $('hover').classList.remove('on'); delete $('hover').dataset.country; openCountry(byName[n]); } });
+$('hover').addEventListener('click', e => { if (pinned) { const d = pinned; hideHover(); return d.list.length === 1 ? openStory(d.list[0]) : openPlace(d.list); }
+   const n = $('hover').dataset.country; if (n && byName[n] && $('hover').classList.contains('brief')) { $('hover').classList.remove('on'); delete $('hover').dataset.country; openCountry(byName[n]); } });
 
 // ===== Panel =====
 const panel = $('panel'), pbody = $('pbody'); size(); new MutationObserver(() => { if (!phone()) size(); }).observe(panel, { attributes: true, attributeFilter: ['class'] }); let view = { k: 'top' }, hist = [];
