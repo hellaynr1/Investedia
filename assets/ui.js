@@ -463,7 +463,17 @@
   ftrFold(); ftrQ.addEventListener?.('change', ftrFold);
   // language: opens this page translated by Google Translate (the site itself is written in English)
   const ftrLang = ftr.querySelector('.ftr-lang select');
-  ftrLang?.addEventListener('change', () => { const l = ftrLang.value; if (l === 'en') return; location.href = 'https://translate.google.com/translate?sl=en&tl=' + l + '&u=' + encodeURIComponent(location.href); });
+  // on a translated copy (*.translate.goog) the menu shows the current language, switches it in place, and English returns to investedia.com
+  const onGoog = /\.translate\.goog$/.test(location.hostname), qs = new URLSearchParams(location.search);
+  if (ftrLang && onGoog) ftrLang.value = qs.get('_x_tr_tl') || 'en';
+  ftrLang?.addEventListener('change', () => {
+    const l = ftrLang.value, path = location.pathname, keep = new URLSearchParams(location.search);
+    ['_x_tr_sl', '_x_tr_tl', '_x_tr_hl', '_x_tr_pto'].forEach(k => keep.delete(k));
+    const rest = keep.toString();
+    if (l === 'en') { location.href = 'https://investedia.com' + path + (rest ? '?' + rest : '') + location.hash; return; }
+    keep.set('_x_tr_sl', 'en'); keep.set('_x_tr_tl', l); keep.set('_x_tr_hl', l);
+    location.href = 'https://investedia-com.translate.goog' + path + '?' + keep.toString() + location.hash;
+  });
   ftr.querySelector('.ftr-top-btn')?.addEventListener('click', () => scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
   document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
 
