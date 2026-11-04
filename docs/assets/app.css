@@ -1222,15 +1222,9 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .ftr-meta .ftr-socials .icon-btn{width:auto;height:auto;min-height:0;border:0;background:none;padding:2px;color:var(--fg)}
 .ftr-meta .ftr-socials .icon-btn svg{width:22px;height:22px}
 .ftr-meta .ftr-socials .icon-btn:hover{color:var(--accent);background:none}
-.ftr-lang{display:inline-flex;align-items:center;gap:8px;width:max-content;height:38px;padding:0 6px 0 12px;border:1px solid var(--line);border-radius:10px;color:var(--fg)}
-.ftr-lang select{background:transparent;border:0;color:inherit;font:inherit;font-size:14px;padding:0 4px;cursor:pointer}
-.ftr-lang select option{color:#111}
 .ftr-data{margin:0;max-width:72ch;color:var(--fg-3);font-size:12.5px;line-height:1.6}.ftr-data a{color:var(--accent)}
 .ftr h6{color:var(--fg-3)!important;font-size:11.5px!important;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
 .ftr ul a{color:var(--fg)!important;font-size:14px}.ftr ul a:hover{color:var(--accent)!important}
-.ftr-lang{position:relative;padding-right:30px}
-.ftr-lang select{-webkit-appearance:none;appearance:none;background:transparent!important;border:0!important;box-shadow:none!important;padding:0;font-weight:500}
-.ftr-lang::after{content:'';position:absolute;right:12px;top:50%;width:7px;height:7px;border-right:1.6px solid var(--fg-2);border-bottom:1.6px solid var(--fg-2);transform:translateY(-70%) rotate(45deg);pointer-events:none}
 
 /* scroll reveal (see ui.js): fade + 14px rise, once per element */
 .rv{opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
@@ -1238,3 +1232,16 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 /* small hover lifts on cards (border/colour only, no jumping) */
 .hn-card,.cx-card,.hn-box{transition:border-color .18s ease,background-color .18s ease}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1!important;transform:none!important;transition:none!important}}
+/* Footer translation menu: the whole control opens it, including on touch screens. */
+.ftr-lang{position:relative;width:max-content;color:var(--fg)}
+.ftr-lang summary{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;list-style:none}
+.ftr-lang summary::-webkit-details-marker{display:none}
+.ftr-lang summary::after{content:'';width:7px;height:7px;margin-left:8px;border-right:1.6px solid var(--fg-2);border-bottom:1.6px solid var(--fg-2);transform:translateY(-2px) rotate(45deg)}
+.ftr-lang[open] summary::after{transform:translateY(2px) rotate(225deg)}
+.ftr-lang-menu{position:absolute;bottom:calc(100% + 8px);left:0;z-index:20;min-width:180px;max-height:min(340px,60vh);overflow:auto;padding:6px;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,.35)}
+.ftr-lang:not([open]) .ftr-lang-menu{display:none}
+.ftr-lang-menu a{display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:8px;color:var(--fg);font-size:14px;text-decoration:none}
+.ftr-lang-menu a:hover,.ftr-lang-menu a:focus-visible{background:var(--card-hi)}
+.ftr-lang-menu a[aria-current]{color:var(--accent);font-weight:600}
+
+.ftr .wrap:has(.ftr-lang[open]){overflow:visible}
