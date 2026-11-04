@@ -455,105 +455,21 @@
   ftr.className = 'ftr';
   ftr.innerHTML = `<div class="wrap">
     <div class="ftr-head"><div class="ftr-brand">${brand}</div><p class="ftr-tag">Invest with clarity.</p><button type="button" class="ftr-top-btn" aria-label="Back to top">Back to top <span aria-hidden="true">↑</span></button></div>
-    <div class="ftr-meta"><span class="ftr-socials"><a class="icon-btn" href="https://www.linkedin.com/company/investedia/" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.4V9h3.4v1.6c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4a2.1 2.1 0 1 1 0-4.1 2.1 2.1 0 0 1 0 4.1zM7.1 20.5H3.6V9h3.5v11.5z"/></svg></a><a class="icon-btn" href="https://x.com/investedia" aria-label="X" title="X"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M18.2 2H21l-6.5 7.4L22 22h-6.1l-4.8-6.3L5.6 22H2.8l7-8L2 2h6.2l4.3 5.7L18.2 2zm-1.1 18h1.7L7 3.9H5.2L17.1 20z"/></svg></a><a class="icon-btn" href="https://www.youtube.com/@investedia" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg></a><a class="icon-btn" href="https://www.instagram.com/investedia/" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a><a class="icon-btn" href="mailto:contact@investedia.com" aria-label="Email contact@investedia.com" title="contact@investedia.com"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></span><label class="ftr-lang"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg><select aria-label="Language (translated by Google)"><option value="en">English</option><option value="fr">Français</option><option value="nl">Nederlands</option><option value="de">Deutsch</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option></select></label><p class="ftr-data">Market data: Yahoo Finance, FRED &amp; Coinbase. Company filings: SEC EDGAR. News summaries are written with AI from each source’s reporting. <a href="sources.html">All sources</a></p></div>
+    <div class="ftr-meta"><span class="ftr-socials"><a class="icon-btn" href="https://www.linkedin.com/company/investedia/" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.4V9h3.4v1.6c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4a2.1 2.1 0 1 1 0-4.1 2.1 2.1 0 0 1 0 4.1zM7.1 20.5H3.6V9h3.5v11.5z"/></svg></a><a class="icon-btn" href="https://x.com/investedia" aria-label="X" title="X"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M18.2 2H21l-6.5 7.4L22 22h-6.1l-4.8-6.3L5.6 22H2.8l7-8L2 2h6.2l4.3 5.7L18.2 2zm-1.1 18h1.7L7 3.9H5.2L17.1 20z"/></svg></a><a class="icon-btn" href="https://www.youtube.com/@investedia" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg></a><a class="icon-btn" href="https://www.instagram.com/investedia/" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a><a class="icon-btn" href="mailto:contact@investedia.com" aria-label="Email contact@investedia.com" title="contact@investedia.com"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></span><label class="ftr-lang"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg><select aria-label="Language"><option value="en">English</option><option value="fr">Français</option><option value="nl">Nederlands</option><option value="de">Deutsch</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option></select></label><p class="ftr-data">Market data: Yahoo Finance, FRED &amp; Coinbase. Company filings: SEC EDGAR. News summaries are written with AI from each source’s reporting. <a href="sources.html">All sources</a></p></div>
     <nav class="ftr-cols" aria-label="Footer"><details class="ftr-col" open><summary><h6>News</h6><span class="ftr-chev" aria-hidden="true"></span></summary><ul><li><a href="news.html">Latest news</a></li><li><a href="assets/globe/news.html">Globe</a></li><li><a href="implications.html">Market Implications</a></li><li><a href="track-record.html">Track Record</a></li></ul></details><details class="ftr-col" open><summary><h6>Markets</h6><span class="ftr-chev" aria-hidden="true"></span></summary><ul><li><a href="markets.html">Markets</a></li><li><a href="calendar.html">Economic Calendar</a></li><li><a href="screener.html">Stock Screener</a></li><li><a href="movers.html">Market Heatmaps</a></li></ul></details><details class="ftr-col" open><summary><h6>Learn</h6><span class="ftr-chev" aria-hidden="true"></span></summary><ul><li><a href="education.html">Education</a></li></ul></details><details class="ftr-col" open><summary><h6>Company</h6><span class="ftr-chev" aria-hidden="true"></span></summary><ul><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li><li><a href="about.html#app">Get the app</a></li></ul></details><details class="ftr-col" open><summary><h6>Legal</h6><span class="ftr-chev" aria-hidden="true"></span></summary><ul><li><a href="terms.html">Terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="cookies.html">Cookies</a></li><li><a href="disclaimer.html">Disclaimer</a></li><li><a href="legal.html">All legal</a></li></ul></details></nav>
     `;
   // phones: footer sections fold into tap-to-open rows; wider screens: always open
   const ftrQ = matchMedia('(max-width: 760px)'), ftrFold = () => ftr.querySelectorAll('.ftr-col').forEach(d => { d.open = !ftrQ.matches; });
   ftrFold(); ftrQ.addEventListener?.('change', ftrFold);
-  // Request Google's in-page translator; never navigate visitors to a translate.goog proxy.
+  // Native first-party translation (assets/locale.js + assets/locales/<lang>.json); no third-party script, no proxy.
   const ftrLang = ftr.querySelector('.ftr-lang select');
-  const languageControl = ftrLang.closest('label');
-  languageControl.classList.add('notranslate');
-  const translateHost = document.createElement('div');
-  translateHost.id = 'inv-google-translate';
-  translateHost.className = 'ftr-translate notranslate';
-  translateHost.hidden = true;
-  const translateStatus = document.createElement('p');
-  translateStatus.className = 'ftr-translate-status notranslate';
-  translateStatus.setAttribute('role', 'status');
-  translateStatus.hidden = true;
-  const originalButton = document.createElement('button');
-  originalButton.type = 'button';
-  originalButton.className = 'ftr-original notranslate';
-  originalButton.textContent = 'Show original English';
-  originalButton.hidden = true;
-  languageControl.after(translateHost, originalButton, translateStatus);
-  let translatorReady = null, translationAttempt = 0;
-  function loadTranslator() {
-    if (translatorReady) return translatorReady;
-    translatorReady = new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      const callback = 'investediaTranslateReady' + (++translationAttempt);
-      script.src = 'https://translate.google.com/translate_a/element.js?cb=' + callback;
-      script.async = true;
-      let observer, finished = false;
-      const finish = (error, combo) => {
-        if (finished) return;
-        finished = true;
-        clearTimeout(timeout);
-        observer?.disconnect();
-        if (error) window[callback] = () => {}; // Ignore a timed-out script's late callback.
-        else delete window[callback];
-        if (error) { script.remove(); translateHost.replaceChildren(); reject(error); }
-        else resolve(combo);
-      };
-      const timeout = setTimeout(() => finish(new Error('Translation service timed out')), 15000);
-      script.onerror = () => finish(new Error('Translation service could not load'));
-      window[callback] = () => {
-        if (finished) return;
-        try {
-          // Keep Google's actual widget and attribution visible once it is ready.
-          new google.translate.TranslateElement({pageLanguage:'en', includedLanguages:'fr,nl,de,es,it,pt', autoDisplay:false}, translateHost.id);
-          const check = () => {
-            const combo = translateHost.querySelector('select.goog-te-combo');
-            if (combo && [...combo.options].some(option => option.value === ftrLang.value)) finish(null, combo);
-          };
-          observer = new MutationObserver(check);
-          observer.observe(translateHost, {childList:true, subtree:true});
-          check();
-        } catch (error) { finish(error); }
-      };
-      document.head.append(script);
-    }).catch(error => { translatorReady = null; throw error; });
-    return translatorReady;
-  }
-  async function translatePage() {
-    if (ftrLang.value === 'en') return;
-    ftrLang.disabled = true;
-    translateStatus.hidden = false;
-    translateStatus.textContent = 'Loading Google Translate…';
-    try {
-      const combo = await loadTranslator();
-      combo.value = ftrLang.value;
-      combo.dispatchEvent(new Event('change', {bubbles:true}));
-      translateHost.hidden = false;
-      languageControl.hidden = true;
-      originalButton.hidden = false;
-      translateStatus.textContent = 'Automatic translation by Google. The English original remains the reference.';
-    } catch {
-      ftrLang.value = 'en';
-      translateStatus.textContent = 'Google Translate could not load. Your page is still open in English. Choose a language to try again, or use your browser’s Translate feature.';
-    } finally { ftrLang.disabled = false; }
-  }
-  ftrLang.addEventListener('change', translatePage);
-  originalButton.addEventListener('click', () => {
-    // Clear only Google's translation choice, then reload the same original page.
-    for (const domain of new Set(['', location.hostname, '.' + location.hostname, '.investedia.com'])) {
-      document.cookie = 'googtrans=; Max-Age=0; Path=/' + (domain ? '; Domain=' + domain : '');
-    }
-    location.reload();
-  });
+  const syncLang = () => { if (window.InvLocale) ftrLang.value = InvLocale.language; };
+  ftrLang.addEventListener('change', () => { const want = ftrLang.value; window.InvLocale?.setLanguage(want).catch(() => { ftrLang.value = 'en'; }); });
+  addEventListener('inv-language-change', syncLang);
   ftr.querySelector('.ftr-top-btn')?.addEventListener('click', () => scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(ftr);
-    // Resume only an explicitly requested Google translation on subsequent pages.
-    const saved = document.cookie.split(';').map(part => part.trim()).find(part => part.startsWith('googtrans='));
-    const language = saved?.split('=')[1]?.split('/').pop();
-    if (language && language !== 'en' && [...ftrLang.options].some(option => option.value === language)) {
-      ftrLang.value = language;
-      translatePage();
-    }
+    syncLang();
   });
   // scroll reveal: sections fade and rise in once as they enter the view; grid items follow in a short stagger.
   // Only opacity/transform (GPU), each element animates once, nothing hidden without JS, and none with reduced motion.
@@ -768,7 +684,7 @@
   au.className = 'palette auth'; au.hidden = true;
   au.innerHTML = `<div class="palette-box auth-box" role="dialog" aria-modal="true" aria-labelledby="au-t">
     <button class="icon-btn pop-x" type="button" aria-label="Close">${icon('x')}</button>
-    <div class="auth-head"><span class="wm" aria-label="Investedia">Invested<span class="i">i</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Follow countries and companies, news alerts and the daily brief. Free.</p></div>
+    <div class="auth-head"><span class="wm" translate="no" aria-label="Investedia">Invested<span class="i">i</span>a</span><h2 id="au-t">Create your account</h2><p class="muted" id="au-sub">Follow countries and companies, news alerts and the daily brief. Free.</p></div>
     <button class="btn auth-google" type="button">${gIcon}<span>Continue with Google</span></button>
     <div class="auth-or"><span>or with email</span></div>
     <form class="auth-f" novalidate>
@@ -853,7 +769,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(au);
     if (gated) { const g = document.createElement('section'); g.className = 'gate';
-      g.innerHTML = `<span class="wm" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your ${page === 'watchlist' ? 'watchlist' : 'profile'}</h1><p class="muted">Your profile and watchlist can be saved to your account. Country and article follows are stored on this device; email alerts are not activated by following.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
+      g.innerHTML = `<span class="wm" translate="no" aria-hidden="true">Invested<span class="i">i</span>a</span><h1>Log in to see your ${page === 'watchlist' ? 'watchlist' : 'profile'}</h1><p class="muted">Your profile and watchlist can be saved to your account. Country and article follows are stored on this device; email alerts are not activated by following.</p><div class="gate-btns"><button class="btn btn-primary" type="button" data-auth="in">Log in</button><button class="btn btn-ghost" type="button" data-auth="up">Create free account</button></div>`;
       document.querySelector('main').prepend(g); }
     document.querySelectorAll('[data-auth]').forEach(b => b.onclick = e => { e.preventDefault(); document.querySelector('.drawer.open') && document.querySelector('.menu-toggle').click(); openAuth(b.dataset.auth || 'up'); });
     document.addEventListener('click', e => { const b = e.target.closest('[data-logout]'); if (!b) return; e.preventDefault(); b.disabled = true; try { localStorage.removeItem('inv-owner'); } catch {} sbLoad().then(c => c.auth.signOut()).catch(() => {}).finally(() => location.href = 'index.html'); });
