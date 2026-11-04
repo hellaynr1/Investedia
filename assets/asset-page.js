@@ -13,16 +13,32 @@
   const series = (a, k) => k === 'd' ? (S.intra[a.s]?.d1?.c?.length > 3 ? S.intra[a.s].d1.c : (a.sp || []).slice(-6)) : k === 'w' ? (a.sp || []).slice(-6) : (a.sp || []);
   const chg = (a, k) => k === 'd' ? a.d : k === 'w' ? a.w : pc((a.sp || [])[a.sp.length - 1], (a.sp || [])[0]);
   const area = (v, c, w = 600, h = 220) => { if (!v || v.length < 2) return ''; const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1, pts = v.map((y, i) => [i / (v.length - 1) * w, h - 6 - (y - lo) / r * (h - 12)]), d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(''); return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${d}L${w} ${h}L0 ${h}Z" fill="${c}" opacity=".12"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`; };
+  // Chart (2026-11 design): price axis left, time axis below, soft gradient fill, glowing line, news markers with an article card
+  const NEWS_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 12h8M8 15h5"/></svg>';
+  function chart(a, v, c, rel) {
+    if (!v || v.length < 2) return '';
+    const W = 600, H = 220, lo = Math.min(...v), hi = Math.max(...v), pad = (hi - lo) * .08 || hi * .002 || 1, L0 = lo - pad, H0 = hi + pad, r = H0 - L0;
+    const X = i => i / (v.length - 1) * W, Y = y => H - (y - L0) / r * H;
+    const d = v.map((y, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(y).toFixed(1)).join(''), gid = 'apg' + Math.random().toString(36).slice(2, 7);
+    const dec = r < 2 ? 2 : r < 20 ? 1 : 0, tick = k => (L0 + r * k / 4);
+    const yl = [4, 3, 2, 1, 0].map(k => `<span style="top:${(100 - k * 25).toFixed(1)}%">${tick(k).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec })}</span>`).join('');
+    const grid = [1, 2, 3].map(k => `<line x1="0" x2="${W}" y1="${H * k / 4}" y2="${H * k / 4}"/>`).join('');
+    const t = S.intra[a.s]?.d1?.t, now = Date.now(), win = S.win;
+    const tOk = win === 'd' && t?.length > 1 && t[t.length - 1] - t[0] > 1800;  // real intraday times
+    const t0 = tOk ? t[0] * 1000 : now - (win === 'd' ? 864e5 : (win === 'w' ? 7 : 30) * 864e5), t1 = tOk ? t[t.length - 1] * 1000 : now;
+    const xl = Array.from({ length: 6 }, (_, k) => { const ts = t0 + (t1 - t0) * k / 5; const lab = win === 'd' ? new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); return `<span style="left:${k * 20}%">${lab}</span>`; }).join('');
+    return `<div class="ap-yax">${yl}</div><div class="ap-plot"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="color:${c}"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".28"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs><g class="ap-grid">${grid}</g><path d="${d}L${W} ${H}L0 ${H}Z" fill="url(#${gid})"/><path class="ap-ln" d="${d}" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>${pins(a, rel, v, L0, r)}</div><div class="ap-xax">${xl}</div>`;
+  }
   // News pins on the chart: each article that names the asset sits on the line at its publication time; same numbers as the list below
-  function pins(a, rel, v) {
+  function pins(a, rel, v, L0, rr) {
     if (!v || v.length < 2 || !rel.length) return '';
     const t = S.intra[a.s]?.d1?.t, end = S.win === 'd' && t?.length ? t[t.length - 1] * 1000 : Date.now(), start = S.win === 'd' ? (t?.length ? t[0] * 1000 : end - 864e5) : end - (S.win === 'w' ? 7 : 30) * 864e5;
-    const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1, big = a.m === 1 || a.t !== 'stocks' || a.g === 'Index', max = big ? 8 : 3, used = [];
+    const lo = L0 ?? Math.min(...v), r = rr ?? (Math.max(...v) - lo || 1), big = a.m === 1 || a.t !== 'stocks' || a.g === 'Index', max = innerWidth < 700 ? (big ? 5 : 3) : (big ? 7 : 3), gap = innerWidth < 700 ? 12 : 7, used = [];
     const L = rel.map(({ s, i }, n) => ({ s, i, num: rel.length - n })).filter(x => { const ts = Date.parse(x.s.published_at); return ts >= start && ts <= end + 36e5; }).slice(0, max).map(x => ({ ...x, f: Math.round(Math.max(0, Math.min(1, (Date.parse(x.s.published_at) - start) / (end - start))) * (v.length - 1)) / (v.length - 1) })).sort((p, q) => p.f - q.f);
-    let prev = -9; for (const x of L) { x.left = Math.max(x.f * 100, prev + 5); prev = x.left; }
-    for (let k = L.length - 1, lim = 96; k >= 0; k--) { if (L[k].left > lim) L[k].left = lim; lim = L[k].left - 5; }
-    return L.map(x => { const y = v[Math.round(x.f * (v.length - 1))], top = (214 - (y - lo) / r * 208) / 220 * 100;
-      return `<button type="button" class="ap-pin ${cls(x.i.direction === 'up' ? 1 : x.i.direction === 'down' ? -1 : 0)}" style="left:${Math.max(2, x.left).toFixed(1)}%;top:${top.toFixed(1)}%" data-n="${x.num}" aria-label="Article ${x.num}: ${esc(x.s.headline)}">${x.num}</button>`;
+    let prev = -99; for (const x of L) { x.left = Math.max(x.f * 100, prev + gap); prev = x.left; }
+    for (let k = L.length - 1, lim = 96; k >= 0; k--) { if (L[k].left > lim) L[k].left = lim; lim = L[k].left - gap; }
+    return L.map(x => { const y = v[Math.round(x.f * (v.length - 1))], top = 100 - (y - lo) / r * 100;
+      return `<button type="button" class="ap-pin ${cls(x.i.direction === 'up' ? 1 : x.i.direction === 'down' ? -1 : 0)}" style="left:${Math.max(1, x.left).toFixed(1)}%;top:${top.toFixed(1)}%" data-n="${x.num}" aria-label="Article ${x.num}: ${esc(x.s.headline)}"><i class="ap-pin-ic">${NEWS_IC}</i></button>`;
     }).join('');
   }
   const find = (by, s) => by[s] || by[ALIAS[s]] || by[s + '-USD'] || by[s + '=F'] || by['^' + s] || Object.values(by).find(a => a.n && a.n.toLowerCase() === s.toLowerCase());
@@ -46,10 +62,10 @@
     const figs = [rgc('Day range', dayLo, dayHi, price), rgc('52-week range', H?.lo52, H?.hi52, price), rgc('1-month range', lo, hi, price), vol ? cell('Volume', vol) : '', cell('Week', `<span class="${cls(a.w)}">${arrow(a.w)} ${fmt(a.w || 0)}</span>`), cell('Month', `<span class="${cls(chg(a, 'm'))}">${arrow(chg(a, 'm'))} ${fmt(chg(a, 'm'))}</span>`)].filter(Boolean);
     document.title = `${a.n} (${sym}) · Investedia`;
     root.innerHTML = `<a class="ap-back" href="markets.html">← Markets</a>
-      <header class="ap-h"><span class="ap-ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><div><h1>${esc(a.n)}</h1><small>${esc(sym)} · ${({ stocks: a.g === 'Index' ? 'Index' : 'Stock', crypto: 'Crypto', cmd: 'Commodity', fx: 'Currency pair' })[a.t] || ''}</small></div><span class="ap-st ${live ? 'live' : ''}"><i></i>${live ? 'Live' : 'Delayed'}</span></header>
+      <header class="ap-h"><span class="ap-ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><div><h1>${esc(a.n)}</h1><small>${esc(sym)} · ${({ stocks: a.g === 'Index' ? 'Index' : 'Stock', crypto: 'Crypto', cmd: 'Commodity', fx: 'Currency pair' })[a.t] || ''}${a.t === 'stocks' && a.g !== 'Index' ? '<span class="ap-co-slot"></span>' : ''}</small></div><span class="ap-st ${live ? 'live' : ''}"><i></i>${live ? 'Live' : 'Delayed'}</span></header>
       <div class="ap-px"><span class="ap-p mono" data-k="p">${money(price)}</span><span class="ap-chip ${cls(m)}" data-k="c">${arrow(m)} ${fmt(m)}</span></div>
       <div class="ap-seg">${[['d', 'Today'], ['w', 'Week'], ['m', 'Month']].map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.win}">${l}</button>`).join('')}</div>
-      <div class="ap-ch"><div class="ap-cv">${area(series(a, S.win), col(m))}${pins(a, rel, series(a, S.win))}<div class="ap-tip" hidden></div></div></div>
+      <div class="ap-ch"><div class="ap-cv">${chart(a, series(a, S.win), col(m), rel)}<div class="ap-tip" hidden></div></div></div>
       <div class="ap-fig">${figs.join('')}</div>
       <div class="ap-act">${tvSym(a) ? '<button type="button" class="ap-btn p" id="ap-full">Full chart</button>' : ''}<button type="button" class="ap-btn" id="ap-watch" aria-pressed="false">☆ Watch</button></div>
       <section class="ap-card ${level ? level[1] : ''}"><div class="ap-ch2"><span class="nf-eb">Move analysis</span>${level ? `<span class="ap-lv">${level[0]}</span>` : ''}</div>
@@ -80,10 +96,25 @@
         if (e.target.closest('#ap-watch') && window.INVWATCH) { INVWATCH.toggle({ kind: 'asset', src: 'site', s: S.a.s }); paintWatch(); return; }
         if (e.target.closest('#ap-full')) { fullChart(); return; }
         const pin = e.target.closest('.ap-pin'); const tip = root.querySelector('.ap-tip');
-        if (pin && tip) { const it = S.rel.find((x, n) => S.rel.length - n === +pin.dataset.n); if (!it) return; if (!tip.hidden && tip.dataset.n === pin.dataset.n) { const li = document.getElementById('ap-a' + pin.dataset.n); if (li) { li.scrollIntoView({ behavior: 'smooth', block: 'center' }); li.classList.add('hl'); setTimeout(() => li.classList.remove('hl'), 1600); } return; }
-          tip.dataset.n = pin.dataset.n; const dir = it.i.direction === 'up' ? '↑' : it.i.direction === 'down' ? '↓' : '↔'; tip.innerHTML = `<span class="nf-eb">${pin.dataset.n} · ${new Date(it.s.published_at).toLocaleString('en-GB', { weekday: 'short', hour: '2-digit', minute: '2-digit' })} · ${esc(it.s.source?.name || '')}</span><b>${esc(it.s.headline)}</b><p>${dir} ${esc(it.i.why || it.s.why || '')}</p><small>Tap again to jump to the article</small>`; tip.hidden = false;
-          const box = root.querySelector('.ap-cv').getBoundingClientRect(), pb = pin.getBoundingClientRect(); tip.style.left = Math.max(0, Math.min(box.width - 270, pb.left - box.left - 120)) + 'px'; tip.style.top = (pb.top - box.top > 90 ? pb.top - box.top - 118 : pb.top - box.top + 30) + 'px'; return; }
+        if (e.target.closest('.ap-tip[data-id]')) { openArt(root.querySelector('.ap-tip').dataset.id); return; }
+        if (pin && tip) { const it = S.rel.find((x, n) => S.rel.length - n === +pin.dataset.n); if (!it) return; if (matchMedia('(hover: hover)').matches || (!tip.hidden && tip.dataset.n === pin.dataset.n)) { openArt(it.s.id); return; }
+          showTip(pin); return; }
         if (tip && !e.target.closest('.ap-tip')) tip.hidden = true; });
+      const showTip = pin => { const tip = root.querySelector('.ap-tip'), it = S.rel.find((x, n) => S.rel.length - n === +pin.dataset.n); if (!tip || !it) return;
+        const s = it.s, img = s.image?.file ? `<img src="assets/globe/${esc(s.image.file)}" alt="" loading="lazy">` : '';
+        tip.dataset.n = pin.dataset.n; tip.dataset.id = s.id;
+        tip.innerHTML = `${img}<div><span class="nf-eb">${esc(s.source?.name || '')} · ${new Date(s.published_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span><b>${esc(s.headline)}</b></div><span class="ap-tip-go" aria-hidden="true">↗</span>`; tip.hidden = false;
+        const box = root.querySelector('.ap-cv').getBoundingClientRect(), pb = pin.getBoundingClientRect(), w = Math.min(330, box.width - 8);
+        tip.style.width = w + 'px'; tip.style.left = Math.max(4, Math.min(box.width - w - 4, pb.left - box.left + pb.width / 2 - w / 2)) + 'px';
+        const above = pb.top - box.top > 96; tip.classList.toggle('below', !above); tip.style.top = (above ? pb.top - box.top - 84 : pb.bottom - box.top + 10) + 'px'; };
+      const openArt = id => { const u = 'story.html?id=' + encodeURIComponent(id); if (EMB) { try { top.location.href = u; return; } catch {} } location.href = u; };
+      root.addEventListener('mouseover', e => { const pin = e.target.closest('.ap-pin'); if (pin && matchMedia('(hover: hover)').matches) showTip(pin); });
+      root.addEventListener('mouseout', e => { const pin = e.target.closest('.ap-pin'); if (pin && matchMedia('(hover: hover)').matches && !e.relatedTarget?.closest?.('.ap-tip,.ap-pin')) root.querySelector('.ap-tip').hidden = true; });
+      // in the pop-up sheet, Escape closes the sheet in one press (the key goes to this frame, not the page behind)
+      if (EMB) addEventListener('keydown', e => { if (e.key === 'Escape') { try { parent.postMessage({ inv: 'peek-close' }, location.origin); } catch {} } });
+      // "View in Companies": shown once the company directory page is published (it lives on its own page)
+      const coLink = () => { const slot = root.querySelector('.ap-co-slot'); if (!slot) return; (window.__invCo ??= fetch('companies.html', { method: 'HEAD' }).then(r => r.ok).catch(() => false)).then(ok => { if (ok && slot.isConnected) slot.innerHTML = ` · <a class="ap-co" href="companies.html?s=${encodeURIComponent(S.a.s)}" ${EMB ? 'target="_top"' : ''}>View in Companies <span aria-hidden="true">↗</span></a>`; }); };
+      coLink(); new MutationObserver(coLink).observe(root, { childList: true });
       paintWatch();
     }).catch(e => { console.error('asset', e); root.innerHTML = '<div class="nb-none">Asset data could not load. Please refresh.</div>'; });
 })();
