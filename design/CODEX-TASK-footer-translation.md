@@ -31,3 +31,10 @@ Actual Google widget availability, eligibility for this domain, translation qual
 ### Live verification gate
 
 `tests/translation-live.spec.mjs` is an additional opt-in, unmocked check. It requires a changed page heading and Google's translated-document marker at both widths, followed by restoring the original English text. The fixture-based tests remain separate. A recorded network failure is not a passing translation check. Apply the saved unrestricted network configuration to the running environment before attempting final provider validation.
+
+
+## Live provider verification completed
+
+After applying unrestricted networking and trusting the environment proxy CA in Chromium's NSS store, the unmocked test passed at 1440px and 390px. Google changed the heading from “Investing should be clear, not complicated.” to “Investir devrait être clair, pas compliqué.” The page URL stayed unchanged. “Show original English” restored the exact original heading at both widths.
+
+Built screenshots: `/workspace/.investedia-tools/verified-translation/french-1440.png` and `french-390.png`. These contain actual Google-translated content, not fixtures. The prior live-provider blocker described above is resolved for this cloud machine. Actual Safari testing remains a manual browser check.

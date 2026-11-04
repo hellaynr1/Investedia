@@ -2,6 +2,7 @@
 // Run with the same PLAYWRIGHT_MODULE, PLAYWRIGHT_CHROMIUM_EXECUTABLE and TEST_BASE_URL as other browser tests.
 // There are deliberately no translation fixtures: a passing result must contain provider-translated text.
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {launch,base,widths,viewport} from './browser-support.mjs';
 const browser=await launch();
 try {
@@ -29,6 +30,12 @@ try {
    }
    assert.equal(page.url(),originalURL,'Translation must keep the visitor on Investedia.');
    console.log(`${width}: actual translated heading: ${await outcome.handle.jsonValue()}`);
+   if(process.env.TEST_SCREENSHOT_DIR){
+    fs.mkdirSync(process.env.TEST_SCREENSHOT_DIR,{recursive:true});
+    await heading.scrollIntoViewIfNeeded();
+    await page.evaluate(w=>{const label=document.createElement('div');label.textContent=`New · ${w===390?'Phone':'PC'} · Live French translation`;Object.assign(label.style,{position:'fixed',top:'8px',left:'8px',padding:'10px 12px',background:'#ff7a1a',color:'#111',font:'bold 13px sans-serif',zIndex:999999});document.body.append(label);},width);
+    await page.screenshot({path:`${process.env.TEST_SCREENSHOT_DIR}/french-${width}.png`});
+   }
    await Promise.all([page.waitForEvent('domcontentloaded'),page.locator('.ftr-original').click()]);
    assert.equal(await page.locator('#main-content h1').first().innerText(),english);
    console.log(`${width}: live translation and English restoration PASS`);
