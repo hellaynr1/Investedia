@@ -29,11 +29,12 @@ try {
     throw new Error(`${width}: Live translation NOT VERIFIED. ${status||outcome.error.message}`);
    }
    assert.equal(page.url(),originalURL,'Translation must keep the visitor on Investedia.');
+   assert.equal(await page.locator('.brand b').first().innerText(),'Investedia','Keep the brand name unchanged.');
    console.log(`${width}: actual translated heading: ${await outcome.handle.jsonValue()}`);
    if(process.env.TEST_SCREENSHOT_DIR){
     fs.mkdirSync(process.env.TEST_SCREENSHOT_DIR,{recursive:true});
     await heading.scrollIntoViewIfNeeded();
-    await page.evaluate(w=>{const label=document.createElement('div');label.textContent=`New · ${w===390?'Phone':'PC'} · Live French translation`;Object.assign(label.style,{position:'fixed',top:'8px',left:'8px',padding:'10px 12px',background:'#ff7a1a',color:'#111',font:'bold 13px sans-serif',zIndex:999999});document.body.append(label);},width);
+    await page.evaluate(w=>{const label=document.createElement('div');label.className='notranslate';label.textContent=`New · ${w===390?'Phone':'PC'} · Live French translation`;Object.assign(label.style,{position:'fixed',top:'48px',left:'8px',padding:'10px 12px',background:'#ff7a1a',color:'#111',font:'bold 13px sans-serif',zIndex:999999});document.body.append(label);},width);
     await page.screenshot({path:`${process.env.TEST_SCREENSHOT_DIR}/french-${width}.png`});
    }
    await Promise.all([page.waitForEvent('domcontentloaded'),page.locator('.ftr-original').click()]);
