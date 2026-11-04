@@ -365,7 +365,8 @@ h1 span{color:var(--fg-3)}
 
 @media (prefers-reduced-motion:reduce){html[data-panel] .panel{transition:none}}
 .embed body,.embed{background:transparent}
-.embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .zoom,.embed .dock,.embed .peek,.embed .fsheet,.embed .fs-back,.embed .layers,.embed .ddrow{display:none!important}
+.embed .top,.embed .panel,.embed .timeline,.embed .legend,.embed .dock,.embed .peek,.embed .fsheet,.embed .fs-back,.embed .layers,.embed .ddrow{display:none!important}
+.embed .zoom{right:24px;bottom:96px;top:auto}
 .embed #cv{touch-action:pan-y}  /* the page scrolls from anywhere next to the globe; a finger that lands ON the globe is claimed in JS (touchstart below) so it spins first */
 
 /* Atlas-style floating glass: segmented category + region bars, richer news panel */
@@ -901,7 +902,7 @@ function drawConnections(t, focus, country) {
   mains.forEach(([e, pts], i) => {
     const top = !EMBED && !sel && i < 3;
     if (strokeArc(pts, MAIN, (EMBED ? .85 : top ? .95 : .7) * fade, EMBED ? 1.4 : top ? 2 : 1.5, top, top ? ph(i) : null)) visibleArcs++;
-    if (!EMBED && e.impact) arcHits.push({ ...e, points: pts });
+    if (e.impact) arcHits.push({ ...e, points: pts });
   });
   // the selection (an event or an asset): its main line brightest, then ripples, sector spread and story threads, each with its reason
   const chosen = focus ? events.filter(related).slice(0, 1) : sym ? events.filter(related).slice(0, 8) : iso ? events.filter(related).slice(0, 8) : [];
@@ -1224,7 +1225,7 @@ function endPointer(e) {
 }
 cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
 cv.addEventListener('pointerleave', () => { if (!drag && !phone()) hideHover(); });
-cv.addEventListener('wheel', e => { if (EMBED && !e.ctrlKey) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
+cv.addEventListener('wheel', e => { if (EMBED && !e.ctrlKey && !onGlobe(e.clientX, e.clientY)) return; e.preventDefault(); setZ(Zt * Math.exp(-Math.max(-200, Math.min(200, e.deltaY)) * (e.deltaMode === 1 ? .02 : .0015)), e.clientX, e.clientY); }, { passive: false });
 cv.addEventListener('selectstart', e => e.preventDefault()); cv.addEventListener('dragstart', e => e.preventDefault());
 cv.addEventListener('dblclick', e => { const g = inv(e.clientX, e.clientY); if (g) setZ(Zt < ZMAX - .1 ? Zt * 1.8 : 1, e.clientX, e.clientY); });
 $('zin').onclick = () => setZ(Zt * 1.6); $('zout').onclick = () => setZ(Zt / 1.6);
@@ -1245,8 +1246,8 @@ function hoverAt(x, y) {
   cv.style.cursor = !EMBED || onGlobe(x, y) ? 'grab' : 'default';
   if (c === hoverCountry) return;
   hoverCountry = c; clearTimeout(cTimer); $('hover').classList.remove('on');
-  if (c && !EMBED) cTimer = setTimeout(() => { if (hoverCountry !== c || drag) return; const hv = $('hover');
-    hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); placeHover(lastX, lastY + 6); }, 650);
+  if (c) cTimer = setTimeout(() => { if (hoverCountry !== c || drag) return; const hv = $('hover');
+    hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); placeHover(lastX, lastY + 6); }, 160);
 }
 function showHover(d) {
   const hv = $('hover');
@@ -1602,6 +1603,13 @@ const GB = Object.assign({}, GB0, ({
   M: { rim: .85, rimRGB: '140,144,154', rimW: 1.8, glow: '255,122,26,.42', blur: 16, atm: .14, atmRGB: '255,122,26' },   // graphite rim with an orange glow (mixed)
   E: { rim: .5, rimRGB: '255,255,255', rimW: 1, glow: '255,255,255,.18', blur: 16, atm: .05, atmRGB: '235,240,255' },       // glass: white hairline
   F: { rim: .9, rimRGB: '120,124,134', rimW: 2, glow: '0,0,0,0', blur: 0, atm: .04, atmRGB: '120,124,134' } })[new URLSearchParams(location.search).get('gb')], (g => g === null ? {} : { grid: +g })(new URLSearchParams(location.search).get('gr')));  // ?gr=0..2 previews the grid strength
+// Day globe (light theme): a palette swap applied ONCE when the theme changes, nothing extra per frame. The homepage's circular theme
+// reveal animates the change; the sky is rebuilt once (its cache key includes the palette).
+const GB_NIGHT = Object.assign({}, GB), GB_DAY = { s0: '#f7f9fc', s1: '#cfd9e5', atm: .2, atmRGB: '120,165,225', rgb: '92,104,120', land: .05, line: .07, rim: .85, rimRGB: '165,185,212', rimW: 1.5, glow: '130,175,235,.30', blur: 14 };
+let DAY = false;
+const setDay = on => { DAY = !!on; Object.assign(GB, on ? GB_DAY : GB_NIGHT); };
+try { if (localStorage.getItem('inv-theme') === 'light') setDay(true); } catch {}
+addEventListener('message', e => { if (e.origin === location.origin && e.data && e.data.type === 'inv-theme') setDay(e.data.theme === 'light'); });
 // Star field behind the globe (preview: ?st=1 sparse, 2 dense with a soft galaxy band, 3 dense + slow twinkle and parallax). Off by default.
 const STARS = 1;  // chosen: sparse stars, no twinkle
 const P = new URLSearchParams(location.search), ARC_A = +P.get('arc') || .4, STAR_MONO = !P.has('color');  // previews: ?arc=0.3 stronger connections, ?smono black-and-white stars
@@ -1634,7 +1642,7 @@ function drawSky() {
   if (key !== skyKey) {
     skyKey = key; skyCv = document.createElement('canvas'); skyCv.width = W; skyCv.height = H;
     const real = ctx; ctx = skyCv.getContext('2d');
-    try { drawGalaxy(); drawStars(0); } finally { ctx = real; }
+    try { if (DAY) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#dce8f5'); g.addColorStop(.55, '#eef3f8'); g.addColorStop(1, '#f8fafc'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); } else { drawGalaxy(); drawStars(0); } } finally { ctx = real; }
   }
   ctx.drawImage(skyCv, 0, 0, W, H);
 }
@@ -1742,7 +1750,7 @@ function frame(t) {
     if (s.flag && d.z > .35 && (n === 1 || d.same)) {
       const lx = d.x + (n > 1 ? 21 : 12), al = a * Math.min(1, (d.z - .35) * 4);
       ctx.font = '650 9px Inter,sans-serif'; ctx.fillStyle = `rgba(255,140,50,${al})`; ctx.fillText(FLAG[s.flag].toUpperCase(), lx, d.y - 6);
-      ctx.font = '500 11.5px Inter,sans-serif'; ctx.fillStyle = `rgba(255,255,255,${.92 * al})`; ctx.fillText(s.location.place.split(',')[0], lx, d.y + 7);
+      ctx.font = '500 11.5px Inter,sans-serif'; ctx.fillStyle = DAY ? `rgba(24,24,28,${.88 * al})` : `rgba(255,255,255,${.92 * al})`; ctx.fillText(s.location.place.split(',')[0], lx, d.y + 7);
     }
   }
   // connection pills (asset + real % move) are drawn last so map markers never cover them
