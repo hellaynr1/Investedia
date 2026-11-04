@@ -27,3 +27,7 @@ Both screenshots were inspected. They show actual local site content and the rea
 ## Not done
 
 Actual Google widget availability, eligibility for this domain, translation quality, and Safari behavior with the real provider remain unverified. The current environment still blocks Google destinations even though saved settings request unrestricted networking. End-to-end provider validation is required before claiming translation works or merging this replacement. No API keys or secret values have been added.
+
+### Live verification gate
+
+`tests/translation-live.spec.mjs` is an additional opt-in, unmocked check. It requires a changed page heading and Google's translated-document marker at both widths, followed by restoring the original English text. The fixture-based tests remain separate. A recorded network failure is not a passing translation check. Apply the saved unrestricted network configuration to the running environment before attempting final provider validation.
