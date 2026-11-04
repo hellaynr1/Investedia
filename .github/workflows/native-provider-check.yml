@@ -1,0 +1,33 @@
+name: Check native translation provider
+on:
+  push:
+    branches: [preview/native-translation]
+    paths: [.github/workflows/native-provider-check.yml]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Check supported news-provider models without exposing credentials
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import json,os,urllib.request,urllib.error
+          key=os.environ['GEMINI_API_KEY']
+          for model in ['gemini-flash-latest','gemini-3.5-flash-lite']:
+              body=json.dumps({'contents':[{'parts':[{'text':'Translate "Markets" into French. Return a JSON array with one string.'}]}],'generationConfig':{'responseMimeType':'application/json','maxOutputTokens':512}}).encode()
+              req=urllib.request.Request('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent',data=body,headers={'Content-Type':'application/json','x-goog-api-key':key})
+              try:
+                  with urllib.request.urlopen(req,timeout=60) as response:data=json.load(response)
+                  print(model,'READY',flush=True)
+              except urllib.error.HTTPError as error:
+                  print(model,'HTTP',error.code,flush=True)
+                  data=json.load(error)
+                  for detail in data.get('error',{}).get('details',[]):
+                      for violation in detail.get('violations',[]):print('Quota:',violation.get('quotaMetric'),violation.get('quotaId'),violation.get('quotaValue'),flush=True)
+                      if 'retryDelay' in detail:print('Retry delay:',detail['retryDelay'],flush=True)
+          PY
