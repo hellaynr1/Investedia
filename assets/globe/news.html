@@ -1608,8 +1608,7 @@ const GB = Object.assign({}, GB0, ({
 const GB_NIGHT = Object.assign({}, GB), GB_DAY = { s0: '#f7f9fc', s1: '#cfd9e5', atm: .2, atmRGB: '120,165,225', rgb: '92,104,120', land: .05, line: .07, rim: .85, rimRGB: '165,185,212', rimW: 1.5, glow: '130,175,235,.30', blur: 14 };
 let DAY = false;
 const setDay = on => { DAY = !!on; Object.assign(GB, on ? GB_DAY : GB_NIGHT); };
-try { if (localStorage.getItem('inv-theme') === 'light') setDay(true); } catch {}
-addEventListener('message', e => { if (e.origin === location.origin && e.data && e.data.type === 'inv-theme') setDay(e.data.theme === 'light'); });
+// the globe keeps its dark look in both themes (owner's choice, 2026-11-04): setDay() stays available but nothing calls it
 // Star field behind the globe (preview: ?st=1 sparse, 2 dense with a soft galaxy band, 3 dense + slow twinkle and parallax). Off by default.
 const STARS = 1;  // chosen: sparse stars, no twinkle
 const P = new URLSearchParams(location.search), ARC_A = +P.get('arc') || .4, STAR_MONO = !P.has('color');  // previews: ?arc=0.3 stronger connections, ?smono black-and-white stars
