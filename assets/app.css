@@ -1238,3 +1238,10 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 /* small hover lifts on cards (border/colour only, no jumping) */
 .hn-card,.cx-card,.hn-box{transition:border-color .18s ease,background-color .18s ease}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1!important;transform:none!important;transition:none!important}}
+
+/* In-page translation retains Google's own widget and attribution. */
+.ftr-lang[hidden],.ftr-translate[hidden],.ftr-original[hidden],.ftr-translate-status[hidden]{display:none!important}
+.ftr-translate{max-width:100%;padding:10px 12px;background:#fff;color:#111;border-radius:10px;width:max-content}
+.ftr-translate select{max-width:100%;min-height:44px;color:#111;background:#fff}
+.ftr-original{width:max-content;max-width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--fg);font:inherit;cursor:pointer}
+.ftr-translate-status{max-width:60ch;margin:0;color:var(--fg-2);font-size:13px;line-height:1.5}

@@ -112,7 +112,7 @@
 
   // ---------- brand ----------
   const mark = `<svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" fill="#000"/><path d="M0 31 11 24.5l7 4.5 10-10 12 6.5V40H0z" fill="#1e1e21"/><path d="M0 28 11 21.5l7 4.5 10-10 12 6.5" fill="none" stroke="#FF7A1A" stroke-width="4"/></svg>`;
-  const brand = `<a class="brand" href="index.html" aria-label="Investedia home">${mark}<b>Invested<span class="i">i</span>a</b></a>`;
+  const brand = `<a class="brand notranslate" translate="no" href="index.html" aria-label="Investedia home">${mark}<b>Invested<span class="i">i</span>a</b></a>`;
 
   // ---------- header ----------
   // Mega-menu content per market category: link columns + popular assets
@@ -461,30 +461,100 @@
   // phones: footer sections fold into tap-to-open rows; wider screens: always open
   const ftrQ = matchMedia('(max-width: 760px)'), ftrFold = () => ftr.querySelectorAll('.ftr-col').forEach(d => { d.open = !ftrQ.matches; });
   ftrFold(); ftrQ.addEventListener?.('change', ftrFold);
-  // Enter through Google Translate rather than constructing its proxy hostname.
+  // Request Google's in-page translator; never navigate visitors to a translate.goog proxy.
   const ftrLang = ftr.querySelector('.ftr-lang select');
-  const onGoog = /\.translate\.goog$/.test(location.hostname);
-  if (ftrLang && onGoog) {
-    const language = new URLSearchParams(location.search).get('_x_tr_tl');
-    if ([...ftrLang.options].some(option => option.value === language)) ftrLang.value = language;
+  const languageControl = ftrLang.closest('label');
+  languageControl.classList.add('notranslate');
+  const translateHost = document.createElement('div');
+  translateHost.id = 'inv-google-translate';
+  translateHost.className = 'ftr-translate notranslate';
+  translateHost.hidden = true;
+  const translateStatus = document.createElement('p');
+  translateStatus.className = 'ftr-translate-status notranslate';
+  translateStatus.setAttribute('role', 'status');
+  translateStatus.hidden = true;
+  const originalButton = document.createElement('button');
+  originalButton.type = 'button';
+  originalButton.className = 'ftr-original notranslate';
+  originalButton.textContent = 'Show original English';
+  originalButton.hidden = true;
+  languageControl.after(translateHost, originalButton, translateStatus);
+  let translatorReady = null, translationAttempt = 0;
+  function loadTranslator() {
+    if (translatorReady) return translatorReady;
+    translatorReady = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      const callback = 'investediaTranslateReady' + (++translationAttempt);
+      script.src = 'https://translate.google.com/translate_a/element.js?cb=' + callback;
+      script.async = true;
+      let observer, finished = false;
+      const finish = (error, combo) => {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timeout);
+        observer?.disconnect();
+        if (error) window[callback] = () => {}; // Ignore a timed-out script's late callback.
+        else delete window[callback];
+        if (error) { script.remove(); translateHost.replaceChildren(); reject(error); }
+        else resolve(combo);
+      };
+      const timeout = setTimeout(() => finish(new Error('Translation service timed out')), 15000);
+      script.onerror = () => finish(new Error('Translation service could not load'));
+      window[callback] = () => {
+        if (finished) return;
+        try {
+          // Keep Google's actual widget and attribution visible once it is ready.
+          new google.translate.TranslateElement({pageLanguage:'en', includedLanguages:'fr,nl,de,es,it,pt', autoDisplay:false}, translateHost.id);
+          const check = () => {
+            const combo = translateHost.querySelector('select.goog-te-combo');
+            if (combo && [...combo.options].some(option => option.value === ftrLang.value)) finish(null, combo);
+          };
+          observer = new MutationObserver(check);
+          observer.observe(translateHost, {childList:true, subtree:true});
+          check();
+        } catch (error) { finish(error); }
+      };
+      document.head.append(script);
+    }).catch(error => { translatorReady = null; throw error; });
+    return translatorReady;
   }
-  ftrLang?.addEventListener('change', () => {
-    const language = ftrLang.value;
-    // Always translate the public original, never localhost or an already translated copy.
-    const original = new URL(location.pathname, 'https://investedia.com');
-    original.search = location.search;
-    [...original.searchParams.keys()].filter(key => key.startsWith('_x_tr_')).forEach(key => original.searchParams.delete(key));
-    original.hash = location.hash;
-    if (language === 'en') { location.assign(original.href); return; }
-    const translate = new URL('https://translate.google.com/translate');
-    translate.searchParams.set('sl', 'en');
-    translate.searchParams.set('tl', language);
-    translate.searchParams.set('hl', language);
-    translate.searchParams.set('u', original.href);
-    location.assign(translate.href);
+  async function translatePage() {
+    if (ftrLang.value === 'en') return;
+    ftrLang.disabled = true;
+    translateStatus.hidden = false;
+    translateStatus.textContent = 'Loading Google Translate…';
+    try {
+      const combo = await loadTranslator();
+      combo.value = ftrLang.value;
+      combo.dispatchEvent(new Event('change', {bubbles:true}));
+      translateHost.hidden = false;
+      languageControl.hidden = true;
+      originalButton.hidden = false;
+      translateStatus.textContent = 'Automatic translation by Google. The English original remains the reference.';
+    } catch {
+      ftrLang.value = 'en';
+      translateStatus.textContent = 'Google Translate could not load. Your page is still open in English. Choose a language to try again, or use your browser’s Translate feature.';
+    } finally { ftrLang.disabled = false; }
+  }
+  ftrLang.addEventListener('change', translatePage);
+  originalButton.addEventListener('click', () => {
+    // Clear only Google's translation choice, then reload the same original page.
+    for (const domain of new Set(['', location.hostname, '.' + location.hostname, '.investedia.com'])) {
+      document.cookie = 'googtrans=; Max-Age=0; Path=/' + (domain ? '; Domain=' + domain : '');
+    }
+    location.reload();
   });
   ftr.querySelector('.ftr-top-btn')?.addEventListener('click', () => scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
-  document.addEventListener('DOMContentLoaded', () => document.body.append(ftr));
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.append(ftr);
+    // Resume only an explicitly requested Google translation on subsequent pages.
+    const saved = document.cookie.split(';').map(part => part.trim()).find(part => part.startsWith('googtrans='));
+    const language = saved?.split('=')[1]?.split('/').pop();
+    if (language && language !== 'en' && [...ftrLang.options].some(option => option.value === language)) {
+      ftrLang.value = language;
+      translatePage();
+    }
+  });
   // scroll reveal: sections fade and rise in once as they enter the view; grid items follow in a short stagger.
   // Only opacity/transform (GPU), each element animates once, nothing hidden without JS, and none with reduced motion.
   if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.addEventListener('DOMContentLoaded', () => {
