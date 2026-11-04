@@ -6,7 +6,7 @@ const nm = c => NAME[c] || c;
 const CAT = { markets: 'Markets', companies: 'Companies', economy: 'Economy', technology: 'Technology', crypto: 'Crypto', commodities: 'Commodities', geopolitics: 'Geopolitics' };
 const FLAG = { breaking: 'Breaking', trending: 'Trending', moving: 'Market moving' };
 let ISO = {}, ENTITY_LOGOS = {}, TRACK = null, LEDGER = null;
-function ago(t) { const m = Math.round((Date.parse(t)-Date.now())/60000), r = new Intl.RelativeTimeFormat(undefined,{numeric:'auto'}); return Math.abs(m)<60 ? r.format(m,'minute') : Math.abs(m)<1440 ? r.format(Math.round(m/60),'hour') : r.format(Math.round(m/1440),'day'); }
+function ago(t) { const m = Math.round((Date.parse(t)-Date.now())/60000), r = new Intl.RelativeTimeFormat('en',{numeric:'auto'}); return Math.abs(m)<60 ? r.format(m,'minute') : Math.abs(m)<1440 ? r.format(Math.round(m/60),'hour') : r.format(Math.round(m/1440),'day'); }
 const flagSrc = c => ISO[c] ? `assets/globe/flags/${ISO[c].toLowerCase()}.svg` : '';
 const company = e => e.ticker && !/[\^=]/.test(e.ticker) && !/-USD$/.test(e.ticker);
 const localLogo = e => ENTITY_LOGOS[e.sym] || ENTITY_LOGOS[e.ticker] || 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="8" fill="#f4f4f5"/><text x="32" y="39" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#18181b">' + esc((e.name || e.ticker || 'I').slice(0,2).toUpperCase()) + '</text></svg>');

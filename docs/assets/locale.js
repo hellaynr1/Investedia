@@ -6,9 +6,18 @@
  const originals=new WeakMap(),attributes=new WeakMap(),packs=new Map();
  let language='en',strings={},observer,busy=false,request=0,titleSource=document.title,titleOutput=document.title;
  const normalize=s=>s.replace(/\s+/g,' ').trim();
- const translate=s=>{const key=normalize(s);return Object.hasOwn(strings,key)?s.match(/^\s*/)[0]+strings[key]+s.match(/\s*$/)[0]:s;};
+ const translate=s=>{
+  const key=normalize(s);let value=Object.hasOwn(strings,key)?strings[key]:null;
+  if(value===null&&language!=='en'){
+   const updated=/^Updated (.+)$/.exec(key),relative=/^(\d+)\s*(min(?:utes?)?|m|hours?|h|days?|d) ago$/.exec(updated?updated[1]:key);
+   if(relative){const unit=relative[2][0]==='m'?'minute':relative[2][0]==='h'?'hour':'day';value=new Intl.RelativeTimeFormat(language,{numeric:'auto'}).format(-Number(relative[1]),unit);}
+   else if(updated&&updated[1]==='just now')value=new Intl.RelativeTimeFormat(language,{numeric:'auto'}).format(0,'second');
+   if(value!==null&&updated)value=(strings.Updated||'Updated')+' '+value;
+  }
+  return value===null?s:s.match(/^\s*/)[0]+value+s.match(/\s*$/)[0];
+ };
  function text(node){
-  if(!node.parentElement||node.parentElement.closest(skip))return;
+  if(!node.parentElement||node.parentElement.closest(skip+',textarea,input,[contenteditable=true]'))return;
   let item=originals.get(node);
   if(!item||node.data!==item.output)item={source:node.data,output:node.data};
   item.output=translate(item.source);originals.set(node,item);
