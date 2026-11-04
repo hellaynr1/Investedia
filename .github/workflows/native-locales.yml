@@ -1,0 +1,36 @@
+name: Build native language packs
+on:
+  push:
+    branches: [preview/native-translation]
+    paths: [assets/locales/source.json, tools/build-locales.py, .github/workflows/native-locales.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: native-locales-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Generate cached translations
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 tools/build-locales.py
+      - name: Mirror and save translations to this branch
+        run: |
+          mkdir -p docs/assets/locales
+          cp assets/locales/*.json docs/assets/locales/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898283+github-actions[bot]@users.noreply.github.com'
+          git add assets/locales docs/assets/locales
+          git diff --cached --quiet && exit 0
+          git commit -m 'Generate native translation packs'
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
