@@ -34,8 +34,8 @@ def build(lang, sources):
     pack = json.loads(path.read_text()) if path.exists() else {'language': lang, 'strings': {}}
     pack['strings'] = {k: v for k, v in pack['strings'].items() if k in sources}
     missing = [s for s in sources if s not in pack['strings']]
-    for i in range(0, len(missing), 150):
-        batch = missing[i:i + 150]
+    for i in range(0, len(missing), 60):
+        batch = missing[i:i + 60]
         for attempt in range(3):
             try: pack['strings'].update(zip(batch, generate(batch, lang))); break
             except RuntimeError as e: print(lang, 'retry', e, flush=True)
