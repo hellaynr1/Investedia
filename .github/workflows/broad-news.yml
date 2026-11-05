@@ -49,6 +49,8 @@ jobs:
           WORKER_URL: ${{ vars.WORKER_URL }}
           NEWS_INGEST_TOKEN: ${{ secrets.NEWS_INGEST_TOKEN }}
         run: python3 tools/push-news-to-worker.py
+      - name: Per-asset news index for charts
+        run: python3 tools/build-asset-news.py && cp assets/globe/asset-news.json docs/assets/globe/asset-news.json || echo 'asset news index failed'
       - name: Publish
         if: always()
         run: |
