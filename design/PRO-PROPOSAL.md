@@ -48,7 +48,7 @@ Free research (article / Market View / company page) → contextual gate at a re
 | Webhooks with signatures | yes | yes | yes | yes |
 | Typical fee at €11.99 (indicative) | ~1.5%+€0.25 card + ~0.7% Billing + ~0.5% Tax ≈ €0.55 | ~€0.30–0.45 + build effort | ~5%+$0.50 ≈ €1.05 | ~5%+$0.50 ≈ €1.05 |
 | Fit | best long-term, more admin | best Belgian payment mix, most build | least admin at launch | similar to Paddle |
-Recommendation: launch with a **merchant of record (Paddle)** to avoid OSS filing and invoicing work while volumes are small; revisit Stripe Billing + Stripe Tax once revenue justifies the admin (or if an accountant already files OSS). Discuss the VAT small-business exemption (Belgian €25k regime) with an accountant: it interacts with OSS and cross-border sales.
+**Decision (owner, 2026-11-05): Stripe.** Earlier recommendation was a merchant of record (Paddle) to avoid OSS filing and invoicing work while volumes are small; revisit Stripe Billing + Stripe Tax once revenue justifies the admin (or if an accountant already files OSS). Discuss the VAT small-business exemption (Belgian €25k regime) with an accountant: it interacts with OSS and cross-border sales.
 
 ## 6. Entitlement architecture (GitHub Pages + Cloudflare Workers + Supabase)
 - Identity: Supabase Auth (existing). Browser sends the Supabase access token to the Worker.
@@ -85,3 +85,14 @@ Recommendation: launch with a **merchant of record (Paddle)** to avoid OSS filin
 - Phase 2 (1 week): gates in the UI (full note, watchlist limit, history, alerts), landing + account pages, emails; sandbox end-to-end tests (trial, renewal, failed payment, cancel, refund, webhook replay).
 - Phase 3: legal/terms/privacy updates, accountant VAT setup, soft launch to a small group, then public.
 Each phase: preview → approval → implement → test; no live payments without approval.
+
+## 11. Stripe implementation spec (decision: Stripe)
+- Products: Stripe Billing, one Product "Investedia Pro" with two Prices: €11.99/month and €99/year, `tax_behavior=inclusive`, trial 7 days (`trial_period_days=7`, card required, `trial_settings.end_behavior.missing_payment_method=cancel`).
+- Checkout: hosted Stripe Checkout in `subscription` mode, `automatic_tax` on (Stripe Tax), `tax_id_collection` on (B2B reverse charge), `client_reference_id` = Supabase user id, `consent_collection` / custom text for the EU withdrawal-right waiver. Payment methods: card, Bancontact (as first payment, recurring via SEPA Direct Debit mandate), Apple/Google Pay, SEPA Direct Debit.
+- Customer Portal: change plan monthly↔yearly, update payment method, download invoices, cancel at period end.
+- Webhooks handled by the Worker (signature verified with the webhook secret, idempotent by event id): `checkout.session.completed`, `customer.subscription.created|updated|deleted`, `customer.subscription.trial_will_end` (reminder email), `invoice.paid`, `invoice.payment_failed` (grace period 3 days, then access off).
+- Entitlement = subscription status in (`trialing`, `active`) or (`past_due` within grace). Stored in Supabase `subscriptions`.
+- VAT: Stripe Tax calculates; **you remain seller of record** → register for EU OSS (or stay under the €10k cross-border threshold), file quarterly returns, Belgian invoicing rules — set up with an accountant before going live. Stripe Tax registrations must list Belgium (and OSS).
+- Secrets: `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` as Cloudflare Worker secrets (test-mode keys first). Never in the repo or browser; only the publishable key may appear client-side (not needed with hosted Checkout).
+- Fees (indicative, verify): EEA cards ~1.5% + €0.25, Billing ~0.7%, Tax ~0.5% → ≈ €0.55 per €11.99 charge.
+- Tests in Stripe test mode with test clocks: trial → paid, trial cancel, renewal, failed payment and recovery, plan switch, refund, webhook replay and out-of-order events.
