@@ -77,6 +77,17 @@ body[data-page=home] main.wrap{max-width:none;padding:0}
 :root[data-theme="light"] .hn-box,:root[data-theme="light"] .hn-m{background:#fff}:root[data-theme="light"] .hn-imp i{background:#E4E4E7}:root[data-theme="light"] .hn-imp i.on{background:#FF7A1A}:root[data-theme="light"] .hn-ci img.lg{border:1px solid var(--line)}
 @media (max-width:900px){:root[data-theme="light"] .hn-hero.hv-a::after{background:linear-gradient(180deg,rgba(247,247,248,.9) 0,rgba(247,247,248,.5) 34%,transparent 55%,transparent 82%,var(--bg) 100%)}
 :root[data-theme="light"] .hn-hero.hv-a .hn-tick{background:linear-gradient(0deg,rgba(255,255,255,.92),rgba(255,255,255,.4))}}
+
+/* headline pill under the globe (phones) */
+@media (max-width:900px){.hn-tick{background:none!important;border:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;padding:10px 16px 6px}
+.hn-tick .hn{height:auto;display:block;overflow:visible}
+.hn-pill{width:100%;box-sizing:border-box;display:flex;align-items:center;gap:12px;min-height:52px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.03);color:var(--fg);text-decoration:none;transition:opacity .26s,transform .26s}
+.hn-pill.out{opacity:0;transform:translateY(-4px)}
+.hn-pt{display:inline-flex;align-items:center;gap:8px;padding-right:12px;border-right:1px solid var(--line);color:#FF7A1A;font:500 13.5px var(--sans);white-space:nowrap}
+.hn-pt i{width:8px;height:8px;border-radius:50%;background:#FF7A1A;box-shadow:0 0 8px rgba(255,122,26,.7)}
+.hn-ph{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 14.5px var(--sans)}
+.hn-pa{font-size:18px;color:var(--fg)}
+:root[data-theme="light"] .hn-pill{background:rgba(0,0,0,.02)}}
 </style>
 <link rel="stylesheet" href="assets/home-news.css"><link rel="stylesheet" href="assets/since-news.css">
 <section class="hn-hero" aria-label="Live news globe">
@@ -167,7 +178,9 @@ loadNews().then(d => {
   hnTop.innerHTML = d.top.slice(0, 5).map((s, i) => card(s, i === 0)).join('');
   { const cs = confirmedSection(d); hnWhy.innerHTML = cs.body; hnWhyMore.innerHTML = cs.more; }
   hnCty.innerHTML = countries(d.stories);
-  hnTick.innerHTML = d.latest.slice(0, 6).map(s => '<a href="' + url(s) + '"><b>' + ago(s.published_at) + '</b>' + esc(s.headline) + '</a>').join('');
+  { const L = d.latest.slice(0, 6), short = t => { const m = Math.max(0, Math.round((Date.now() - Date.parse(t)) / 6e4)); return m < 60 ? m + 'm ago' : m < 1440 ? Math.round(m / 60) + 'h ago' : Math.round(m / 1440) + 'd ago'; };
+    let k = 0; const show = () => { const s = L[k % L.length]; if (!s) return; hnTick.innerHTML = '<a class="hn-pill" href="' + url(s) + '"><span class="hn-pt"><i></i>' + short(s.published_at) + '</span><span class="hn-ph">' + esc(s.headline) + '</span><span class="hn-pa" aria-hidden="true">→</span></a>'; };
+    show(); if (L.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => { if (document.hidden) return; const a = hnTick.firstChild; a && a.classList.add('out'); setTimeout(() => { k++; show(); }, 260); }, 6000); }
 }).catch(() => { hnTop.innerHTML = '<p class="hn-meta">News is loading. Please refresh in a moment.</p>'; });
 // Upcoming economic events + earnings (real, refreshed by update_calendar.py)
 const CC = { USD: 'us', EUR: 'eu', GBP: 'gb', JPY: 'jp', CNY: 'cn', CAD: 'ca', AUD: 'au', NZD: 'nz', CHF: 'ch' };
