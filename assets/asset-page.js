@@ -30,7 +30,7 @@
     return `<div class="ap-yax">${yl}</div><div class="ap-plot"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="color:${c}"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".28"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs><g class="ap-grid">${grid}</g><path d="${d}L${W} ${H}L0 ${H}Z" fill="url(#${gid})"/><path class="ap-ln" d="${d}" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>${pins(a, rel, v, L0, r)}</div><div class="ap-xax">${xl}</div>`;
   }
   // News pins on the chart: each article that names the asset sits on the line at its publication time; same numbers as the list below
-  const MK = (new URLSearchParams(location.search).get('mk') || 'a').replace(/[^abc]/g, '') || 'a';
+  const MK = (new URLSearchParams(location.search).get('mk') || 'b').replace(/[^abc]/g, '') || 'a';
   function pins(a, rel, v, L0, rr) {
     if (!v || v.length < 2 || !rel.length) return '';
     const t = S.intra[a.s]?.d1?.t, end = S.win === 'd' && t?.length ? t[t.length - 1] * 1000 : Date.now(), start = S.win === 'd' ? (t?.length ? t[0] * 1000 : end - 864e5) : end - (S.win === 'w' ? 7 : 30) * 864e5;
