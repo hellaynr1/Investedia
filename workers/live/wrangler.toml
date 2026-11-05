@@ -19,4 +19,5 @@ enabled = true
 # After deploying, add a custom domain in the Cloudflare dashboard: Workers & Pages > investedia-live > Settings > Domains & Routes > Add > Custom domain: live.investedia.com
 
 [vars]
+PRO_ENABLED = "false"   # Investedia Pro routes stay hidden until approved; live Stripe keys also need PRO_LIVE = "true"
 NEWS_CRON = "off"

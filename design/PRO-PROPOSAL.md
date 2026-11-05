@@ -96,3 +96,18 @@ Each phase: preview → approval → implement → test; no live payments withou
 - Secrets: `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` as Cloudflare Worker secrets (test-mode keys first). Never in the repo or browser; only the publishable key may appear client-side (not needed with hosted Checkout).
 - Fees (indicative, verify): EEA cards ~1.5% + €0.25, Billing ~0.7%, Tax ~0.5% → ≈ €0.55 per €11.99 charge.
 - Tests in Stripe test mode with test clocks: trial → paid, trial cancel, renewal, failed payment and recovery, plan switch, refund, webhook replay and out-of-order events.
+
+## 12. More Pro features that take nothing away from Free (all additive)
+| Feature | What Pro adds | Why it does not reduce Free | Effort |
+|---|---|---|---|
+| Earnings-day briefs | A short pre-release brief for each watched company (last quarter's figures, company guidance, how the stock reacted to its last 4 reports) | Free keeps all news and Market Views; briefs are new content | medium (uses event DB + verified extraction once it passes its gate) |
+| SEC filing digest | Plain-language summary of each new 8-K/10-Q for watched companies, with the source link | Filings stay linked for everyone; the digest is new | medium (Haiku, bounded; needs the extraction gate) |
+| Custom alerts | Price level, % move vs the market, volume spike, new filing type — per asset, push or email | Free keeps the daily digest | small-medium (Worker cron + KV) |
+| Portfolio view | Holdings (manual entry or CSV), exposure by sector/country, news and events that touch the portfolio | New; no existing feature gated | medium |
+| Calendar with history | Upcoming earnings/macro events plus each company's past reaction profile | Free calendar unchanged | small (event DB) |
+| Saved screens | Save and schedule screener filters, alert when a new company matches | Free screener unchanged | small |
+| Research workspace | Notes and bookmarks on any article, call or company, exportable | New | small |
+| Weekly personal report | Email summarising your watchlist's week: news, filings, calls and their outcomes | Free weekly newsletter (if any) unchanged | small |
+| Data export & API key (read-only, rate-limited) | CSV/JSON of your watchlist history and public calls | Public Track Record stays on the site | small |
+| Ad-free / early access | No sponsored placements if ever introduced; early access to beta tools | Free gets the same core product | trivial |
+Ordering suggestion: custom alerts → earnings-day briefs → portfolio view → calendar history, because they reuse existing infrastructure and do not depend on unproven prediction quality.

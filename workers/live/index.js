@@ -27,6 +27,7 @@ async function snapshot() {
 import { refresh, handlePrices, handleStatus } from './v1/prices.js';
 import { refreshNews, handleNews, handleGlobe, ingestNews } from './v1/news.js';
 import { ingestCalls, readCalls } from './v1/calls.js';
+import { handlePro } from './v1/pro.js';
 export { refresh };
 const json = (h, status, body, cache = 'no-store') => new Response(JSON.stringify(body), { status, headers: { ...h, 'Content-Type': 'application/json', 'Cache-Control': cache } });
 
@@ -38,6 +39,9 @@ export default {
   },
   async fetch(req, env, ctx) {
     const h = cors(req), url = new URL(req.url);
+    if (url.pathname.startsWith('/v1/pro/')) {   // Investedia Pro (feature-flagged, sandbox until approved)
+      try { return await handlePro(req, env, url, h); } catch (e) { console.log(JSON.stringify({ route: 'pro', error: String(e).slice(0, 200) })); return json(h, 500, { error: 'pro unavailable' }); }
+    }
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
     if (req.method === 'POST' && url.pathname === '/v1/ingest/news') {
       let r; try { r = await ingestNews(req, env); } catch (e) { console.log(JSON.stringify({ route: 'ingest', error: String(e).slice(0, 200) })); r = { status: 500, body: { error: 'internal' } }; }
