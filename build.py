@@ -1,5 +1,6 @@
 """Build the static site: wraps each page in src/pages/ with the shared <head> and scripts.
 Run:  python3 build.py   (outputs the .html files at the project root)"""
+import subprocess, sys
 import json, pathlib, re, html
 from tools import legal_check
 
@@ -103,6 +104,8 @@ def build(release=False):
     if values.get('security_email'): security = security.replace('mailto:info@investedia.com', 'mailto:'+str(values['security_email']))
     (ROOT / '.well-known/security.txt').write_text(security)
     write_companies()
+    try: subprocess.run([sys.executable, str(ROOT / 'tools' / 'build-asset-news.py')], check=False)
+    except Exception: pass
     write_sw(pages)
     print(f"Built {len(pages)} pages: " + ", ".join(p.name for p in pages))
     mirror_docs()

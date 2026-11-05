@@ -116,3 +116,4 @@ html,body{overflow-x:clip}.ap{max-width:100%;overflow-x:clip}
 .ap-ch .tradingview-widget-container__widget{height:calc(100% - 26px)!important;width:100%!important}
 .ap-ch .tradingview-widget-container__widget iframe{height:100%!important;width:100%!important;display:block}
 .ap-ch .tradingview-widget-copyright{height:26px;line-height:26px;text-align:center;font-size:12px;color:var(--fg-3)}
+@media(max-width:700px){.ap-cv .ap-pin .ap-pin-ic{width:22px!important;height:22px!important;border-radius:7px;bottom:12px}.ap-cv .ap-pin .ap-pin-ic svg{width:13px;height:13px}.ap-cv .ap-pin{width:9px!important;height:9px!important}}
