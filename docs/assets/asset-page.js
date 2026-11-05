@@ -50,10 +50,10 @@
   if (window.InvPrefs) InvPrefs.onChange(() => { if (S.a) render(); });
   function render() {
     const a = S.a, live = S.live, price = live?.p ?? a.p, m = S.win === 'd' && live?.o ? pc(live.p, live.o) : chg(a, S.win), sd = std(a.sp), z = sd ? a.d / sd : null, rel = S.rel, an = S.an?.[a.s];
-    const level = z == null ? null : Math.abs(z) >= 2 ? ['Unusually large move', 'big'] : Math.abs(z) >= 1.3 ? ['Notable move', 'mid'] : ['Within its normal range', 'ok'];
+    const level = z == null ? null : Math.abs(z) >= 2 ? ['Unusually large move', 'big'] : Math.abs(z) >= 1.3 ? ['Notable move', 'mid'] : ['Within normal range', 'ok'];
     const lo = Math.min(...(a.sp || [a.p])), hi = Math.max(...(a.sp || [a.p])), pos = hi === lo ? 50 : (price - lo) / (hi - lo) * 100;
     const sym = a.s.replace(/=F$/, '').replace(/^\^/, '').replace(/=X$/, '').replace('-USD', '');
-    const base = z == null ? '' : `${a.n} is ${a.d > 0 ? 'up' : a.d < 0 ? 'down' : 'flat'} ${Math.abs(a.d).toFixed(2)}% today, ${Math.abs(z).toFixed(1)}× its typical daily move (21-day volatility ${sd.toFixed(2)}%).`;
+    const base = z == null ? '' : `${a.n} is ${a.d > 0 ? 'up' : a.d < 0 ? 'down' : 'flat'} ${Math.abs(a.d).toFixed(2)}% today, ${Math.abs(z).toFixed(1)}× its typical daily move (21-day volatility: ${sd.toFixed(2)}%).`;
     const cell = (l, v, bar) => `<div><small>${l}</small><b class="mono">${v}</b>${bar != null ? `<div class="mh-rg"><i style="left:${bar}%"></i></div>` : ''}</div>`;
     const rgc = (l, lo, hi, cur) => isFinite(lo) && isFinite(hi) && hi > lo ? cell(l, `${money(lo)} – ${money(hi)}`, Math.max(0, Math.min(100, (cur - lo) / (hi - lo) * 100)).toFixed(0)) : '';
     const d1 = (S.intra[a.s]?.d1?.c || []).filter(isFinite), H = S.hist, lastD = H?.daily?.[H.daily.length - 1];
@@ -68,8 +68,8 @@
       <div class="ap-ch"><div class="ap-cv">${chart(a, series(a, S.win), col(m), rel)}<div class="ap-tip" hidden></div></div></div>
       <div class="ap-fig">${figs.join('')}</div>
       <div class="ap-act">${tvSym(a) ? '<button type="button" class="ap-btn p" id="ap-full">Full chart</button>' : ''}<button type="button" class="ap-btn" id="ap-watch" aria-pressed="false">☆ Watch</button></div>
-      <section class="ap-card ${level ? level[1] : ''}"><div class="ap-ch2"><span class="nf-eb">Move analysis</span>${level ? `<span class="ap-lv">${level[0]}</span>` : ''}</div>
-        <p class="ap-tx">${esc(an ? an.text : (base || 'Not enough price history to measure volatility yet.'))}</p>
+      <section class="ap-card ${level ? level[1] : ''}"><div class="ap-ch2 ap-ma-h"><i class="ap-ma-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></i><h3>Move Analysis</h3>${level ? `<span class="ap-lv"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${level[1] === 'ok' ? '<path d="m5 12.5 4.5 4.5L19 7.5"/>' : '<path d="M12 7v6M12 17h.01"/>'}</svg>${level[0]}</span>` : ''}</div>
+        <p class="ap-tx">${esc(an ? an.text : (base || 'Not enough price history to measure volatility yet.')).replace(/\b(up|down) (\d+(?:\.\d+)?%)/, (_, w, v) => `${w} <span class="ap-hl ${w === 'up' ? 'up' : 'dn'}">${w === 'up' ? '+' : '−'}${v}</span>`).replace(/(volatility:? )(\d+(?:\.\d+)?%)/, '$1<b>$2</b>')}</p>
         ${an ? `<small class="ap-meta">${an.ai ? 'Written with AI from the price data and the linked articles' : 'Generated from the price data and the linked articles'} · updated ${new Date(S.anAsof).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</small>` : ''}
         <div class="ap-pro"><b>Live analysis is coming to Investedia Pro.</b> Real-time alerts the moment ${esc(a.n)} makes an unusual move, and deeper analysis of every catalyst. Free analysis refreshes about every 15 minutes.</div></section>
       <section class="ap-sec ap-rc"><div class="ap-rc-h"><i class="ap-rc-ic">${NEWS_IC}</i><h2>Related Coverage</h2>${rel.length ? `<a class="ap-rc-all" href="news.html?asset=${encodeURIComponent(a.s)}"${EMB ? ' target="_top"' : ''}>View all <span aria-hidden="true">→</span></a>` : ''}</div>${rel.length ? `<ol class="ap-rc-list">${rel.slice(0, EMB ? 3 : 20).map(({ s, i }, n) => { const tag = ({ earnings: 'Earnings', capital: 'Capital', 'macro-data': 'Macro', regulation: 'Policy', 'm&a': 'M&A', geopolitics: 'Geopolitics', rates: 'Rates', 'energy-supply': 'Energy', 'commodity-prices': 'Commodities', guidance: 'Guidance', labor: 'Labor', trade: 'Trade' })[s.event_type] || (s.category ? s.category[0].toUpperCase() + s.category.slice(1) : '');
