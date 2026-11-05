@@ -1,0 +1,26 @@
+name: v6 earnings engine (shadow, research only)
+on:
+  schedule:
+    - cron: '17 14 * * 1-5'   # after the US open; freezes shadow calls, resolves older ones
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: {group: v6-shadow, cancel-in-progress: false}
+jobs:
+  shadow:
+    if: github.ref == 'refs/heads/engine-v6' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: engine-v6}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q lightgbm numpy
+      - run: python3 -m tools.v6.shadow_earnings --resolve || true
+      - run: python3 -m tools.v6.shadow_earnings
+      - name: Save to engine-v6 only (never main)
+        run: |
+          git config user.name 'github-actions[bot]'; git config user.email '41898283+github-actions[bot]@users.noreply.github.com'
+          git add research/v6/shadow; git diff --cached --quiet && exit 0
+          git commit -m 'v6 shadow earnings calls [skip ci]'; git pull --rebase origin engine-v6; git push origin HEAD:engine-v6

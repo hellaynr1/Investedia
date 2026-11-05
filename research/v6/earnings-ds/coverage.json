@@ -1,0 +1,23 @@
+{
+ "events_in_calendar_with_prices": 53691,
+ "events_kept": 53232,
+ "rejected": {
+  "outside-price-window": 407,
+  "duplicate-within-20-sessions": 24,
+  "no-price-history": 28
+ },
+ "by_year": {
+  "2022": 10624,
+  "2023": 10955,
+  "2024": 11246,
+  "2025": 11708,
+  "2026": 8699
+ },
+ "tickers": 3437,
+ "labels": {
+  "up": 22245,
+  "down": 23513,
+  "flat": 7474
+ },
+ "with_sector_label": 5219
+}
