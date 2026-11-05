@@ -120,7 +120,7 @@
       // in the pop-up sheet, Escape closes the sheet in one press (the key goes to this frame, not the page behind)
       if (EMB) addEventListener('keydown', e => { if (e.key === 'Escape') { try { parent.postMessage({ inv: 'peek-close' }, location.origin); } catch {} } });
       // "View in Companies": shown once the company directory page is published (it lives on its own page)
-      const coLink = () => { const slot = root.querySelector('.ap-co-slot'); if (!slot) return; (window.__invCo ??= fetch('data/companies.json').then(r => r.ok ? r.json() : null).catch(() => null)).then(d => { const c = d?.companies?.find(c => (c.listings || []).some(l => l.s === S.a.s)); if (c && slot.isConnected) slot.innerHTML = ` · <a class="ap-co" href="companies/${encodeURIComponent(c.slug)}.html" ${EMB ? 'target="_top"' : ''}>View in Companies <span aria-hidden="true">↗</span></a>`; }); };
+      const coLink = () => { const slot = root.querySelector('.ap-co-slot'); if (!slot) return; (window.__invCo ??= fetch('data/companies.json').then(r => r.ok ? r.json() : null).catch(() => null)).then(d => { const c = d?.companies?.find(c => (c.listings || []).some(l => l.s === S.a.s)); if (c && slot.isConnected) slot.innerHTML = `<a class="ap-co" href="companies/${encodeURIComponent(c.slug)}.html" ${EMB ? 'target="_top"' : ''}><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V8l8-4 8 4v12M9 20v-6h6v6"/></svg>Company profile</a>`; }); };
       coLink(); new MutationObserver(coLink).observe(root, { childList: true });
       paintWatch();
     }).catch(e => { console.error('asset', e); root.innerHTML = '<div class="nb-none">Asset data could not load. Please refresh.</div>'; });

@@ -127,3 +127,4 @@ html,body{overflow-x:clip}.ap{max-width:100%;overflow-x:clip}
 .ap-cv.mk-c .ap-pin:before{content:"";position:absolute;left:50%;top:0;width:9px;height:9px;margin:-1px 0 0 -4.5px;border-radius:50%;background:#fff}
 .ap-cv.mk-c .ap-pin .ap-pin-ic{bottom:4px!important;top:auto;transform:translate(-50%,0)!important;width:20px!important;height:20px!important;border-radius:6px!important;background:#111114!important}
 .ap-cv.mk-c .ap-pin.u .ap-pin-ic{border-color:#22c55e}.ap-cv.mk-c .ap-pin.d .ap-pin-ic{border-color:#f87171}
+.ap-co-slot{display:inline}.ap-co{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--fg-2)!important;font:500 12px var(--sans);text-decoration:none!important;vertical-align:1px;white-space:nowrap}.ap-co:hover{color:var(--fg)!important;border-color:var(--fg-3)}
