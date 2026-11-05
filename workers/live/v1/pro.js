@@ -1,12 +1,18 @@
 // Investedia Pro billing and entitlement (Stripe Billing + Supabase Auth). SANDBOX FIRST.
 // Every /v1/pro/* route returns 404 unless env.PRO_ENABLED === 'true'. Live Stripe keys (sk_live_...) are refused unless
 // env.PRO_LIVE === 'true' (owner approval). Secrets come only from Worker secrets: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET,
-// SUPABASE_SERVICE_KEY. Plain vars: SUPABASE_URL, SUPABASE_ANON_KEY, STRIPE_PRICE_MONTHLY, STRIPE_PRICE_YEARLY, SITE_URL.
+// SUPABASE_SERVICE_KEY. Plain vars: SUPABASE_URL, SUPABASE_ANON_KEY, STRIPE_PRICE_MONTHLY, STRIPE_PRICE_YEARLY, SITE_URL,
+// VAT_MODE ('registered' = Stripe Tax computes VAT inside the inclusive price; 'exempt' = Belgian small-enterprise exemption, no VAT
+// charged). There is no default: checkout refuses to run until VAT_MODE is set explicitly.
 //   POST /v1/pro/checkout {plan:'monthly'|'yearly'}  (signed-in)  -> { url }  hosted Checkout, 7-day trial, Stripe Tax
 //   POST /v1/pro/portal                             (signed-in)  -> { url }  Stripe customer portal
 //   GET  /v1/pro/me                                 (signed-in)  -> { pro, status, plan, trial_end, current_period_end, cancel_at_period_end }
 //   POST /v1/pro/webhook                            (Stripe)     -> 200 after signature check; idempotent; ignores out-of-order events
 export const TRIAL_DAYS = 7, GRACE_DAYS = 3;
+// Pro is a digital SERVICE (ongoing access and alerts), not one-off digital content: the 14-day withdrawal right is NOT lost by starting
+// early. If the consumer withdraws after asking for an immediate start, the law allows charging only for the service already supplied;
+// Investedia goes further and refunds in full. Wording to be confirmed by a Belgian lawyer before live billing.
+export const WITHDRAWAL_TEXT = 'Your 7-day free trial starts now; we charge €11.99 (monthly) or €109 (yearly) when it ends unless you cancel. You may withdraw within 14 days of subscribing for a full refund of any amount charged, and cancel anytime after that.';
 const enc = new TextEncoder();
 
 // ---------- entitlement ----------
@@ -132,15 +138,18 @@ export async function handlePro(req, env, url, baseHeaders, deps = {}) {
     if (!price) return json(h, 500, { error: 'price not configured' });
     const existing = await store.byUser(user.id);
     if (isPro(existing, now)) return json(h, 409, { error: 'already subscribed' });
+    if (!['registered', 'exempt'].includes(env.VAT_MODE)) return json(h, 500, { error: 'VAT mode not configured' });
+    const vat = env.VAT_MODE === 'registered';
     const site = env.SITE_URL || 'https://investedia.com';
     const s = await stripe(env, 'checkout/sessions', {
       mode: 'subscription', client_reference_id: user.id,
       ...(existing && existing.stripe_customer ? { customer: existing.stripe_customer } : { customer_email: user.email }),
       line_items: { 0: { price, quantity: 1 } },
       subscription_data: { trial_period_days: existing && existing.trial_end ? undefined : TRIAL_DAYS, trial_settings: { end_behavior: { missing_payment_method: 'cancel' } }, metadata: { user_id: user.id } },
-      payment_method_collection: 'always', automatic_tax: { enabled: 'true' }, tax_id_collection: { enabled: 'true' }, billing_address_collection: 'required',
+      payment_method_collection: 'always', automatic_tax: { enabled: vat ? 'true' : 'false' }, tax_id_collection: { enabled: vat ? 'true' : 'false' }, billing_address_collection: 'required',
+      consent_collection: { terms_of_service: 'required' },
       allow_promotion_codes: 'false', locale: 'auto',
-      custom_text: { submit: { message: 'I ask Investedia to start Pro immediately and understand that I lose my 14-day withdrawal right once the service has started. I can cancel anytime.' } },
+      custom_text: { submit: { message: WITHDRAWAL_TEXT } },
       success_url: `${site}/pro.html?checkout=success`, cancel_url: `${site}/pro.html?checkout=cancelled`,
     }, f);
     return json(h, 200, { url: s.url });

@@ -21,3 +21,23 @@ enabled = true
 [vars]
 PRO_ENABLED = "false"   # Investedia Pro routes stay hidden until approved; live Stripe keys also need PRO_LIVE = "true"
 NEWS_CRON = "off"
+
+# ---- Pro TEST-MODE sandbox: a SEPARATE Worker (investedia-live-sandbox). Deployed only by the manual workflow
+# .github/workflows/pro-sandbox.yml with `wrangler deploy --env sandbox`. No crons, no KV (it cannot touch production prices or
+# calls), test-mode Stripe keys only (live keys are refused in code). Secrets are set on THIS worker only.
+[env.sandbox]
+name = "investedia-live-sandbox"
+workers_dev = true
+
+[env.sandbox.triggers]
+crons = []
+
+[env.sandbox.vars]
+PRO_ENABLED = "true"
+NEWS_CRON = "off"
+SITE_URL = "https://investedia.com"
+SUPABASE_URL = "https://lfjyoeusblhfpmgwbrhj.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_kqozWiWcKHNqendoiWxsMA_ro7DfTQF"
+STRIPE_PRICE_MONTHLY = "price_REPLACE_test_monthly"
+STRIPE_PRICE_YEARLY = "price_REPLACE_test_yearly"
+VAT_MODE = "REPLACE_registered_or_exempt"

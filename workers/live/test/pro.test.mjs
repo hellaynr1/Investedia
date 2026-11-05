@@ -1,10 +1,10 @@
 // Investedia Pro billing: signature checks, flags, entitlement, webhook idempotency and ordering, checkout parameters.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { handlePro, verifyStripe, isPro, applyEvent, TRIAL_DAYS } from '../v1/pro.js';
+import { handlePro, verifyStripe, isPro, applyEvent, TRIAL_DAYS, WITHDRAWAL_TEXT } from '../v1/pro.js';
 
 const SECRET = 'whsec_test', ENV = { PRO_ENABLED: 'true', STRIPE_SECRET_KEY: 'sk_test_x', STRIPE_WEBHOOK_SECRET: SECRET, SUPABASE_URL: 'https://sb.test', SUPABASE_ANON_KEY: 'anon',
-  SUPABASE_SERVICE_KEY: 'svc', STRIPE_PRICE_MONTHLY: 'price_m', STRIPE_PRICE_YEARLY: 'price_y', SITE_URL: 'https://investedia.com' };
+  SUPABASE_SERVICE_KEY: 'svc', STRIPE_PRICE_MONTHLY: 'price_m', STRIPE_PRICE_YEARLY: 'price_y', SITE_URL: 'https://investedia.com', VAT_MODE: 'registered' };
 const hex = (b) => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
 async function sign(payload, t) { const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']); return `t=${t},v1=${hex(await crypto.subtle.sign('HMAC', k, new TextEncoder().encode(`${t}.${payload}`)))}`; }
 function memStore() { const rows = new Map(), ev = new Set();
@@ -57,12 +57,45 @@ test('checkout: 7-day trial, tax, consent text, user link; no second trial; port
   const r = await run(req('/v1/pro/checkout', { method: 'POST', token: 'good', body: '{"plan":"yearly"}' }), ENV, { fetch: authFetch(calls), store });
   assert.equal(r.status, 200); assert.equal((await r.json()).url, 'https://checkout.stripe.test/s');
   const body = decodeURIComponent(calls.find(c => c.url.includes('checkout/sessions')).init.body);
-  for (const s of ['mode=subscription', 'client_reference_id=u1', 'line_items[0][price]=price_y', `subscription_data[trial_period_days]=${TRIAL_DAYS}`, 'automatic_tax[enabled]=true', 'tax_id_collection[enabled]=true', 'withdrawal right']) assert.ok(body.includes(s), s);
+  for (const s of ['mode=subscription', 'client_reference_id=u1', 'line_items[0][price]=price_y', `subscription_data[trial_period_days]=${TRIAL_DAYS}`, 'automatic_tax[enabled]=true', 'tax_id_collection[enabled]=true', 'consent_collection[terms_of_service]=required', 'withdraw within 14 days', 'full refund']) assert.ok(body.includes(s), s);
   store.rows.set('u1', { user_id: 'u1', stripe_customer: 'cus_1', status: 'canceled', trial_end: '2026-01-01T00:00:00Z' });
   const c2 = []; await run(req('/v1/pro/checkout', { method: 'POST', token: 'good', body: '{}' }), ENV, { fetch: authFetch(c2), store });
   const b2 = decodeURIComponent(c2.find(c => c.url.includes('checkout/sessions')).init.body);
   assert.ok(!b2.includes('trial_period_days') && b2.includes('customer=cus_1'));
   const p = await run(req('/v1/pro/portal', { method: 'POST', token: 'good' }), ENV, { fetch: authFetch([]), store }); assert.equal((await p.json()).url, 'https://billing.stripe.test/p');
   store.rows.set('u1', { user_id: 'u1', status: 'active' });
+  assert.equal((await run(req('/v1/pro/checkout', { method: 'POST', token: 'good', body: '{}' }), ENV, { fetch: authFetch([]), store })).status, 409);
+});
+
+test('VAT mode must be explicit; exempt mode charges no VAT', async () => {
+  const st = memStore();
+  assert.equal((await run(req('/v1/pro/checkout', { method: 'POST', token: 'good', body: '{}' }), { ...ENV, VAT_MODE: undefined }, { fetch: authFetch([]), store: st })).status, 500);
+  const c = []; await run(req('/v1/pro/checkout', { method: 'POST', token: 'good', body: '{}' }), { ...ENV, VAT_MODE: 'exempt' }, { fetch: authFetch(c), store: memStore() });
+  const b = decodeURIComponent(c.find(x => x.url.includes('checkout/sessions')).init.body);
+  assert.ok(b.includes('automatic_tax[enabled]=false') && b.includes('tax_id_collection[enabled]=false'));
+});
+
+test('withdrawal wording never claims the right is lost', () => { assert.ok(!/lose|waive|forfeit/i.test(WITHDRAWAL_TEXT)); assert.ok(/14 days/.test(WITHDRAWAL_TEXT)); });
+
+test('failed payment: grace starts at first past_due, recovery clears it, unpaid/canceled end access', async () => {
+  const store = memStore(), base = Date.parse('2026-11-20T00:00:00Z');
+  await applyEvent({ type: 'checkout.session.completed', created: 1, data: { object: { client_reference_id: 'u1', customer: 'cus_1', subscription: 'sub_1' } } }, store, base);
+  const ev = (status, created) => ({ type: 'customer.subscription.updated', created, data: { object: { id: 'sub_1', customer: 'cus_1', status, items: { data: [] } } } });
+  await applyEvent(ev('past_due', 10), store, base);
+  const since = store.rows.get('u1').past_due_since;
+  await applyEvent(ev('past_due', 11), store, base + 864e5);               // retry also failed: grace clock does NOT restart
+  assert.equal(store.rows.get('u1').past_due_since, since);
+  assert.equal(isPro(store.rows.get('u1'), base + 2 * 864e5), true);
+  assert.equal(isPro(store.rows.get('u1'), base + 4 * 864e5), false);       // grace over while Stripe may still retry
+  await applyEvent(ev('active', 12), store, base + 5 * 864e5);              // card updated, invoice paid
+  assert.equal(store.rows.get('u1').past_due_since, null); assert.equal(isPro(store.rows.get('u1'), base + 5 * 864e5), true);
+  await applyEvent(ev('unpaid', 13), store, base + 40 * 864e5); assert.equal(isPro(store.rows.get('u1')), false);
+});
+
+test('trial reuse: a returning customer with a past trial gets no second trial, an active one cannot double-subscribe', async () => {
+  const store = memStore(); store.rows.set('u1', { user_id: 'u1', stripe_customer: 'cus_1', status: 'canceled', trial_end: '2026-11-12T00:00:00Z' });
+  const c = []; await run(req('/v1/pro/checkout', { method: 'POST', token: 'good', body: '{}' }), ENV, { fetch: authFetch(c), store });
+  assert.ok(!decodeURIComponent(c.find(x => x.url.includes('checkout/sessions')).init.body).includes('trial_period_days'));
+  store.rows.set('u1', { user_id: 'u1', stripe_customer: 'cus_1', status: 'trialing' });
   assert.equal((await run(req('/v1/pro/checkout', { method: 'POST', token: 'good', body: '{}' }), ENV, { fetch: authFetch([]), store })).status, 409);
 });

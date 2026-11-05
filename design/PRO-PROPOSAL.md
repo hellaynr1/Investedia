@@ -31,7 +31,7 @@ Limits are enforced on the server (Worker), never only in the browser.
 
 ## 3. Price and trial
 - €11.99/month **including** 21% Belgian VAT → €9.91 net for a Belgian consumer (other EU countries: their VAT rate via OSS). Positioning vs common retail research tools (approximate public list prices; verify before launch): TradingView paid tiers ~$13–60/mo, Simply Wall St ~€10–20/mo, Seeking Alpha Pro ~$299/yr, Morningstar Investor ~$35/mo. €11.99 sits at the accessible end — appropriate while the engine has no demonstrated predictive edge.
-- Add an annual plan: €99/year (≈31% off) to reduce churn and payment fees.
+- Add an annual plan: €109/year (≈24% off; proposed, pending final approval) to reduce churn and payment fees.
 - Trial: a **3-day** trial is short for a research product (one market week is ~5 sessions; alerts need time to prove value). Decision: **7-day trial with card** (owner, 2026-11-05), reminder email 24 h before charging, one-click cancel. If you keep 3 days, start it on any weekday but extend to the next Monday close if it would end on a weekend.
 - EU consumer rules: 14-day withdrawal right for digital services unless the consumer explicitly requests immediate start and acknowledges losing the right; collect that consent at checkout. Show total price incl. VAT before payment.
 
@@ -87,7 +87,7 @@ Free research (article / Market View / company page) → contextual gate at a re
 Each phase: preview → approval → implement → test; no live payments without approval.
 
 ## 11. Stripe implementation spec (decision: Stripe)
-- Products: Stripe Billing, one Product "Investedia Pro" with two Prices: €11.99/month and €99/year, `tax_behavior=inclusive`, trial 7 days (`trial_period_days=7`, card required, `trial_settings.end_behavior.missing_payment_method=cancel`).
+- Products: Stripe Billing, one Product "Investedia Pro" with two Prices: €11.99/month and €109/year, `tax_behavior=inclusive`, trial 7 days (`trial_period_days=7`, card required, `trial_settings.end_behavior.missing_payment_method=cancel`).
 - Checkout: hosted Stripe Checkout in `subscription` mode, `automatic_tax` on (Stripe Tax), `tax_id_collection` on (B2B reverse charge), `client_reference_id` = Supabase user id, `consent_collection` / custom text for the EU withdrawal-right waiver. Payment methods: card, Bancontact (as first payment, recurring via SEPA Direct Debit mandate), Apple/Google Pay, SEPA Direct Debit.
 - Customer Portal: change plan monthly↔yearly, update payment method, download invoices, cancel at period end.
 - Webhooks handled by the Worker (signature verified with the webhook secret, idempotent by event id): `checkout.session.completed`, `customer.subscription.created|updated|deleted`, `customer.subscription.trial_will_end` (reminder email), `invoice.paid`, `invoice.payment_failed` (grace period 3 days, then access off).
