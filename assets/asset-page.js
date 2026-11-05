@@ -30,6 +30,7 @@
     return `<div class="ap-yax">${yl}</div><div class="ap-plot"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="color:${c}"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".28"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs><g class="ap-grid">${grid}</g><path d="${d}L${W} ${H}L0 ${H}Z" fill="url(#${gid})"/><path class="ap-ln" d="${d}" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>${pins(a, rel, v, L0, r)}</div><div class="ap-xax">${xl}</div>`;
   }
   // News pins on the chart: each article that names the asset sits on the line at its publication time; same numbers as the list below
+  const MK = (new URLSearchParams(location.search).get('mk') || 'a').replace(/[^abc]/g, '') || 'a';
   function pins(a, rel, v, L0, rr) {
     if (!v || v.length < 2 || !rel.length) return '';
     const t = S.intra[a.s]?.d1?.t, end = S.win === 'd' && t?.length ? t[t.length - 1] * 1000 : Date.now(), start = S.win === 'd' ? (t?.length ? t[0] * 1000 : end - 864e5) : end - (S.win === 'w' ? 7 : 30) * 864e5;
@@ -37,8 +38,8 @@
     const L = rel.map(({ s, i }, n) => ({ s, i, num: rel.length - n })).filter(x => { const ts = Date.parse(x.s.published_at); return ts >= start && ts <= end + 36e5; }).slice(0, max).map(x => ({ ...x, f: Math.round(Math.max(0, Math.min(1, (Date.parse(x.s.published_at) - start) / (end - start))) * (v.length - 1)) / (v.length - 1) })).sort((p, q) => p.f - q.f);
     let prev = -99; for (const x of L) { x.left = Math.max(x.f * 100, prev + gap); prev = x.left; }
     for (let k = L.length - 1, lim = 96; k >= 0; k--) { if (L[k].left > lim) L[k].left = lim; lim = L[k].left - gap; }
-    return L.map(x => { const y = v[Math.round(x.f * (v.length - 1))], top = 100 - (y - lo) / r * 100;
-      return `<button type="button" class="ap-pin ${cls(x.i.direction === 'up' ? 1 : x.i.direction === 'down' ? -1 : 0)}" style="left:${Math.max(1, x.left).toFixed(1)}%;top:${top.toFixed(1)}%" data-n="${x.num}" aria-label="Article ${x.num}: ${esc(x.s.headline)}"><i class="ap-pin-ic">${NEWS_IC}</i></button>`;
+    return L.map(x => { x.left = Math.max(1, x.left); const y = v[Math.round(x.left / 100 * (v.length - 1))], top = 100 - (y - lo) / r * 100;
+      return `<button type="button" class="ap-pin ${cls(x.i.direction === 'up' ? 1 : x.i.direction === 'down' ? -1 : 0)}" style="left:${Math.max(1, x.left).toFixed(1)}%;top:${top.toFixed(1)}%;--y:${top.toFixed(1)}%" data-n="${x.num}" aria-label="Article ${x.num}: ${esc(x.s.headline)}"><i class="ap-pin-ic">${NEWS_IC}</i></button>`;
     }).join('');
   }
   const find = (by, s) => by[s] || by[ALIAS[s]] || by[s + '-USD'] || by[s + '=F'] || by['^' + s] || Object.values(by).find(a => a.n && a.n.toLowerCase() === s.toLowerCase());
@@ -46,7 +47,7 @@
     const sym = a.s.toUpperCase(), base = sym.replace('-USD', '').replace('=X', ''), name = (a.n || '').toLowerCase(), out = [];
     for (const s of stories) { const i = (s.impacts || []).find(i => { const t = String(i.ticker || '').toUpperCase(); return t === sym || t === base || (name.length > 3 && String(i.name || '').toLowerCase() === name); }); if (i) out.push({ s, i }); }
     const seen = new Set(out.map(x => x.s.id));
-    for (const e of (S.an2?.by?.[sym] || S.an2?.by?.[base] || [])) if (!seen.has(e.id)) { seen.add(e.id); out.push({ s: { id: e.id, headline: e.h, published_at: e.at, source: { name: e.src }, url: e.url, event_type: e.fam, old: true }, i: { direction: e.dir === 'up' ? 'up' : e.dir === 'down' ? 'down' : 'mixed' } }); }
+    for (const e of (S.an2?.by?.[sym] || S.an2?.by?.[base] || [])) if (!seen.has(e.id)) { seen.add(e.id); out.push({ s: { id: e.id, headline: e.h, published_at: e.at, source: { name: e.src }, url: e.url, image: e.img ? { file: e.img } : null, event_type: e.fam, old: !e.lib }, i: { direction: e.dir === 'up' ? 'up' : e.dir === 'down' ? 'down' : 'mixed' } }); }
     return out.sort((x, y) => Date.parse(y.s.published_at) - Date.parse(x.s.published_at)).slice(0, 25);
   }
   if (window.InvPrefs) InvPrefs.onChange(() => { if (S.a) render(); });
@@ -70,7 +71,7 @@
       <header class="ap-h"><span class="ap-ic">${window.AssetIcons ? AssetIcons.icon(a) : ''}</span><div><h1>${esc(a.n)}</h1><small>${esc(sym)} · ${({ stocks: a.g === 'Index' ? 'Index' : 'Stock', crypto: 'Crypto', cmd: 'Commodity', fx: 'Currency pair' })[a.t] || ''}${a.t === 'stocks' && a.g !== 'Index' ? '<span class="ap-co-slot"></span>' : ''}</small></div><span class="ap-st ${live ? 'live' : ''}"><i></i>${live ? 'Live' : 'Delayed'}</span></header>
       <div class="ap-px"><span class="ap-p mono" data-k="p">${money(price)}</span><span class="ap-chip ${cls(m)}" data-k="c">${arrow(m)} ${fmt(m)}</span></div>
       <div class="ap-seg">${[['d', 'Today'], ['w', 'Week'], ['m', 'Month']].map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.win}">${l}</button>`).join('')}</div>
-      <div class="ap-ch"><div class="ap-cv">${chart(a, series(a, S.win), col(m), rel)}<div class="ap-tip" hidden></div></div></div>
+      <div class="ap-ch"><div class="ap-cv mk-${MK}">${chart(a, series(a, S.win), col(m), rel)}<div class="ap-tip" hidden></div></div></div>
       <div class="ap-fig">${figs.join('')}</div>
       <div class="ap-act">${tvSym(a) ? (EMB ? `<a class="ap-btn p" href="asset.html?s=${encodeURIComponent(a.s)}&chart=1#ap-chart" target="_top">Full chart <span aria-hidden="true">↗</span></a>` : '<button type="button" class="ap-btn p" id="ap-full">Full chart</button>') : ''}<button type="button" class="ap-btn" id="ap-watch" aria-pressed="false"><svg class="ap-star" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg><span>Watch</span></button></div>
       <section class="ap-card ${level ? level[1] : ''}"><div class="ap-ch2 ap-ma-h"><i class="ap-ma-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></i><h3>Move Analysis</h3>${level ? `<span class="ap-lv"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${level[1] === 'ok' ? '<path d="m5 12.5 4.5 4.5L19 7.5"/>' : '<path d="M12 7v6M12 17h.01"/>'}</svg>${level[0]}</span>` : ''}</div>

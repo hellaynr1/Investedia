@@ -117,3 +117,13 @@ html,body{overflow-x:clip}.ap{max-width:100%;overflow-x:clip}
 .ap-ch .tradingview-widget-container__widget iframe{height:100%!important;width:100%!important;display:block}
 .ap-ch .tradingview-widget-copyright{height:26px;line-height:26px;text-align:center;font-size:12px;color:var(--fg-3)}
 @media(max-width:700px){.ap-cv .ap-pin .ap-pin-ic{width:22px!important;height:22px!important;border-radius:7px;bottom:12px}.ap-cv .ap-pin .ap-pin-ic svg{width:13px;height:13px}.ap-cv .ap-pin{width:9px!important;height:9px!important}}
+
+/* chart news markers: A badges on the line · B flags above · C event rail */
+.ap-cv.mk-a .ap-pin{background:transparent!important;border:0!important;box-shadow:none}
+.ap-cv.mk-a .ap-pin .ap-pin-ic{bottom:auto!important;top:50%;transform:translate(-50%,-50%)!important;width:22px!important;height:22px!important;border-radius:50%!important;background:#111114!important;border-width:1.5px;box-shadow:0 0 0 3px rgba(17,17,20,.85),0 4px 10px rgba(0,0,0,.45)}
+.ap-cv.mk-a .ap-pin:hover .ap-pin-ic,.ap-cv.mk-a .ap-pin:focus-visible .ap-pin-ic{transform:translate(-50%,-50%) scale(1.15)!important}
+.ap-cv.mk-b .ap-pin .ap-pin-ic{bottom:14px}.ap-cv.mk-b .ap-pin .ap-pin-ic:after{content:"";position:absolute;left:50%;top:100%;width:1px;height:6px;background:currentColor;opacity:.5}
+.ap-cv.mk-c .ap-pin{height:auto!important;bottom:0;margin-top:-5px!important;width:2px!important;margin-left:-1px!important;border:0!important;border-radius:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.35) 0 3px,transparent 3px 6px)!important}
+.ap-cv.mk-c .ap-pin:before{content:"";position:absolute;left:50%;top:0;width:9px;height:9px;margin:-1px 0 0 -4.5px;border-radius:50%;background:#fff}
+.ap-cv.mk-c .ap-pin .ap-pin-ic{bottom:4px!important;top:auto;transform:translate(-50%,0)!important;width:20px!important;height:20px!important;border-radius:6px!important;background:#111114!important}
+.ap-cv.mk-c .ap-pin.u .ap-pin-ic{border-color:#22c55e}.ap-cv.mk-c .ap-pin.d .ap-pin-ic{border-color:#f87171}

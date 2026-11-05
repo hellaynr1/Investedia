@@ -643,6 +643,10 @@ def main():
             if TIER == 'broad':  # the archive is rebuilt only by the broad run, never by the 5-10 minute priority run
                 save(ARCHIVE, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW, 'notice': notice, 'stories': every}, feed=True)
             wrote = True
+            try:
+                sys.path.insert(0, os.path.join(ROOT, 'tools')); import news_library
+                status['library_written'] = news_library.store(stories + (every if TIER == 'broad' else []))
+            except Exception as e: err(f'article library: {e}')
         except Exception as e: err(f'write refused, previous feed kept: {e}')
     status['stories_online'] = len(stories); status['archive'] = len(every)
     write_status(stories, wrote)

@@ -9,9 +9,10 @@
   const FKEY = 'inv-follow-items';
   const followed = () => { try { return JSON.parse(localStorage.getItem(FKEY)) || []; } catch { return []; } };
   const toggle = n => { const f = followed(), i = f.indexOf(n); i < 0 ? f.push(n) : f.splice(i, 1); try { localStorage.setItem(FKEY, JSON.stringify(f)); } catch {} return i < 0; };
-  loadNews().then(d => {
-    const all = d.stories, s = all.find(x => x.id === id);
-    if (!s) { root.innerHTML = '<div class="sp-none">We couldn’t find that article. It may be older than 7 days. <a href="news.html">Back to the news</a></div>'; return; }
+  loadNews().then(async d => {
+    const all = d.stories; let s = all.find(x => x.id === id);
+    if (!s && id && /^[\w-]+$/.test(id)) { try { const r = await fetch('assets/globe/library/' + encodeURIComponent(id) + '.json'); if (r.ok) { s = await r.json(); all.push(s); } } catch {} }
+    if (!s) { root.innerHTML = '<div class="sp-none">We couldn’t find that article. <a href="news.html">Back to the news</a></div>'; return; }
     document.title = s.headline + ' · Investedia';
     const names = new Set([...(s.entities || []).map(e => e.name), ...(s.impacts || []).map(i => i.name)].filter(Boolean));
     const rel = all.filter(x => x.id !== s.id && ([...(x.entities || []).map(e => e.name), ...(x.impacts || []).map(i => i.name)].some(n => names.has(n))));
