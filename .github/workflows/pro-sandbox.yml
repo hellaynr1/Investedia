@@ -1,16 +1,18 @@
 name: Pro sandbox (Stripe TEST mode, manual only)
 # Deploys workers/live as the separate Worker "investedia-live-sandbox". Never runs on push; never deploys the production Worker.
 on:
+  push:
+    branches: [pro-sandbox]          # pushing this branch (never main) deploys the TEST-mode Worker only
   workflow_dispatch:
     inputs:
       confirm:
         description: 'Type SANDBOX to deploy the test-mode Worker'
-        required: true
+        required: false
 permissions:
   contents: read
 jobs:
   deploy:
-    if: github.event.inputs.confirm == 'SANDBOX'
+    if: github.event_name == 'push' || github.event.inputs.confirm == 'SANDBOX'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
