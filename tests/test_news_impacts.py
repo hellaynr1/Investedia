@@ -85,6 +85,7 @@ class NewsImpacts(unittest.TestCase):
             robot.main()
         self.assertIn('news-live.json', writes)
         had = {s['id'] for s in FEED['stories'] if 'impacts' in s}  # the live feed may already carry real analysis
+        had |= {s['id'] for s in json.loads((ROOT / 'assets/globe/news-archive.json').read_text())['stories'] if 'impacts' in s}  # with the 360-story live file, archive stories (already analysed) move into it
         self.assertLessEqual(sum('impacts' in s and s['id'] not in had for s in writes['news-live.json']['stories']), 40)
         self.assertEqual((ROOT / 'assets/globe/news-live.json').read_bytes(), before)
 

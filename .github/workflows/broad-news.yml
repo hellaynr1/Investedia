@@ -35,7 +35,7 @@ jobs:
           PIXABAY_KEY: ${{ secrets.PIXABAY_KEY }}
           NEWS_TIER: broad
           BACKFILL_DAYS: ${{ inputs.backfill_days || '0' }}
-        run: python3 update_globe_news.py
+        run: python3 update_globe_news.py && (python3 tools/globe-news/connections.py || echo 'connections failed: the globe keeps the previous file or falls back to article impacts')
         timeout-minutes: 60
       - name: Draw share cards
         run: python3 update_share_cards.py || echo "Share cards failed; keeping the previous files"

@@ -130,7 +130,7 @@ h1 span{color:var(--fg-3)}
 .hover h3{margin:3px 0 6px;font-size:13.5px;line-height:1.3;font-weight:600;letter-spacing:-.01em}
 .hover.solo{grid-template-columns:1fr}
 .hover.hv-b{width:340px;padding:16px;display:block}.hv-b h3{margin:5px 0 3px;font-size:14.5px}.hv-b .hv-row{padding:11px 0 6px;border-top:1px solid rgba(255,255,255,.09);margin-top:8px}.hv-top{display:flex;align-items:center;gap:10px}.hv-top img{width:28px;height:28px;object-fit:contain;background:rgba(255,255,255,.07);padding:3px;border-radius:50%;flex:none}.hv-name{min-width:0;flex:1}.hv-name b{display:block;font-size:14px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hv-name span{font-size:12px;color:var(--fg-3)}.hv-pct{text-align:right;flex:none}.hv-pct small{display:block;margin-top:3px;font-size:12px;color:var(--fg-2)}
-.hv-impl{font-size:12px;color:var(--fg-2);margin:6px 0 4px}.hv-impl b.up{color:#5df08a}.hv-impl b.down{color:#ff8a82}.hv-impl b.flat{color:#c4c4cc}.hv-why{margin:8px 0 0;font-size:12px;line-height:1.45;color:var(--fg-2)}.hv-spark{display:block;width:100%;height:44px}
+.hv-impl{font-size:12px;color:var(--fg-2);margin:6px 0 4px}.hv-impl b.up{color:#5df08a}.hv-impl b.down{color:#ff8a82}.hv-impl b.flat{color:#c4c4cc}.hv-open{display:block;width:100%;margin:12px 0 0;padding:11px 14px;border-radius:12px;border:0;background:#FF7A1A;color:#0a0a0b;font:650 14px Inter,system-ui,sans-serif;cursor:pointer}.hv-rel{margin:8px 0 0;font-size:11.5px;color:#ffb27a;letter-spacing:.01em}.hv-rel b{color:#FF7A1A;font-weight:650}.hv-why{margin:8px 0 0;font-size:12px;line-height:1.45;color:var(--fg-2)}.hv-spark{display:block;width:100%;height:44px}
 .pct{display:inline-flex;font:700 12px Inter,system-ui,sans-serif;padding:3px 9px;border-radius:999px;white-space:nowrap}.pct.up{background:rgba(48,209,88,.16);color:#5df08a}.pct.down{background:rgba(255,69,58,.16);color:#ff8a82}.pct.flat{background:rgba(255,255,255,.08);color:#c4c4cc}
 .impact-head .pct{margin-left:auto}.impact-head .pct+.impact-dir{margin-left:0}
 .meta{font-size:11.5px;color:var(--fg-3);line-height:1.45}
@@ -268,6 +268,7 @@ h1 span{color:var(--fg-3)}
   .pbody{padding:2px 18px 28px}
   .pbody h2{font-size:19px}
   .hover{display:none}
+  .hover.hv-b.pin{display:block;position:fixed;left:12px!important;right:12px;width:auto;top:76px!important;max-height:62vh;overflow:auto;z-index:30}  /* touch: tapped connection card */
   .hover.brief.on{display:block;left:12px!important;right:12px;top:auto!important;bottom:100px;width:auto;pointer-events:auto}
 }
 /* Optional comparison layouts. Story and country views keep the original panel. */
@@ -568,7 +569,7 @@ const LENSES = [['all', 'All', null],
 const lensesOf = s => { const text = (s.headline + ' ' + (s.summary || '')).toLowerCase(); return LENSES.filter(l => l[2] && l[2].test(text)).map(l => l[0]); };
 const REGIONS = [['global', 'Global', -15, 24, 1], ['na', 'North America', -97, 40, 2], ['eu', 'Europe', 10, 50, 2.6], ['asia', 'Asia', 108, 28, 1.8], ['me', 'Middle East', 46, 26, 2.8], ['af', 'Africa', 20, 3, 1.8], ['latam', 'Latin America', -62, -16, 1.8], ['oc', 'Oceania', 140, -26, 2]];
 const WINS = [['now', 'Now', 15], ['1h', '1H', 60], ['6h', '6H', 360], ['24h', '24H', 1440], ['7d', '7D', 10080], ['30d', '30D', 43200]];
-const WLABEL = { now: 'the last 15 minutes', '1h': 'the last hour', '6h': 'the last 6 hours', '24h': 'the last 24 hours', '7d': 'the last 7 days', '30d': 'the last 30 days' };
+const WLABEL = { now: 'the last 15 minutes', '1h': 'the last hour', '6h': 'the last 6 hours', '24h': 'the last 24 hours', '48h': 'the last 48 hours', '7d': 'the last 7 days', '30d': 'the last 30 days' };
 const FLAG = { breaking: 'Breaking', trending: 'Trending', moving: 'Market moving' };
 const NAME = { 'United States of America': 'United States', 'Bosnia and Herz.': 'Bosnia and Herzegovina', 'Dem. Rep. Congo': 'DR Congo', 'Dominican Rep.': 'Dominican Republic', 'Central African Rep.': 'Central African Republic', 'S. Sudan': 'South Sudan', 'Eq. Guinea': 'Equatorial Guinea', 'W. Sahara': 'Western Sahara', 'Solomon Is.': 'Solomon Islands', 'Falkland Is.': 'Falkland Islands', 'Fr. S. Antarctic Lands': 'French Southern Lands', 'N. Cyprus': 'Northern Cyprus' };
 const nm = c => NAME[c] || c;
@@ -771,11 +772,13 @@ function sparkSvg(sp, col) {
   return `<svg class="hv-spark" viewBox="0 0 300 44" preserveAspectRatio="none" aria-hidden="true"><path d="${d}L300 44L0 44Z" fill="${col}" opacity=".12"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
 }
 // Hover card for a connection: every affected asset with its real price move next to what the article implies.
+const REL_LABEL = { direct: 'Direct impact', acquisition: 'Acquisition', 'supply-chain': 'Supply chain', partnership: 'Partnership', 'central-bank': 'Central bank', currency: 'Currency', market: 'Market benchmark', commodity: 'Commodity', regulatory: 'Regulatory', 'named-peer': 'Named competitor' };
 function hoverCardHTML(edge) {
   const rows = impactsOf(edge.article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && Number.isFinite(x.a.d)).sort((a, b) => (b.i === edge.impact) - (a.i === edge.impact)).slice(0, 3);
-  return `<div class="eyebrow">Affected assets · ${rows.length}</div><h3>${esc(edge.article.headline)}</h3><div class="meta">${esc(edge.article.source?.name || '')}${edge.article.location?.place ? ' · ' + esc(edge.article.location.place.split(',')[0]) : ''} · ${ago(edge.article.t)}</div>`
+  return `<div class="eyebrow">${rows.length ? `Affected assets · ${rows.length}` : `Connection · ${esc(edge.conn ? edge.conn.dest.name : edge.asset.n)}`}</div><h3>${esc(edge.article.headline)}</h3><div class="meta">${esc(edge.article.source?.name || '')}${edge.article.location?.place ? ' · ' + esc(edge.article.location.place.split(',')[0]) : ''} · ${ago(edge.article.t)}</div>`
     + rows.map(({ i, a }) => `<div class="hv-row"><div class="hv-top">${impactVisual(i)}<div class="hv-name"><b>${esc(a.n)}</b><span>${esc(a.s.replace(/-USD$/, ''))} · ${esc(money(a))}</span></div><div class="hv-pct">${movePill(a)}<small>7 days ${a.w > 0 ? '+' : ''}${Number(a.w).toFixed(a.u === 'bp' ? 1 : 2)}${a.u === 'bp' ? ' bp' : '%'}</small></div></div><div class="hv-impl">Article implies <b class="${i.direction === 'up' ? 'up' : i.direction === 'down' ? 'down' : 'flat'}">${IMPACT_ARROW[i.direction]} ${i.direction === 'mixed' || i.direction === 'unclear' ? i.direction : i.direction}</b> · price today <b class="${dirWord(a.d)}">${a.d > 0 ? '↑ up' : a.d < 0 ? '↓ down' : '↔ flat'}</b></div>${sparkSvg(a.sp, a.d >= 0 ? '#34d399' : '#f87171')}`).join('')
-    + `<p class="hv-why">${esc(edge.impact.why.slice(0, 170))}</p>`;
+    + (edge.conn ? `<p class="hv-rel"><b>${esc(REL_LABEL[edge.conn.type] || edge.conn.type)}</b> · ${edge.conn.tier === 1 ? 'direct' : 'secondary'} · confidence ${Math.round(edge.conn.confidence * 100)}%</p><p class="hv-why">${esc(edge.conn.explanation)}</p>` : '')
+    + `<p class="hv-why">${esc(String(edge.impact.why || '').slice(0, 170))}</p>`;
 }
 function assetTarget(a) {
   let la=a.la, lo=a.lo;
@@ -797,11 +800,15 @@ let network = [], arcHits = [], arcHover = null, pillRects = [];
 const QS = new URLSearchParams(location.search);
 let SECTORON = QS.get('sector') === '1', STORYON = QS.get('story') === '1';
 const MAIN = '255,122,26', RIPPLE = '255,150,64', SECTOR = '255,190,110';
+// Evidence-based connections (tools/globe-news/connections.py -> connections.json): every line has an event id, origin, destination,
+// relationship type, evidence, confidence and an explanation. ?lines=v3 shows the previous logic (for comparison).
+let CONN = null; const CONN_ON = QS.get('lines') !== 'v3';
+if (CONN_ON) fetch('connections.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(d => { CONN = d; updateNetwork(); }).catch(() => {});
 let IND = {}; fetch('industries.json').then(r => r.json()).then(d => { IND = d.by || {}; updateNetwork(); }).catch(() => {});
 // Canonical identity: the registry is the single source of truth. An impact asset is usable only when the robot stamped it with a
 // registry id (assetForImpact); a Globe stock can be a sector peer only when industries.json (built from the registry) lists it.
 const trusted = a => !!a && !!(a.id || (IND[a.s] && IND[a.s].id));
-const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { main: ph ? 9 : 11, ripple: ph ? 2 : 4 } : { main: ph ? 10 : 15, ripple: ph ? 5 : 10 }; };
+const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { main: ph ? 12 : 16, ripple: ph ? 2 : 4 } : { main: ph ? 14 : 22, ripple: ph ? 5 : 10 }; };  // raised 2026-11-06 after a frame-time check (see design/GLOBE-COVERAGE-UPGRADE.md)
 const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells
 function strokeArc(pts, col, alpha, width, glow, phase, dash) {
   ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha.toFixed(3)})`; ctx.lineCap = 'round'; if (dash) ctx.setLineDash(dash);
@@ -859,6 +866,20 @@ function archiveThreads(max, onlyId, focus) {
 const cappedBy = cap => { const n = {}; return ks => { if (ks.some(k => (n[k] || 0) >= cap)) return false; ks.forEach(k => n[k] = (n[k] || 0) + 1); return true; }; };
 function updateNetwork() {
   events = [];
+  if (CONN_ON && CONN) {  // one event per evidence-backed connection; direct (tier 1) before secondary (tier 2)
+    const byId = new Map(shown.map(a => [a.id, a]));
+    for (const c of CONN.connections || []) {
+      const article = byId.get(c.event); if (!article) continue;
+      const impact = impactsOf(article).find(i => i.name === c.evidence.impact) || { name: c.evidence.impact, why: c.evidence.why || '', direction: c.evidence.direction, kind: 'asset', country: c.dest.country };
+      const asset = assetForImpact(impact) || { s: c.dest.asset, n: c.dest.name, d: NaN, id: c.dest.asset };
+      events.push({ article, impact, asset, target: { phi: c.dest.lat * rad, lam: c.dest.lon * rad }, dir: c.evidence.direction, ripples: [], sectors: [], score: c.score, tier: c.tier, conn: c });
+    }
+    const seen = new Set(); events = events.filter(e => { const k = geoKey(e.article) + '>' + geoKey(e.target); if (seen.has(k)) return false; seen.add(k); return true; });  // merge overlapping arcs
+    network = events; storyLines = archiveThreads(12);
+    const count = $('connection-count'); if (count) count.textContent = `${events.length} connections · ${WLABEL[F.win]}`;
+    if (!EMBED && view.k === 'asset') render();
+    return;
+  }
   for (const article of shown) {
     const imp = impactsOf(article).map(i => ({ i, a: assetForImpact(i) })).filter(x => x.a && trusted(x.a) && assetTarget(x.a));
     const main = imp[0]; if (!main) continue;
@@ -885,7 +906,7 @@ function drawConnections(t, focus, country) {
   const iso = country && ISO[country.name], sel = !!(focus || iso || sym), fade = sel ? .15 : 1;
   const ph = k => reduce ? null : (t / 4200 + k * .17) % 1;
   const related = e => focus ? e.article === focus : sym ? touches_(e, sym) : iso ? e.article.location.country === country.name : false;
-  const mains = [], cap = cappedBy(EMBED ? 2 : 3);
+  const mains = [], cap = cappedBy(EMBED ? 3 : 4);
   if (CONNON || sel) for (const e of events) { if (mains.length >= B.main) break; if (related(e)) continue; const pts = arcPts(e.article, e.target, 32); if (cap(['a' + e.article.location.country, 't' + geoKey(e.target)])) mains.push([e, pts]); }
   const ripples = [];  // default: only the single strongest ripple per event, and only for the strongest events
   if (CONNON || sel) for (const [e] of mains) { if (ripples.length >= B.ripple) break; const r = e.ripples[0]; if (!r) continue; ripples.push([r, arcPts(e.article, r.target, 28)]); }
@@ -903,7 +924,8 @@ function drawConnections(t, focus, country) {
   ripples.forEach(([r, pts]) => { if (strokeArc(pts, RIPPLE, (EMBED ? .32 : .38) * fade, EMBED ? .8 : .95, false, null)) visibleArcs++; });
   mains.forEach(([e, pts], i) => {
     const top = !EMBED && !sel && i < 3;
-    if (strokeArc(pts, MAIN, (EMBED ? .85 : top ? .95 : .7) * fade, EMBED ? 1.4 : top ? 2 : 1.5, top, top ? ph(i) : null)) visibleArcs++;
+    const sec = e.tier === 2;  // secondary impact: solid but lower opacity - same orange family
+    if (strokeArc(pts, sec ? RIPPLE : MAIN, (EMBED ? (sec ? .45 : .85) : top ? .95 : sec ? .4 : .7) * fade, sec ? (EMBED ? 1.2 : 1.4) : EMBED ? 1.4 : top ? 2 : 1.5, top && !sec, top ? ph(i) : null, null)) visibleArcs++;
     if (e.impact) arcHits.push({ ...e, points: pts });
   });
   // the selection (an event or an asset): its main line brightest, then ripples, sector spread and story threads, each with its reason
@@ -942,7 +964,7 @@ function assetPanel(sym) {
     ${peers.length ? `<div class="sec-h">Same industry today</div><div class="list">${peers.map(([p, [, why]]) => `<button class="item" data-asset="${esc(p.s)}"><span></span><span><h4>${esc(p.n)} ${pctPill(p.d)}</h4><span class="meta">${esc(why)}</span></span></button>`).join('')}</div>` : ''}
     <p style="margin-top:18px"><a class="btn" href="../../asset.html?s=${encodeURIComponent(sym)}" style="color:var(--accent)">Open the full ${esc(a.s.replace(/-USD$/, ''))} page →</a></p>`;
 }
-function arcPick(x,y) { const pr=pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h); if(pr) return pr.edge; return arcHits.find(h=>h.points.some(p=>p[2] && Math.hypot(p[0]-x,p[1]-y)<10)); }
+function arcPick(x,y,r=10) { const pr=pillRects.find(q=>x>=q.x&&x<=q.x+q.w&&y>=q.y&&y<=q.y+q.h); if(pr) return pr.edge; return arcHits.find(h=>h.points.some(p=>p[2] && Math.hypot(p[0]-x,p[1]-y)<r)); }
 function impactTargets(s) { return impactsOf(s).map(i => ({ impact: i, country: impactCountry(i) })).filter(x => x.country); }
 
 // Story chains: a → b → c through "links"
@@ -1076,8 +1098,9 @@ function drawExchanges(t) {
 const exPick = (x, y) => exHits.find(h => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h);
 
 // ===== Filters =====
-const F = { cat: 'all', lens: 'all', region: 'global', win: '24h', mine: new URLSearchParams(location.search).get('mine') === '1' }; let play = null;
-const winMin = () => WINS.find(w => w[0] === F.win)[2];
+const F = { cat: 'all', lens: 'all', region: 'global', win: EMBED ? '48h' : '24h',  // homepage globe (embed): last 48 hours; Globe page unchanged
+  mine: new URLSearchParams(location.search).get('mine') === '1' }; let play = null;
+const winMin = () => (WINS.find(w => w[0] === F.win) || [F.win, '', 2880])[2];  // '48h' is the homepage-only window (no button)
 const inTime = s => play ? s.t <= play.cur : T0 - s.t <= winMin() * 60000;
 // My assets: the watchlist is kept by the site in localStorage ('inv-watch': {a:[{s,...}], c:[...]}); a guest has none.
 function watchSyms() { try { const L = JSON.parse(localStorage.getItem('inv-watch') || '{}'); return new Set((L.a || []).map(x => String(x.s || '').toUpperCase()).filter(Boolean)); } catch { return new Set(); } }
@@ -1085,6 +1108,14 @@ let WATCH = watchSyms();
 const touchesWatch = s => impactsOf(s).some(i => { const a = assetForImpact(i); return (a && WATCH.has(a.s.toUpperCase())) || WATCH.has(String(i.ticker || '').toUpperCase()); });
 const matchNoLens = s => (F.cat === 'all' || s.category === F.cat) && (F.region === 'global' || s.location.region === F.region) && inTime(s) && (!F.mine || touchesWatch(s));
 const match = s => (F.lens === 'all' || s.lens.includes(F.lens)) && matchNoLens(s);
+// Top articles: within the same importance level, take regions in turn so one busy region cannot fill the whole list.
+// Order changes only among equally important articles; nothing is hidden and no coordinate changes.
+function regionMix(list) {
+  const out = [], lv = [...new Set(list.map(s => s.importance))].sort((a, b) => b - a);
+  for (const l of lv) { const q = new Map(); list.filter(s => s.importance === l).forEach(s => { const r = s.location.region || '-'; if (!q.has(r)) q.set(r, []); q.get(r).push(s); });
+    while ([...q.values()].some(v => v.length)) for (const v of q.values()) if (v.length) out.push(v.shift()); }
+  return out;
+}
 const sortTop = (a, b) => (b.importance - a.importance) || (b.t - a.t);
 let shown = [], dimmed = [], activity = {};
 function refresh() {
@@ -1186,6 +1217,13 @@ function setZ(z, x, y, anchor) {
 
 // ===== Interaction state =====
 let pinned = null, hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
+let SITES = [], sitesFor = null;
+function buildSites() {  // ~0.5 degree cells; the site's position is its first article's real coordinates (never moved)
+  const m = new Map(), on = new Set(shown);
+  for (const s of stories) if (!on.has(s)) s.on = false;
+  for (const s of shown) { const k = Math.round(s.location.lat * 2) + ',' + Math.round(s.location.lon * 2); let g = m.get(k); if (!g) m.set(k, g = { phi: s.phi, lam: s.lam, m: [] }); g.m.push(s); }
+  SITES = [...m.values()]; for (const g of SITES) g.m.sort(sortTop); sitesFor = shown;
+}
 // pointer: drag to rotate, pinch / wheel / double-click / buttons to zoom, tap to select
 const touches = new Map(); let pinch = null, drag = null, spin = null;  // spin: momentum after a drag is released (degrees per ms)
 // In the homepage embed a pinch must zoom the globe only: the page behind must not scroll with it. Two fingers cancel the browser's scrolling,
@@ -1266,19 +1304,26 @@ function showHover(d) {
 }
 function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.offsetHeight; let l = x + 16, t = y - h / 2; if (l + w > innerWidth - 12) l = x - w - 16; t = Math.max(12, Math.min(innerHeight - h - 12, t)); hv.style.left = l + 'px'; hv.style.top = t + 'px'; }
 function hideHover() { $('hover').classList.remove('pin'); pinned = null; delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
+let tapEdge = null;
 function tap(x, y, touch) {
   if (pinned) hideHover(); else if (touch) hideHover();
   const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
   const ex = !EMBED && exPick(x, y); if (ex) { window.InvPeek?.open(ex.e.ix); return; }
   const pr=!EMBED&&pillRects.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);if(pr&&pr.asset&&selectAsset(pr.asset.s)){arcHover=null;return;}  // a price label selects its asset
-  const edge=arcPick(x,y);if(edge){arcHover=null;openStory(edge.article);return;}
+  // touch: first tap on a line pins its connection card (relationship, evidence, confidence) with an "Open article" button;
+  // tapping the same line again, or the button, opens the article. Mouse: click opens the article (the card already shows on hover).
+  const edge=arcPick(x,y,touch?20:10);
+  if(edge&&touch&&!EMBED&&tapEdge!==edge.article.id){tapEdge=edge.article.id;const hv=$('hover');hv.className='hover glass solo hv-b on pin';hv.innerHTML=hoverCardHTML(edge)+`<button class="hv-open" type="button" data-story="${esc(edge.article.id)}">Open article</button>`;pinned=edge;placeHover(x,y);return;}
+  if(edge){tapEdge=null;arcHover=null;openStory(edge.article);return;}
+  tapEdge=null;
 
   const d = pick(x, y, touch ? 26 : 16);
   if (d) { hideHover(); if (d.list.length === 1) return openStory(d.list[0]); if (d.same || Z >= ZMAX - .2) return openPlace(d.list); return flyTo(d.lo, d.la, Math.min(ZMAX, Z * 2.2)); }
   const g = inv(x, y), c = g && countryAt(g[0], g[1]);
   if (c) { if (phone() && !EMBED) { const hv = $('hover'); hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); hv.dataset.country = c.name; return; } return openCountry(c); }
 }
-$('hover').addEventListener('click', e => { if (pinned) { const d = pinned; hideHover(); return d.list.length === 1 ? openStory(d.list[0]) : openPlace(d.list); }
+$('hover').addEventListener('click', e => { if (pinned && pinned.article) { const a = pinned.article; if (e.target.closest('.hv-open')) { tapEdge = null; hideHover(); openStory(a); } return; }
+  if (pinned) { const d = pinned; hideHover(); return d.list.length === 1 ? openStory(d.list[0]) : openPlace(d.list); }
    const n = $('hover').dataset.country; if (n && byName[n] && $('hover').classList.contains('brief')) { $('hover').classList.remove('on'); delete $('hover').dataset.country; openCountry(byName[n]); } });
 
 // ===== Panel =====
@@ -1421,7 +1466,7 @@ function variantPanel(list) {
     count = countries.length;
     items = countries.slice(0, panelExpanded ? countries.length : 3).map(([name, n]) => `<button class="compact-country" data-country="${esc(name)}">${flag(name)}<span>${esc(nm(name))}</span><small>${n} ${n === 1 ? 'article' : 'articles'}</small></button>`).join('');
   } else {
-    const sorted = panelTab === 'latest' ? [...list].sort((a,b) => b.t-a.t) : list;
+    const sorted = panelTab === 'latest' ? [...list].sort((a,b) => b.t-a.t) : F.region === 'global' ? regionMix(list) : list;
     if (phone()) { count = sorted.length; items = sorted.slice(0, panelExpanded ? sorted.length : 20).map(lensItem).join(''); }
     else {
     const hs = panelTab === 'top' && sorted.find(x => x.image && x.image.file), rest = hs ? sorted.filter(x => x !== hs) : sorted;
@@ -1724,16 +1769,19 @@ function frame(t) {
   // lens active: stories outside the lens stay on the map as faint dots
   for (const s of dimmed) { const [x, y, z] = proj(s.phi, s.lam); if (z <= .04) continue; ctx.fillStyle = `rgba(161,161,170,${(.1 + .22 * z).toFixed(3)})`; ctx.beginPath(); ctx.arc(x, y, 1.7, 0, 7); ctx.fill(); }
   // markers: project, cluster nearby ones, then draw
+  // Articles are grouped by place once per filter change (sites), so the per-frame work depends on the number of places, not
+  // the number of articles (the homepage holds 48 hours). Each site keeps all its articles: older or smaller events stay in the
+  // cluster count and its list, and every region's places are drawn whatever the volume elsewhere.
+  if (sitesFor !== shown) buildSites();
   const vis = [];
-  for (const s of shown) {
-    if (!s.on) { s.on = true; s.vt = t; }
-    const [x, y, z] = proj(s.phi, s.lam); if (z <= .04 || (!EMBED && (x < globeBox.left || x > globeBox.right || y < globeBox.top || y > globeBox.bottom))) continue; vis.push({ s, x, y, z });
+  for (const g of SITES) {
+    const h = g.m[0]; if (!h.on) { h.on = true; h.vt = t; }
+    const [x, y, z] = proj(g.phi, g.lam); if (z <= .04 || (!EMBED && (x < globeBox.left || x > globeBox.right || y < globeBox.top || y > globeBox.bottom))) continue; vis.push({ g, s: h, x, y, z });
   }
-  for (const s of stories) if (!shown.includes(s)) s.on = false;
   vis.sort((a, b) => sortTop(a.s, b.s));
   const cl = [];
   for (const v of vis) { const c = cl.find(c => (c.x - v.x) ** 2 + (c.y - v.y) ** 2 < 22 * 22); if (c) c.m.push(v); else cl.push({ x: v.x, y: v.y, z: v.z, m: [v] }); }
-  drawn = cl.map(c => { const list = c.m.map(v => v.s), h = list[0]; return { key: list.map(s => s.id).join(), x: c.x, y: c.y, z: c.z, list, lo: h.location.lon, la: h.location.lat, same: list.every(s => Math.abs(s.location.lat - h.location.lat) < 1 && Math.abs(s.location.lon - h.location.lon) < 1) }; });
+  drawn = cl.map(c => { const list = c.m.length === 1 ? c.m[0].g.m : c.m.flatMap(v => v.g.m).sort(sortTop), h = list[0]; return { key: list.map(s => s.id).join(), x: c.x, y: c.y, z: c.z, list, lo: h.location.lon, la: h.location.lat, same: list.every(s => Math.abs(s.location.lat - h.location.lat) < 1 && Math.abs(s.location.lon - h.location.lon) < 1) }; });
   ctx.globalCompositeOperation = 'lighter';
   for (const d of drawn) {
     const s = d.list[0], pop = Math.min(1, (t - s.vt) / 650), e = 1 - Math.pow(1 - pop, 3), a = (.35 + .65 * d.z) * e, imp = s.importance;
@@ -1872,7 +1920,11 @@ placeFilters(phone()); addEventListener('resize', () => placeFilters(phone()));
 // ===== Start =====
 let LIVE = null;
 const load = u => fetch(u, { cache: 'no-cache' }).then(r => { if (!r.ok) throw 0; return r.json(); });
-load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return d; }).catch(() => load(DEMO_URL)).then(raw => {
+load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return d; }).catch(() => load(DEMO_URL))
+  // homepage globe: the live file holds only the newest articles, so add the archive's articles from the last 48 hours
+  .then(raw => !EMBED || raw.demo ? raw : load('news-48h.json').catch(() => load('news-archive.json')).then(a => { const have = new Set(raw.stories.map(s => s.id)), cut = Date.now() - 48 * 3600e3;
+    return { ...raw, stories: raw.stories.concat((a.stories || []).filter(s => !have.has(s.id) && Date.parse(s.published_at) >= cut)) }; }).catch(() => raw))
+  .then(raw => {
   if (!raw.demo) { LIVE = raw; const b = $('badge'); b.className = 'demo live'; b.title = raw.notice || ''; const m = Math.max(0, Math.round((Date.now() - Date.parse(raw.updated_at)) / 60000)); b.innerHTML = '<i></i>News updated ' + (m < 1 ? 'just now' : m < 60 ? m + 'm ago' : m < 1440 ? Math.floor(m / 60) + 'h ago' : Math.floor(m / 1440) + 'd ago'); }
   stories = normalize(raw); byId = Object.fromEntries(stories.map(s => [s.id, s])); incoming = {};
   for (const s of stories) for (const l of s.links) if (byId[l]) incoming[l] = s.id;

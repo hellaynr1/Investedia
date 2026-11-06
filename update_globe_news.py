@@ -22,8 +22,20 @@ G = os.path.join(ROOT, 'assets/globe'); D = os.path.join(ROOT, 'docs/assets/glob
 OUT = 'news-live.json'; STATUS = 'news-status.json'; PH = 'photos'
 UA = 'InvestediaNews/1.0 (+https://investedia.com; info@investedia.com)'
 NOW = datetime.now(timezone.utc); ISO_NOW = NOW.strftime('%Y-%m-%dT%H:%M:%SZ')
-KEEP_DAYS, MAX_STORIES, MAX_NEW = 30, 160, 45  # live file: newest 160 (globe, home); archive file: up to ARCHIVE_MAX over KEEP_DAYS (News page)
-ARCHIVE_MAX, ARCHIVE, LIVE_DAYS = 600, 'news-archive.json', 7
+KEEP_DAYS, MAX_STORIES, MAX_NEW = 30, 360, 60  # 160 -> 360: the globe's 24 h view held only ~7 h of articles  # live file: newest 160 (globe, home); archive file: up to ARCHIVE_MAX over KEEP_DAYS (News page)
+H48 = 'news-48h.json'
+KEEP48 = ('id', 'headline', 'published_at', 'location', 'importance', 'category', 'flag', 'event_type', 'market_moving', 'links')
+
+
+def compact48(x):
+    """Only what the homepage globe needs to place, rank, cluster and link an article (the full text stays in the archive)."""
+    out = {k: x[k] for k in KEEP48 if k in x}
+    out['source'] = {'name': (x.get('source') or {}).get('name'), 'url': (x.get('source') or {}).get('url')}
+    out['impacts'] = [{k: i[k] for k in ('kind', 'name', 'country', 'ticker', 'direction', 'why', 'relation', 'role', 'confidence', 'asset') if k in i} for i in (x.get('impacts') or [])[:4]]
+    return out
+
+
+ARCHIVE_MAX, ARCHIVE, LIVE_DAYS = 1500, 'news-archive.json', 7  # 600 -> 1500: ~2.5 days instead of ~1
 PRIORITY_MAX, PRIORITY_NEW = 24, 10  # the priority tier is intentionally small
 GEMINI = os.environ.get('GEMINI_API_KEY', '').strip(); PIXABAY = os.environ.get('PIXABAY_KEY', '').strip()
 TIER = (os.environ.get('NEWS_TIER') or (sys.argv[sys.argv.index('--tier') + 1] if '--tier' in sys.argv else 'broad')).lower()
@@ -208,23 +220,89 @@ REGION_FEEDS = [  # regional business and central-bank feeds: (url, source name,
     ('https://www.banrep.gov.co/es/rss.xml', 'Banco de la República (Colombia)', 'latam'),
     ('https://www.dailysabah.com/rssFeed/business', 'Daily Sabah', 'me'),
     ('https://www.hurriyetdailynews.com/rss/economy', 'Hürriyet Daily News', 'me'),
+    # 2026-11-06 coverage upgrade: Asia, Europe, Middle East, Oceania, Canada and more Africa/LatAm. Each feed was checked against its own
+    # published history (reachable, dated items, items/day, freshness, business share of headlines); see design/GLOBE-COVERAGE-UPGRADE.md.
+    ('https://www.japantimes.co.jp/business/feed/', 'The Japan Times', 'asia'),
+    ('https://www.businesstimes.com.sg/rss/top-stories', 'The Business Times', 'asia'),
+    ('https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6936', 'CNA', 'asia'),
+    ('https://www.livemint.com/rss/companies', 'Mint', 'asia'),
+    ('https://www.thenationalnews.com/arc/outboundfeeds/rss/category/business/?outputType=xml', 'The National', 'me'),
+    ('https://en.globes.co.il/WebService/Rss/RssFeeder.asmx/FeederNode?iID=1725', 'Globes', 'me'),
+    ('https://www.euronews.com/rss?level=vertical&name=business', 'Euronews', 'eu'),
+    ('https://www.irishtimes.com/arc/outboundfeeds/feed-business/?outputType=xml', 'The Irish Times', 'eu'),
+    ('https://www.ecb.europa.eu/rss/press.html', 'European Central Bank', 'eu'),
+    ('https://www.snb.ch/public/en/rss/news', 'Swiss National Bank', 'eu'),
+    ('https://www.rnz.co.nz/rss/business.xml', 'RNZ', 'oc'),
+    ('https://www.nzherald.co.nz/arc/outboundfeeds/rss/section/business/?outputType=xml', 'NZ Herald', 'oc'),
+    ('https://www.rbnz.govt.nz/feeds/news', 'Reserve Bank of New Zealand', 'oc'),
+    ('https://www.businessdailyafrica.com/service/rss/bd/1939132/feed.rss', 'Business Daily Africa', 'af'),
+    ('https://www.df.cl/noticias/site/list/port/rss.xml', 'Diario Financiero', 'latam'),
+    ('https://www.theglobeandmail.com/arc/outboundfeeds/rss/category/business/', 'The Globe and Mail', 'na'),
+    ('https://www.bankofcanada.ca/content_type/press-releases/feed/', 'Bank of Canada', 'na'),
+    # 2026-11-07 expansion (checked against each feed's own published history; see design/GLOBE-COVERAGE-UPGRADE.md)
+    ('https://japantoday.com/category/business/feed', 'Japan Today', 'asia'),
+    ('https://www.boj.or.jp/en/rss/whatsnew.xml', 'Bank of Japan', 'asia'),
+    ('https://www.cgtn.com/subscribe/rss/section/business.xml', 'CGTN', 'asia'),
+    ('https://rthk.hk/rthk/news/rss/e_expressnews_efinance.xml', 'RTHK', 'asia'),
+    ('https://en.antaranews.com/rss/business-investment.xml', 'Antara', 'asia'),
+    ('https://e.vnexpress.net/rss/business.rss', 'VnExpress International', 'asia'),
+    ('https://www.bangkokpost.com/rss/data/business.xml', 'Bangkok Post', 'asia'),
+    ('https://www.thehindubusinessline.com/markets/feeder/default.rss', 'The Hindu BusinessLine', 'asia'),
+    ('https://www.rbi.org.in/pressreleases_rss.xml', 'Reserve Bank of India', 'asia'),
+    ('https://www.brecorder.com/feeds/latest-news', 'Business Recorder', 'asia'),
+    ('https://www.dawn.com/feeds/business', 'Dawn', 'asia'),
+    ('https://www.bworldonline.com/feed/', 'BusinessWorld', 'asia'),
+    ('https://www.philstar.com/rss/business', 'The Philippine Star', 'asia'),
+    ('https://www.dailysabah.com/rssFeed/economy', 'Daily Sabah', 'me'),
+    ('https://www.aa.com.tr/en/rss/default?cat=economy', 'Anadolu Agency', 'me'),
+    ('https://www.smh.com.au/rss/business.xml', 'The Sydney Morning Herald', 'oc'),
+    ('https://stockhead.com.au/feed/', 'Stockhead', 'oc'),
+    ('https://www.rba.gov.au/rss/rss-cb-media-releases.xml', 'Reserve Bank of Australia', 'oc'),
+    ('https://businesstech.co.za/news/feed/', 'BusinessTech', 'af'),
+    ('https://en.hespress.com/economy/feed', 'Hespress', 'af'),
+    ('https://www.myjoyonline.com/business/feed/', 'MyJoyOnline', 'af'),
+    ('https://egyptindependent.com/category/business/feed/', 'Egypt Independent', 'af'),
+    ('https://www.finews.com/news/english-news?format=feed&type=rss', 'finews.com', 'eu'),
+    ('https://e24.no/rss2/', 'E24', 'eu'),
+    ('https://www.di.se/rss', 'Dagens industri', 'eu'),
+    ('https://www.riksbank.se/en-gb/rss/press-releases/', 'Sveriges Riksbank', 'eu'),
+    ('https://borsen.dk/rss', 'Børsen', 'eu'),
+    ('https://www.nationalbanken.dk/api/rssfeed?topic=Press%20releases&lang=en', 'Danmarks Nationalbank', 'eu'),
+    ('https://businessinsider.com.pl/.feed', 'Business Insider Polska', 'eu'),
+    ('https://www.bloomberght.com/rss', 'Bloomberg HT', 'eu'),
+    ('https://expansion.mx/rss', 'Expansión', 'latam'),
+    ('https://www.latercera.com/arc/outboundfeeds/rss/category/pulso/?outputType=xml', 'La Tercera', 'latam'),
+    ('https://www.larepublica.co/rss/', 'La República', 'latam'),
+    ('https://gestion.pe/arcio/rss/', 'Gestión', 'latam'),
+    ('https://www.ambito.com/rss/pages/economia.xml', 'Ámbito', 'latam'),
 ]
-REGION_RESERVE, REGION_EACH = 42, 16  # of the candidates sent to the editor, up to 42 are held for these regions (16 per region at most)
+REGION_RESERVE, REGION_EACH = 100, 16  # of the 200 candidates sent to the editor, up to 100 are held for region-tagged feeds (16 per region at most)
+CORE_FIRST = 80  # up to 80 of the 200 slots go first to the best-scored non-regional candidates (wires, official, global publishers)
+SOURCE_MAX = 25  # no single source may fill more than 25 of the 200 editor slots (Investing.com was ~24% of all articles)
 
 
-def balance(cands, limit=140):
+def balance(cands, limit=200):
     """Keep the editor's input geographically mixed: reserve slots for thin regions, then fill with the rest in the original order."""
     by = {}
+    sc = sorted((c.get('score') or 0) for c in cands)
+    floor = sc[len(sc) // 2] if sc else 0  # a reserved regional candidate must score at least the median candidate: balance never promotes weak items
     for c in cands:
-        if c.get('region'): by.setdefault(c['region'], []).append(c)
+        if c.get('region') and (c.get('score') or 0) >= floor: by.setdefault(c['region'], []).append(c)
     reserved, k = [], 0
     while len(reserved) < REGION_RESERVE and any(len(v) > k for v in by.values()) and k < REGION_EACH:
         for v in by.values():
             if len(v) > k and len(reserved) < REGION_RESERVE: reserved.append(v[k])
         k += 1
+    core_first = [c for c in cands if not c.get('region')][:CORE_FIRST]  # wires, official sources and the major publishers go in first:
+    reserved = core_first + [c for c in reserved if id(c) not in {id(x) for x in core_first}]  # regional balance never displaces them
     ids = {id(c) for c in reserved}
-    rest = [c for c in cands if id(c) not in ids]
-    return reserved + rest[:max(0, limit - len(reserved))]
+    per = {}
+    for c in reserved: per[c.get('source')] = per.get(c.get('source'), 0) + 1
+    rest = []
+    for c in cands:
+        if id(c) in ids or per.get(c.get('source'), 0) >= SOURCE_MAX: continue
+        per[c.get('source')] = per.get(c.get('source'), 0) + 1; rest.append(c)
+    return (reserved + rest)[:limit]  # never more than the limit, whatever the reserves
 
 
 PRIORITY_NEWS = {'BBC News', 'The Guardian', 'MarketWatch', 'The New York Times', 'CoinDesk', 'OilPrice.com', 'PR Newswire'}  # fast publisher feeds kept in the small priority tier
@@ -253,7 +331,9 @@ def rss(tier='broad'):
                     desc = re.sub(r'<[^>]+>', ' ', html.unescape(it.findtext('description') or '')).strip()
                     out.append({'title': html.unescape(t), 'url': l, 'source': name, 'published': ts.strftime('%Y-%m-%dT%H:%M:%SZ'), 'kind': 'official' if hint else 'news', 'hint': hint, 'desc': desc[:400], **({'region': region} if region else {})})
                 return out
-            except Exception as e: last = e
+            except Exception as e:
+                last = e
+                if attempt == 0: time.sleep(3)  # transient failures (central-bank feeds failed 2-15 times a week) usually clear within seconds
         err(f'RSS {name}: {last}'); status['failed_sources'].append(name)
         return out
     with ThreadPoolExecutor(8) as ex: return [c for part in ex.map(one, srcs) for c in part]
@@ -288,7 +368,7 @@ def dedupe(items, known_titles, known_times=None):
 PROMPT = """You are the news editor of Investedia, a financial news globe for professional investors and finance practitioners. Below are candidate headlines (JSON) with their source and, when available, the article's own short description.
 
 Pick at most {n} stories that are genuinely about business, finance, markets, companies, the economy, commodities, crypto, technology business, or politics/geopolitics WITH a clear economic impact. Skip: sports, celebrity, crime, lifestyle, opinion columns, press-release spam, "stock to buy" tips, price-target listicles, and anything you cannot place.
-Geographic balance matters: the candidates include regional sources for Africa, Latin America and the Middle East. Include their genuine business and economy stories (aim for roughly one pick in six from these regions when the candidates support it), and always give the country of the event, not the country of the publisher. Candidates may be in Spanish, Portuguese or French: write the headline and summary in English.\nMerge candidates that report the same event into one story (list all their indexes in "members").
+Geographic balance matters: the candidates include regional sources for every continent (Africa, Latin America, the Middle East, Asia, Europe, Oceania, Canada). Include their genuine business and economy stories (only when they are financially significant: never pick a regional story over a more important event for the sake of balance), and always give the country of the event, not the country of the publisher, the company's legal registration (e.g. Cayman Islands) or the exchange where a commodity trades; for a multinational, use where the development happened, not the United States by default. Candidates may be in Spanish, Portuguese, French, Turkish, Polish, Swedish, Norwegian or Danish: write the headline and summary in English and keep the original source name. A significant local market event (a benchmark index move, a central-bank or regulator decision, a large local company's results or deal) qualifies on its own, even with no link to US-listed assets.\nMerge candidates that report the same event into one story (list all their indexes in "members").
 
 For each story return:
 - "members": candidate indexes (numbers) of the same event, most important source first
@@ -302,6 +382,7 @@ For each story return:
 - "entities": up to 5 companies or assets named in the input: {{"name": ..., "ticker": Yahoo Finance symbol if you are sure (e.g. NVDA, ASML, 7203.T, BZ=F, EURUSD=X, ^GSPC, BTC-USD) else null}}
 - "event_type": one of {event_types}: the kind of event (earnings, guidance, m&a, rates, macro-data, trade, regulation, energy-supply, capital, crypto, labor, geopolitics, commodity-prices, other)
 - "impacts": up to 6 affected assets or groups, each a relationship the input itself states or that follows directly and uncontroversially from it: {{"kind": "country" | "company" | "asset" | "sector", "role": "primary" (the asset the event is about; exactly one, listed first) | "secondary" (directly affected by the event), "relation": one of {relations}, "asset_class": "equity" | "index" | "fx" | "commodity" | "crypto" | "rate" | "sector" | "country", "name": "...", "country": ISO2 code where based or traded, "ticker": Yahoo symbol or null, "direction": "up" | "down" | "mixed" | "unclear", "confidence": "low" | "medium" | "high" (how clear and direct the effect is; use low when in doubt), "why": one plain-English sentence explaining the mechanism, max 200 characters}}. Examples of genuine secondary relationships: a central-bank decision -> that country's 2-year/10-year yield and its currency; an oil-supply event -> Brent/WTI; a takeover -> acquirer and target; a supplier's results -> a named customer the input mentions. NEVER add an index, currency, commodity or company only because it often moves together with the subject; omit anything the input does not support. Name the asset itself (e.g. "US 10-year Treasury yield", "Brent crude", "Euro", "S&P 500"), never a vague group, when kind is asset. Prefer "unclear" over guessing. No buy/sell advice. Use an empty list when no direct mechanism is supported.
+  When the input reports a market-wide move or a decision for one country (a benchmark index rally or sell-off, a currency move, a rate decision, a stock-exchange or regulator measure) and names no single company, list that market itself as the primary impact: kind "asset", asset_class "index" (Yahoo symbol, e.g. ^N225, ^KS11, ^BSESN, ^HSI, ^AXJO, ^NZ50, ^JKSE, ^STI, ^TWII, ^J203.JO) or "fx" (e.g. INR=X, KRW=X). An article with economic content should rarely have no impacts; if the input names nothing affected, return an empty list rather than guess.
 - "why_moved": for market-moving stories only, 1-2 sentences explaining the move using ONLY input facts and well-known general mechanisms; never invent numbers, quotes or reasons. Otherwise null.
 - "photo": one of {topics} that fits the subject, or null
 - "leads_to": index (in your output list) of another selected story this one directly causes or strongly affects, else null. Use rarely.
@@ -601,16 +682,23 @@ def main():
     cands = dedupe(fresh, titles, times)
     for c in cands: c['score'] = core.score(c, NOW, c.get('dups', 0))
     cands.sort(key=lambda c: -c['score'])  # best first: the caps below drop the weakest, not the newest
-    cands = balance(cands, 140) if TIER == 'broad' else cands[:PRIORITY_MAX]
+    cands = balance(cands, 200) if TIER == 'broad' else cands[:PRIORITY_MAX]  # 140 -> 200 (2026-11-07): ~+40% prompt tokens per broad run
     status['candidates'] = len(cands)
     log(f'[{TIER}] {len(raw)} fetched, {len(cands)} new candidates')
     for c in cands: seen[canon(c['url'])] = {'h': c['chash'], 't': ISO_NOW}
     new = pick_stories(cands, box, by_iso, sym, known_iso, MAX_NEW if TIER == 'broad' else PRIORITY_NEW, prev)
+    # coverage diagnostics per run: what the editor saw and what it published, by region and by source
+    status['candidates_by_region'] = dict(sorted(((r or 'global'), sum(1 for c in cands if c.get('region') == r)) for r in {c.get('region') for c in cands}))
+    status['published_by_region'] = {r: sum(1 for x in new if (x.get('location') or {}).get('region') == r) for r in sorted({(x.get('location') or {}).get('region') for x in new} - {None})}
+    status['candidates_by_source'] = dict(sorted(((c.get('source') or '?'), sum(1 for d in cands if d.get('source') == c.get('source'))) for c in cands))
     status['new_stories'] = len(new)
     if status.get('gemini_ok') or not cands: save_seen(seen)  # a failed Gemini call must not mark candidates as judged
     prev_ids = {x.get('id') for x in prev}
     new = [x for x in new if x.get('id') not in prev_ids]  # a published story keeps its first implications: never replaced or re-generated
-    every = sorted(new + prev, key=lambda s: s['published_at'], reverse=True)[:ARCHIVE_MAX]
+    every = sorted(new + prev, key=lambda s: s['published_at'], reverse=True)
+    cut48 = NOW - timedelta(hours=48)
+    n48 = sum(1 for x in every if datetime.fromisoformat(x['published_at'].replace('Z', '+00:00')) > cut48)
+    every = every[:max(ARCHIVE_MAX, n48)]  # the archive never drops an article from the last 48 hours (homepage globe), whatever the volume
     live_cut = NOW - timedelta(days=LIVE_DAYS)
     stories = [s for s in every if datetime.fromisoformat(s['published_at'].replace('Z', '+00:00')) > live_cut][:MAX_STORIES]
     status['impacts_backfilled'] = backfill_impacts(stories, known_iso) if TIER == 'broad' else 0
@@ -640,6 +728,11 @@ def main():
     else:
         try:
             save(OUT, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW, 'tier': TIER, 'notice': notice, 'stories': stories}, feed=True)
+            # homepage globe: every article of the last 48 hours that is not in the live file, in a compact form (written by both tiers,
+            # in the same run and commit as the live file)
+            live_ids = {x['id'] for x in stories}
+            save(H48, {'schema': 'investedia.globe.news48/v1', 'updated_at': ISO_NOW, 'hours': 48,
+                       'stories': [compact48(x) for x in every if x['id'] not in live_ids and datetime.fromisoformat(x['published_at'].replace('Z', '+00:00')) > cut48]})  # may legitimately be empty
             if TIER == 'broad':  # the archive is rebuilt only by the broad run, never by the 5-10 minute priority run
                 save(ARCHIVE, {'schema': 'investedia.globe.news/v1', 'demo': False, 'updated_at': ISO_NOW, 'notice': notice, 'stories': every}, feed=True)
             wrote = True

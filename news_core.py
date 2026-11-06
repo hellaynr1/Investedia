@@ -67,10 +67,15 @@ def content_hash(c):
 
 # ---------- scoring ----------
 AUTHORITY = {'official': 1.0, 'wire': .85, 'publisher': .7, 'aggregator': .45, 'gdelt': .4}
-MACRO = re.compile(r'\b(rate (?:decision|cut|hike)|interest rates?|inflation|cpi|ppi|gdp|payrolls?|unemployment|fomc|ecb|central bank|monetary policy|tariffs?|trade (?:deal|war)|opec|sanctions?|recession|treasury|yields?|stimulus|debt ceiling)\b', re.I)
+MACRO = re.compile(r'\b(rate (?:decision|cut|hike)|interest rates?|policy rate|repo rate|inflation|cpi|ppi|gdp|payrolls?|unemployment|fomc|ecb|boj|rbi|rba|rbnz|sarb|banxico|selic|central bank|monetary policy|tariffs?|trade (?:deal|war)|opec|sanctions?|recession|treasury|yields?|stimulus|debt ceiling'
+                   r'|tasa de inter[eé]s|inflaci[oó]n|infla[cç][aã]o|juros|banco central|banque centrale|taux directeur|faiz|enflasyon|merkez bankas[ıi]|inflacja|stopy procentowe|r[äa]nta|rente|styringsrente|pib|bip)\b', re.I)
 SEVERE = re.compile(r'\b(crash|plunge[sd]?|surge[sd]?|soar[sd]?|tumble[sd]?|collapse[sd]?|default|bankrupt\w*|emergency|halt(?:ed|s)?|downgrade[sd]?|record (?:high|low)|shock|crisis|bank run|outage|attack|invasion|ceasefire)\b', re.I)
-EXPOSURE = re.compile(r'\b(oil|brent|crude|gas|gold|copper|bitcoin|ether(?:eum)?|nasdaq|s&p|dow|dollar|euro|yen|yuan|sterling|nvidia|apple|microsoft|tesla|amazon|alphabet|meta|tsmc|asml|earnings|ipo|merger|acquisition|guidance)\b', re.I)
-RELEVANT = re.compile(r'\b(market|markets|stocks?|shares|bonds?|currency|commodit\w+|earnings|economy|economic|bank|fund|invest\w*|trade|price[sd]?|profit|revenue|oil|bitcoin|crypto)\b', re.I)
+EXPOSURE = re.compile(r'\b(oil|brent|crude|gas|gold|copper|bitcoin|ether(?:eum)?|nasdaq|s&p|dow|dollar|euro|yen|yuan|sterling|nvidia|apple|microsoft|tesla|amazon|alphabet|meta|tsmc|asml|earnings|ipo|merger|acquisition|guidance'
+                      r'|nikkei|topix|kospi|sensex|nifty|hang seng|taiex|asx|nzx|jse|tadawul|tasi|bist|ibovespa|bovespa|merval|ipsa|bmv|stoxx|dax|ftse|omx|smi'  # local benchmarks: a big local market move counts like a US one
+                      r'|rupee|won|rupiah|baht|ringgit|dong|rand|naira|cedi|shilling|shekel|riyal|dirham|dinar|lira|zloty|krona|krone|franc|peso|real|sol'
+                      r'|bolsa|borsa|b[öo]rs|giełda|acciones|a[cç][oõ]es|resultados|lucro|ganancias|fusi[oó]n|adquisi[cç][aã]o|bilan[cç]o|b[ée]n[ée]fice)\b', re.I)
+RELEVANT = re.compile(r'\b(market|markets|stocks?|shares|bonds?|currency|commodit\w+|earnings|economy|economic|bank|fund|invest\w*|trade|price[sd]?|profit|revenue|oil|bitcoin|crypto'
+                      r'|mercados?|econom[ií]a|empresas?|bancos?|inversi[oó]n|investimentos?|exporta\w*|precios?|pre[cç]os?|march[ée]s?|banque|entreprises?|piyasa|ekonomi|şirket|rynek|gospodarka|aktie\w*|marknad|økonomi|ekonomi)\b', re.I)
 MAJOR_GEO = {'US', 'CN', 'EU', 'DE', 'JP', 'GB', 'FR', 'IN'}
 
 def authority_of(c):
@@ -88,7 +93,7 @@ def score(c, now, dup_count=0):
     exposure = 1.0 if EXPOSURE.search(t) else 0.0
     macro = 1.0 if MACRO.search(t) else 0.0
     severity = 1.0 if SEVERE.search(t) else 0.0
-    geo = 1.0 if (c.get('country') in MAJOR_GEO or re.search(r'\b(u\.?s\.?|united states|china|europe|eurozone|japan|britain|uk|germany|india)\b', t, re.I)) else .4
+    geo = 1.0 if (c.get('country') in MAJOR_GEO or re.search(r'\b(u\.?s\.?|united states|china|europe|eurozone|japan|britain|uk|germany|india)\b', t, re.I)) else .75 if c.get('region') else .4  # a regional publisher's own market counts
     raw = .26 * authority_of(c) + .16 * relevance + .20 * recency + .10 * exposure + .14 * macro + .08 * severity + .06 * geo
     return round(max(0.0, 100 * raw - 6 * min(dup_count, 4)), 1)
 
