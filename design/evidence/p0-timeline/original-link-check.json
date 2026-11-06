@@ -1,0 +1,14 @@
+{
+  "event": "n3fdac5b5fd",
+  "headline": "ECB's Frank Elderson Emphasises Nature Risks in Economic Competitiveness",
+  "publisher": "European Central Bank",
+  "url": "https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261019~f0a3e053de.en.html",
+  "method": "HEAD, following redirects",
+  "status": 200,
+  "responseDate": "Fri, 06 Nov 2026 22:12:34 GMT",
+  "contentType": "text/html; charset=UTF-8",
+  "command": "curl --head --location --max-time 45 <original event url>",
+  "getVerified": true,
+  "publisherPageTitle": "From climate and nature risks to economic resilience and competitiveness",
+  "getBytes": 137146
+}

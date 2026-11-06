@@ -741,9 +741,52 @@ function countryAt(lo, la) {
 }
 
 let stories = [], byId = {}, incoming = {};
+let newsReady = Promise.resolve(), historySelection = 0, historyLoading = false, historyError = false;
+const historyDays = new Map();
 function normalize(raw) {
   return (raw.stories || []).map(s => ({ ...s, demo: !!(raw.demo || s.demo), t: s.published_at ? Date.parse(s.published_at) : T0 - (s.age_minutes || 0) * 60000,
     phi: s.location.lat * rad, lam: s.location.lon * rad, links: s.links || [], entities: s.entities || [], lens: lensesOf(s), vt: -1e9, on: false }));
+}
+// Daily history is loaded only by the full Globe's wider windows/replay. Cache promises too,
+// so overlapping 7D/30D requests share in-flight work; live/48H records always win by id.
+function historyEvent(event) {
+  const loc = event?.loc, time = Date.parse(event?.at);
+  if (!event?.id || typeof event.title !== 'string' || !loc || !Number.isFinite(loc.lat) || !Number.isFinite(loc.lon) || !Number.isFinite(time) || time > T0) return null;
+  const source = { name: event.src || '', url: event.url || '' };
+  return { id: event.id, headline: event.title, published_at: event.at, category: event.cat,
+    importance: event.imp, location: { ...loc }, market_moving: !!event.mm,
+    source, sources: [source], summary: '', why: '', entities: [], impacts: [], links: [], historical: true };
+}
+async function loadHistory(window) {
+  if (EMBED || !['7d', '30d'].includes(window)) return;
+  await newsReady;
+  const minutes = WINS.find(w => w[0] === window)[2], start = T0 - minutes * 60000;
+  const first = new Date(start); first.setUTCHours(0, 0, 0, 0);
+  const days = [];
+  for (let day = first.getTime(); day <= T0; day += 86400000) {
+    const key = new Date(day).toISOString().slice(0, 10);
+    if (!historyDays.has(key)) {
+      const pending = fetch(`events/${key}.json`, { cache: 'no-cache' }).then(async response => {
+        if (response.status === 404) return [];
+        if (!response.ok) throw new Error('History could not be loaded');
+        const data = await response.json();
+        if (!Array.isArray(data.events)) throw new Error('Invalid history file');
+        return data.events;
+      }).catch(error => { historyDays.delete(key); throw error; });
+      historyDays.set(key, pending);
+    }
+    days.push(historyDays.get(key));
+  }
+  const loaded = await Promise.all(days), have = new Set(stories.map(s => s.id)), added = [];
+  for (const events of loaded) for (const event of events) {
+    if (!event || have.has(event.id)) continue;
+    const article = historyEvent(event);
+    if (!article || Date.parse(article.published_at) < start) continue;
+    have.add(article.id); added.push(article);
+  }
+  const normalized = normalize({ stories: added });
+  stories = stories.concat(normalized);
+  for (const article of normalized) byId[article.id] = article;
 }
 // Analysis is optional. Malformed fields never affect the original reporting.
 const IMPACT_COLOR = { up: '34,197,94', down: '240,68,68', mixed: '161,161,170', unclear: '161,161,170' };
@@ -1122,7 +1165,7 @@ const exPick = (x, y) => exHits.find(h => x >= h.x && x <= h.x + h.w && y >= h.y
 const F = { cat: 'all', lens: 'all', region: 'global', win: '48h',  // homepage and Globe page open on the last 48 hours
   mine: new URLSearchParams(location.search).get('mine') === '1' }; let play = null;
 const winMin = () => (WINS.find(w => w[0] === F.win) || [F.win, '', 2880])[2];  // '48h' is the homepage-only window (no button)
-const inTime = s => play ? s.t <= play.cur : T0 - s.t <= winMin() * 60000;
+const inTime = s => play ? s.t >= play.start && s.t <= play.cur : (!s.historical || winMin() > 2880) && T0 - s.t <= winMin() * 60000;
 // My assets: the watchlist is kept by the site in localStorage ('inv-watch': {a:[{s,...}], c:[...]}); a guest has none.
 function watchSyms() { try { const L = JSON.parse(localStorage.getItem('inv-watch') || '{}'); return new Set((L.a || []).map(x => String(x.s || '').toUpperCase()).filter(Boolean)); } catch { return new Set(); } }
 let WATCH = watchSyms();
@@ -1141,7 +1184,8 @@ const sortTop = (a, b) => (b.importance - a.importance) || (b.t - a.t);
 let shown = [], dimmed = [], activity = {};
 function refresh() {
   shown = stories.filter(match); dimmed = F.lens === 'all' ? [] : stories.filter(s => matchNoLens(s) && !s.lens.includes(F.lens)); activity = {}; WATCH = watchSyms(); updateLensChips(); updateFiltersUI(); updateDropdowns(); for (const s of shown) activity[s.location.country] = (activity[s.location.country] || 0) + 1;
-  $('tlInfo').innerHTML = play ? `Replaying · <b>${new Date(play.cur).toLocaleDateString('en-GB', { weekday: 'short' })} ${new Date(play.cur).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</b>` : `<b>${shown.length}</b> ${shown.length === 1 ? 'article' : 'articles'}`;
+  $('tlInfo').setAttribute('aria-busy', String(historyLoading));
+  $('tlInfo').innerHTML = historyLoading ? 'Loading history…' : historyError ? 'History could not be loaded. Please try again.' : play ? `Replaying · <b>${new Date(play.cur).toLocaleDateString('en-GB', { weekday: 'short' })} ${new Date(play.cur).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</b>` : `<b>${shown.length.toLocaleString('en-US')}</b> ${shown.length === 1 ? 'article' : 'articles'} · ${F.win.toUpperCase()}`;
   updateNetwork(); if (!play) render();
 }
 
@@ -1238,12 +1282,12 @@ function setZ(z, x, y, anchor) {
 
 // ===== Interaction state =====
 let pinned = null, hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
-let SITES = [], sitesFor = null, SITEKEY = new Map();
+let SITES = [], sitesFor = null, SITEKEY = new Map(), clusterLists = new Map();
 function buildSites() {  // ~0.5 degree cells; the site's position is its first article's real coordinates (never moved)
   const m = new Map(), on = new Set(shown);
   for (const s of stories) if (!on.has(s)) s.on = false;
   for (const s of shown) { const k = Math.round(s.location.lat * 2) + ',' + Math.round(s.location.lon * 2); let g = m.get(k); if (!g) m.set(k, g = { phi: s.phi, lam: s.lam, m: [] }); g.m.push(s); }
-  SITEKEY = m; SITES = [...m.values()]; for (const g of SITES) g.m.sort(sortTop); sitesFor = shown;
+  SITEKEY = m; SITES = [...m.values()]; SITES.forEach((g, i) => { g.m.sort(sortTop); g.index = i; }); sitesFor = shown; clusterLists.clear();
 }
 // pointer: drag to rotate, pinch / wheel / double-click / buttons to zoom, tap to select
 const touches = new Map(); let pinch = null, drag = null, spin = null;  // spin: momentum after a drag is released (degrees per ms)
@@ -1542,7 +1586,7 @@ function render() {
       <div class="story-heading"><div class="eyebrow">${s.flag ? `<span class="tag">${FLAG[s.flag]}</span>` : ''}${esc(CAT[s.category])}</div>
       <h2>${esc(s.headline)}</h2>
       <div class="meta"><b>${esc(s.location.place)}</b>, <a href="#" data-country="${esc(s.location.country)}" style="color:inherit">${esc(nm(s.location.country))}</a> · ${ago(s.t)} · <button type="button" class="share-link" data-share="${esc(s.id)}">Share</button>${s.demo ? '<span class="dtag">DEMO</span>' : ''}</div></div>
-      <div class="sec-h" style="margin-top:0">Investedia summary</div><p>${esc(s.summary)}</p>
+      ${s.summary ? `<div class="sec-h" style="margin-top:0">Investedia summary</div><p>${esc(s.summary)}</p>` : '<p class="empty">No Investedia summary is available for this article. Read the original source below.</p>'}
       ${s.why ? `<div class="why"><div class="eyebrow">Why this matters</div><p>${esc(s.why)}</p></div>` : ''}
       ${impactHTML(s)}
       ${s.entities.length ? `<div class="sec-h">Companies & assets involved</div><div class="ents">${s.entities.map(x => entityChip(x, s.location.country)).join('')}</div>` : ''}
@@ -1584,11 +1628,11 @@ function search() {
   res.hidden = false; mark();
 }
 const mark = () => res.querySelectorAll('.ri').forEach(b => b.setAttribute('aria-selected', +b.dataset.i === hi));
-function choose(h) { if (!h) return; res.hidden = true; qi.value = ''; qi.blur(); if (h.k === 'country') openCountry(h.c); else { if (!match(h.s)) { F.cat = 'all'; F.lens = 'all'; F.region = 'global'; F.win = '7d'; press($('cats'), 'all'); press($('regions'), 'global'); press($('wins'), '7d'); refresh(); } openStory(h.s); } }
+function choose(h) { if (!h) return; res.hidden = true; qi.value = ''; qi.blur(); if (h.k === 'country') openCountry(h.c); else { if (!match(h.s)) { F.cat = 'all'; F.lens = 'all'; F.region = 'global'; press($('cats'), 'all'); press($('regions'), 'global'); setWin('7d'); } openStory(h.s); } }
 qi.addEventListener('focus', () => { qi.blur(); if (window.InvPeek) InvPeek.search(); else search(); });
 window.InvGlobeNav = {
   country: n => { const c = byName[n]; if (!c) return false; openCountry(c); return true; },
-  story: id => { const s = byId[id]; if (!s) return false; if (!match(s)) { F.cat = 'all'; F.lens = 'all'; F.region = 'global'; F.win = '7d'; press($('cats'), 'all'); press($('regions'), 'global'); press($('wins'), '7d'); refresh(); } openStory(s); return true; }
+  story: id => { const s = byId[id]; if (!s) return false; if (!match(s)) { F.cat = 'all'; F.lens = 'all'; F.region = 'global'; press($('cats'), 'all'); press($('regions'), 'global'); setWin('7d'); } openStory(s); return true; }
 };
 qi.addEventListener('keydown', e => {
   if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); hi = (hi + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % Math.max(1, hits.length); mark(); }
@@ -1617,11 +1661,23 @@ $('wins').innerHTML = WINS.map(([k, l]) => `<button class="win" data-k="${k}" ar
 const press = (box, k) => box.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
 $('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.lens = b.dataset.k; if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } press($('cats'), F.lens); refresh(); };
 $('regions').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.region = b.dataset.k; press($('regions'), F.region); const r = REGIONS.find(x => x[0] === F.region); if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } flyTo(r[2], r[3], r[4]); refresh(); ddClose(); $('reg-btn').focus(); };
-$('wins').onclick = e => { const b = e.target.closest('button'); if (!b) return; play = null; F.win = b.dataset.k; press($('wins'), F.win); refresh(); syncTb(); };
+$('wins').onclick = e => { const b = e.target.closest('button'); if (b) setWin(b.dataset.k); };
 // Phone time control (always visible on phones): a pill under Filters that opens the time options
 const TB = 'a';  // chosen design: time pill under Filters (owner, 2026-11-06)
 const tbEl = document.createElement('div'); tbEl.id = 'tb'; tbEl.className = 'tb tb-' + TB + ' glass'; document.body.appendChild(tbEl);
-function setWin(k) { play = null; F.win = k; press($('wins'), k); refresh(); syncTb(); }
+async function setWin(k) {
+  const selection = ++historySelection;
+  play = null; F.win = k; historyError = false;
+  historyLoading = !EMBED && ['7d', '30d'].includes(k);
+  press($('wins'), k); refresh(); syncTb();
+  if (historyLoading) {
+    try { await loadHistory(k); }
+    catch { if (selection === historySelection) { historyLoading = false; historyError = true; refresh(); } return false; }
+    if (selection !== historySelection) return false;
+    historyLoading = false; refresh();
+  }
+  return selection === historySelection;
+}
 function syncTb() {
   const lab = (WINS.find(w => w[0] === F.win) || [0, F.win.toUpperCase()])[1], opts = WINS.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="${k === F.win}">${l}</button>`).join('');
   const clock = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
@@ -1632,7 +1688,7 @@ tbEl.onclick = e => { const k = e.target.closest('[data-k]'); if (k) { tbEl.clas
 addEventListener('pointerdown', e => { if (!e.target.closest('#tb')) tbEl.classList.remove('open'); });
 syncTb();
 // Replay: sweep the last 7 days so articles appear on Earth in the order they were published
-$('play').onclick = () => { F.win = '7d'; press($('wins'), '7d'); play = { start: T0 - 7 * 1440 * 60000, cur: T0 - 7 * 1440 * 60000, t0: performance.now(), dur: reduce ? 1 : 7000 }; for (const s of stories) s.on = false; refresh(); };
+$('play').onclick = async () => { if (!await setWin('7d') || EMBED) return; play = { start: T0 - 7 * 1440 * 60000, cur: T0 - 7 * 1440 * 60000, t0: performance.now(), dur: reduce ? 1 : 7000 }; for (const s of stories) s.on = false; refresh(); };
 
 // ===== Draw =====
 function vec(phi, lam) { return [Math.cos(phi) * Math.cos(lam), Math.cos(phi) * Math.sin(lam), Math.sin(phi)]; }
@@ -1825,7 +1881,19 @@ function frame(t) {
   for (const v of vis) { const c = cl.find(c => (c.x - v.x) ** 2 + (c.y - v.y) ** 2 < 22 * 22); if (c) c.m.push(v); else cl.push({ x: v.x, y: v.y, z: v.z, m: [v] }); }
   for (const g of SITES) g.rep = null;
   for (const c of cl) { const rep = c.m[0].g; for (const v of c.m) v.g.rep = rep; }  // where each place's dot is drawn (used by line ends)
-  drawn = cl.map(c => { const list = c.m.length === 1 ? c.m[0].g.m : c.m.flatMap(v => v.g.m).sort(sortTop), h = list[0]; return { key: list.map(s => s.id).join(), x: c.x, y: c.y, z: c.z, list, lo: h.location.lon, la: h.location.lat, same: list.every(s => Math.abs(s.location.lat - h.location.lat) < 1 && Math.abs(s.location.lon - h.location.lon) < 1) }; });
+  // Geometry changes each frame; article membership changes only when places regroup.
+  // Reuse the sorted list/count metadata, bounded to this frame's clusters, so a busy
+  // place does not rescan thousands of article ids/coordinates on every animation tick.
+  const nextClusters = new Map();
+  drawn = cl.map(c => {
+    const membership = c.m.map(v => v.g.index).join(); let data = clusterLists.get(membership);
+    if (!data) {
+      const list = c.m.length === 1 ? c.m[0].g.m : c.m.flatMap(v => v.g.m).sort(sortTop), h = list[0];
+      data = { key: list.map(s => s.id).join(), list, lo: h.location.lon, la: h.location.lat, same: list.every(s => Math.abs(s.location.lat - h.location.lat) < 1 && Math.abs(s.location.lon - h.location.lon) < 1) };
+    }
+    nextClusters.set(membership, data); return { ...data, x: c.x, y: c.y, z: c.z };
+  });
+  clusterLists = nextClusters;
   ctx.globalCompositeOperation = 'lighter';
   for (const d of drawn) {
     const s = d.list[0], pop = Math.min(1, (t - s.vt) / 650), e = 1 - Math.pow(1 - pop, 3), a = (.35 + .65 * d.z) * e, imp = s.importance;
@@ -1964,7 +2032,7 @@ placeFilters(phone()); addEventListener('resize', () => placeFilters(phone()));
 // ===== Start =====
 let LIVE = null;
 const load = u => fetch(u, { cache: 'no-cache' }).then(r => { if (!r.ok) throw 0; return r.json(); });
-load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return d; }).catch(() => load(DEMO_URL))
+newsReady = load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return d; }).catch(() => load(DEMO_URL))
   // homepage globe: the live file holds only the newest articles, so add the archive's articles from the last 48 hours
   .then(raw => raw.demo ? raw : load('news-48h.json').catch(() => load('news-archive.json')).then(a => { const have = new Set(raw.stories.map(s => s.id)), cut = Date.now() - 48 * 3600e3;
     return { ...raw, stories: raw.stories.concat((a.stories || []).filter(s => !have.has(s.id) && Date.parse(s.published_at) >= cut)) }; }).catch(() => raw))
