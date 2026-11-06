@@ -492,15 +492,6 @@ h1 span{color:var(--fg-3)}
   .tb-a .tb-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;color:var(--fg)}.tb-a .tb-btn i{font-style:normal;color:var(--fg-3);font-size:10px}
   .tb-a .tb-pop{position:absolute;right:0;top:calc(100% + 8px);gap:4px;padding:5px;border-radius:14px;background:rgba(18,18,21,.96);border:1px solid var(--line)}
   .tb-a .tb-pop button{padding:7px 9px;border-radius:10px}
-  /* B: always-visible segmented row above the bottom sheet */
-  .tb-b{left:12px;right:64px;bottom:calc(178px + env(safe-area-inset-bottom));border-radius:14px;padding:4px;overflow-x:auto;scrollbar-width:none}
-  .tb-b .tb-row{display:flex;gap:2px;justify-content:space-between}.tb-b .tb-row button{flex:1;padding:8px 0;border-radius:10px;min-width:0;font-size:12px}
-  /* C: clock button above the zoom buttons; opens a vertical list */
-  .tb-c{right:16px;top:calc(50% - 92px);border-radius:12px}
-  .tb-c .tb-btn{width:36px;height:46px;display:grid;place-items:center;gap:0;padding:4px 0;color:var(--fg)}.tb-c .tb-btn b{font:600 10px 'Geist Mono',monospace}
-  .tb-c.open .tb-pop{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:34px;align-content:start}
-  .tb-c .tb-pop{position:absolute;right:calc(100% + 8px);top:-40px;gap:2px;padding:5px;border-radius:14px;background:rgba(18,18,21,.96);border:1px solid var(--line)}
-  .tb-c .tb-pop button{padding:7px 14px;border-radius:10px;text-align:left}
 }
 </style>
 <script src="../locale.js"></script>
@@ -1627,8 +1618,8 @@ const press = (box, k) => box.querySelectorAll('button').forEach(b => b.setAttri
 $('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.lens = b.dataset.k; if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } press($('cats'), F.lens); refresh(); };
 $('regions').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.region = b.dataset.k; press($('regions'), F.region); const r = REGIONS.find(x => x[0] === F.region); if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } flyTo(r[2], r[3], r[4]); refresh(); ddClose(); $('reg-btn').focus(); };
 $('wins').onclick = e => { const b = e.target.closest('button'); if (!b) return; play = null; F.win = b.dataset.k; press($('wins'), F.win); refresh(); syncTb(); };
-// Phone time control (always visible on phones): ?tb=a pill + popover (default) · b segmented row · c button in the zoom stack
-const TB = (QS.get('tb') || 'a').replace(/[^abc]/g, '') || 'a';
+// Phone time control (always visible on phones): a pill under Filters that opens the time options
+const TB = 'a';  // chosen design: time pill under Filters (owner, 2026-11-06)
 const tbEl = document.createElement('div'); tbEl.id = 'tb'; tbEl.className = 'tb tb-' + TB + ' glass'; document.body.appendChild(tbEl);
 function setWin(k) { play = null; F.win = k; press($('wins'), k); refresh(); syncTb(); }
 function syncTb() {
