@@ -263,5 +263,9 @@ Troubleshooting: sign-up "Error sending confirmation email" → Supabase → Log
 6. Research track: add Anthropic key → run Haiku pilot (≤ $0.20) → if the gate passes, follow V8 Stage 1; activate the shadow job only after approval.
 7. Before monetisation: move prices to a licensed data source.
 
+### Owner decisions pending (noted 2026-11-06)
+- **€5 Anthropic API credit:** recommended, with a €5 monthly limit in the Anthropic console. Uses: Haiku pilot (≤ $0.20), then filing digest and earnings briefs for Pro. It does **not** raise prediction accuracy by itself; accuracy can only be proven prospectively, with the V7 shadow job (free) running on future events. The key goes in through the environment's secure credential form when the owner says "add key"; shadow job activation needs "activate shadow".
+- **Making the repo private:** pushing still works through the owner's GitHub app connection. Risks to check first: GitHub Pages on a private repo needs GitHub Pro, otherwise investedia.com goes down; private repos have limited Actions minutes (2,000/month on Free), which the robots would exceed. Options: GitHub Pro + spending limit, or serve the site from a separate public repo / Cloudflare Pages.
+
 ## 11. Key documents
 `AGENTS.md` (rules, build, robots) · `WORKFLOW.md` (owner's weekly routine) · `design/PRO-PROPOSAL.md` · `design/PRO-PHASE1-REVIEW.md` · `design/CODEX-ACCEPTANCE-PROTOCOL.md` · `workers/live/README.md` · `NEWS-PIPELINE.md` · `DATA-LICENSING.md` · `YAHOO-AUDIT.md` · `LEGAL-TODO.md` · `LEGAL-REVIEW-PACK.md` · `RELEASE-CHECKLIST.md` · `research/` (engine reports; V7/V8 on `engine-v6`).
