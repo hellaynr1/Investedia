@@ -477,6 +477,31 @@ h1 span{color:var(--fg-3)}
 .mine-foot{display:block;padding:10px;border-top:1px solid rgba(255,255,255,.1);color:#ff9a4d;font-size:13.5px;font-weight:650;text-decoration:none}.mine-empty{display:grid;gap:6px;padding:14px;font-size:14px;color:var(--fg-2)}.mine-empty .dd-bino{width:28px;height:28px}.mine-empty b{color:#fff;font-size:15px}
 .up-day{margin:14px 0 4px;font:600 12px 'Geist Mono',ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-3)}.up-row{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;width:100%;padding:11px 0;border:0;border-top:1px solid var(--line);background:none;color:inherit;text-align:left}.up-row .flag{width:24px;height:16px;border-radius:2px;object-fit:cover}.up-main b{display:block;font-size:14.5px}.up-main small{color:var(--fg-3);font-size:13px}.up-in{color:#fbbf24;font-weight:700;font-size:13px;white-space:nowrap}.up-list{display:grid}
 @media(max-width:760px){.ddrow{display:grid;grid-template-columns:1fr;margin-top:0}.fsheet .dd-btn{width:100%;justify-content:flex-start}.fsheet .dd-btn .dd-car{margin-left:auto}.fsheet .dd-menu{position:static;margin-top:8px;min-width:0;width:100%;box-shadow:none}.up-main small,.up-in,.up-day,.mine-nm small,.mine-foot{font-size:14px}.dd-btn{font-size:15px}}
+
+/* phone time control (3 designs, ?tb=a|b|c); hidden on desktop and on the homepage globe */
+.tb{display:none}
+@media (max-width:760px){
+  html:not(.embed) .tb{display:block;position:fixed;z-index:6}
+  .tb svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+  .tb button{font:600 12.5px Inter,system-ui,sans-serif;color:var(--fg-2)}
+  .tb [aria-pressed=true]{background:#fff;color:#111}
+  .tb-pop{display:none}
+  .tb.open .tb-pop{display:flex}
+  /* A: pill under the header, right; opens a row of options */
+  .tb-a{top:calc(64px + env(safe-area-inset-top));right:12px;border-radius:999px}
+  .tb-a .tb-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;color:var(--fg)}.tb-a .tb-btn i{font-style:normal;color:var(--fg-3);font-size:10px}
+  .tb-a .tb-pop{position:absolute;right:0;top:calc(100% + 8px);gap:4px;padding:5px;border-radius:14px;background:rgba(18,18,21,.96);border:1px solid var(--line)}
+  .tb-a .tb-pop button{padding:7px 9px;border-radius:10px}
+  /* B: always-visible segmented row above the bottom sheet */
+  .tb-b{left:12px;right:64px;bottom:calc(178px + env(safe-area-inset-bottom));border-radius:14px;padding:4px;overflow-x:auto;scrollbar-width:none}
+  .tb-b .tb-row{display:flex;gap:2px;justify-content:space-between}.tb-b .tb-row button{flex:1;padding:8px 0;border-radius:10px;min-width:0;font-size:12px}
+  /* C: clock button above the zoom buttons; opens a vertical list */
+  .tb-c{right:16px;top:calc(50% - 92px);border-radius:12px}
+  .tb-c .tb-btn{width:36px;height:46px;display:grid;place-items:center;gap:0;padding:4px 0;color:var(--fg)}.tb-c .tb-btn b{font:600 10px 'Geist Mono',monospace}
+  .tb-c.open .tb-pop{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:34px;align-content:start}
+  .tb-c .tb-pop{position:absolute;right:calc(100% + 8px);top:-40px;gap:2px;padding:5px;border-radius:14px;background:rgba(18,18,21,.96);border:1px solid var(--line)}
+  .tb-c .tb-pop button{padding:7px 14px;border-radius:10px;text-align:left}
+}
 </style>
 <script src="../locale.js"></script>
 </head>
@@ -568,7 +593,7 @@ const LENSES = [['all', 'All', null],
   ['earnings', 'Earnings', /(earnings|quarterly results|\bprofits?\b|\brevenues?\b|guidance|\beps\b)/]];
 const lensesOf = s => { const text = (s.headline + ' ' + (s.summary || '')).toLowerCase(); return LENSES.filter(l => l[2] && l[2].test(text)).map(l => l[0]); };
 const REGIONS = [['global', 'Global', -15, 24, 1], ['na', 'North America', -97, 40, 2], ['eu', 'Europe', 10, 50, 2.6], ['asia', 'Asia', 108, 28, 1.8], ['me', 'Middle East', 46, 26, 2.8], ['af', 'Africa', 20, 3, 1.8], ['latam', 'Latin America', -62, -16, 1.8], ['oc', 'Oceania', 140, -26, 2]];
-const WINS = [['now', 'Now', 15], ['1h', '1H', 60], ['6h', '6H', 360], ['24h', '24H', 1440], ['7d', '7D', 10080], ['30d', '30D', 43200]];
+const WINS = [['now', 'Now', 15], ['1h', '1H', 60], ['6h', '6H', 360], ['24h', '24H', 1440], ['48h', '48H', 2880], ['7d', '7D', 10080], ['30d', '30D', 43200]];
 const WLABEL = { now: 'the last 15 minutes', '1h': 'the last hour', '6h': 'the last 6 hours', '24h': 'the last 24 hours', '48h': 'the last 48 hours', '7d': 'the last 7 days', '30d': 'the last 30 days' };
 const FLAG = { breaking: 'Breaking', trending: 'Trending', moving: 'Market moving' };
 const NAME = { 'United States of America': 'United States', 'Bosnia and Herz.': 'Bosnia and Herzegovina', 'Dem. Rep. Congo': 'DR Congo', 'Dominican Rep.': 'Dominican Republic', 'Central African Rep.': 'Central African Republic', 'S. Sudan': 'South Sudan', 'Eq. Guinea': 'Equatorial Guinea', 'W. Sahara': 'Western Sahara', 'Solomon Is.': 'Solomon Islands', 'Falkland Is.': 'Falkland Islands', 'Fr. S. Antarctic Lands': 'French Southern Lands', 'N. Cyprus': 'Northern Cyprus' };
@@ -1103,7 +1128,7 @@ function drawExchanges(t) {
 const exPick = (x, y) => exHits.find(h => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h);
 
 // ===== Filters =====
-const F = { cat: 'all', lens: 'all', region: 'global', win: EMBED ? '48h' : '24h',  // homepage globe (embed): last 48 hours; Globe page unchanged
+const F = { cat: 'all', lens: 'all', region: 'global', win: '48h',  // homepage and Globe page open on the last 48 hours
   mine: new URLSearchParams(location.search).get('mine') === '1' }; let play = null;
 const winMin = () => (WINS.find(w => w[0] === F.win) || [F.win, '', 2880])[2];  // '48h' is the homepage-only window (no button)
 const inTime = s => play ? s.t <= play.cur : T0 - s.t <= winMin() * 60000;
@@ -1601,7 +1626,20 @@ $('wins').innerHTML = WINS.map(([k, l]) => `<button class="win" data-k="${k}" ar
 const press = (box, k) => box.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
 $('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.lens = b.dataset.k; if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } press($('cats'), F.lens); refresh(); };
 $('regions').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.region = b.dataset.k; press($('regions'), F.region); const r = REGIONS.find(x => x[0] === F.region); if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } flyTo(r[2], r[3], r[4]); refresh(); ddClose(); $('reg-btn').focus(); };
-$('wins').onclick = e => { const b = e.target.closest('button'); if (!b) return; play = null; F.win = b.dataset.k; press($('wins'), F.win); refresh(); };
+$('wins').onclick = e => { const b = e.target.closest('button'); if (!b) return; play = null; F.win = b.dataset.k; press($('wins'), F.win); refresh(); syncTb(); };
+// Phone time control (always visible on phones): ?tb=a pill + popover (default) · b segmented row · c button in the zoom stack
+const TB = (QS.get('tb') || 'a').replace(/[^abc]/g, '') || 'a';
+const tbEl = document.createElement('div'); tbEl.id = 'tb'; tbEl.className = 'tb tb-' + TB + ' glass'; document.body.appendChild(tbEl);
+function setWin(k) { play = null; F.win = k; press($('wins'), k); refresh(); syncTb(); }
+function syncTb() {
+  const lab = (WINS.find(w => w[0] === F.win) || [0, F.win.toUpperCase()])[1], opts = WINS.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="${k === F.win}">${l}</button>`).join('');
+  const clock = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
+  tbEl.innerHTML = TB === 'b' ? `<div class="tb-row">${opts}</div>`
+    : `<button type="button" class="tb-btn" aria-expanded="${tbEl.classList.contains('open')}" aria-label="Time window: ${lab}">${clock}<b>${lab}</b>${TB === 'a' ? '<i>▾</i>' : ''}</button><div class="tb-pop">${opts}</div>`;
+}
+tbEl.onclick = e => { const k = e.target.closest('[data-k]'); if (k) { tbEl.classList.remove('open'); return setWin(k.dataset.k); } if (e.target.closest('.tb-btn')) { tbEl.classList.toggle('open'); syncTb(); } };
+addEventListener('pointerdown', e => { if (!e.target.closest('#tb')) tbEl.classList.remove('open'); });
+syncTb();
 // Replay: sweep the last 7 days so articles appear on Earth in the order they were published
 $('play').onclick = () => { F.win = '7d'; press($('wins'), '7d'); play = { start: T0 - 7 * 1440 * 60000, cur: T0 - 7 * 1440 * 60000, t0: performance.now(), dur: reduce ? 1 : 7000 }; for (const s of stories) s.on = false; refresh(); };
 
@@ -1874,7 +1912,7 @@ function openFilters() { fsOpener = document.activeElement; $('fsback').hidden =
 function closeFilters(restore = true) { if ($('fsheet').hidden) return; $('fsheet').hidden = true; $('fsback').hidden = true; if (restore && fsOpener && fsOpener.focus) fsOpener.focus(); }
 $('m-filters').onclick = openFilters; $('fs-close').onclick = () => closeFilters(); $('fsback').onclick = () => closeFilters(); $('fs-show').onclick = () => closeFilters();
 $('m-search').onclick = () => { if (window.InvPeek) InvPeek.search(); else qi.focus(); };
-$('fs-reset').onclick = () => { F.mine = false; for (const [box, k] of [[$('cats'), 'all'], [$('regions'), 'global'], [$('wins'), '24h']]) box.querySelector(`[data-k="${k}"]`).click(); };
+$('fs-reset').onclick = () => { F.mine = false; for (const [box, k] of [[$('cats'), 'all'], [$('regions'), 'global'], [$('wins'), '48h']]) box.querySelector(`[data-k="${k}"]`).click(); };
 $('fsheet').addEventListener('keydown', e => {
   if (e.key === 'Escape') { e.stopPropagation(); closeFilters(); return; }
   if (e.key !== 'Tab') return;
@@ -1884,7 +1922,7 @@ $('fsheet').addEventListener('keydown', e => {
   else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
 });
 function updateFiltersUI() {
-  const n = (F.lens !== 'all') + (F.region !== 'global') + (F.win !== '24h'), c = $('m-fcount');
+  const n = (F.lens !== 'all') + (F.region !== 'global') + (F.win !== '48h'), c = $('m-fcount');
   c.hidden = !n; c.textContent = n; $('m-filters').setAttribute('aria-label', n ? `Filters, ${n} active` : 'Filters');
   $('fs-show').textContent = `Show ${shown.length} ${shown.length === 1 ? 'article' : 'articles'}`;
 }
@@ -1937,7 +1975,7 @@ let LIVE = null;
 const load = u => fetch(u, { cache: 'no-cache' }).then(r => { if (!r.ok) throw 0; return r.json(); });
 load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) throw 0; return d; }).catch(() => load(DEMO_URL))
   // homepage globe: the live file holds only the newest articles, so add the archive's articles from the last 48 hours
-  .then(raw => !EMBED || raw.demo ? raw : load('news-48h.json').catch(() => load('news-archive.json')).then(a => { const have = new Set(raw.stories.map(s => s.id)), cut = Date.now() - 48 * 3600e3;
+  .then(raw => raw.demo ? raw : load('news-48h.json').catch(() => load('news-archive.json')).then(a => { const have = new Set(raw.stories.map(s => s.id)), cut = Date.now() - 48 * 3600e3;
     return { ...raw, stories: raw.stories.concat((a.stories || []).filter(s => !have.has(s.id) && Date.parse(s.published_at) >= cut)) }; }).catch(() => raw))
   .then(raw => {
   if (!raw.demo) { LIVE = raw; const b = $('badge'); b.className = 'demo live'; b.title = raw.notice || ''; const m = Math.max(0, Math.round((Date.now() - Date.parse(raw.updated_at)) / 60000)); b.innerHTML = '<i></i>News updated ' + (m < 1 ? 'just now' : m < 60 ? m + 'm ago' : m < 1440 ? Math.floor(m / 60) + 'h ago' : Math.floor(m / 1440) + 'd ago'); }
