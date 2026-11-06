@@ -128,3 +128,18 @@ html,body{overflow-x:clip}.ap{max-width:100%;overflow-x:clip}
 .ap-cv.mk-c .ap-pin .ap-pin-ic{bottom:4px!important;top:auto;transform:translate(-50%,0)!important;width:20px!important;height:20px!important;border-radius:6px!important;background:#111114!important}
 .ap-cv.mk-c .ap-pin.u .ap-pin-ic{border-color:#22c55e}.ap-cv.mk-c .ap-pin.d .ap-pin-ic{border-color:#f87171}
 .ap-co-slot{display:inline}.ap-co{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--fg-2)!important;font:500 12px var(--sans);text-decoration:none!important;vertical-align:1px;white-space:nowrap}.ap-co:hover{color:var(--fg)!important;border-color:var(--fg-3)}
+
+/* 2026-11-06: news markers sit in a fixed lane at the top of the plot (the chart reserves headroom), joined to their dot by a thin stem, so they never cover the line */
+.ap-plot{container-type:size}
+.ap-cv.mk-b .ap-pin{--ic:28px}
+.ap-cv.mk-b .ap-pin .ap-pin-ic{bottom:auto!important;top:calc(2px - var(--yv) * 1cqh)}
+.ap-cv.mk-b .ap-pin .ap-pin-ic:after{top:100%;height:max(0px, calc(var(--yv) * 1cqh - var(--ic) - 8px));width:1px;opacity:.4}
+@media(max-width:700px){.ap-cv.mk-b .ap-pin{--ic:22px}}
+/* marker icon: glyph centred in its badge (the 12px pin box was shrinking the grid) */
+.ap-cv .ap-pin .ap-pin-ic{display:flex!important;align-items:center;justify-content:center;padding:0;box-sizing:border-box;line-height:0;width:var(--ic,28px)!important;height:var(--ic,28px)!important}
+.ap-cv .ap-pin .ap-pin-ic svg{position:static!important;inset:auto!important;display:block;flex:none;width:60%!important;height:60%!important;margin:0}
+/* text glyphs (initials, arrow, number) inside marker badges */
+.ap-cv .ap-pin .ap-pin-ic b{font:700 11px/1 Inter,system-ui,sans-serif;letter-spacing:.02em;color:currentColor}
+.ap-cv .ap-pin .ap-pin-ic.ic-4 b{font-size:15px;font-weight:600}
+.ap-cv .ap-pin .ap-pin-ic.ic-4,.ap-cv .ap-pin .ap-pin-ic.ic-5{border-radius:50%!important}
+.ap-cv .ap-pin.n:hover .ap-pin-ic,.ap-cv .ap-pin.n:focus-visible .ap-pin-ic{background:rgba(161,161,170,.26);border-color:rgba(212,212,216,.7)}

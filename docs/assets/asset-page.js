@@ -17,7 +17,7 @@
   const NEWS_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 12h8M8 15h5"/></svg>';
   function chart(a, v, c, rel) {
     if (!v || v.length < 2) return '';
-    const W = 600, H = 220, lo = Math.min(...v), hi = Math.max(...v), pad = (hi - lo) * .08 || hi * .002 || 1, L0 = lo - pad, H0 = hi + pad, r = H0 - L0;
+    const W = 600, H = 220, lo = Math.min(...v), hi = Math.max(...v), pad = (hi - lo) * .08 || hi * .002 || 1, room = rel && rel.length ? (hi - lo + 2 * pad) * .3 : 0, L0 = lo - pad - (MK === 'c' ? room : 0), H0 = hi + pad + (MK === 'b' ? room : 0), r = H0 - L0;  // free lane for the news markers (top for b, bottom for c)
     const X = i => i / (v.length - 1) * W, Y = y => H - (y - L0) / r * H;
     const d = v.map((y, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(y).toFixed(1)).join(''), gid = 'apg' + Math.random().toString(36).slice(2, 7);
     const dec = r < 2 ? 2 : r < 20 ? 1 : 0, tick = k => (L0 + r * k / 4);
@@ -31,6 +31,15 @@
   }
   // News pins on the chart: each article that names the asset sits on the line at its publication time; same numbers as the list below
   const MK = (new URLSearchParams(location.search).get('mk') || 'b').replace(/[^abc]/g, '') || 'a';
+  // marker glyph options (?ic=): 1 article sheet, 2 newspaper, 3 source initials, 4 direction arrow, 5 article number
+  const IC = (new URLSearchParams(location.search).get('ic') || '2').replace(/[^1-5]/g, '') || '1';
+  const PAPER_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h11v13a2 2 0 0 0 2 2H7a2 2 0 0 1-2-2z"/><path d="M16 9h3v9a2 2 0 0 1-2 2"/><path d="M8 9h5M8 12h5M8 15h3"/></svg>';
+  const pinGlyph = x => { const dir = x.i.direction;
+    if (IC === '2') return PAPER_IC;
+    if (IC === '3') return `<b>${esc((x.s.source?.name || 'N').replace(/[^A-Za-z0-9 ]/g, '').split(/\s+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'N')}</b>`;
+    if (IC === '4') return `<b>${dir === 'up' ? '↑' : dir === 'down' ? '↓' : '↔'}</b>`;
+    if (IC === '5') return `<b>${x.num}</b>`;
+    return NEWS_IC; };
   function pins(a, rel, v, L0, rr) {
     if (!v || v.length < 2 || !rel.length) return '';
     const t = S.intra[a.s]?.d1?.t, end = S.win === 'd' && t?.length ? t[t.length - 1] * 1000 : Date.now(), start = S.win === 'd' ? (t?.length ? t[0] * 1000 : end - 864e5) : end - (S.win === 'w' ? 7 : 30) * 864e5;
@@ -38,8 +47,8 @@
     const L = rel.map(({ s, i }, n) => ({ s, i, num: rel.length - n })).filter(x => { const ts = Date.parse(x.s.published_at); return ts >= start && ts <= end + 36e5; }).slice(0, max).map(x => ({ ...x, f: Math.round(Math.max(0, Math.min(1, (Date.parse(x.s.published_at) - start) / (end - start))) * (v.length - 1)) / (v.length - 1) })).sort((p, q) => p.f - q.f);
     let prev = -99; for (const x of L) { x.left = Math.max(x.f * 100, prev + gap); prev = x.left; }
     for (let k = L.length - 1, lim = 96; k >= 0; k--) { if (L[k].left > lim) L[k].left = lim; lim = L[k].left - gap; }
-    return L.map(x => { x.left = Math.max(1, x.left); const y = v[Math.round(x.left / 100 * (v.length - 1))], top = 100 - (y - lo) / r * 100;
-      return `<button type="button" class="ap-pin ${cls(x.i.direction === 'up' ? 1 : x.i.direction === 'down' ? -1 : 0)}" style="left:${Math.max(1, x.left).toFixed(1)}%;top:${top.toFixed(1)}%;--y:${top.toFixed(1)}%" data-n="${x.num}" aria-label="Article ${x.num}: ${esc(x.s.headline)}"><i class="ap-pin-ic">${NEWS_IC}</i></button>`;
+    return L.map(x => { x.left = Math.max(1, x.left); const fi = Math.min(v.length - 1, x.left / 100 * (v.length - 1)), i0 = Math.floor(fi), y = v[i0] + ((v[Math.min(v.length - 1, i0 + 1)] - v[i0]) * (fi - i0)), top = 100 - (y - lo) / r * 100;
+      return `<button type="button" class="ap-pin n" style="left:${Math.max(1, x.left).toFixed(1)}%;top:${top.toFixed(1)}%;--y:${top.toFixed(1)}%;--yv:${top.toFixed(2)}" data-n="${x.num}" aria-label="Article ${x.num}: ${esc(x.s.headline)}"><i class="ap-pin-ic ic-${IC}">${pinGlyph(x)}</i></button>`;
     }).join('');
   }
   const find = (by, s) => by[s] || by[ALIAS[s]] || by[s + '-USD'] || by[s + '=F'] || by['^' + s] || Object.values(by).find(a => a.n && a.n.toLowerCase() === s.toLowerCase());
