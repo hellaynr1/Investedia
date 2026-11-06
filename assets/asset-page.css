@@ -135,3 +135,6 @@ html,body{overflow-x:clip}.ap{max-width:100%;overflow-x:clip}
 .ap-cv.mk-b .ap-pin .ap-pin-ic{bottom:auto!important;top:calc(2px - var(--yv) * 1cqh)}
 .ap-cv.mk-b .ap-pin .ap-pin-ic:after{top:100%;height:max(0px, calc(var(--yv) * 1cqh - var(--ic) - 8px));width:1px;opacity:.4}
 @media(max-width:700px){.ap-cv.mk-b .ap-pin{--ic:22px}}
+/* marker icon: glyph centred in its badge (the 12px pin box was shrinking the grid) */
+.ap-cv .ap-pin .ap-pin-ic{display:flex!important;align-items:center;justify-content:center;padding:0;box-sizing:border-box;line-height:0;width:var(--ic,28px)!important;height:var(--ic,28px)!important}
+.ap-cv .ap-pin .ap-pin-ic svg{position:static!important;inset:auto!important;display:block;flex:none;width:60%!important;height:60%!important;margin:0}
