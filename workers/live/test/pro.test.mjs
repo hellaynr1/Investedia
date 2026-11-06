@@ -9,7 +9,7 @@ const hex = (b) => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0
 async function sign(payload, t) { const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']); return `t=${t},v1=${hex(await crypto.subtle.sign('HMAC', k, new TextEncoder().encode(`${t}.${payload}`)))}`; }
 function memStore() { const rows = new Map(), ev = new Set();
   return { rows, byUser: async (id) => rows.get(id) || null, byCustomer: async (c) => [...rows.values()].find(r => r.stripe_customer === c) || null,
-           upsert: async (r) => { rows.set(r.user_id, { ...r }); }, claimEvent: async (id) => (ev.has(id) ? false : (ev.add(id), true)) }; }
+           upsert: async (r) => { rows.set(r.user_id, { ...r }); }, claimEvent: async (id) => (ev.has(id) ? false : (ev.add(id), true)), releaseEvent: async (id) => { ev.delete(id); } }; }
 const authFetch = (calls) => async (url, init = {}) => {
   calls.push({ url, init });
   if (url.endsWith('/auth/v1/user')) return new Response(JSON.stringify(init.headers.Authorization === 'Bearer good' ? { id: 'u1', email: 'a@b.c' } : {}), { status: init.headers.Authorization === 'Bearer good' ? 200 : 401 });
@@ -44,6 +44,8 @@ test('webhook: link, trial, duplicate, out-of-order, cancel', async () => {
   const sub = (status, created, extra = {}) => ({ id: 'evt_' + created, type: 'customer.subscription.updated', created, data: { object: { id: 'sub_1', customer: 'cus_1', status, trial_end: t + 7 * 86400, current_period_end: t + 7 * 86400, items: { data: [{ price: { id: 'price_m', recurring: { interval: 'month' } } }] }, ...extra } } });
   assert.equal((await post({ id: 'evt_0', type: 'customer.subscription.created', created: 5, data: { object: { customer: 'cus_1', status: 'trialing' } } })).status, 409);  // not linked yet -> retry
   assert.equal((await post({ id: 'evt_a', type: 'checkout.session.completed', created: 9, data: { object: { client_reference_id: 'u1', customer: 'cus_1', subscription: 'sub_1' } } })).status, 200);
+  const retry = await post({ id: 'evt_0', type: 'customer.subscription.created', created: 5, data: { object: { customer: 'cus_1', status: 'trialing' } } });  // Stripe's retry of the 409'd event must be processed, not skipped
+  assert.equal((await retry.json()).result, 'trialing');
   assert.equal((await post(sub('trialing', 10))).status, 200); assert.equal(store.rows.get('u1').status, 'trialing');
   const dup = await post(sub('trialing', 10)); assert.equal((await dup.json()).duplicate, true);
   await post(sub('active', 20)); await post(sub('past_due', 15));           // older event arrives late: ignored
@@ -98,4 +100,12 @@ test('trial reuse: a returning customer with a past trial gets no second trial, 
   assert.ok(!decodeURIComponent(c.find(x => x.url.includes('checkout/sessions')).init.body).includes('trial_period_days'));
   store.rows.set('u1', { user_id: 'u1', stripe_customer: 'cus_1', status: 'trialing' });
   assert.equal((await run(req('/v1/pro/checkout', { method: 'POST', token: 'good', body: '{}' }), ENV, { fetch: authFetch([]), store })).status, 409);
+});
+
+test('webhook: a failed database write releases the claim so the retry is processed', async () => {
+  const store = memStore(), t = 1_800_000_000; let fail = true; const up = store.upsert; store.upsert = async (r) => { if (fail) throw new Error('upsert 400'); return up(r); };
+  const p = JSON.stringify({ id: 'evt_x', type: 'checkout.session.completed', created: 1, data: { object: { client_reference_id: 'u9', customer: 'cus_9' } } });
+  const post = async () => run(req('/v1/pro/webhook', { method: 'POST', body: p, headers: { 'Stripe-Signature': await sign(p, t) } }), ENV, { store, nowSec: t });
+  await assert.rejects(post()); fail = false;
+  assert.equal((await (await post()).json()).result, 'linked');
 });

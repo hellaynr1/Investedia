@@ -56,6 +56,8 @@ export function supabaseStore(env, fetchImpl = fetch) {
     upsert: async (row) => { const r = await fetchImpl(`${base}/subscriptions?on_conflict=user_id`, { method: 'POST', headers: { ...h, Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(row) }); if (!r.ok) throw new Error('upsert ' + r.status); },
     // returns true the first time an event id is recorded, false if it was already processed
     claimEvent: async (id) => { const r = await fetchImpl(`${base}/stripe_events`, { method: 'POST', headers: { ...h, Prefer: 'return=minimal' }, body: JSON.stringify({ id }) }); if (r.status === 409) return false; if (!r.ok) throw new Error('event ' + r.status); return true; },
+    // undo a claim when processing failed, so Stripe's retry is processed instead of skipped as a duplicate
+    releaseEvent: async (id) => { await fetchImpl(`${base}/stripe_events?id=eq.${encodeURIComponent(id)}`, { method: 'DELETE', headers: h }); },
   };
 }
 
@@ -119,8 +121,9 @@ export async function handlePro(req, env, url, baseHeaders, deps = {}) {
     if (!(await verifyStripe(raw, req.headers.get('Stripe-Signature'), env.STRIPE_WEBHOOK_SECRET, 300, deps.nowSec))) return json({}, 400, { error: 'bad signature' });
     const ev = JSON.parse(raw);
     if (!(await store.claimEvent(ev.id))) return json({}, 200, { ok: true, duplicate: true });
-    const result = await applyEvent(ev, store, now);
-    if (result === 'unknown-customer') return json({}, 409, { error: 'customer not linked yet' });  // non-2xx -> Stripe retries
+    let result;
+    try { result = await applyEvent(ev, store, now); } catch (e) { if (store.releaseEvent) await store.releaseEvent(ev.id).catch(() => {}); throw e; }
+    if (result === 'unknown-customer') { if (store.releaseEvent) await store.releaseEvent(ev.id).catch(() => {}); return json({}, 409, { error: 'customer not linked yet' }); }  // non-2xx -> Stripe retries
     return json({}, 200, { ok: true, result });
   }
 
