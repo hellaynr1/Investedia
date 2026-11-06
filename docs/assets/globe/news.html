@@ -1289,10 +1289,13 @@ const COUNT_ZOOM = 2.2;  // at or above this zoom the per-place numbers are show
 const placeCounts = () => Z >= COUNT_ZOOM;
 function countryTotals() {
   const by = new Map();
-  for (const d of drawn) {  // each article counts for its own country; the label sits on that country's busiest visible cluster
+  // totals: every article in the current window counts for its own country, whether or not its dot faces the viewer,
+  // so the number does not change as the globe turns; visible clusters only decide where the label sits
+  const tot = new Map(); for (const a of shown) tot.set(a.location.country, (tot.get(a.location.country) || 0) + 1);
+  for (const d of drawn) {
     if (d.z <= .25) continue; const per = new Map();
     for (const a of d.list) per.set(a.location.country, (per.get(a.location.country) || 0) + 1);
-    for (const [c, k] of per) { let e = by.get(c); if (!e) by.set(c, e = { n: 0, best: d, bk: 0 }); e.n += k; if (k > e.bk) { e.best = d; e.bk = k; } }
+    for (const [c, k] of per) { let e = by.get(c); if (!e) by.set(c, e = { n: tot.get(c) || k, best: d, bk: 0 }); if (k > e.bk) { e.best = d; e.bk = k; } }
   }
   const rows = [...by.entries()].sort((a, b) => b[1].n - a[1].n), boxes = [], max = phone() ? 8 : 14, fs = phone() ? 10.5 : 11.5, h = phone() ? 18 : 20;
   ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
