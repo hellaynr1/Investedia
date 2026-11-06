@@ -1282,6 +1282,33 @@ function setZ(z, x, y, anchor) {
 
 // ===== Interaction state =====
 let pinned = null, hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
+
+// ---- Globe numbers (owner choice 2026-11-06, option A + D): zoomed out, one total per country instead of a number on every cluster;
+// zoomed in, the per-place numbers return. The count of any place is always in its hover/tap card. Homepage globe unchanged.
+const COUNT_ZOOM = 2.2;  // at or above this zoom the per-place numbers are shown
+const placeCounts = () => Z >= COUNT_ZOOM;
+function countryTotals() {
+  const by = new Map();
+  for (const d of drawn) {  // each article counts for its own country; the label sits on that country's busiest visible cluster
+    if (d.z <= .25) continue; const per = new Map();
+    for (const a of d.list) per.set(a.location.country, (per.get(a.location.country) || 0) + 1);
+    for (const [c, k] of per) { let e = by.get(c); if (!e) by.set(c, e = { n: 0, best: d, bk: 0 }); e.n += k; if (k > e.bk) { e.best = d; e.bk = k; } }
+  }
+  const rows = [...by.entries()].sort((a, b) => b[1].n - a[1].n), boxes = [], max = phone() ? 8 : 14, fs = phone() ? 10.5 : 11.5, h = phone() ? 18 : 20;
+  ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (const [c, e] of rows) {
+    if (boxes.length >= max) break;
+    const txt = `${nm(c)} ${e.n.toLocaleString('en-US')}`; ctx.font = `600 ${fs}px Inter,system-ui,sans-serif`;
+    const w = ctx.measureText(txt).width + 14, x = Math.max(w / 2 + 8, Math.min(innerWidth - w / 2 - 8, e.best.x)), y = e.best.y - 16;  // kept fully on screen
+    if (boxes.some(r => x - w / 2 < r.x + r.w + 4 && x + w / 2 + 4 > r.x && y - h / 2 < r.y + r.h + 3 && y + h / 2 + 3 > r.y)) continue;  // never overlap
+    const a = Math.min(1, .35 + e.best.z);
+    ctx.fillStyle = `rgba(12,12,14,${(.88 * a).toFixed(3)})`; ctx.strokeStyle = e.n >= 100 ? `rgba(255,122,26,${(.85 * a).toFixed(3)})` : `rgba(255,255,255,${(.18 * a).toFixed(3)})`; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(x - w / 2, y - h / 2, w, h, h / 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = DAY ? `rgba(24,24,28,${a})` : `rgba(255,255,255,${a})`; ctx.fillText(txt, x, y + .5);
+    boxes.push({ x: x - w / 2, y: y - h / 2, w, h });
+  }
+  ctx.restore();
+}
 let SITES = [], sitesFor = null, SITEKEY = new Map(), clusterLists = new Map();
 function buildSites() {  // ~0.5 degree cells; the site's position is its first article's real coordinates (never moved)
   const m = new Map(), on = new Set(shown);
@@ -1911,7 +1938,7 @@ function frame(t) {
     if (imp === 3) { ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.beginPath(); ctx.arc(d.x, d.y, 1.5 * e, 0, 7); ctx.fill(); }
     const isSel = sel && d.list.includes(sel), isHov = hoverC === d.key;
     if (isSel || isHov) { ctx.strokeStyle = `rgba(255,255,255,${isSel ? .9 : .6})`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(d.x, d.y, r + 5, 0, 7); ctx.stroke(); }
-    if (n > 1) { const bx = d.x + 9, by = d.y - 9; ctx.fillStyle = `rgba(14,14,16,${.92 * e})`; ctx.strokeStyle = `rgba(255,122,26,${.7 * a})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(bx, by, 8, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.font = '500 9.5px "Geist Mono",monospace'; ctx.textAlign = 'center'; ctx.fillText(n, bx, by + .5); ctx.textAlign = 'left'; }
+    if (n > 1 && (EMBED || placeCounts())) { const bx = d.x + 9, by = d.y - 9; ctx.fillStyle = `rgba(14,14,16,${.92 * e})`; ctx.strokeStyle = `rgba(255,122,26,${.7 * a})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(bx, by, 8, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.font = '500 9.5px "Geist Mono",monospace'; ctx.textAlign = 'center'; ctx.fillText(n, bx, by + .5); ctx.textAlign = 'left'; }
     // a small label only for the few flagged articles
     if (s.flag && d.z > .35 && (n === 1 || d.same)) {
       const lx = d.x + (n > 1 ? 21 : 12), al = a * Math.min(1, (d.z - .35) * 4);
@@ -1919,6 +1946,7 @@ function frame(t) {
       ctx.font = '500 11.5px Inter,sans-serif'; ctx.fillStyle = DAY ? `rgba(24,24,28,${.88 * al})` : `rgba(255,255,255,${.92 * al})`; ctx.fillText(s.location.place.split(',')[0], lx, d.y + 7);
     }
   }
+  if (!EMBED && !placeCounts()) countryTotals();
   // connection pills (asset + real % move) are drawn last so map markers never cover them
   ctx.textBaseline='alphabetic';
   for(const {x,y,w:W,h:H,nm,pt,w1,d} of pillRects){ctx.fillStyle='rgba(16,16,19,.94)';ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x,y,W,H,13);ctx.fill();ctx.stroke();ctx.textAlign='left';ctx.font='650 12px Inter,sans-serif';ctx.fillStyle='#fff';ctx.fillText(nm,x+12,y+17);ctx.fillStyle=!Number.isFinite(d)||d===0?'#c4c4cc':d>0?'#5df08a':'#ff8a82';ctx.font='700 12px Inter,sans-serif';ctx.fillText(pt,x+12+w1+8,y+17);}
