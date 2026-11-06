@@ -40,7 +40,7 @@ export default {
   async fetch(req, env, ctx) {
     const h = cors(req), url = new URL(req.url);
     if (url.pathname.startsWith('/v1/pro/')) {   // Investedia Pro (feature-flagged, sandbox until approved)
-      try { return await handlePro(req, env, url, h); } catch (e) { console.log(JSON.stringify({ route: 'pro', error: String(e).slice(0, 200) })); return json(h, 500, { error: 'pro unavailable' }); }
+      try { return await handlePro(req, env, url, h); } catch (e) { console.log(JSON.stringify({ route: 'pro', error: String(e).slice(0, 200) })); return json(h, 500, { error: 'pro unavailable', ...(String(env.STRIPE_SECRET_KEY || '').startsWith('sk_test_') ? { detail: String(e).slice(0, 200) } : {}) }); }
     }
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
     if (req.method === 'POST' && url.pathname === '/v1/ingest/news') {
