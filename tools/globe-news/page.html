@@ -1283,10 +1283,22 @@ function setZ(z, x, y, anchor) {
 // ===== Interaction state =====
 let pinned = null, hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
 
-// ---- Globe numbers (owner choice 2026-11-06, option A + D): zoomed out, one total per country instead of a number on every cluster;
+// ---- Globe numbers (owner choice 2026-11-06, option G without text): zoomed out, a heat glow per country (no numbers);
 // zoomed in, the per-place numbers return. The count of any place is always in its hover/tap card. Homepage globe unchanged.
 const COUNT_ZOOM = 2.2;  // at or above this zoom the per-place numbers are shown
 const placeCounts = () => Z >= COUNT_ZOOM;
+function heatGlow() {
+  // every article in the window counts for its own country; the glow sits on that country's busiest visible cluster
+  const tot = new Map(); for (const a of shown) tot.set(a.location.country, (tot.get(a.location.country) || 0) + 1);
+  const by = new Map();
+  for (const d of drawn) { if (d.z <= .05) continue; const per = new Map(); for (const a of d.list) per.set(a.location.country, (per.get(a.location.country) || 0) + 1);
+    for (const [c, k] of per) { const e = by.get(c); if (!e || k > e.k) by.set(c, { d, k }); } }
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (const [c, { d }] of by) { const n = tot.get(c) || 1, r = (phone() ? 9 : 12) + Math.min(phone() ? 48 : 70, Math.sqrt(n) * (phone() ? 2.2 : 3.2)), a = Math.min(.42, .08 + n / 2500) * Math.min(1, .3 + d.z);
+    const g = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, r); g.addColorStop(0, `rgba(255,122,26,${a.toFixed(3)})`); g.addColorStop(1, 'rgba(255,122,26,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(d.x, d.y, r, 0, 7); ctx.fill(); }
+  ctx.restore();
+}
 function countryTotals() {
   const by = new Map();
   // totals: every article in the current window counts for its own country, whether or not its dot faces the viewer,
@@ -1924,6 +1936,7 @@ function frame(t) {
     nextClusters.set(membership, data); return { ...data, x: c.x, y: c.y, z: c.z };
   });
   clusterLists = nextClusters;
+  if (!EMBED && !placeCounts()) heatGlow();  // under the markers: busier countries glow wider and brighter, no text
   ctx.globalCompositeOperation = 'lighter';
   for (const d of drawn) {
     const s = d.list[0], pop = Math.min(1, (t - s.vt) / 650), e = 1 - Math.pow(1 - pop, 3), a = (.35 + .65 * d.z) * e, imp = s.importance;
@@ -1949,7 +1962,6 @@ function frame(t) {
       ctx.font = '500 11.5px Inter,sans-serif'; ctx.fillStyle = DAY ? `rgba(24,24,28,${.88 * al})` : `rgba(255,255,255,${.92 * al})`; ctx.fillText(s.location.place.split(',')[0], lx, d.y + 7);
     }
   }
-  if (!EMBED && !placeCounts()) countryTotals();
   // connection pills (asset + real % move) are drawn last so map markers never cover them
   ctx.textBaseline='alphabetic';
   for(const {x,y,w:W,h:H,nm,pt,w1,d} of pillRects){ctx.fillStyle='rgba(16,16,19,.94)';ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x,y,W,H,13);ctx.fill();ctx.stroke();ctx.textAlign='left';ctx.font='650 12px Inter,sans-serif';ctx.fillStyle='#fff';ctx.fillText(nm,x+12,y+17);ctx.fillStyle=!Number.isFinite(d)||d===0?'#c4c4cc':d>0?'#5df08a':'#ff8a82';ctx.font='700 12px Inter,sans-serif';ctx.fillText(pt,x+12+w1+8,y+17);}
