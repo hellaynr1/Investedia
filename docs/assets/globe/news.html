@@ -1628,11 +1628,11 @@ function search() {
   res.hidden = false; mark();
 }
 const mark = () => res.querySelectorAll('.ri').forEach(b => b.setAttribute('aria-selected', +b.dataset.i === hi));
-function choose(h) { if (!h) return; res.hidden = true; qi.value = ''; qi.blur(); if (h.k === 'country') openCountry(h.c); else { if (!match(h.s)) { F.cat = 'all'; F.lens = 'all'; F.region = 'global'; press($('cats'), 'all'); press($('regions'), 'global'); setWin('7d'); } openStory(h.s); } }
+async function choose(h) { if (!h) return; res.hidden = true; qi.value = ''; qi.blur(); if (h.k === 'country') openCountry(h.c); else { if (!match(h.s)) { F.cat = 'all'; F.lens = 'all'; F.region = 'global'; press($('cats'), 'all'); press($('regions'), 'global'); await setWin('7d'); } openStory(h.s); } }
 qi.addEventListener('focus', () => { qi.blur(); if (window.InvPeek) InvPeek.search(); else search(); });
 window.InvGlobeNav = {
   country: n => { const c = byName[n]; if (!c) return false; openCountry(c); return true; },
-  story: id => { const s = byId[id]; if (!s) return false; if (!match(s)) { F.cat = 'all'; F.lens = 'all'; F.region = 'global'; press($('cats'), 'all'); press($('regions'), 'global'); setWin('7d'); } openStory(s); return true; }
+  story: async id => { const s = byId[id]; if (!s) return false; if (!match(s)) { F.cat = 'all'; F.lens = 'all'; F.region = 'global'; press($('cats'), 'all'); press($('regions'), 'global'); await setWin('7d'); } openStory(s); return true; }
 };
 qi.addEventListener('keydown', e => {
   if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); hi = (hi + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % Math.max(1, hits.length); mark(); }
