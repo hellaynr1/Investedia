@@ -810,6 +810,10 @@ let IND = {}; fetch('industries.json').then(r => r.json()).then(d => { IND = d.b
 const trusted = a => !!a && !!(a.id || (IND[a.s] && IND[a.s].id));
 const BUDGET = () => { const ph = innerWidth <= 760; return EMBED ? { main: ph ? 12 : 16, ripple: ph ? 2 : 4 } : { main: ph ? 14 : 22, ripple: ph ? 5 : 10 }; };  // raised 2026-11-06 after a frame-time check (see design/GLOBE-COVERAGE-UPGRADE.md)
 const geoKey = p => Math.round(p.phi * 9) + ',' + Math.round(p.lam * 9);  // ~6° cells
+function endDot(pts, col, alpha) {  // a small dot where a line ends, so it visibly lands on a place even when no article marker is there
+  const q = pts[pts.length - 1]; if (!q || !q[2] || (q[3] !== undefined && q[3] <= 0)) return;
+  ctx.fillStyle = `rgba(${col},${alpha.toFixed(3)})`; ctx.beginPath(); ctx.arc(q[0], q[1], EMBED ? 2.2 : 2.6, 0, 7); ctx.fill();
+}
 function strokeArc(pts, col, alpha, width, glow, phase, dash) {
   ctx.save(); ctx.lineWidth = width; ctx.strokeStyle = `rgba(${col},${alpha.toFixed(3)})`; ctx.lineCap = 'round'; if (dash) ctx.setLineDash(dash);
   if (glow) { ctx.shadowColor = `rgba(${col},.55)`; ctx.shadowBlur = EMBED ? 6 : 8; }
@@ -925,6 +929,7 @@ function drawConnections(t, focus, country) {
   mains.forEach(([e, pts], i) => {
     const top = !EMBED && !sel && i < 3;
     const sec = e.tier === 2;  // secondary impact: solid but lower opacity - same orange family
+    endDot(pts, sec ? RIPPLE : MAIN, (sec ? .55 : .9) * fade);
     if (strokeArc(pts, sec ? RIPPLE : MAIN, (EMBED ? (sec ? .45 : .85) : top ? .95 : sec ? .4 : .7) * fade, sec ? (EMBED ? 1.2 : 1.4) : EMBED ? 1.4 : top ? 2 : 1.5, top && !sec, top ? ph(i) : null, null)) visibleArcs++;
     if (e.impact) arcHits.push({ ...e, points: pts });
   });
@@ -1217,12 +1222,12 @@ function setZ(z, x, y, anchor) {
 
 // ===== Interaction state =====
 let pinned = null, hoverC = null, hoverCountry = null, sel = null, selCountry = null, drawn = [];
-let SITES = [], sitesFor = null;
+let SITES = [], sitesFor = null, SITEKEY = new Map();
 function buildSites() {  // ~0.5 degree cells; the site's position is its first article's real coordinates (never moved)
   const m = new Map(), on = new Set(shown);
   for (const s of stories) if (!on.has(s)) s.on = false;
   for (const s of shown) { const k = Math.round(s.location.lat * 2) + ',' + Math.round(s.location.lon * 2); let g = m.get(k); if (!g) m.set(k, g = { phi: s.phi, lam: s.lam, m: [] }); g.m.push(s); }
-  SITES = [...m.values()]; for (const g of SITES) g.m.sort(sortTop); sitesFor = shown;
+  SITEKEY = m; SITES = [...m.values()]; for (const g of SITES) g.m.sort(sortTop); sitesFor = shown;
 }
 // pointer: drag to rotate, pinch / wheel / double-click / buttons to zoom, tap to select
 const touches = new Map(); let pinch = null, drag = null, spin = null;  // spin: momentum after a drag is released (degrees per ms)
@@ -1617,7 +1622,15 @@ function arcGeom(a, b, n, lift) {
   }
   if (ARC.size > 4000) ARC.clear(); ARC.set(key, g); return g;
 }
+// Line ends snap to the marker that is actually drawn for that place (the cluster's dot), so every line starts and ends on a dot.
+function snapEnd(p) {
+  if (!p || !SITEKEY.size) return p;
+  const la = Math.round(p.phi / rad * 2), lo = Math.round(p.lam / rad * 2); let best = null, bd = 9;
+  for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) { const g = SITEKEY.get((la + i) + ',' + (lo + j)); if (!g) continue; const d = (g.phi - p.phi) ** 2 + (g.lam - p.lam) ** 2; if (d < bd) { bd = d; best = g; } }
+  const g = best && (best.rep || best); return g ? { phi: g.phi, lam: g.lam } : p;
+}
 function arcPts(a, b, n = 56, lift = 0) {  // lift > 0: a taller arc (homepage hero lines)
+  a = snapEnd(a); b = snapEnd(b);
   return arcGeom(a, b, n, lift).map(([phi, lam, h]) => { const p = proj(phi, lam, h); return [p[0], p[1], p[2] > 0 || Math.hypot(p[0] - cx, p[1] - cy) > R, p[2]]; });
 }
 function ringPath(rr, fill) {
@@ -1781,6 +1794,8 @@ function frame(t) {
   vis.sort((a, b) => sortTop(a.s, b.s));
   const cl = [];
   for (const v of vis) { const c = cl.find(c => (c.x - v.x) ** 2 + (c.y - v.y) ** 2 < 22 * 22); if (c) c.m.push(v); else cl.push({ x: v.x, y: v.y, z: v.z, m: [v] }); }
+  for (const g of SITES) g.rep = null;
+  for (const c of cl) { const rep = c.m[0].g; for (const v of c.m) v.g.rep = rep; }  // where each place's dot is drawn (used by line ends)
   drawn = cl.map(c => { const list = c.m.length === 1 ? c.m[0].g.m : c.m.flatMap(v => v.g.m).sort(sortTop), h = list[0]; return { key: list.map(s => s.id).join(), x: c.x, y: c.y, z: c.z, list, lo: h.location.lon, la: h.location.lat, same: list.every(s => Math.abs(s.location.lat - h.location.lat) < 1 && Math.abs(s.location.lon - h.location.lon) < 1) }; });
   ctx.globalCompositeOperation = 'lighter';
   for (const d of drawn) {
