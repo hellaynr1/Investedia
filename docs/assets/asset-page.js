@@ -32,7 +32,7 @@
   // News pins on the chart: each article that names the asset sits on the line at its publication time; same numbers as the list below
   const MK = (new URLSearchParams(location.search).get('mk') || 'b').replace(/[^abc]/g, '') || 'a';
   // marker glyph options (?ic=): 1 article sheet, 2 newspaper, 3 source initials, 4 direction arrow, 5 article number
-  const IC = (new URLSearchParams(location.search).get('ic') || '1').replace(/[^1-5]/g, '') || '1';
+  const IC = (new URLSearchParams(location.search).get('ic') || '2').replace(/[^1-5]/g, '') || '1';
   const PAPER_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h11v13a2 2 0 0 0 2 2H7a2 2 0 0 1-2-2z"/><path d="M16 9h3v9a2 2 0 0 1-2 2"/><path d="M8 9h5M8 12h5M8 15h3"/></svg>';
   const pinGlyph = x => { const dir = x.i.direction;
     if (IC === '2') return PAPER_IC;
@@ -48,7 +48,7 @@
     let prev = -99; for (const x of L) { x.left = Math.max(x.f * 100, prev + gap); prev = x.left; }
     for (let k = L.length - 1, lim = 96; k >= 0; k--) { if (L[k].left > lim) L[k].left = lim; lim = L[k].left - gap; }
     return L.map(x => { x.left = Math.max(1, x.left); const fi = Math.min(v.length - 1, x.left / 100 * (v.length - 1)), i0 = Math.floor(fi), y = v[i0] + ((v[Math.min(v.length - 1, i0 + 1)] - v[i0]) * (fi - i0)), top = 100 - (y - lo) / r * 100;
-      return `<button type="button" class="ap-pin ${cls(x.i.direction === 'up' ? 1 : x.i.direction === 'down' ? -1 : 0)}" style="left:${Math.max(1, x.left).toFixed(1)}%;top:${top.toFixed(1)}%;--y:${top.toFixed(1)}%;--yv:${top.toFixed(2)}" data-n="${x.num}" aria-label="Article ${x.num}: ${esc(x.s.headline)}"><i class="ap-pin-ic ic-${IC}">${pinGlyph(x)}</i></button>`;
+      return `<button type="button" class="ap-pin n" style="left:${Math.max(1, x.left).toFixed(1)}%;top:${top.toFixed(1)}%;--y:${top.toFixed(1)}%;--yv:${top.toFixed(2)}" data-n="${x.num}" aria-label="Article ${x.num}: ${esc(x.s.headline)}"><i class="ap-pin-ic ic-${IC}">${pinGlyph(x)}</i></button>`;
     }).join('');
   }
   const find = (by, s) => by[s] || by[ALIAS[s]] || by[s + '-USD'] || by[s + '=F'] || by['^' + s] || Object.values(by).find(a => a.n && a.n.toLowerCase() === s.toLowerCase());
