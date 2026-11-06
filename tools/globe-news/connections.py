@@ -66,10 +66,26 @@ def load(name, default):
     except Exception: return default
 
 
-def main():
-    iso = load('iso.json', {})
-    live, arch = load('news-live.json', {}).get('stories', []), load('news-archive.json', {}).get('stories', [])
-    stories = list({s['id']: s for s in arch + live}.values())
+def history(iso, mk, _unused):
+    """Per-day connection files for the timeline (7D / 30D / replay): every archived article with impacts, same rules as main()."""
+    lib = os.path.join(G, 'library'); byday = C.defaultdict(list)
+    for f in os.listdir(lib):
+        try: s = json.load(open(os.path.join(lib, f)))
+        except Exception: continue
+        if s.get('impacts') and s.get('location', {}).get('lat') is not None: byday[(s.get('published_at') or '')[:10]].append(s)
+    out_dir = os.path.join(G, 'connections-history')
+    os.makedirs(out_dir, exist_ok=True)
+    total = 0
+    for day, arts in sorted(byday.items()):
+        if not day: continue
+        conns, rej, _ = _rules(iso, mk, arts)
+        total += len(conns)
+        tmp = os.path.join(out_dir, '.tmp.json'); open(tmp, 'w').write(json.dumps({'schema': 'investedia.connections-history/v1', 'day': day, 'connections': conns, 'rejected': dict(rej)}, separators=(',', ':')))
+        os.replace(tmp, os.path.join(out_dir, day + '.json'))
+    print(json.dumps({'days': len(byday), 'connections': total}))
+
+
+def _rules(iso, mk, stories):
     # company registry (data/registry.json): exact normalised-name match to a listed company with a verified place. No fuzzy matching,
     # no AI; a name that matches nothing (private companies such as OpenAI, ByteDance, Pemex) stays unlocated.
     try: REG = json.load(open(os.path.join(ROOT, 'data', 'registry.json')))
@@ -160,6 +176,17 @@ def main():
             conns.append(rec)
     conns.sort(key=lambda c: (-c['score'], c['published_at'] or ''), reverse=False)
 
+    return conns, rej, market_refs
+
+
+def main():
+    iso = load('iso.json', {})
+    live, arch = load('news-live.json', {}).get('stories', []), load('news-archive.json', {}).get('stories', [])
+    stories = list({s['id']: s for s in arch + live}.values())
+    if os.environ.get('CONN_HISTORY'):  # historical days: the full article library (same rules, one file per day)
+        return history(iso, load('markets.json', {}).get('assets', []), stories)
+    mk = load('markets.json', {}).get('assets', [])
+    conns, rej, market_refs = _rules(iso, mk, stories)
     # ---- diagnostics (measured from the published data + the last robot status)
     st = load('news-status.json', {})
     reg = C.Counter((s.get('location') or {}).get('region') or 'none' for s in stories)
