@@ -1299,7 +1299,7 @@ let pinned = null, hoverC = null, hoverCountry = null, sel = null, selCountry = 
 
 // ---- Globe numbers (owner choice 2026-11-07, heat glow 2 tight hotspots): zoomed out, a sharp heat glow per country (no numbers);
 // zoomed in, the per-place numbers return. The count of any place is always in its hover/tap card. Homepage globe unchanged.
-const COUNT_ZOOM = 0;  // owner 2026-11-07: numbers back at normal zoom (leader line + count + top-2 categories)
+const COUNT_ZOOM = 99;  // owner 2026-11-07: old small number badges on every dot instead of zoom labels
 function zoomCounts() {
   const ph = phone(), max = ph ? 3 : 8, right = ph ? innerWidth - 76 : globeBox.right - 8, boxes = [];
   const big = drawn.filter(d => d.z > .3 && d.list.length >= 25);  // bright lights a label must not cover
@@ -2114,7 +2114,7 @@ function frame(t) {
     if (imp === 3) { ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.beginPath(); ctx.arc(d.x, d.y, 1.5 * e, 0, 7); ctx.fill(); }
     const isSel = sel && d.list.includes(sel), isHov = hoverC === d.key;
     if (isSel || isHov) { ctx.strokeStyle = `rgba(255,255,255,${isSel ? .9 : .6})`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(d.x, d.y, r + 5, 0, 7); ctx.stroke(); }
-    if (false) { const bx = d.x + 9, by = d.y - 9; ctx.fillStyle = `rgba(14,14,16,${.92 * e})`; ctx.strokeStyle = `rgba(255,122,26,${.7 * a})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(bx, by, 8, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.font = '500 9.5px "Geist Mono",monospace'; ctx.textAlign = 'center'; ctx.fillText(n, bx, by + .5); ctx.textAlign = 'left'; }
+    if (n > 1) { const bx = d.x + 9, by = d.y - 9; ctx.fillStyle = `rgba(14,14,16,${.92 * e})`; ctx.strokeStyle = `rgba(255,122,26,${.7 * a})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(bx, by, 8, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.font = '500 9.5px "Geist Mono",monospace'; ctx.textAlign = 'center'; ctx.fillText(n, bx, by + .5); ctx.textAlign = 'left'; }
     // a small label only for the few flagged articles
     if (s.flag && d.z > .35 && (n === 1 || d.same)) {
       const lx = d.x + (n > 1 ? 21 : 12), al = a * Math.min(1, (d.z - .35) * 4);
