@@ -1,0 +1,3 @@
+# Follow-up: source and served registry parity
+
+On baseline main c8e3f58a4 and P11, tests/p1-global-markets.spec.mjs passes 92 checks then fails A5 PC IN companies: 71 India listings expected from data/registry.json, 64 served from docs/data/registry.json. Reproduce with the P1 browser suite and inspect the registry builder/mirror process. Rebuild from verified registry sources and mirror generated output; do not fabricate missing companies. Preserve frozen predictions, Track Record, v5 and news robots. Acceptance: both registry copies match, India rows match that registry, P1 suite passes at 1440/390px. This is a separate data-parity issue, not a P11 navigation regression.
