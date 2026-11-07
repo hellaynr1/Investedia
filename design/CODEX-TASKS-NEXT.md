@@ -31,6 +31,7 @@ Each country page (from P1) gets: exchange info, benchmark/ETF proxy chart (dela
 (sortable), news list with filters, macro block (World Bank), and the Market Momentum module. Missing data stays "no data yet".
 
 ## P8 · Globe "fuller" look (owner picks the option first)
+> **Owner decision 7 Nov:** for now no captions or story labels. Show the article numbers (counts) on the busiest spots again at normal zoom, not only from zoom 1.5, same style as today (max 3 phone / 8 PC, no overlaps). Explainer ideas 1 and 2 are parked.
 Implement the option the owner chooses from `design/globe-options/` (G1 recent-news pulse, G2 market rings + more lines,
 G3 atmosphere rim). Keep phone frame time within 15% of today.
 
