@@ -1291,7 +1291,7 @@ const GLOW = {};
 function glowSprite(hot) {  // built once: a 128 px radial glow (hot = warm-white core), then scaled with drawImage every frame
   const k = hot ? 'hot' : 'warm'; if (GLOW[k]) return GLOW[k];
   const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'), g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
-  g.addColorStop(0, hot ? 'rgba(255,240,205,1)' : 'rgba(255,184,46,1)'); g.addColorStop(.35, 'rgba(255,176,32,.7)'); g.addColorStop(1, 'rgba(255,176,32,0)');  // amber (owner choice 2026-11-07)
+  g.addColorStop(0, hot ? 'rgba(255,230,200,1)' : 'rgba(255,122,26,1)'); g.addColorStop(.35, 'rgba(255,122,26,.7)'); g.addColorStop(1, 'rgba(255,122,26,0)');
   x.fillStyle = g; x.fillRect(0, 0, 128, 128); return GLOW[k] = c;
 }
 function heatGlow() {
