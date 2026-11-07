@@ -1967,7 +1967,7 @@ function frame(t) {
     nextClusters.set(membership, data); return { ...data, x: c.x, y: c.y, z: c.z };
   });
   clusterLists = nextClusters;
-  if (!EMBED) heatGlow();  // under the markers: busier countries glow wider and brighter, no text
+  heatGlow();  // under the markers: busier countries glow wider and brighter, no text
   ctx.globalCompositeOperation = 'lighter';
   for (const d of drawn) {
     const s = d.list[0], pop = Math.min(1, (t - s.vt) / 650), e = 1 - Math.pow(1 - pop, 3), a = (.35 + .65 * d.z) * e, imp = s.importance;
@@ -1985,7 +1985,7 @@ function frame(t) {
     if (imp === 3) { ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.beginPath(); ctx.arc(d.x, d.y, 1.5 * e, 0, 7); ctx.fill(); }
     const isSel = sel && d.list.includes(sel), isHov = hoverC === d.key;
     if (isSel || isHov) { ctx.strokeStyle = `rgba(255,255,255,${isSel ? .9 : .6})`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(d.x, d.y, r + 5, 0, 7); ctx.stroke(); }
-    if (n > 1 && EMBED) { const bx = d.x + 9, by = d.y - 9; ctx.fillStyle = `rgba(14,14,16,${.92 * e})`; ctx.strokeStyle = `rgba(255,122,26,${.7 * a})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(bx, by, 8, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.font = '500 9.5px "Geist Mono",monospace'; ctx.textAlign = 'center'; ctx.fillText(n, bx, by + .5); ctx.textAlign = 'left'; }
+    if (false) { const bx = d.x + 9, by = d.y - 9; ctx.fillStyle = `rgba(14,14,16,${.92 * e})`; ctx.strokeStyle = `rgba(255,122,26,${.7 * a})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(bx, by, 8, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.font = '500 9.5px "Geist Mono",monospace'; ctx.textAlign = 'center'; ctx.fillText(n, bx, by + .5); ctx.textAlign = 'left'; }
     // a small label only for the few flagged articles
     if (s.flag && d.z > .35 && (n === 1 || d.same)) {
       const lx = d.x + (n > 1 ? 21 : 12), al = a * Math.min(1, (d.z - .35) * 4);
@@ -1993,7 +1993,7 @@ function frame(t) {
       ctx.font = '500 11.5px Inter,sans-serif'; ctx.fillStyle = DAY ? `rgba(24,24,28,${.88 * al})` : `rgba(255,255,255,${.92 * al})`; ctx.fillText(s.location.place.split(',')[0], lx, d.y + 7);
     }
   }
-  if (!EMBED && placeCounts()) zoomCounts();
+  if (placeCounts()) zoomCounts();
   // connection pills (asset + real % move) are drawn last so map markers never cover them
   ctx.textBaseline='alphabetic';
   for(const {x,y,w:W,h:H,nm,pt,w1,d} of pillRects){ctx.fillStyle='rgba(16,16,19,.94)';ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x,y,W,H,13);ctx.fill();ctx.stroke();ctx.textAlign='left';ctx.font='650 12px Inter,sans-serif';ctx.fillStyle='#fff';ctx.fillText(nm,x+12,y+17);ctx.fillStyle=!Number.isFinite(d)||d===0?'#c4c4cc':d>0?'#5df08a':'#ff8a82';ctx.font='700 12px Inter,sans-serif';ctx.fillText(pt,x+12+w1+8,y+17);}
