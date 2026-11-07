@@ -25,12 +25,45 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          claude_args: --model claude-sonnet-5-5 --max-turns 20
+          claude_args: >-
+            --model claude-sonnet-5-5 --max-turns 20
+            --allowedTools "Read,Glob,Grep,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(git diff:*),Bash(git show:*),Bash(git log:*),Bash(git status:*)"
           prompt: |
-            Review this pull request for Investedia. Read AGENTS.md, design/CODEX-ACCEPTANCE-PROTOCOL.md and the task spec it names
+            Review PR #${{ github.event.pull_request.number || github.event.issue.number }} in ${{ github.repository }},
+            even if it has already merged. Use gh pr view and gh pr diff with that PR number and --repo ${{ github.repository }}.
+            Read AGENTS.md, design/CODEX-ACCEPTANCE-PROTOCOL.md and the task spec it names
             (design/CODEX-TASK-*.md). Read only the PR diff and the files it touches; do not read large data files.
             Check: (1) every acceptance criterion in the task spec, (2) bugs and console-error risks, (3) the owner's rules
             (no fake data, Not investment advice kept, no secrets, no changes to frozen predictions, Track Record, v5 files or news
-            robots unless the task says so), (4) files that should not be in the PR (evidence folders, regenerated data).
+            robots unless the task says so), (4) files that should not be in the PR (allow evidence and generated files when the task explicitly requires them).
             Post ONE comment: first line "VERDICT: READY TO MERGE" or "VERDICT: CHANGES NEEDED", then a short numbered fix list
-            written so the owner can paste it to Codex. Never approve, merge or push.
+            written so the owner can paste it to Codex. Post it using gh pr comment with that PR number and
+            --repo ${{ github.repository }} --body. Append this exact hidden marker to the comment:
+            <!-- claude-review:${{ github.run_id }}:${{ github.run_attempt }} -->
+            Never approve, merge, push or edit repository files.
+      - name: Require a verdict comment from this run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+          REVIEW_MARKER: '<!-- claude-review:${{ github.run_id }}:${{ github.run_attempt }} -->'
+        run: |
+          gh api --paginate --slurp "repos/$REPOSITORY/issues/$PR_NUMBER/comments" > "$RUNNER_TEMP/review-comments.json"
+          python3 - <<'PYTHON'
+          import json
+          import os
+          from pathlib import Path
+
+          pages = json.loads((Path(os.environ["RUNNER_TEMP"]) / "review-comments.json").read_text())
+          verdicts = {"VERDICT: READY TO MERGE", "VERDICT: CHANGES NEEDED"}
+          for page in pages:
+              for comment in page:
+                  body = comment.get("body") or ""
+                  first_line = body.splitlines()[0].strip() if body else ""
+                  if (comment.get("user", {}).get("type") == "Bot"
+                          and os.environ["REVIEW_MARKER"] in body
+                          and first_line in verdicts):
+                      print("Verified a bot verdict comment for this run.")
+                      raise SystemExit(0)
+          raise SystemExit("No bot verdict comment for this run. Review is incomplete.")
+          PYTHON
