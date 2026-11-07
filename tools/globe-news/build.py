@@ -90,6 +90,18 @@ for row in C50:
     n = row[0]; c = FIX.get(n) or codes.get(key(n))
     if c: ISO[n] = c
 page = page.replace('__ISO__', json.dumps(ISO, separators=(',', ':')))
+# Reuse the World Bank country/region snapshot and the Globe news robot's region
+# conventions. No second country database or extra runtime request is needed.
+region_codes = {'North America': 'na', 'Europe & Central Asia': 'eu', 'East Asia & Pacific': 'asia', 'South Asia': 'asia',
+                'Middle East & North Africa': 'me', 'Middle East, North Africa, Afghanistan & Pakistan': 'me',
+                'Sub-Saharan Africa': 'af', 'Latin America & Caribbean': 'latam'}
+country_regions = {c['iso2Code']: region_codes[c['region']['value'].strip()]
+                   for c in json.load(open(os.path.join(G, 'wb-countries.json')))[1]
+                   if c['region']['value'].strip() in region_codes}
+for code in ('AU', 'NZ', 'FJ', 'PG', 'NC', 'SB', 'VU', 'WS', 'TO', 'PF'): country_regions[code] = 'oc'
+for code in ('EG', 'LY', 'TN', 'DZ', 'MA'): country_regions[code] = 'af'
+for code in ('KZ', 'UZ', 'TM', 'KG', 'TJ', 'AF', 'PK'): country_regions[code] = 'asia'
+page = page.replace('__COUNTRY_REGIONS__', json.dumps(country_regions, separators=(',', ':')))
 open(os.path.join(G, 'iso.json'), 'w').write(json.dumps(ISO, ensure_ascii=False, indent=0))  # also used by update_globe_news.py
 open(os.path.join(SITE, 'assets/globe/iso.json'), 'w').write(json.dumps(ISO, ensure_ascii=False, separators=(',', ':')))  # flags on other pages
 # rectangular vector flags (flag-icons, MIT) for the countries on the map

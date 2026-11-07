@@ -1,0 +1,947 @@
+{
+  "ARCX": {
+    "name": "Nyse Arca",
+    "short": "NYSE Arca",
+    "city": "New York",
+    "country": "US",
+    "currency": "USD",
+    "central_bank": "Federal Reserve",
+    "central_bank_short": "Fed",
+    "website": "https://www.nyse.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://federalreserve.gov",
+      "https://www.nyse.com"
+    ]
+  },
+  "BATS": {
+    "name": "Cboe Bzx U.S. Equities Exchange",
+    "short": "Cboe BZX",
+    "city": "Chicago",
+    "country": "US",
+    "currency": "USD",
+    "central_bank": "Federal Reserve",
+    "central_bank_short": "Fed",
+    "website": "https://markets.cboe.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://federalreserve.gov",
+      "https://markets.cboe.com"
+    ]
+  },
+  "BVMF": {
+    "name": "B3",
+    "short": "B3",
+    "city": "Sao Paulo",
+    "country": "BR",
+    "currency": "BRL",
+    "central_bank": "Banco Central do Brasil",
+    "central_bank_short": "BCB",
+    "website": "https://www.b3.com.br",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bcb.gov.br",
+      "https://www.b3.com.br"
+    ]
+  },
+  "DSMD": {
+    "name": "Qatar Stock Exchange",
+    "short": "QSE",
+    "city": "Doha",
+    "country": "QA",
+    "currency": "QAR",
+    "central_bank": "Qatar Central Bank",
+    "central_bank_short": "QCB",
+    "website": "https://www.qe.com.qa",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://qcb.gov.qa",
+      "https://www.qe.com.qa"
+    ]
+  },
+  "OTCM": {
+    "name": "Otc Link Ats - Otc Markets",
+    "short": "OTC Markets",
+    "city": "New York",
+    "country": "US",
+    "currency": "USD",
+    "central_bank": "Federal Reserve",
+    "central_bank_short": "Fed",
+    "website": "https://www.otcmarkets.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://federalreserve.gov",
+      "https://www.otcmarkets.com"
+    ]
+  },
+  "XADS": {
+    "name": "Abu Dhabi Securities Exchange",
+    "short": "ADX",
+    "city": "Abu Dhabi",
+    "country": "AE",
+    "currency": "AED",
+    "central_bank": "Central Bank of the UAE",
+    "central_bank_short": "CBUAE",
+    "website": "https://www.adx.ae",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://centralbank.ae",
+      "https://www.adx.ae"
+    ]
+  },
+  "XAMS": {
+    "name": "Euronext - Euronext Amsterdam",
+    "short": "Euronext",
+    "city": "Amsterdam",
+    "country": "NL",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.euronext.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.euronext.com"
+    ]
+  },
+  "XASE": {
+    "name": "Nyse American Llc",
+    "short": "NYSE American",
+    "city": "New York",
+    "country": "US",
+    "currency": "USD",
+    "central_bank": "Federal Reserve",
+    "central_bank_short": "Fed",
+    "website": "https://www.nyse.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://federalreserve.gov",
+      "https://www.nyse.com"
+    ]
+  },
+  "XASX": {
+    "name": "Asx - All Markets",
+    "short": "ASX",
+    "city": "Sydney",
+    "country": "AU",
+    "currency": "AUD",
+    "central_bank": "Reserve Bank of Australia",
+    "central_bank_short": "RBA",
+    "website": "https://www.asx.com.au",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://rba.gov.au",
+      "https://www.asx.com.au"
+    ]
+  },
+  "XATH": {
+    "name": "Athens Exchange S.A. Cash Market",
+    "short": "ATHEX",
+    "city": "Athens",
+    "country": "GR",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.athexgroup.gr",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.athexgroup.gr"
+    ]
+  },
+  "XBAH": {
+    "name": "Bahrain Bourse",
+    "short": "Bahrain Bourse",
+    "city": "Manama",
+    "country": "BH",
+    "currency": "BHD",
+    "central_bank": "Central Bank of Bahrain",
+    "central_bank_short": "CBB",
+    "website": "https://www.bahrainbourse.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://cbb.gov.bh",
+      "https://www.bahrainbourse.com"
+    ]
+  },
+  "XBKK": {
+    "name": "Stock Exchange Of Thailand",
+    "short": "SET",
+    "city": "Bangkok",
+    "country": "TH",
+    "currency": "THB",
+    "central_bank": "Bank of Thailand",
+    "central_bank_short": "BOT",
+    "website": "https://www.set.or.th",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bot.or.th",
+      "https://www.set.or.th"
+    ]
+  },
+  "XBOG": {
+    "name": "Bolsa De Valores De Colombia",
+    "short": "BVC",
+    "city": "Bogota",
+    "country": "CO",
+    "currency": "COP",
+    "central_bank": "Banco de la República",
+    "central_bank_short": "BanRep",
+    "website": "https://www.bvc.com.co",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://banrep.gov.co",
+      "https://www.bvc.com.co"
+    ]
+  },
+  "XBOM": {
+    "name": "Bse Ltd",
+    "short": "BSE",
+    "city": "Mumbai",
+    "country": "IN",
+    "currency": "INR",
+    "central_bank": "Reserve Bank of India",
+    "central_bank_short": "RBI",
+    "website": "https://www.bseindia.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://rbi.org.in",
+      "https://www.bseindia.com"
+    ]
+  },
+  "XBRU": {
+    "name": "Euronext - Euronext Brussels",
+    "short": "Euronext",
+    "city": "Brussels",
+    "country": "BE",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.euronext.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.euronext.com"
+    ]
+  },
+  "XBUD": {
+    "name": "Budapest Stock Exchange",
+    "short": "BSE",
+    "city": "Budapest",
+    "country": "HU",
+    "currency": "HUF",
+    "central_bank": "Magyar Nemzeti Bank",
+    "central_bank_short": "MNB",
+    "website": "https://www.bet.hu",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://mnb.hu",
+      "https://www.bet.hu"
+    ]
+  },
+  "XBUE": {
+    "name": "Bolsa De Comercio De Buenos Aires",
+    "short": "BCBA",
+    "city": "Buenos Aires",
+    "country": "AR",
+    "currency": "ARS",
+    "central_bank": "Banco Central de la República Argentina",
+    "central_bank_short": "BCRA",
+    "website": "https://www.bcba.sba.com.ar",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bcra.gob.ar",
+      "https://www.bcba.sba.com.ar"
+    ]
+  },
+  "XCAI": {
+    "name": "Egyptian Exchange",
+    "short": "EGX",
+    "city": "Cairo",
+    "country": "EG",
+    "currency": "EGP",
+    "central_bank": "Central Bank of Egypt",
+    "central_bank_short": "CBE",
+    "website": "https://www.egx.com.eg",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://cbe.org.eg",
+      "https://www.egx.com.eg"
+    ]
+  },
+  "XCAS": {
+    "name": "Casablanca Stock Exchange",
+    "short": "CSE",
+    "city": "Casablanca",
+    "country": "MA",
+    "currency": "MAD",
+    "central_bank": "Bank Al-Maghrib",
+    "central_bank_short": "BAM",
+    "website": "https://www.casablanca-bourse.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bkam.ma",
+      "https://www.casablanca-bourse.com"
+    ]
+  },
+  "XCSE": {
+    "name": "Nasdaq Copenhagen A/S",
+    "short": "Nasdaq",
+    "city": "Copenhagen",
+    "country": "DK",
+    "currency": "DKK",
+    "central_bank": "Danmarks Nationalbank",
+    "central_bank_short": "Nationalbanken",
+    "website": "https://www.nasdaqomxnordic.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://nationalbanken.dk",
+      "https://www.nasdaqomxnordic.com"
+    ]
+  },
+  "XDFM": {
+    "name": "Dubai Financial Market",
+    "short": "DFM",
+    "city": "Dubai",
+    "country": "AE",
+    "currency": "AED",
+    "central_bank": "Central Bank of the UAE",
+    "central_bank_short": "CBUAE",
+    "website": "https://www.dfm.ae",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://centralbank.ae",
+      "https://www.dfm.ae"
+    ]
+  },
+  "XDUB": {
+    "name": "Irish Stock Exchange - All Market",
+    "short": "Euronext",
+    "city": "Dublin",
+    "country": "IE",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.ise.ie",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.ise.ie"
+    ]
+  },
+  "XETR": {
+    "name": "Xetra",
+    "short": "Xetra",
+    "city": "Frankfurt",
+    "country": "DE",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.deutsche-boerse.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.deutsche-boerse.com"
+    ]
+  },
+  "XGHA": {
+    "name": "Ghana Stock Exchange",
+    "short": "GSE",
+    "city": "Accra",
+    "country": "GH",
+    "currency": "GHS",
+    "central_bank": "Bank of Ghana",
+    "central_bank_short": "BoG",
+    "website": "https://www.gse.com.gh",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bog.gov.gh",
+      "https://www.gse.com.gh"
+    ]
+  },
+  "XHEL": {
+    "name": "Nasdaq Helsinki Ltd",
+    "short": "Nasdaq",
+    "city": "Helsinki",
+    "country": "FI",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.nasdaqomxnordic.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.nasdaqomxnordic.com"
+    ]
+  },
+  "XHKG": {
+    "name": "Hong Kong Exchanges And Clearing Ltd",
+    "short": "HKEX",
+    "city": "Hong Kong",
+    "country": "HK",
+    "currency": "HKD",
+    "central_bank": "Hong Kong Monetary Authority",
+    "central_bank_short": "HKMA",
+    "website": "https://www.hkex.com.hk",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://hkma.gov.hk",
+      "https://www.hkex.com.hk"
+    ]
+  },
+  "XIDX": {
+    "name": "Indonesia Stock Exchange",
+    "short": "IDX",
+    "city": "Jakarta",
+    "country": "ID",
+    "currency": "IDR",
+    "central_bank": "Bank Indonesia",
+    "central_bank_short": "BI",
+    "website": "https://www.idx.co.id",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bi.go.id",
+      "https://www.idx.co.id"
+    ]
+  },
+  "XIST": {
+    "name": "Borsa Istanbul",
+    "short": "Borsa Istanbul",
+    "city": "Istanbul",
+    "country": "TR",
+    "currency": "TRY",
+    "central_bank": "Central Bank of the Republic of Türkiye",
+    "central_bank_short": "CBRT",
+    "website": "https://www.borsaistanbul.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://tcmb.gov.tr",
+      "https://www.borsaistanbul.com"
+    ]
+  },
+  "XJSE": {
+    "name": "Johannesburg Stock Exchange",
+    "short": "JSE",
+    "city": "Johannesburg",
+    "country": "ZA",
+    "currency": "ZAR",
+    "central_bank": "South African Reserve Bank",
+    "central_bank_short": "SARB",
+    "website": "https://www.jse.co.za",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://resbank.co.za",
+      "https://www.jse.co.za"
+    ]
+  },
+  "XKLS": {
+    "name": "Bursa Malaysia",
+    "short": "Bursa Malaysia",
+    "city": "Kuala Lumpur",
+    "country": "MY",
+    "currency": "MYR",
+    "central_bank": "Bank Negara Malaysia",
+    "central_bank_short": "BNM",
+    "website": "https://www.bursamalaysia.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bnm.gov.my",
+      "https://www.bursamalaysia.com"
+    ]
+  },
+  "XKOS": {
+    "name": "Korea Exchange (Kosdaq)",
+    "short": "KOSDAQ",
+    "city": "Seoul",
+    "country": "KR",
+    "currency": "KRW",
+    "central_bank": "Bank of Korea",
+    "central_bank_short": "BOK",
+    "website": "https://eng.krx.co.kr",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bok.or.kr",
+      "https://eng.krx.co.kr"
+    ]
+  },
+  "XKRX": {
+    "name": "Korea Exchange (Stock Market)",
+    "short": "KRX",
+    "city": "Seoul",
+    "country": "KR",
+    "currency": "KRW",
+    "central_bank": "Bank of Korea",
+    "central_bank_short": "BOK",
+    "website": "https://eng.krx.co.kr",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bok.or.kr",
+      "https://eng.krx.co.kr"
+    ]
+  },
+  "XKUW": {
+    "name": "Boursa Kuwait",
+    "short": "Boursa Kuwait",
+    "city": "Kuwait",
+    "country": "KW",
+    "currency": "KWD",
+    "central_bank": "Central Bank of Kuwait",
+    "central_bank_short": "CBK",
+    "website": "https://www.boursakuwait.com.kw",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://cbk.gov.kw",
+      "https://www.boursakuwait.com.kw"
+    ]
+  },
+  "XLIS": {
+    "name": "Euronext - Euronext Lisbon",
+    "short": "Euronext",
+    "city": "Lisbon",
+    "country": "PT",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.euronext.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.euronext.com"
+    ]
+  },
+  "XLON": {
+    "name": "London Stock Exchange",
+    "short": "LSE",
+    "city": "London",
+    "country": "GB",
+    "currency": "GBP",
+    "central_bank": "Bank of England",
+    "central_bank_short": "BoE",
+    "website": "https://www.londonstockexchange.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bankofengland.co.uk",
+      "https://www.londonstockexchange.com"
+    ]
+  },
+  "XMAD": {
+    "name": "Bolsa De Madrid",
+    "short": "BME",
+    "city": "Madrid",
+    "country": "ES",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.bolsamadrid.es",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.bolsamadrid.es"
+    ]
+  },
+  "XMEX": {
+    "name": "Bolsa Mexicana De Valores (Mexican Stock Exchange)",
+    "short": "BMV",
+    "city": "Mexico",
+    "country": "MX",
+    "currency": "MXN",
+    "central_bank": "Banco de México",
+    "central_bank_short": "Banxico",
+    "website": "https://www.bmv.com.mx",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://banxico.org.mx",
+      "https://www.bmv.com.mx"
+    ]
+  },
+  "XMIL": {
+    "name": "Borsa Italiana S.P.A.",
+    "short": "Borsa Italiana",
+    "city": "Milan",
+    "country": "IT",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.borsaitaliana.it",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.borsaitaliana.it"
+    ]
+  },
+  "XNAI": {
+    "name": "Nairobi Securities Exchange",
+    "short": "NSE",
+    "city": "Nairobi",
+    "country": "KE",
+    "currency": "KES",
+    "central_bank": "Central Bank of Kenya",
+    "central_bank_short": "CBK",
+    "website": "https://www.nse.co.ke",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://centralbank.go.ke",
+      "https://www.nse.co.ke"
+    ]
+  },
+  "XNAS": {
+    "name": "Nasdaq - All Markets",
+    "short": "Nasdaq",
+    "city": "New York",
+    "country": "US",
+    "currency": "USD",
+    "central_bank": "Federal Reserve",
+    "central_bank_short": "Fed",
+    "website": "https://www.nasdaq.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://federalreserve.gov",
+      "https://www.nasdaq.com"
+    ]
+  },
+  "XNSA": {
+    "name": "Nigerian Exchange",
+    "short": "NGX",
+    "city": "Lagos",
+    "country": "NG",
+    "currency": "NGN",
+    "central_bank": "Central Bank of Nigeria",
+    "central_bank_short": "CBN",
+    "website": "https://ngxgroup.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://cbn.gov.ng",
+      "https://ngxgroup.com"
+    ]
+  },
+  "XNSE": {
+    "name": "National Stock Exchange of India",
+    "short": "NSE",
+    "city": "Mumbai",
+    "country": "IN",
+    "currency": "INR",
+    "central_bank": "Reserve Bank of India",
+    "central_bank_short": "RBI",
+    "website": "https://www.nseindia.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://rbi.org.in",
+      "https://www.nseindia.com"
+    ]
+  },
+  "XNYS": {
+    "name": "New York Stock Exchange, Inc.",
+    "short": "NYSE",
+    "city": "New York",
+    "country": "US",
+    "currency": "USD",
+    "central_bank": "Federal Reserve",
+    "central_bank_short": "Fed",
+    "website": "https://www.nyse.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://federalreserve.gov",
+      "https://www.nyse.com"
+    ]
+  },
+  "XNZE": {
+    "name": "Nzx - All Markets",
+    "short": "NZX",
+    "city": "Auckland",
+    "country": "NZ",
+    "currency": "NZD",
+    "central_bank": "Reserve Bank of New Zealand",
+    "central_bank_short": "RBNZ",
+    "website": "https://www.nzx.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://rbnz.govt.nz",
+      "https://www.nzx.com"
+    ]
+  },
+  "XOSL": {
+    "name": "Oslo Bors",
+    "short": "Oslo Børs",
+    "city": "Oslo",
+    "country": "NO",
+    "currency": "NOK",
+    "central_bank": "Norges Bank",
+    "central_bank_short": "Norges Bank",
+    "website": "https://www.oslobors.no",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://norges-bank.no",
+      "https://www.oslobors.no"
+    ]
+  },
+  "XPAR": {
+    "name": "Euronext - Euronext Paris",
+    "short": "Euronext",
+    "city": "Paris",
+    "country": "FR",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.euronext.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.euronext.com"
+    ]
+  },
+  "XPHS": {
+    "name": "Philippine Stock Exchange, Inc.",
+    "short": "PSE",
+    "city": "Pasig City",
+    "country": "PH",
+    "currency": "PHP",
+    "central_bank": "Bangko Sentral ng Pilipinas",
+    "central_bank_short": "BSP",
+    "website": "https://www.pse.com.ph",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bsp.gov.ph",
+      "https://www.pse.com.ph"
+    ]
+  },
+  "XPRA": {
+    "name": "Prague Stock Exchange",
+    "short": "PSE",
+    "city": "Prague",
+    "country": "CZ",
+    "currency": "CZK",
+    "central_bank": "Czech National Bank",
+    "central_bank_short": "CNB",
+    "website": "https://www.pse.cz",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://cnb.cz",
+      "https://www.pse.cz"
+    ]
+  },
+  "XSAU": {
+    "name": "Saudi Exchange",
+    "short": "Tadawul",
+    "city": "Riyadh",
+    "country": "SA",
+    "currency": "SAR",
+    "central_bank": "Saudi Central Bank",
+    "central_bank_short": "SAMA",
+    "website": "https://www.saudiexchange.sa",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://sama.gov.sa",
+      "https://www.saudiexchange.sa"
+    ]
+  },
+  "XSES": {
+    "name": "Singapore Exchange",
+    "short": "SGX",
+    "city": "Singapore",
+    "country": "SG",
+    "currency": "SGD",
+    "central_bank": "Monetary Authority of Singapore",
+    "central_bank_short": "MAS",
+    "website": "https://www.sgx.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://mas.gov.sg",
+      "https://www.sgx.com"
+    ]
+  },
+  "XSGO": {
+    "name": "Santiago Stock Exchange",
+    "short": "Santiago",
+    "city": "Santiago",
+    "country": "CL",
+    "currency": "CLP",
+    "central_bank": "Banco Central de Chile",
+    "central_bank_short": "BCCh",
+    "website": "https://www.bolsadesantiago.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bcentral.cl",
+      "https://www.bolsadesantiago.com"
+    ]
+  },
+  "XSHE": {
+    "name": "Shenzhen Stock Exchange",
+    "short": "SZSE",
+    "city": "Shenzhen",
+    "country": "CN",
+    "currency": "CNY",
+    "central_bank": "People’s Bank of China",
+    "central_bank_short": "PBoC",
+    "website": "https://www.szse.cn",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://pbc.gov.cn",
+      "https://www.szse.cn"
+    ]
+  },
+  "XSHG": {
+    "name": "Shanghai Stock Exchange",
+    "short": "SSE",
+    "city": "Shanghai",
+    "country": "CN",
+    "currency": "CNY",
+    "central_bank": "People’s Bank of China",
+    "central_bank_short": "PBoC",
+    "website": "https://www.sse.com.cn",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://pbc.gov.cn",
+      "https://www.sse.com.cn"
+    ]
+  },
+  "XSTC": {
+    "name": "Ho Chi Minh Stock Exchange",
+    "short": "HOSE",
+    "city": "Ho Chi Minh City",
+    "country": "VN",
+    "currency": "VND",
+    "central_bank": "State Bank of Vietnam",
+    "central_bank_short": "SBV",
+    "website": "https://www.hsx.vn",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://sbv.gov.vn",
+      "https://www.hsx.vn"
+    ]
+  },
+  "XSTO": {
+    "name": "Nasdaq Stockholm Ab",
+    "short": "Nasdaq",
+    "city": "Stockholm",
+    "country": "SE",
+    "currency": "SEK",
+    "central_bank": "Sveriges Riksbank",
+    "central_bank_short": "Riksbank",
+    "website": "https://www.nasdaqomxnordic.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://riksbank.se",
+      "https://www.nasdaqomxnordic.com"
+    ]
+  },
+  "XSWX": {
+    "name": "Six Swiss Exchange",
+    "short": "SIX",
+    "city": "Zurich",
+    "country": "CH",
+    "currency": "CHF",
+    "central_bank": "Swiss National Bank",
+    "central_bank_short": "SNB",
+    "website": "https://www.six-group.com/en/site/exchanges.html",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://snb.ch",
+      "https://www.six-group.com/en/site/exchanges.html"
+    ]
+  },
+  "XTAE": {
+    "name": "Tel Aviv Stock Exchange",
+    "short": "TASE",
+    "city": "Tel Aviv",
+    "country": "IL",
+    "currency": "ILS",
+    "central_bank": "Bank of Israel",
+    "central_bank_short": "BoI",
+    "website": "https://www.tase.co.il",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://boi.org.il",
+      "https://www.tase.co.il"
+    ]
+  },
+  "XTAI": {
+    "name": "Taiwan Stock Exchange",
+    "short": "TWSE",
+    "city": "Taipei",
+    "country": "TW",
+    "currency": "TWD",
+    "central_bank": "Central Bank of the Republic of China (Taiwan)",
+    "central_bank_short": "CBC",
+    "website": "https://www.twse.com.tw/en",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://cbc.gov.tw",
+      "https://www.twse.com.tw/en"
+    ]
+  },
+  "XTKS": {
+    "name": "Tokyo Stock Exchange",
+    "short": "TSE",
+    "city": "Tokyo",
+    "country": "JP",
+    "currency": "JPY",
+    "central_bank": "Bank of Japan",
+    "central_bank_short": "BoJ",
+    "website": "https://www.jpx.co.jp",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://boj.or.jp",
+      "https://www.jpx.co.jp"
+    ]
+  },
+  "XTSE": {
+    "name": "Toronto Stock Exchange",
+    "short": "TSX",
+    "city": "Toronto",
+    "country": "CA",
+    "currency": "CAD",
+    "central_bank": "Bank of Canada",
+    "central_bank_short": "BoC",
+    "website": "https://www.tse.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bankofcanada.ca",
+      "https://www.tse.com"
+    ]
+  },
+  "XTSX": {
+    "name": "Tsx Venture Exchange",
+    "short": "TSXV",
+    "city": "Toronto",
+    "country": "CA",
+    "currency": "CAD",
+    "central_bank": "Bank of Canada",
+    "central_bank_short": "BoC",
+    "website": "https://www.tsx.com",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://bankofcanada.ca",
+      "https://www.tsx.com"
+    ]
+  },
+  "XWAR": {
+    "name": "Warsaw Stock Exchange/Equities/Main Market",
+    "short": "GPW",
+    "city": "Warsaw",
+    "country": "PL",
+    "currency": "PLN",
+    "central_bank": "Narodowy Bank Polski",
+    "central_bank_short": "NBP",
+    "website": "https://www.gpw.pl",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://nbp.pl",
+      "https://www.gpw.pl"
+    ]
+  },
+  "XWBO": {
+    "name": "Wiener Boerse Ag",
+    "short": "Vienna",
+    "city": "Vienna",
+    "country": "AT",
+    "currency": "EUR",
+    "central_bank": "European Central Bank",
+    "central_bank_short": "ECB",
+    "website": "https://www.wienerboerse.at",
+    "sources": [
+      "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
+      "https://ecb.europa.eu",
+      "https://www.wienerboerse.at"
+    ]
+  }
+}

@@ -493,6 +493,18 @@ h1 span{color:var(--fg-3)}
   .tb-a .tb-pop{position:absolute;right:0;top:calc(100% + 8px);gap:4px;padding:5px;border-radius:14px;background:rgba(18,18,21,.96);border:1px solid var(--line)}
   .tb-a .tb-pop button{padding:7px 9px;border-radius:10px}
 }
+/* Global Markets: existing side panel / draggable sheet, approved A–D layouts. */
+.gm-country,.gm-continent{min-width:0}.gm-country-title{display:flex;align-items:center;gap:10px;margin-top:8px}.gm-country-title h2{font-size:24px;margin:0;flex:1;min-width:0}.gm-country-title>.flag{width:26px;height:19px}.gm-country-title .follow{padding:0 8px;font-size:11px;height:28px}.gm-country-sub{font-size:12px;color:var(--fg-2);margin:6px 0 14px;line-height:1.5}.gm-country-sub abbr{text-decoration:none}.gm-exchange-short{display:none}
+.gm-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:14px 0}.gm-tabs button,.gm-regions button{border:1px solid var(--line);border-radius:999px;padding:8px 6px;font-size:12px;font-weight:550;color:var(--fg-2);min-width:0}.gm-tabs button[aria-selected=true],.gm-regions button[aria-pressed=true]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.gm-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0 16px}.gm-kpis>div{padding:12px 10px;border:1px solid var(--line);border-radius:14px;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:5px}.gm-kpis>div>span:first-child{font-size:11px;color:var(--fg-3);min-height:14px}.gm-kpis b{font:500 14px var(--mono);max-width:100%;white-space:nowrap}.gm-fx-move{display:flex;align-items:center;flex-wrap:wrap;gap:4px}.gm-kpis small{font-size:10px;color:var(--fg-3);font-weight:400}.gm-kpis .pct{font-size:11px;padding:0;background:none}.gm-kpis [data-gm-unemployment]{font:12px var(--mono);color:var(--fg-2)}
+.gm-missing{font-size:11px!important;color:var(--fg-3);font-weight:400}.gm-section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:18px 0 8px}.gm-section-head h3,.gm-country h3.sec-h,.gm-continent h3.sec-h{font-size:12px;font-weight:550;line-height:1.4;color:var(--fg-2);letter-spacing:0;text-transform:none;margin:18px 0 8px}.gm-section-head h3{margin:0}.gm-link{color:var(--accent);font-size:12px;white-space:nowrap}.gm-more{display:block;margin:8px 0}
+.gm-news{display:grid;width:100%;text-align:left;gap:5px;padding:12px 0;border-bottom:1px solid var(--line)}.gm-news strong{font-size:13px;line-height:1.4;font-weight:550}.gm-news>span{font-size:11px;color:var(--fg-3)}
+.gm-row,.gm-benchmark{display:flex;width:100%;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--line);text-align:left;color:var(--fg);text-decoration:none;min-width:0}.gm-row:hover .gm-name{color:#fff}.gm-name{flex:1;min-width:0;font-size:13px;line-height:1.4;overflow-wrap:anywhere}.gm-name small{display:block;color:var(--fg-3);font:10px var(--mono);margin-top:2px}.gm-row>.pct,.gm-benchmark>.pct{flex:none;font-size:11px;padding:0;background:none}.gm-row>img{width:26px;height:26px;object-fit:contain;border-radius:8px;flex:none}.gm-badge{display:grid;place-items:center;width:28px;min-height:28px;padding:3px;flex:none;border-radius:8px;background:rgba(255,255,255,.06);color:var(--fg-2);font:10px var(--mono);overflow-wrap:anywhere}
+.gm-chips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}.gm-chips>a,.gm-chips>span,.gm-chips>button{display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px;padding:6px 9px;border:1px solid var(--line);border-radius:999px;color:var(--fg-2);font-size:11px;text-decoration:none;overflow-wrap:anywhere;max-width:100%}.gm-chips .pct{font-size:10px;padding:0;background:none}.gm-underserved>button{border-color:rgba(255,122,26,.4);background:var(--accent-soft);color:#FFB37A}
+.gm-back{position:absolute;right:20px;top:18px;margin:0}.gm-more-currencies{margin-top:8px;font-size:11px;color:var(--fg-3)}.gm-more-currencies summary{cursor:pointer;margin-bottom:8px}.gm-footer{margin:18px 0 0}.gm-regions{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}.gm-regions button{padding:7px 10px}.gm-continent{margin-bottom:26px;padding-bottom:20px;border-bottom:1px solid var(--line)}.gm-continent>h2{font-size:25px}.gm-continent>.meta{font-size:11px;line-height:1.5}.gm-country-list .gm-row>.flag{width:22px;height:16px;border-radius:3px}.gm-country-list .gm-row>small{max-width:95px;color:var(--fg-3);font:10px var(--mono);text-align:right}.gm-country-list .gm-row>b{min-width:24px;text-align:right;color:var(--fg-2);font:12px var(--mono)}
+.gm-market-row,.gm-market-labels{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr) minmax(0,.7fr) minmax(0,.7fr);gap:6px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}.gm-market-row>.gm-name{font-size:12px}.gm-market-row>b{font:11px var(--mono);overflow-wrap:anywhere}.gm-market-row small{font-size:9px;color:var(--fg-3)}.gm-market-row .pct{font-size:10px;padding:0;background:none}.gm-market-labels{font-size:10px;color:var(--fg-3)}
+@media(max-width:760px){.gm-continent>[data-gm-region-summary],.gm-continent>h3.sec-h:first-of-type{display:none}html[data-panel] .panel:not([data-sheet=closed]) .pbody:has(.gm-country){padding-top:8px}html[data-panel] .panel:not([data-sheet=closed]) .pbody .gm-back{left:auto;right:100px;top:0;font-size:11px}.gm-country-title h2{font-size:23px}.gm-country-title .follow{min-height:32px}.gm-country-sub{font-size:12px}.gm-exchange-full{display:none}.gm-exchange-short{display:inline}.gm-kpis b{font-size:14px}.gm-kpis>div{padding:11px 8px}.gm-kpis{gap:8px}.gm-country .gm-tabs button{font-size:11px;padding:7px 2px;min-height:40px}.gm-continent .gm-regions{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:4px}.gm-regions button{white-space:nowrap;flex:none}.gm-country-list .gm-row{min-height:44px}.gm-continent{padding-top:6px}.gm-country-list .gm-row>small{font-size:9px;max-width:84px}.gm-country .gm-news strong{font-size:13px}}
+
 </style>
 <script src="../locale.js"></script>
 </head>
@@ -564,7 +576,7 @@ h1 span{color:var(--fg-3)}
 // News is loaded from NEWS_URL. Today that is demo content; a live pipeline (sources → dedupe → location → entities → category → importance → validation → summary)
 // only has to write the same JSON shape (see tools/globe-news/news-demo.json "fields"). Nothing below is tied to the demo articles.
 const NEWS_URL = 'news-live.json', DEMO_URL = 'news-demo.json'; // live news (update_globe_news.py); demo articles only if there is no live file yet
-const ISO = __ISO__, DOTS = __DOTS__, CTRY = __COUNTRIES__, LOGOS = __LOGOS__, QD = window.QUOTES || { q: {} };
+const ISO = __ISO__, COUNTRY_REGIONS = __COUNTRY_REGIONS__, DOTS = __DOTS__, CTRY = __COUNTRIES__, LOGOS = __LOGOS__, QD = window.QUOTES || { q: {} };
 const $ = id => document.getElementById(id), rad = Math.PI / 180, T0 = Date.now();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const phone = () => innerWidth <= 760, EMBED = document.documentElement.classList.contains('embed');
@@ -584,6 +596,8 @@ const LENSES = [['all', 'All', null],
   ['earnings', 'Earnings', /(earnings|quarterly results|\bprofits?\b|\brevenues?\b|guidance|\beps\b)/]];
 const lensesOf = s => { const text = (s.headline + ' ' + (s.summary || '')).toLowerCase(); return LENSES.filter(l => l[2] && l[2].test(text)).map(l => l[0]); };
 const REGIONS = [['global', 'Global', -15, 24, 1], ['na', 'North America', -97, 40, 2], ['eu', 'Europe', 10, 50, 2.6], ['asia', 'Asia', 108, 28, 1.8], ['me', 'Middle East', 46, 26, 2.8], ['af', 'Africa', 20, 3, 1.8], ['latam', 'Latin America', -62, -16, 1.8], ['oc', 'Oceania', 140, -26, 2]];
+const regionDefinition = key => key === 'am' ? ['am', 'Americas', -80, 12, 1.4] : REGIONS.find(r => r[0] === key);
+const inRegion = (region, key) => key === 'global' || region === key || (key === 'am' && ['na', 'latam'].includes(region));
 const WINS = [['now', 'Now', 15], ['1h', '1H', 60], ['6h', '6H', 360], ['24h', '24H', 1440], ['48h', '48H', 2880], ['7d', '7D', 10080], ['30d', '30D', 43200]];
 const WLABEL = { now: 'the last 15 minutes', '1h': 'the last hour', '6h': 'the last 6 hours', '24h': 'the last 24 hours', '48h': 'the last 48 hours', '7d': 'the last 7 days', '30d': 'the last 30 days' };
 const FLAG = { breaking: 'Breaking', trending: 'Trending', moving: 'Market moving' };
@@ -670,7 +684,7 @@ Promise.all([fetch('markets.json').then(r => r.json()), fetch('news-prices.json'
   const known = a => !/[.\d]/.test(a.s.replace(/[=^-]/g, '')) && a.t !== 'fx' && Math.abs(a.d) < 20 && (a.m || a.t === 'crypto' || a.t === 'cmd' || MKT.intra[a.s]);
   MKT.list = (m.assets || []).filter(known).sort((x, y) => Math.abs(y.d) - Math.abs(x.d)).slice(0, 12);
   MKT.all = m.assets || [];
-  updateNetwork(); if ((view.k === 'top' && panelTab === 'movers') || view.k === 'article') render();
+  updateNetwork(); if ((view.k === 'top' && (panelTab === 'movers' || F.region !== 'global')) || ['article', 'country'].includes(view.k)) render();
 }).catch(() => {});
 let CAL = [];
 fetch('../calendar-live.json').then(r => r.json()).then(d => { CAL = (d.events || []).filter(e => e && e.imp >= 3 && e.at); }).catch(() => {});
@@ -729,7 +743,7 @@ function decode(rows, Q) {
 // Overview borders (1:110m) are inline; detailed borders (1:50m, incl. small countries like Singapore or Luxembourg) load in the background
 // and are used for clicks, search and whenever you zoom in. Natural Earth data, public domain.
 const overview = decode(CTRY, 10); let countries = overview, byName = Object.fromEntries(overview.map(c => [c.name, c]));
-fetch('countries-50m.json').then(r => r.json()).then(rows => { countries = decode(rows, 50); byName = Object.fromEntries(countries.map(c => [c.name, c])); if (selCountry) selCountry = byName[selCountry.name] || selCountry; hoverCountry = null; }).catch(() => {});
+fetch('countries-50m.json').then(r => r.json()).then(rows => { countries = decode(rows, 50); byName = Object.fromEntries(countries.map(c => [c.name, c])); if (selCountry) selCountry = byName[selCountry.name] || selCountry; hoverCountry = null; if (GM && (view.k === 'country' || view.k === 'top' && F.region !== 'global')) render(); }).catch(() => {});
 function countryAt(lo, la) {
   for (const c of countries) {
     if (lo < c.b[0] || lo > c.b[2] || la < c.b[1] || la > c.b[3]) continue;
@@ -1170,7 +1184,7 @@ const inTime = s => play ? s.t >= play.start && s.t <= play.cur : (!s.historical
 function watchSyms() { try { const L = JSON.parse(localStorage.getItem('inv-watch') || '{}'); return new Set((L.a || []).map(x => String(x.s || '').toUpperCase()).filter(Boolean)); } catch { return new Set(); } }
 let WATCH = watchSyms();
 const touchesWatch = s => impactsOf(s).some(i => { const a = assetForImpact(i); return (a && WATCH.has(a.s.toUpperCase())) || WATCH.has(String(i.ticker || '').toUpperCase()); });
-const matchNoLens = s => (F.cat === 'all' || s.category === F.cat) && (F.region === 'global' || s.location.region === F.region) && inTime(s) && (!F.mine || touchesWatch(s));
+const matchNoLens = s => (F.cat === 'all' || s.category === F.cat) && inRegion(s.location.region, F.region) && inTime(s) && (!F.mine || touchesWatch(s));
 const match = s => (F.lens === 'all' || s.lens.includes(F.lens)) && matchNoLens(s);
 // Top articles: within the same importance level, take regions in turn so one busy region cannot fill the whole list.
 // Order changes only among equally important articles; nothing is hidden and no coordinate changes.
@@ -1562,7 +1576,9 @@ function openStory(s) {
 }
 function openCountry(c) {
   if (EMBED) { top.location.href = '/assets/globe/news.html?country=' + encodeURIComponent(c.name); return; }
+  const wasClosed = sheetState === 'closed'; countryTab = 'overview';
   sel = null; selCountry = c; go({ k: 'country', id: c.name });
+  if (phone() && wasClosed) placeSheet('open', Math.min(SHEET_MAX(), H * .62));
   const span = Math.max((c.b[2] - c.b[0]) * Math.cos(c.c[1] * rad), c.b[3] - c.b[1]);
   flyTo(c.c[0], c.c[1], Math.max(1.4, Math.min(4.6, 46 / Math.max(span, 1))));
 }
@@ -1588,6 +1604,127 @@ const noteHTML = () => LIVE ? NOTE_LIVE : NOTE_DEMO;
 function compactItem(s) {
   return `<button class="compact-item" data-story="${esc(s.id)}">${art(s, false)}<span><span class="compact-headline">${esc(s.headline)}</span><time datetime="${esc(s.published_at || '')}">${ago(s.t)}</time></span></button>`;
 }
+// Global Markets reuses the existing country panel and region selection. Large
+// directories are fetched once, only when these views are requested (never embed).
+let GM = null, gmReady = null, gmError = false, countryTab = 'overview', gmCountriesExpanded = false, gmAutoSheet = false;
+const GM_REGIONS = ['am', 'eu', 'af', 'me', 'asia', 'oc'];
+const GM_ISO = Object.fromEntries(Object.keys(ISO).map(name => [nm(name), ISO[name]]));
+const gmMissing = '<span class="gm-missing">no data yet</span>';
+const gmNumber = (value, digits = 2) => Number.isFinite(value) ? value.toLocaleString('en-US', { maximumFractionDigits: digits }) : 'no data yet';
+const gmMove = value => Number.isFinite(value) ? pctPill(value) : gmMissing;
+const gmFooter = '<p class="note gm-footer">Prices delayed. Not investment advice.</p>';
+function loadGlobalMarkets() {
+  if (EMBED || gmReady) return gmReady;
+  gmReady = Promise.all(['registry', 'exchanges', 'companies'].map(name => fetch(`../../data/${name}.json`).then(r => { if (!r.ok) throw new Error('Directory unavailable'); return r.json(); })))
+    .then(([registry, exchanges, directory]) => {
+      const equities = Object.values(registry.assets).filter(a => a.class === 'equity'), byCountry = new Map(), bySymbol = new Map();
+      for (const a of equities) { const code = exchanges[a.mic]?.country; if (!code) continue; if (!byCountry.has(code)) byCountry.set(code, []); byCountry.get(code).push(a); }
+      for (const company of directory.companies) for (const listing of company.listings) bySymbol.set(listing.s, company);
+      GM = { registry, exchanges, byCountry, bySymbol }; gmError = false;
+    }).catch(() => { gmError = true; })
+    .then(() => { if (view.k === 'country' || (view.k === 'top' && F.region !== 'global')) render(); });
+  return gmReady;
+}
+function gmExchanges(code) {
+  if (!GM) return [];
+  const counts = {}; for (const a of GM.byCountry.get(code) || []) counts[a.mic] = (counts[a.mic] || 0) + 1;
+  return Object.entries(GM.exchanges).filter(([, x]) => x.country === code).sort((a, b) => (counts[b[0]] || 0) - (counts[a[0]] || 0) || a[1].short.localeCompare(b[1].short));
+}
+const gmBenchmark = name => (MKT.all || []).filter(a => a.k === nm(name) && a.g === 'Index').sort((a, b) => (b.m || 0) - (a.m || 0))[0] || null;
+const gmFunds = name => (MKT.all || []).filter(a => a.k === nm(name) && a.g === 'Country ETF');
+function gmCurrency(name) {
+  const cur = gmExchanges(ISO[name])[0]?.[1].currency;
+  return (MKT.all || []).find(a => a.t === 'fx' && a.k === nm(name)) || (cur === 'EUR' ? MKT.by.EURUSD : null) || null;
+}
+function gmQuote(asset) {
+  // A symbol can name two different listings. Match its exchange jurisdiction,
+  // never substitute the domestic quote for an ADR with the same ticker.
+  const code = GM.exchanges[asset.mic]?.country;
+  return (MKT.all || []).find(a => a.t === 'stocks' && a.g !== 'Index' && a.g !== 'Country ETF' && GM_ISO[a.k] === code &&
+    (a.s === asset.px || a.s === asset.globe_symbol || a.site === asset.site && !!asset.site)) || null;
+}
+function gmCompany(asset) { return GM.bySymbol.get(asset.px) || GM.bySymbol.get(asset.site) || GM.bySymbol.get(asset.globe_symbol) || null; }
+function gmCompanyLink(asset) { const company = gmCompany(asset); return company ? `../../company.html?c=${encodeURIComponent(company.slug)}` : `../../asset.html?s=${encodeURIComponent(asset.px || asset.sym)}`; }
+function gmCompanies(code) {
+  return (GM?.byCountry.get(code) || []).map(asset => ({ asset, quote: gmQuote(asset) })).sort((a, b) => (Number.isFinite(b.quote?.d) ? Math.abs(b.quote.d) : -1) - (Number.isFinite(a.quote?.d) ? Math.abs(a.quote.d) : -1) || a.asset.name.localeCompare(b.asset.name));
+}
+function gmCompanyRows(rows) {
+  return rows.map(({ asset, quote }) => {
+    const logo = logoFor({ name: asset.name, sym: asset.site || asset.px, ticker: asset.px });
+    return `<a class="gm-row gm-company" data-gm-listing="${esc(asset.id)}" href="${gmCompanyLink(asset)}">${logo ? limg(logo) : `<span class="gm-badge">${esc(asset.sym || asset.id.split(':')[2])}</span>`}<span class="gm-name">${esc(asset.name)}<small>${esc(asset.px || asset.sym)}</small></span>${gmMove(quote?.d)}</a>`;
+  }).join('');
+}
+function gmCountryArticles(name) {
+  return stories.filter(s => s.location.country === name && inTime(s) && (F.cat === 'all' || s.category === F.cat) && (F.lens === 'all' || s.lens.includes(F.lens)) && (!F.mine || touchesWatch(s)));
+}
+function gmNewsRows(list) {
+  return list.map(s => `<button type="button" class="gm-news" data-story="${esc(s.id)}"><strong>${esc(s.headline)}</strong><span>${esc(s.source?.name || 'Source unavailable')} · <time datetime="${esc(s.published_at)}">${new Date(s.t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</time></span></button>`).join('');
+}
+function gmMarketRow(asset, label = '') {
+  if (!asset) return `<div class="gm-market-row" data-gm-unavailable="${esc(label)}"><span>${esc(label)}</span><span data-gm-price>${gmMissing}</span><span data-gm-day>${gmMissing}</span><span data-gm-week>${gmMissing}</span></div>`;
+  return `<a class="gm-market-row" data-gm-market="${esc(asset.s)}" href="../../asset.html?s=${encodeURIComponent(asset.s)}"><span class="gm-name">${esc(asset.n)}${asset.g === 'Country ETF' ? '<small>ETF</small>' : ''}</span><b data-gm-price>${gmNumber(asset.p, asset.t === 'fx' ? 4 : 2)}${asset.t === 'fx' ? '' : ` <small>${esc(asset.cur || '')}</small>`}</b><span data-gm-day>${gmMove(asset.d)}</span><span data-gm-week>${gmMove(asset.w)}</span></a>`;
+}
+function gmCountryPanel(c) {
+  loadGlobalMarkets();
+  const code = ISO[c.name], region = COUNTRY_REGIONS[code], continent = regionDefinition(region)?.[1] || 'Global';
+  const header = `<button class="back gm-back" data-back>← Back</button><section class="gm-country" data-gm-country="${esc(code || '')}"><div class="eyebrow">${esc(continent)} · Country</div><div class="gm-country-title">${flag(c.name)}<h2>${esc(nm(c.name))}</h2><button class="follow${follows().includes(c.name) ? ' on' : ''}" data-follow="${esc(c.name)}" aria-pressed="${follows().includes(c.name)}">${follows().includes(c.name) ? 'Following' : 'Follow'}</button></div>`;
+  if (!GM) return `${header}<p class="meta">${gmError ? 'Market directory could not load.' : 'Loading country markets…'}</p>${gmError ? '<button class="gm-link" data-gm-retry>Try again</button>' : ''}</section>${gmFooter}`;
+  const exchange = gmExchanges(code)[0]?.[1], companies = gmCompanies(code), news = gmCountryArticles(c.name).sort((a, b) => b.t - a.t);
+  const benchmark = gmBenchmark(c.name), fx = gmCurrency(c.name), macro = ECON?.countries[code];
+  const tabs = [['overview', 'Overview'], ['news', `News (${news.length})`], ['companies', `Companies (${companies.length})`], ['markets', 'Markets']];
+  const tabHTML = `<div class="gm-tabs" role="tablist" aria-label="${esc(nm(c.name))} markets">${tabs.map(([key, label]) => `<button type="button" role="tab" data-gm-tab="${key}" id="gm-tab-${key}" aria-controls="gm-country-content" aria-selected="${countryTab === key}" tabindex="${countryTab === key ? 0 : -1}">${label}</button>`).join('')}</div>`;
+  let content;
+  if (countryTab === 'news') content = `<h3 class="sec-h">Country news · ${F.win.toUpperCase()}</h3>${news.length ? gmNewsRows(news) : '<p class="empty">No articles in this time window.</p>'}`;
+  else if (countryTab === 'companies') content = `<h3 class="sec-h">Listed companies · ${esc(gmExchanges(code).map(([, e]) => e.short).join(' / '))}</h3>${companies.length ? gmCompanyRows(companies) : `<p class="empty">${gmMissing}</p>`}`;
+  else if (countryTab === 'markets') {
+    const funds = gmFunds(c.name);
+    content = `<div class="gm-market-labels"><span>Market</span><span>Price</span><span>Day</span><span>7-day</span></div>${gmMarketRow(benchmark, 'Benchmark index')}${gmMarketRow(fx, 'Currency vs USD')}${funds.length ? funds.map(a => gmMarketRow(a)).join('') : gmMarketRow(null, 'Country ETF')}<p class="meta">Currency changes measure strength against the US dollar.</p>`;
+  } else {
+    const important = news.filter(s => s.importance >= 2).slice(0, 3), abroad = [];
+    for (const { asset } of companies) for (const id of GM.registry.companies[asset.company]?.listings || []) {
+      const other = GM.registry.assets[id]; if (!other || !GM.exchanges[other.mic] || GM.exchanges[other.mic].country === code || abroad.some(x => x.id === id)) continue;
+      abroad.push({ id, asset, other, quote: gmQuote(other) });
+    }
+    const indicator = (key, digits = 1) => Number.isFinite(macro?.[key]?.[1]) ? `${macro[key][1].toFixed(digits)}% <small>(${macro[key][0]})</small>` : gmMissing;
+    content = `<div class="gm-kpis"><div data-gm-kpi="benchmark"><span>${esc(benchmark?.n || 'Benchmark index')}</span><b${benchmark?.p >= 1e6 ? ' style="font-size:12px"' : ''}>${Number.isFinite(benchmark?.p) ? gmNumber(benchmark.p) : gmMissing}</b>${gmMove(benchmark?.d)}</div><div data-gm-kpi="currency"><span>${esc(fx ? fx.s.replace(/^([A-Z]{3})([A-Z]{3})$/, '$1/$2') : 'Currency vs USD')}</span><b>${Number.isFinite(fx?.p) ? gmNumber(fx.p, 4) : gmMissing}</b><span class="gm-fx-move" title="Currency strength against the US dollar"><small>${esc(exchange?.currency || fx?.s.replace('USD', '') || '')}</small>${gmMove(fx?.d)}</span></div><div data-gm-kpi="macro"><span>Inflation · Unemp.</span><b data-gm-inflation>${indicator('infl')}</b><span data-gm-unemployment>${indicator('unemp')}</span></div></div>
+      <div class="gm-section-head"><h3>Latest market developments</h3><button class="gm-link" data-gm-tab="news">All ${news.length} →</button></div>${important.length ? gmNewsRows(important) : '<p class="empty">No important articles in this time window.</p>'}
+      <div class="gm-section-head"><h3>Listed companies · ${esc(exchange?.short || 'no data yet')}</h3><button class="gm-link" data-gm-tab="companies">${companies.length} →</button></div>${companies.length ? gmCompanyRows(companies.slice(0, 4)) : `<p class="empty">${gmMissing}</p>`}
+      <h3 class="sec-h">Also listed abroad</h3><div class="gm-chips">${abroad.length ? abroad.map(({ asset, other, quote }) => `<a data-gm-abroad="${esc(other.id)}" href="${gmCompanyLink(asset)}">${esc(asset.name)} · ${esc(GM.exchanges[other.mic].short)} · ${esc(other.sym)} ${gmMove(quote?.d)}</a>`).join('') : gmMissing}</div>`;
+  }
+  const alerts = follows().includes(c.name) ? `<div class="alerts"><div class="sec-h">Alert me about</div>${TOPICS.map(([k, l, d]) => `<label class="al"><input type="checkbox" data-topic="${k}" data-c="${esc(c.name)}" ${topicsOf(c.name).includes(k) ? 'checked' : ''}><span><b>${l}</b><small>${d}</small></span></label>`).join('')}<p class="fnote">Saved on this device. Nothing is sent yet.</p></div>` : '';
+  return `${header}<p class="gm-country-sub">${exchange ? `<span class="gm-exchange-full">${esc(exchange.name)} (${esc(exchange.short)})</span><span class="gm-exchange-short">${esc(exchange.short)}</span> · ${esc(exchange.currency)} · <abbr title="${esc(exchange.central_bank)}">${esc(exchange.central_bank_short)}</abbr>` : gmMissing}</p>${tabHTML}<div id="gm-country-content" role="tabpanel" aria-labelledby="gm-tab-${countryTab}">${content}</div>${alerts}${gmFooter}</section>`;
+}
+function gmContinentPanel() {
+  loadGlobalMarkets();
+  const name = regionDefinition(F.region)?.[1] || '', seen = new Set();
+  const places = Object.values(byName).filter(c => { const code = ISO[c.name]; if (!code || seen.has(code) || !inRegion(COUNTRY_REGIONS[code], F.region)) return false; seen.add(code); return true; });
+  const rows = places.map(c => ({ c, code: ISO[c.name], count: activity[c.name] || 0 })).sort((a, b) => b.count - a.count || nm(a.c.name).localeCompare(nm(b.c.name)));
+  const activeExchanges = GM ? Object.entries(GM.exchanges).filter(([mic, e]) => rows.some(r => r.code === e.country) && (GM.byCountry.get(e.country)?.some(a => a.mic === mic && Number.isFinite(gmQuote(a)?.p)) || rows.some(r => r.code === e.country && (gmBenchmark(r.c.name) || gmFunds(r.c.name).length)))) : [];
+  const tabs = `<div class="gm-regions" role="group" aria-label="Explore continents">${GM_REGIONS.map(key => `<button type="button" data-gm-region="${key}" aria-pressed="${key === F.region || key === 'am' && ['na', 'latam'].includes(F.region)}">${esc(regionDefinition(key)[1])}</button>`).join('')}</div>`;
+  if (!GM) return `<section class="gm-continent"><div class="eyebrow">Global Markets</div><h2>${esc(name)}</h2>${tabs}<p class="meta">${gmError ? 'Market directory could not load.' : 'Loading market directory…'}</p>${gmError ? '<button class="gm-link" data-gm-retry>Try again</button>' : ''}</section>`;
+  const underserved = rows.filter(r => r.count >= 1 && r.count <= 9), benchmarks = rows.map(r => ({ ...r, benchmark: gmBenchmark(r.c.name), funds: gmFunds(r.c.name) }));
+  const currencies = [...new Map(rows.map(({ c, code }) => { const fx = gmCurrency(c.name), currency = gmExchanges(code)[0]?.[1].currency || fx?.s.replace('USD', ''); return [fx?.s || currency, { fx, currency }]; }).filter(([key]) => key)).values()];
+  const currencyChip = ({ fx, currency }) => `<span>${esc(currency)} ${gmMove(fx?.d)}</span>`;
+  const missingBenchmarks = benchmarks.filter(r => !r.benchmark && !r.funds.length).length;
+  const underservedChip = ({ c, count }) => `<button type="button" data-country="${esc(c.name)}">${esc(nm(c.name))} · ${count}</button>`;
+  return `<section class="gm-continent" data-gm-region-panel="${esc(F.region)}"><div class="eyebrow">Global Markets</div><h2>${esc(name)}</h2><p class="meta" data-gm-region-summary>${rows.length} countries · ${activeExchanges.length} ${activeExchanges.length === 1 ? 'exchange' : 'exchanges'} with data · ${F.win.toUpperCase()}</p>${tabs}
+    <h3 class="sec-h">Countries by news activity (${F.win.toUpperCase()})</h3><div class="gm-country-list">${(gmCountriesExpanded ? rows : rows.slice(0, 6)).map(({ c, code, count }) => { const ex = gmExchanges(code)[0]?.[1], currency = ex?.currency || gmCurrency(c.name)?.s.replace('USD', '') || ''; return `<button type="button" class="gm-row" data-country="${esc(c.name)}" data-gm-count="${count}">${flag(c.name)}<span class="gm-name">${esc(nm(c.name))}</span><small>${esc(ex?.short || 'no data yet')}${currency ? ` · ${esc(currency)}` : ''}</small><b>${count}</b></button>`; }).join('')}</div>${rows.length > 6 ? `<button class="gm-link gm-more" data-gm-countries>${gmCountriesExpanded ? 'Show fewer countries' : `All ${rows.length} countries →`}</button>` : ''}
+    <h3 class="sec-h">Exchanges & benchmarks</h3>${benchmarks.map(r => r.benchmark || r.funds.length ? `<div class="gm-benchmark"><span class="gm-badge">${r.benchmark ? esc(gmExchanges(r.code)[0]?.[1].short || 'Index') : 'ETF'}</span><span class="gm-name">${esc((r.benchmark || r.funds[0]).n)}<small>${esc(gmExchanges(r.code)[0]?.[1].city || nm(r.c.name))}</small></span>${gmMove((r.benchmark || r.funds[0]).d)}</div>` : '').join('') || `<p class="empty">${gmMissing}</p>`}${missingBenchmarks ? `<div class="gm-benchmark"><span class="gm-badge">ETF</span><span class="gm-name">Country ETF coverage<small>${missingBenchmarks} countries · no data yet</small></span></div>` : ''}
+    <h3 class="sec-h">Currencies vs USD</h3><div class="gm-chips">${currencies.slice(0, 6).map(currencyChip).join('') || gmMissing}</div>${currencies.length > 6 ? `<details class="gm-more-currencies"><summary>Other currencies (${currencies.length - 6})</summary><div class="gm-chips">${currencies.slice(6).map(currencyChip).join('')}</div></details>` : ''}
+    <h3 class="sec-h">Underserved: few articles, worth a look</h3><div class="gm-chips gm-underserved">${underserved.length ? underserved.slice(0, 6).map(underservedChip).join('') : '<span>No countries with 1–9 articles in this window.</span>'}</div>${underserved.length > 6 ? `<details class="gm-more-currencies"><summary>More countries (${underserved.length - 6})</summary><div class="gm-chips gm-underserved">${underserved.slice(6).map(underservedChip).join('')}</div></details>` : ''}${gmFooter}</section>`;
+}
+pbody.addEventListener('click', e => {
+  const tab = e.target.closest('[data-gm-tab]'), region = e.target.closest('[data-gm-region]');
+  if (tab) { countryTab = tab.dataset.gmTab; render(); pbody.scrollTop = 0; pbody.querySelector(`[role=tab][data-gm-tab="${countryTab}"]`)?.focus({ preventScroll: true }); }
+  else if (region) { gmCountriesExpanded = false; setRegion(region.dataset.gmRegion); }
+  else if (e.target.closest('[data-gm-countries]')) { gmCountriesExpanded = !gmCountriesExpanded; render(); if (!gmCountriesExpanded) pbody.scrollTop = 0; }
+  else if (e.target.closest('[data-gm-retry]')) { gmReady = null; gmError = false; render(); }
+});
+pbody.addEventListener('keydown', e => {
+  if (!e.target.matches('[role=tab][data-gm-tab]') || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+  e.preventDefault(); const tabs = [...pbody.querySelectorAll('[role=tab][data-gm-tab]')], index = tabs.indexOf(e.target);
+  tabs[e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : (index + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length].click();
+});
 function variantPanel(list) {
   if (PANEL_TEMPLATE === 'a') return `<h2>Top articles</h2><div class="meta">${Math.min(8, list.length)} of ${list.length} articles</div><div class="compact-list">${list.slice(0, 8).map(compactItem).join('')}</div>${list.length > 8 ? '<a class="panel-more" href="../../news.html">See all news →</a>' : ''}${list.length ? '' : '<div class="empty">No articles match these filters.</div>'}${noteHTML()}`;
   if (PANEL_TEMPLATE === 'b') return `<h2>Top articles</h2><div class="strip-list" aria-label="Top articles">${list.slice(0, phone() ? 3 : 12).map(compactItem).join('')}</div>${list.length ? '' : '<div class="empty">No articles match these filters.</div>'}${noteHTML()}`;
@@ -1611,7 +1748,7 @@ function variantPanel(list) {
     count = sorted.length; items = (hs ? `<button class="panel-hero" data-story="${esc(hs.id)}" style="background-image:url('${esc(hs.image.file)}')"><small>${esc(CAT[hs.category] || 'News')} · ${ago(hs.t)}</small><span>${esc(hs.headline)}</span></button>` : '') + rest.slice(0, panelExpanded ? rest.length : 3).map(compactItem).join('');
     }
   }
-  const rgName = REGIONS.find(r => r[0] === F.region)[1], head = phone() && (panelTab === 'top' || panelTab === 'latest') ? `<h2 class="news-count"><b>${list.length}</b> ${list.length === 1 ? 'article' : 'articles'} · ${F.win.toUpperCase()} · ${esc(rgName)}</h2>` : '<h2>Top articles</h2>';
+  const rgName = regionDefinition(F.region)[1], head = phone() && (panelTab === 'top' || panelTab === 'latest') ? `<h2 class="news-count"><b>${list.length}</b> ${list.length === 1 ? 'article' : 'articles'} · ${F.win.toUpperCase()} · ${esc(rgName)}</h2>` : '<h2>Top articles</h2>';
   return `${head}<div class="panel-tabs" role="tablist" aria-label="News view">${tabs.map(([key,label]) => `<button role="tab" id="panel-tab-${key}" aria-selected="${key === panelTab}" aria-controls="panel-contents" tabindex="${key === panelTab ? 0 : -1}" data-panel-tab="${key}">${label}</button>`).join('')}</div><div class="compact-list" id="panel-contents" role="tabpanel" aria-labelledby="panel-tab-${panelTab}">${items || '<div class="empty">No articles match these filters.</div>'}</div>${count > 3 ? `<button class="panel-more" data-panel-more aria-expanded="${panelExpanded}">${panelExpanded ? 'Show less' : 'Show more'}</button>` : ''}${noteHTML()}`;
 }
 pbody.addEventListener('click', e => {
@@ -1647,12 +1784,13 @@ function render() {
   requestAnimationFrame(size);
   if (view.k === 'top') {
     const list = [...shown].sort(sortTop), nc = new Set(list.map(s => s.location.country)).size, nb = list.filter(s => s.flag === 'breaking').length;
-    const rg = REGIONS.find(r => r[0] === F.region)[1];
+    const rg = regionDefinition(F.region)[1];
     if (F.lens !== 'all') pbody.innerHTML = lensPanel(list, nc);
     else if (PANEL_TEMPLATE) pbody.innerHTML = variantPanel(list);
     else pbody.innerHTML = `<div class="eyebrow">${F.region === 'global' ? 'Worldwide' : esc(rg)} · ${WLABEL[F.win]}</div><h2>${F.cat === 'all' ? 'Top articles' : esc(CAT[F.cat]) + ' articles'}</h2>
       <div class="stats"><div><b>${list.length}</b>articles</div><div><b>${nc}</b>countries</div><div><b>${nb}</b>breaking</div></div>
       ${list.length ? `<div class="list">${list.slice(0, 12).map(item).join('')}</div>` : `<div class="empty">No articles match these filters in ${WLABEL[F.win]}. Try a wider time window or another category.</div>`}${noteHTML()}`;
+    if (F.region !== 'global') pbody.insertAdjacentHTML('afterbegin', gmContinentPanel());
   } else if (view.k === 'article') {
     const s = byId[view.id], ch = chainOf(s);
     pbody.innerHTML = `<div class="story"><button class="back" data-back>← Back</button>${art(s)}
@@ -1666,17 +1804,7 @@ function render() {
       ${ch.length ? `<div class="sec-h">How it connects</div><div class="chain">${ch.map((c, i) => `${i ? '<span class="ar"></span>' : ''}<button data-story="${c.id}" class="${c.id === s.id ? 'cur' : ''}"><span class="n">${i + 1}</span><span>${esc(c.location.place)} · ${esc(c.headline)}</span></button>`).join('')}</div>` : ''}
       <div class="src"><div class="meta">${(s.sources || []).length > 1 ? 'Sources' : 'Source'}<br><b>${s.source?.name ? esc(s.source.name) : 'Demo content · no original article'}</b>${(s.sources || []).length > 1 ? ` <span>+ ${s.sources.slice(1, 4).map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(x.name)}</a>`).join(', ')}</span>` : ''}</div>${s.source?.url ? `<a class="read" style="opacity:1;cursor:pointer;display:inline-grid;place-items:center;text-decoration:none" href="${esc(s.source.url)}" target="_blank" rel="noopener">Read article ↗</a>` : '<button class="read" title="Available when live sources are connected" disabled>Read article ↗</button>'}</div>${noteHTML()}</div>`;
   } else if (view.k === 'country') {
-    const c = byName[view.id], all = stories.filter(s => s.location.country === c.name), list = all.filter(match).sort(sortTop);
-    const rest = list.length > 3 ? list.slice(3) : [], groups = CATS.slice(1).map(([k, l]) => [l, rest.filter(s => s.category === k)]).filter(g => g[1].length);
-    const cos = [...new Map(list.flatMap(s => s.entities).filter(x => x.ticker).map(x => [x.name, x])).values()];
-    pbody.innerHTML = `<button class="back" data-back>← Back</button><div class="ch"><div class="cn">${flag(c.name, 'flag big')}<div><div class="eyebrow">Country</div><h2>${esc(nm(c.name))}</h2></div></div>${(() => { const on = follows().includes(c.name); return `<button class="follow${on ? ' on' : ''}" data-follow="${esc(c.name)}" aria-pressed="${on}"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>${on ? 'Following' : 'Follow'}</button>`; })()}</div>
-      ${follows().includes(c.name) ? `<div class="alerts"><div class="sec-h" style="margin-top:0">Alert me about</div>${TOPICS.map(([k, l, d]) => `<label class="al"><input type="checkbox" data-topic="${k}" data-c="${esc(c.name)}" ${topicsOf(c.name).includes(k) ? 'checked' : ''}><span><b>${l}</b><small>${d}</small></span></label>`).join('')}<p class="fnote">Saved on this device. Email alerts launch soon: we'll ask for your email then. Nothing is sent yet.</p></div>` : ''}
-      ${economy(c.name)}
-      <div class="stats"><div><b>${list.length}</b>${list.length === 1 ? 'article' : 'articles'} · ${F.win.toUpperCase()}</div><div><b>${all.length}</b>this week</div><div><b>${list.filter(s => s.importance === 3).length}</b>major</div></div>
-      ${list.length ? `<div class="sec-h" style="margin-top:0">Top articles</div><div class="list">${list.slice(0, 3).map(item).join('')}</div>${groups.length ? '<div class="sec-h" style="margin-top:26px;color:var(--fg-2)">More by topic</div>' : ''}
-        ${groups.map(([l, g]) => `<div class="sec-h">${l}</div><div class="list">${g.map(item).join('')}</div>`).join('')}
-        ${cos.length ? `<div class="sec-h">Companies & assets</div><div class="cos">${cos.map(x => entityChip(x, c.name)).join('')}</div>` : ''}`
-      : `<div class="empty">${all.length ? `No ${F.cat === 'all' ? '' : esc(CAT[F.cat]).toLowerCase() + ' '}articles for ${esc(nm(c.name))} in ${WLABEL[F.win]}. ${all.length} in the last 7 days: switch the timeline to <b>7D</b>.` : `No financial or business articles for ${esc(nm(c.name))} right now. When live sources are connected, articles appear here as they are published. We never fill a country with invented news.`}</div>`}${noteHTML()}`;
+    pbody.innerHTML = gmCountryPanel(byName[view.id]);
   } else if (view.k === 'asset') {
     pbody.innerHTML = assetPanel(view.id);
   } else if (view.k === 'place') {
@@ -1733,7 +1861,8 @@ $('regions').innerHTML = REGIONS.map(([k, l]) => `<button class="reg" data-k="${
 $('wins').innerHTML = WINS.map(([k, l]) => `<button class="win" data-k="${k}" aria-pressed="${k === F.win}">${l}</button>`).join('');
 const press = (box, k) => box.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
 $('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.lens = b.dataset.k; if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } press($('cats'), F.lens); refresh(); };
-$('regions').onclick = e => { const b = e.target.closest('button'); if (!b) return; F.region = b.dataset.k; press($('regions'), F.region); const r = REGIONS.find(x => x[0] === F.region); if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } flyTo(r[2], r[3], r[4]); refresh(); ddClose(); $('reg-btn').focus(); };
+function setRegion(key) { F.region = key; gmCountriesExpanded = false; press($('regions'), F.region); const r = regionDefinition(F.region); if (view.k !== 'top') { hist = []; view = { k: 'top' }; sel = null; selCountry = null; } flyTo(r[2], r[3], r[4]); refresh(); pbody.scrollTop = 0; if (phone() && F.region !== 'global') { gmAutoSheet = true; placeSheet('open', Math.min(SHEET_MAX(), H * .58)); } else if (phone() && gmAutoSheet) { gmAutoSheet = false; setSheet('closed'); } ddClose(); $('reg-btn').focus(); }
+$('regions').onclick = e => { const b = e.target.closest('button'); if (b) setRegion(b.dataset.k); };
 $('wins').onclick = e => { const b = e.target.closest('button'); if (b) setWin(b.dataset.k); };
 // Phone time control (always visible on phones): a pill under Filters that opens the time options
 const TB = 'a';  // chosen design: time pill under Filters (owner, 2026-11-06)
@@ -2007,12 +2136,12 @@ function frame(t) {
 const ddBtns = () => [$('reg-btn'), $('mine-btn')], ddMenus = () => [$('regions'), $('mine-menu')];
 function ddClose() { ddMenus().forEach(m => m.hidden = true); ddBtns().forEach(b => b.setAttribute('aria-expanded', 'false')); }
 function ddToggle(btn, menu) { const open = menu.hidden; ddClose(); if (open) { if (menu === $('mine-menu')) renderMine(); menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); } }
-const regionCount = k => stories.filter(x => (F.lens === 'all' || x.lens.includes(F.lens)) && (F.cat === 'all' || x.category === F.cat) && inTime(x) && (!F.mine || touchesWatch(x)) && (k === 'global' || x.location.region === k)).length;
+const regionCount = k => stories.filter(x => (F.lens === 'all' || x.lens.includes(F.lens)) && (F.cat === 'all' || x.category === F.cat) && inTime(x) && (!F.mine || touchesWatch(x)) && inRegion(x.location.region, k)).length;
 const STAR_SVG = `<svg class="dd-bino" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h10v17l-5-3.8-5 3.8z" fill="none" stroke="#ff7a1a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 function updateDropdowns() {
   const counts = REGIONS.map(([k]) => regionCount(k)), mx = Math.max(1, ...counts);
   $('regions').querySelectorAll('.reg').forEach((b, i) => { b.querySelector('[data-n]').textContent = counts[i]; b.querySelector('.rg-bar i').style.width = Math.max(3, counts[i] / mx * 100) + '%'; });
-  const r = REGIONS.find(x => x[0] === F.region); $('reg-label').textContent = 'Region: ' + (F.region === 'global' ? 'All regions' : r[1]);
+  const r = regionDefinition(F.region); $('reg-label').textContent = 'Region: ' + (F.region === 'global' ? 'All regions' : r[1]);
   $('mine-n').textContent = WATCH.size || ''; $('mine-btn').classList.toggle('on', F.mine); $('mine-label').textContent = F.mine ? 'My watchlist only' : 'My watchlist';
   if (!$('mine-menu').hidden) renderMine();
 }
@@ -2062,7 +2191,7 @@ function updateFiltersUI() {
 }
 function peekUpdate() {
   const el = $('peek'); if (EMBED || !phone()) { el.hidden = true; return; }
-  const show = sheetState === 'closed' && view.k === 'top' && !!stories.length; el.hidden = !show; if (!show) return;
+  const show = sheetState === 'closed' && view.k === 'top' && !!stories.length; el.hidden = !show; if (!stories.length) return;
   const s = [...shown].sort(sortTop)[0];
   if (!s) { el.dataset.story = ''; el.innerHTML = '<span class="pk-h">No articles match these filters</span><span class="pk-m">Open Filters to widen the time window.</span>'; return; }
   const a = lensAsset(s), src = s.source && s.source.name ? s.source.name : '';
@@ -2076,6 +2205,7 @@ function dockUpdate() {
 }
 $('dock').onclick = e => {
   const b = e.target.closest('button'); if (!b || !phone()) return;
+  gmAutoSheet = false;
   setMarketsLayer(b.dataset.v === 'markets');
   if (b.dataset.v === 'globe') return $('sheet-close').click();
   hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = b.dataset.v === 'markets' ? 'markets' : (panelTab === 'markets' ? 'top' : panelTab); panelExpanded = false;
