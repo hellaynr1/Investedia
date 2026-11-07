@@ -1,0 +1,35 @@
+name: Claude PR review
+# Reviews every pull request opened by Codex (or anyone) against its task spec. Needs the repo secret ANTHROPIC_API_KEY.
+# Comment "@claude review again" on a PR to re-run it. Spend is capped in the Anthropic console, not here.
+on:
+  pull_request:
+    types: [opened, ready_for_review, synchronize]
+  issue_comment:
+    types: [created]
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: true
+jobs:
+  review:
+    if: github.event_name == 'pull_request' || (github.event.issue.pull_request && contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: --model claude-sonnet-5-5 --max-turns 20
+          prompt: |
+            Review this pull request for Investedia. Read AGENTS.md, design/CODEX-ACCEPTANCE-PROTOCOL.md and the task spec it names
+            (design/CODEX-TASK-*.md). Read only the PR diff and the files it touches; do not read large data files.
+            Check: (1) every acceptance criterion in the task spec, (2) bugs and console-error risks, (3) the owner's rules
+            (no fake data, Not investment advice kept, no secrets, no changes to frozen predictions, Track Record, v5 files or news
+            robots unless the task says so), (4) files that should not be in the PR (evidence folders, regenerated data).
+            Post ONE comment: first line "VERDICT: READY TO MERGE" or "VERDICT: CHANGES NEEDED", then a short numbered fix list
+            written so the owner can paste it to Codex. Never approve, merge or push.
