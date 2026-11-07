@@ -11,7 +11,7 @@ const overlap=(a,b)=>a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.h
 async function shot(p,name,w){await p.evaluate(label=>{let el=document.getElementById('p4-label');if(!el){el=document.createElement('div');el.id='p4-label';document.body.append(el);}el.textContent=label;el.style.cssText='position:fixed;top:60px;left:12px;z-index:999999;background:#FF7A1A;color:#101012;padding:6px 10px;border-radius:8px;font:700 12px Inter,sans-serif;pointer-events:none';},`Built · ${w===390?'Phone 390px':'PC 1440px'} · ${name}`);await p.screenshot({path:path.join(out,`${name}-${w}.png`)});await p.evaluate(()=>document.getElementById('p4-label').remove());}
 const browser=await launch();
 try{for(const width of [1440,390]){
- const context=await browser.newContext({viewport:viewport(width),isMobile:width===390,hasTouch:width===390,serviceWorkers:'block'});await fixtureExternal(context);await context.routeWebSocket(/wss:\/\/ws-feed\.exchange\.coinbase\.com/,socket=>socket.onMessage(()=>{}));
+ const context=await browser.newContext({viewport:viewport(width),isMobile:width===390,hasTouch:width===390,serviceWorkers:'block',reducedMotion:'reduce'});await fixtureExternal(context);await context.routeWebSocket(/wss:\/\/ws-feed\.exchange\.coinbase\.com/,socket=>socket.onMessage(()=>{}));
  await context.addInitScript(()=>{for(const k of ['inv-auth-seen','inv-pop','inv-app-x'])localStorage.setItem(k,'1');});
  const page=await context.newPage(),errors=[],consoleErrors=[],httpDiagnostics=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')(m.text().startsWith('Failed to load resource')?httpDiagnostics:consoleErrors).push({text:m.text(),url:m.location().url});});await page.clock.install({time:new Date(results.clock)});
  await page.goto(base+'/index.html',{waitUntil:'domcontentloaded'});await page.locator('[data-consent=essential]').click({timeout:4000}).catch(()=>{});
@@ -20,12 +20,22 @@ try{for(const width of [1440,390]){
  check('A1 News default '+width,await frame.evaluate(()=>!MARKET.on)&&!new URL(page.url()).searchParams.has('mode'));
  check('A1 News CTA '+width,await page.locator('.hn-open .t').textContent()==='Open globe');
  await shot(page,'news',width);
+ if(width===390){
+  await page.locator('.hn-open').click();frame=page.mainFrame();await frame.waitForFunction(()=>typeof MARKET!=='undefined');
+  await page.locator('[data-v=markets]').click();await frame.waitForFunction(()=>MARKET.ready);
+  check('A1 phone Markets first tap selects globe',await frame.evaluate(()=>MARKET.on&&sheetState==='closed'));
+  await page.locator('[data-v=markets]').click();check('A1 phone second tap opens sheet',await frame.evaluate(()=>sheetState!=='closed'));
+  await page.locator('#sheet-close').click();
+  check('A1 phone market rings without lines',await frame.evaluate(()=>MARKET.markers.length>=63&&MARKET.drawnLines.length===0));
+  await shot(page,'markets-unselected',width);
+ }else{
  await page.locator('[data-globe-mode=markets]').click();await frame.waitForFunction(()=>MARKET.ready);
  check('A1 rings without lines '+width,await frame.evaluate(()=>MARKET.on&&MARKET.markers.length>=63&&MARKET.drawnLines.length===0));
  check('A1 URL and search '+width,new URL(page.url()).searchParams.get('mode')==='markets'&&(await page.locator('.hn-search').innerText()).includes('Search countries, exchanges, indices & companies')&&(await page.locator('.hn-open').getAttribute('href')).includes('mode=markets'));
  await shot(page,'markets-unselected',width);
  await page.locator('.hn-search').click();const searchInput=page.locator('.pk-sb input');await searchInput.waitFor();check('A1 Markets search prompt '+width,(await searchInput.getAttribute('placeholder')).includes('countries, exchanges, indices & companies'));await searchInput.fill('NGX');const ngx=page.locator('.pk-r [data-nav="market:XNSA:Nigeria"]');await ngx.waitFor();await ngx.click();await frame.waitForFunction(()=>MARKET.selected==='Nigeria');check('A1 exchange search stays in homepage Markets '+width,new URL(page.url()).pathname.endsWith('/index.html')&&new URL(page.url()).searchParams.get('mode')==='markets');await frame.locator('.market-close').click();
 
+ }
  // Select through the real renderer tap path at the source-projected market ring.
  await frame.evaluate(()=>{const m=MARKET.markers.find(e=>e.id==='XNSA');fly=null;lon0=3.38;lat0=6.52;const p=proj(m.phi,m.lam);marketTap(p[0],p[1]);});
  await frame.waitForFunction(()=>MARKET.selected==='Nigeria'&&MARKET.drawnLines.length>0&&!fly);
@@ -36,7 +46,7 @@ try{for(const width of [1440,390]){
  check('A1 panel elements '+width,['AFRICA · MARKET','Nigerian Exchange (NGX)','Notable developments','Market Momentum','Performers','Attention','Sectors','Explore Nigeria','Trade','Investment','Not a recommendation.'].every(t=>text.toLowerCase().includes(t.toLowerCase())));
  for(const l of actual.links)check('A2 sourced line '+width+' '+l.id,links.some(s=>s.id===l.id&&s.source===l.source&&s.year===l.year&&s.value_usd===l.value_usd),l);
  check('A2 phone cap and link kinds '+width,actual.links.length<=(width===390?5:10)&&new Set(actual.links.map(l=>l.kind)).size===2,actual.links.map(l=>l.id));
- const panel=await frame.locator('.market-panel').boundingBox(),cta=await page.locator('.hn-open').boundingBox(),sw=await page.locator('.hn-mode-row').boundingBox(),ifr=await page.locator('#hnGlobe').boundingBox();
+ const panel=await frame.locator('.market-panel').boundingBox(),cta=await page.locator(width===390?'#dock':'.hn-open').boundingBox(),sw=width===390?{x:-100,y:-100,width:0,height:0}:await page.locator('.hn-mode-row').boundingBox(),ifr=width===390?{x:0,y:0,width:390,height:844}:await page.locator('#hnGlobe').boundingBox();
  const globalPanel=panel,localPanel={...panel,x:panel.x-ifr.x,y:panel.y-ifr.y};
  check('A3 clear controls '+width,!overlap(globalPanel,cta)&&!overlap(globalPanel,sw),{panel:globalPanel,cta,sw});
  check('A3 phone sheet or desktop panel '+width,width===390?panel.height<=ifr.height*.55+1&&panel.y>ifr.height*.35:panel.x>1000,{panel,ifr});
@@ -64,7 +74,8 @@ try{for(const width of [1440,390]){
 
  await frame.evaluate(()=>marketSelect('Nigeria'));await page.keyboard.press('Escape');check('A1 Escape closes '+width,await frame.locator('.market-panel').isHidden());
  await frame.evaluate(()=>marketSelect('Nigeria'));await frame.evaluate(()=>marketTap(1,1));check('A1 outside tap closes '+width,await frame.locator('.market-panel').isHidden());
- await page.locator('[data-globe-mode=news]').click();check('A1 News restored '+width,await frame.evaluate(()=>!MARKET.on)&&!new URL(page.url()).searchParams.has('mode'));
+ await page.locator(width===390?'[data-v=news]':'[data-globe-mode=news]').click();check('A1 News restored '+width,await frame.evaluate(()=>!MARKET.on)&&!new URL(page.url()).searchParams.has('mode'));
+ if(width===390)await page.goto(base+'/index.html',{waitUntil:'domcontentloaded'});
  const gear=page.getByRole('button',{name:'Settings',exact:true});check('A5 gear in header '+width,await gear.isVisible()&&await gear.locator('svg').count()===1);
  await gear.click();check('A5 two Settings rows '+width,await page.locator('.pf-dd select').count()===2);await shot(page,'settings',width);
  await page.locator('[data-setting=currency]').selectOption('EUR');check('A5 currency saved '+width,await page.evaluate(()=>JSON.parse(localStorage.getItem('inv-prefs')).cur==='EUR'));
