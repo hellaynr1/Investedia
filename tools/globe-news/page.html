@@ -1327,7 +1327,7 @@ function heatGlow() {
   const L = drawn.filter(d => d.z > .05).sort((a, b) => b.list.length - a.list.length).slice(0, phone() ? 22 : 70);
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
   L.forEach((d, i) => { const n = d.list.length, r = (phone() ? 7 : 9) + Math.min(phone() ? 26 : 34, Math.sqrt(n) * 1.6), a = Math.min(1, .35 + n / 300) * Math.min(1, .25 + d.z);
-    ctx.globalAlpha = a; ctx.drawImage(glowSprite(i < 12), d.x - r, d.y - r, r * 2, r * 2); });
+    ctx.globalAlpha = a * .25; ctx.drawImage(glowSprite(i < 12), d.x - r, d.y - r, r * 2, r * 2); });
   ctx.globalAlpha = 1; ctx.restore();
 }
 function countryTotals() {
@@ -1971,7 +1971,7 @@ function frame(t) {
   ctx.globalCompositeOperation = 'lighter';
   for (const d of drawn) {
     const s = d.list[0], pop = Math.min(1, (t - s.vt) / 650), e = 1 - Math.pow(1 - pop, 3), a = (.35 + .65 * d.z) * e, imp = s.importance;
-    const gr = imp === 3 ? 26 : imp === 2 ? 15 : 9, g = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, gr * e);
+    const gr = imp === 3 ? 10 : imp === 2 ? 7 : 5, g = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, gr * e);
     const col = imp === 1 ? '228,228,231' : '255,122,26';
     g.addColorStop(0, `rgba(${col},${(imp === 3 ? .5 : imp === 2 ? .32 : .16) * a})`); g.addColorStop(1, `rgba(${col},0)`); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(d.x, d.y, gr * e, 0, 7); ctx.fill();
     if (s.flag === 'breaking' && !reduce) for (let k = 0; k < 2; k++) { const ph = ((t / 1800) + k * .5) % 1; ctx.strokeStyle = `rgba(255,122,26,${(.55 * (1 - ph) * a).toFixed(3)})`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(d.x, d.y, 5 + ph * 24, 0, 7); ctx.stroke(); }
