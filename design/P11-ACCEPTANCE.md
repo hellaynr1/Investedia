@@ -19,3 +19,11 @@ A3 tests the exact panel background and blur for News, Countries and Markets; li
 A4 tests actual downward pointer movement to minimise the headline and tapping to restore, plus country and article close controls at both widths.
 A5 phone dock/handle gestures are N/A at 1440px because desktop uses the switch and close/Escape controls instead. Those desktop controls are tested at 1440px. A6 remains NOT DONE until P10.
 Mockups are attached under tests/mockups/p11-ui; screenshots under tests/screens/p11-ui. No remote task branch is needed to view the comparisons.
+
+## Overlay scope and exceptions
+- Implemented/tested: News/Countries/article/country sheets and market panel close buttons; phone sheet drag; peek downward minimise + restore; desktop country click while panel is open.
+- Transient map hover/hotspot detail has a dynamically added “Close map detail” button. Layers has a close button. Filter sheet has its existing close button. These additional controls are implemented but not all are in the interaction matrix: full dismissal coverage is NOT DONE and belongs in P9's overlay audit.
+- Search results and Region/Watchlist dropdowns currently dismiss by their toggle, outside click and Escape, rather than a separate ✕: exceptions to “every popover” remain NOT DONE. Peek has swipe-down minimisation and tap restoration; it does not have a separate ✕. The future P10 carousel is not claimed complete here.
+- Controls and hairline colour assertions are now executable. The old `.panel` background has `!important`, and the later P11 override also has `!important` with rgba(18,18,22,.62), so computed colour tests at both widths confirm it wins. There is one #panel instance; every view reuses it.
+- Every test now passes its A1–A5 criterion explicitly to check(); no fallback regex maps assertions.
+- P4's phone regression path now uses the full globe's dock, checking first tap selects Markets and second tap opens the sheet; desktop retains homepage embedded-mode coverage.
