@@ -1,0 +1,22 @@
+[
+  {
+    "width": 1440,
+    "pass": true,
+    "states": [
+      "false",
+      "true",
+      "false"
+    ],
+    "alerts": true
+  },
+  {
+    "width": 390,
+    "pass": true,
+    "states": [
+      "false",
+      "true",
+      "false"
+    ],
+    "alerts": true
+  }
+]

@@ -1,0 +1,162 @@
+{
+  "baselineCommit": "d1651e556",
+  "asOf": "2026-11-06T21:34:11Z",
+  "files": [
+    {
+      "file": "data/registry.json",
+      "sha256": "5622362a990f49cd978498bf7591c0cd95c16ee58acfcf31da227f606783107b",
+      "matchesMain": true
+    },
+    {
+      "file": "data/companies.json",
+      "sha256": "1674beda3edc3ef535c196858ca31e326259c26dd19b6e8e8419ca10f03330d2",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/markets.json",
+      "sha256": "586dd9bd84a996ed101604573203034f4c6ccc021dcc66dda3301ba9913c7d3a",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/economy.json",
+      "sha256": "0a0dc38ee7d67fec974e382232c6054373209a2895c2989cf19e8ccd3b2580d3",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/connections.json",
+      "sha256": "8ca20e5585f3c6fa48ddfd5476a1f4036c52668cab181db05a355cc213514c44",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/news-live.json",
+      "sha256": "04905e40a26ec04ed3048b61daee967b261ebbab993d05420c528f692402083a",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/news-48h.json",
+      "sha256": "83a951b84662a624405b2a1f1c336baee79e4290cfe6a76a5840ff144ce35901",
+      "matchesMain": true
+    },
+    {
+      "file": "tools/globe-news/wb-countries.json",
+      "sha256": "c9acf3932785191a649cbc04c3056af4cf64a236e5c3b49d49be25ddb0440bce",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-15.json",
+      "sha256": "ab2d426149a1f2bfb186b572a4052bbba936146b36d92fc82942431900910041",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-16.json",
+      "sha256": "7a459783ce432b260147ca55fdcf03ad82bd192a005e3561082fb7fce94b3fed",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-19.json",
+      "sha256": "4a82eb3c4595b1b97d4c7ea9f10640e5524628d018de215aa468b83464a3684e",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-20.json",
+      "sha256": "104486eab8f94f61471df204d9c9b2e13bd2842a3deb73e364add9f2c8abbf10",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-21.json",
+      "sha256": "0fee57abdbf7792f09a4a119c143cc665ad0030e9984ce1c8c87a840bd6c7fb5",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-22.json",
+      "sha256": "5ae0d1e8bd66cb1467b48b23f386d2058ea75e5f9b955844061a88bb0b00d3a1",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-23.json",
+      "sha256": "b78d21f60f50ab3f4d2aa9e361cf54fb023d47aa4661d1fb2e78216514f59d1d",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-24.json",
+      "sha256": "8b998e128f69daabae9b30bceb3df9dabc4982150df0bb715f6eb5447a538345",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-25.json",
+      "sha256": "fca6de7c6dfe0ef855bc09a832fafb2dc270fc433a0e02dac33b2058281ca194",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-26.json",
+      "sha256": "c5a27e14055f284800a36a3705323bd881d6dfa38a9536977af61ce241f86ae1",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-27.json",
+      "sha256": "3cb14e3a521845f18c598e5ed8b49de3929c17e97d83eb7c6c9e0114fab7c4d5",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-28.json",
+      "sha256": "138af073b10be7284f422d35543305020bc3585909b6a23a338d7da1f65cc85f",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-29.json",
+      "sha256": "fd30267e555cd49cde8920eee9e18c2b083be56d35b0d6b5066d22e11eeb35ec",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-30.json",
+      "sha256": "b39865ab6438f3211a388faa44b96c84f74c946955919edd210b427567b61fe1",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-10-31.json",
+      "sha256": "6562e13525a017cb43bf3a4c76d73ecda50eaae9783c64e767ada6c8bfeeb75e",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-11-01.json",
+      "sha256": "6d505ad2509abddbd57d5ab4e6273e21e2ff83b7ea4011a10ca941bef5e5e706",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-11-02.json",
+      "sha256": "8d9d23f37f52898dde7ab80b15c531a8686572290feced127f60368aefc5951e",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-11-03.json",
+      "sha256": "96ac0bbd55b5c27311ad217eb10352b28dd4b04c36038a701a4dc89f24212e0c",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-11-04.json",
+      "sha256": "3b1ce8c6f09e750ac9efde1eff12d58e53d54c16690797f3504803ca580fe605",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-11-05.json",
+      "sha256": "8b050afb2d1eeec7923bd9b01cf9bd89c6c0b9e3c8f5e5c7dfabc94c924a1857",
+      "matchesMain": true
+    },
+    {
+      "file": "assets/globe/events/2026-11-06.json",
+      "sha256": "40c64b819eb738050bdffa2546a557b1d85f465920faa4974a2ff6cc0116bc3c",
+      "matchesMain": true
+    }
+  ],
+  "initialBaselineCommit": "2319c0628",
+  "unchangedGlobeFunctions": {
+    "frame": true,
+    "updateNetwork": true,
+    "size": true,
+    "flyTo": true,
+    "countryTotals": true,
+    "buildSites": true,
+    "heatGlow": true,
+    "glowSprite": true
+  }
+}

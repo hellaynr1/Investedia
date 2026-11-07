@@ -1,0 +1,33 @@
+{
+  "device": "iPhone 13",
+  "cpuSlowdown": 4,
+  "asOf": "2026-11-06T21:34:11Z",
+  "order": [
+    "48h",
+    "30d",
+    "30d",
+    "48h"
+  ],
+  "metrics": {
+    "48h": {
+      "articles": 600,
+      "places": 150,
+      "samples": 200,
+      "medianFrameMs": 250,
+      "medianDrawMs": 25.80000001192093
+    },
+    "30d": {
+      "articles": 6593,
+      "places": 586,
+      "samples": 200,
+      "medianFrameMs": 250,
+      "medianDrawMs": 31.599999994039536
+    }
+  },
+  "frameRatio": 1,
+  "drawRatio": 1.2248062007534384,
+  "baselineCommit": "d1651e556",
+  "frameTimeCriterionPassed": true,
+  "additionalDrawAssertionPassed": false,
+  "testExit": 1
+}
