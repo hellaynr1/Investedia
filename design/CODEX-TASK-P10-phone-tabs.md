@@ -1,4 +1,5 @@
 # Codex task P10: phone tabs (Globe, News, Countries, Markets) — owner request 2026-11-07
+> Note: the bottom nav is changed by P11 ("no double News/Markets on phone"); follow P11 for navigation.
 
 Read `AGENTS.md` and `design/CODEX-ACCEPTANCE-PROTOCOL.md`. Branch `codex/p10-phone-tabs` from `main` (after P4). PR, **do not merge.**
 Mockups (real data): `design/phone-tabs/T2-globe.png`, `T2-news.png`, `T2-countries.png`, `T2-markets.png`. Source: `tools/globe-news/page.html`
