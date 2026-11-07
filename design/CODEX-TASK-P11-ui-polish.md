@@ -24,9 +24,10 @@ Mockups: `design/markets-globe/D-desktop-slim-switch.png`, `D-phone-slim-switch.
 - Tapping a side slides the white pill over to it (0.25 s ease) and switches mode. No caption under it.
 - Mockups: design/phone-tabs/SWP-news.png, SWP-markets.png.
 
-## Change (owner): no double News/Markets on phone
-News/Markets appears only once: the slim switch under the globe.
-- The switch chooses what the globe shows (News mode or Markets mode).
-- Remove the News and Markets tabs from the bottom bar. Instead the bottom bar has one control that opens the panel for the current mode: in News mode it opens the News list (Top / Latest / Countries), in Markets mode the Markets page (Overview / Indices / FX / Commodities). Swiping up on the sheet does the same.
-- Closing the panel returns to the globe in the same mode.
-- This replaces the Globe/News/Markets bottom nav in P10; P10's screen designs stay the same.
+## Phone navigation (owner, final; replaces the switch-under-globe and "no double" sections above)
+Bottom bar keeps three tabs: Globe · News · Markets. No News/Markets switch on phone.
+- **Globe**: the plain globe with the swipeable headline cards (P10). Nothing else.
+- **News**: the globe in News mode (news dots, counts, connection lines). Tap News again, or swipe up the handle, and a sheet slides up with the News widget (Top / Latest / Countries). Swipe down or tap the tab again to close it and return to the News globe.
+- **Markets**: the same system. First tap = globe in Markets mode (exchanges, trade lines). Second tap or swipe up = Markets sheet (Overview / Indices / FX / Commodities).
+- Sheets: glass style, 0.25 s slide, a small grab handle always visible above the bar so people know they can pull it up.
+- PC keeps the slim switch beside "Open globe" (placement 3).
