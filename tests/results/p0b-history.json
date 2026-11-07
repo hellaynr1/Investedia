@@ -1,0 +1,85 @@
+{
+  "generated_days": 22,
+  "generated_connections": 1498,
+  "live_connections": 298,
+  "functional_checks": {
+    "passed": 42,
+    "failed": 0
+  },
+  "devices": {
+    "390": {
+      "console_errors": [],
+      "counts": {
+        "24h": {
+          "shown": 720,
+          "events": 96,
+          "hist": 0,
+          "available": 1498,
+          "drawn": 0,
+          "visibleEndpoints": true
+        },
+        "48h": {
+          "shown": 940,
+          "events": 116,
+          "hist": 0,
+          "available": 1498,
+          "drawn": 0,
+          "visibleEndpoints": true
+        },
+        "30d": {
+          "shown": 6995,
+          "events": 372,
+          "hist": 293,
+          "available": 1498,
+          "drawn": 11,
+          "visibleEndpoints": true
+        },
+        "7d": {
+          "shown": 3616,
+          "events": 282,
+          "hist": 195,
+          "available": 1498,
+          "drawn": 11,
+          "visibleEndpoints": true
+        }
+      }
+    },
+    "1440": {
+      "console_errors": [],
+      "counts": {
+        "24h": {
+          "shown": 720,
+          "events": 96,
+          "hist": 0,
+          "available": 1498,
+          "drawn": 0,
+          "visibleEndpoints": true
+        },
+        "48h": {
+          "shown": 940,
+          "events": 116,
+          "hist": 0,
+          "available": 1498,
+          "drawn": 0,
+          "visibleEndpoints": true
+        },
+        "30d": {
+          "shown": 6995,
+          "events": 372,
+          "hist": 293,
+          "available": 1498,
+          "drawn": 17,
+          "visibleEndpoints": true
+        },
+        "7d": {
+          "shown": 3616,
+          "events": 282,
+          "hist": 195,
+          "available": 1498,
+          "drawn": 17,
+          "visibleEndpoints": true
+        }
+      }
+    }
+  }
+}
