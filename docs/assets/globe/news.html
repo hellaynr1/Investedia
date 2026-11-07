@@ -1235,7 +1235,7 @@ let sheetState = 'closed', sheetVisible = 84, sheetGesture = null, phoneMapTop =
 // Sheet model: the open sheet has ONE continuous height (sheetVisible, in px) between SHEET_MIN and SHEET_MAX. There are no detents.
 // sheetState is only 'closed' or 'open'. Every resting height is wherever the user left it (sheetFrac keeps it through resizes).
 let sheetFrac = .30;
-const SHEET_MIN = () => H * .30, SHEET_MAX = () => H * .72;
+const SHEET_MIN = () => H * .30, SHEET_MAX = () => H * .92;
 const clampSheet = h => Math.max(SHEET_MIN(), Math.min(SHEET_MAX(), h));
 function sheetHeight(state) { return state === 'closed' ? 84 : clampSheet(sheetFrac * H); }
 function paintSheet(h, rest) {  // rest = a resting position (also re-pads the article list so its last item can be scrolled into view)
@@ -1484,7 +1484,6 @@ function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.of
 function hideHover() { $('hover').classList.remove('pin'); pinned = null; delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
 let tapEdge = null;
 function tap(x, y, touch) {
-  if (phone() && !EMBED && sheetState !== 'closed') {dismissPanel(); return;}
   if (MARKET.on) return marketTap(x,y);
   if (pinned) hideHover(); else if (touch) hideHover();
   const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
@@ -1499,8 +1498,8 @@ function tap(x, y, touch) {
 
   const d = pick(x, y, touch ? 26 : 16);
   if (d) { hideHover(); if (d.list.length === 1) return openStory(d.list[0]); if (d.same || Z >= ZMAX - .2) return openPlace(d.list); return flyTo(d.lo, d.la, Math.min(ZMAX, Z * 2.2)); }
-  if ((!phone() && !panel.hidden) || (phone() && sheetState !== 'closed')) { dismissPanel(); return; }
   const g = inv(x, y), c = g && countryAt(g[0], g[1]);
+  if (!c && !EMBED) { dismissPanel(); return; }
   if (c) { if (phone() && !EMBED) { const hv = $('hover'); hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); hv.dataset.country = c.name; return; } return openCountry(c); }
 }
 $('hover').addEventListener('click', e => { if (pinned && pinned.article) { const a = pinned.article; if (e.target.closest('.hv-open')) { tapEdge = null; hideHover(); openStory(a); } return; }
@@ -2238,7 +2237,7 @@ function peekUpdate() {
   el.dataset.story = s.id;
   el.innerHTML = `<span class="pk-e"><time datetime="${esc(s.published_at || '')}">${ago(s.t)}</time>${src ? `<span>· ${esc(src)}</span>` : ''}</span><span class="pk-h">${esc(s.headline)}</span>${a ? `<span class="pk-a"><span>${esc(a.n)}</span>${pctPill(a.d)}</span>` : ''}`;
 }
-$('peek').onclick = () => { if(performance.now()-peekDraggedAt<400)return; const s = byId[$('peek').dataset.story]; if (s) openStory(s); else openFilters(); };
+$('peek').onclick = () => { if(performance.now()-peekDraggedAt<400)return; if($('peek').classList.contains('minimized')){$('peek').classList.remove('minimized');return;} const s = byId[$('peek').dataset.story]; if (s) openStory(s); else openFilters(); };
 function dockUpdate() {
   for (const b of $('dock').querySelectorAll('button')) b.dataset.v === phoneView ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
   const h = $('nav-grab'); h.hidden = EMBED || !phone() || phoneView === 'globe';
@@ -2256,7 +2255,7 @@ $('dock').onclick = e => {
   const b = e.target.closest('button'); if (!b || !phone()) return;
   gmAutoSheet = false;
   if (phoneView === b.dataset.v && phoneView !== 'globe') return toggleNavSheet();
-  phoneView = b.dataset.v;
+  phoneView = b.dataset.v; $('peek').classList.remove('minimized');
   marketSetMode(phoneView === 'markets' ? 'markets' : 'news');
   setSheet('closed');
   $('peek').hidden = phoneView !== 'globe'; dockUpdate();
@@ -2367,10 +2366,10 @@ function marketRender(){
 }
 function marketTap(x,y){const ring=[...MARKET.hits].sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y)).find(h=>Math.hypot(h.x-x,h.y-y)<20);if(ring)return marketSelect(ring.e.countryName,ring.e.id);const g=inv(x,y),c=g&&countryAt(g[0],g[1]);if(c)return marketSelect(c.name);marketClose();}
 function drawMarketMode(){
- MARKET.labels=[];MARKET.drawnLines=[];MARKET.hits=[];const code=ISO[MARKET.selected],limit=phone()?5:8,links=code?MARKET.links.filter(l=>l.from===code||l.to===code).sort((a,b)=>b.value_usd-a.value_usd):[],selected=marketVenue(MARKET.selected,MARKET.selectedVenue),connected=new Set();
+ MARKET.labels=[];MARKET.drawnLines=[];MARKET.hits=[];const code=marketPanel.hidden?null:ISO[MARKET.selected],limit=phone()?5:8,links=code?MARKET.links.filter(l=>l.from===code||l.to===code).sort((a,b)=>b.value_usd-a.value_usd):[],selected=marketPanel.hidden?null:marketVenue(MARKET.selected,MARKET.selectedVenue),connected=new Set();
  if(selected)for(const l of links){if(MARKET.drawnLines.length>=limit)break;if(MARKET.drawnLines.filter(d=>d.kind===l.kind).length>=(phone()?(l.kind==='trade'?3:2):5))continue;const other=l.from===code?l.to:l.from,target=MARKET.markers.find(e=>e.id===MARKET.defaultVenues[other]);if(!target)continue;const source=proj(selected.phi,selected.lam),dest=proj(target.phi,target.lam);if(source[2]<=.04||dest[2]<=.04)continue;const points=arcGeom({phi:selected.phi,lam:selected.lam},{phi:target.phi,lam:target.lam},56,0).map(([phi,lam,h])=>{const p=proj(phi,lam,h);return[p[0],p[1],p[2]>0];});ctx.beginPath();let pen=false;for(const[x,y,visible]of points){if(!visible){pen=false;continue;}pen?ctx.lineTo(x,y):ctx.moveTo(x,y);pen=true;}ctx.strokeStyle=l.kind==='trade'?'rgba(255,122,26,.7)':'rgba(255,255,255,.32)';ctx.lineWidth=l.kind==='trade'?1.2:.8;ctx.stroke();MARKET.drawnLines.push(l);connected.add(target.id);}
  const panel=marketPanel.hidden?null:marketPanel.getBoundingClientRect(),boxes=[];ctx.font='500 9.5px Inter,sans-serif';ctx.textBaseline='alphabetic';
- for(const e of [...MARKET.markers].sort((a,b)=>Number(b.id===MARKET.selectedVenue)-Number(a.id===MARKET.selectedVenue))){const[x,y,z]=proj(e.phi,e.lam);if(z<=.04)continue;const chosen=e.id===MARKET.selectedVenue,related=connected.has(e.id);ctx.strokeStyle=chosen?'#fff':'rgba(255,255,255,.45)';ctx.lineWidth=chosen?1.7:1;ctx.shadowColor='#FF7A1A';ctx.shadowBlur=chosen?14:0;ctx.beginPath();ctx.arc(x,y,chosen?6:3.5,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;MARKET.hits.push({x,y,e});if(!chosen&&!related)continue;const text=(e.short+' · '+nm(e.countryName)).toUpperCase(),w=ctx.measureText(text).width+8,h=16,b={x:x+9,y:y-13,w,h,id:e.id,text};const blocked=b=>MARKET.occlusions.some(a=>b.x<a.x+a.w&&b.x+b.w>a.x&&b.y<a.y+a.h&&b.y+b.h>a.y)||b.x<8||b.x+w>W-8||b.y<8||b.y+h>H-8||panel&&b.x<panel.right&&b.x+w>panel.left&&b.y<panel.bottom&&b.y+h>panel.top||boxes.some(a=>b.x<a.x+a.w&&b.x+b.w>a.x&&b.y<a.y+a.h&&b.y+b.h>a.y);if(blocked(b)){b.x=x-w-9;if(blocked(b))continue;}ctx.fillStyle='rgba(12,12,14,.76)';ctx.fillRect(b.x,b.y,w,h);ctx.fillStyle='#dedee3';ctx.fillText(text,b.x+4,b.y+11);boxes.push(b);MARKET.labels.push(b);}
+ for(const e of [...MARKET.markers].sort((a,b)=>Number(b.id===MARKET.selectedVenue)-Number(a.id===MARKET.selectedVenue))){const[x,y,z]=proj(e.phi,e.lam);if(z<=.04)continue;const chosen=!marketPanel.hidden&&e.id===MARKET.selectedVenue,related=connected.has(e.id);ctx.strokeStyle=chosen?'#fff':'rgba(255,255,255,.45)';ctx.lineWidth=chosen?1.7:1;ctx.shadowColor='#FF7A1A';ctx.shadowBlur=chosen?14:0;ctx.beginPath();ctx.arc(x,y,chosen?6:3.5,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;MARKET.hits.push({x,y,e});if(!chosen&&!related)continue;const text=(e.short+' · '+nm(e.countryName)).toUpperCase(),w=ctx.measureText(text).width+8,h=16,b={x:x+9,y:y-13,w,h,id:e.id,text};const blocked=b=>MARKET.occlusions.some(a=>b.x<a.x+a.w&&b.x+b.w>a.x&&b.y<a.y+a.h&&b.y+b.h>a.y)||b.x<8||b.x+w>W-8||b.y<8||b.y+h>H-8||panel&&b.x<panel.right&&b.x+w>panel.left&&b.y<panel.bottom&&b.y+h>panel.top||boxes.some(a=>b.x<a.x+a.w&&b.x+b.w>a.x&&b.y<a.y+a.h&&b.y+b.h>a.y);if(blocked(b)){b.x=x-w-9;if(blocked(b))continue;}ctx.fillStyle='rgba(12,12,14,.76)';ctx.fillRect(b.x,b.y,w,h);ctx.fillStyle='#dedee3';ctx.fillText(text,b.x+4,b.y+11);boxes.push(b);MARKET.labels.push(b);}
 }
 marketControl.onclick=e=>{const b=e.target.closest('[data-mode]');if(b)marketSetMode(b.dataset.mode);};
 addEventListener('keydown',e=>{if(e.key==='Escape'&&MARKET.on)marketClose();});

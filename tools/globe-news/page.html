@@ -1235,7 +1235,7 @@ let sheetState = 'closed', sheetVisible = 84, sheetGesture = null, phoneMapTop =
 // Sheet model: the open sheet has ONE continuous height (sheetVisible, in px) between SHEET_MIN and SHEET_MAX. There are no detents.
 // sheetState is only 'closed' or 'open'. Every resting height is wherever the user left it (sheetFrac keeps it through resizes).
 let sheetFrac = .30;
-const SHEET_MIN = () => H * .30, SHEET_MAX = () => H * .72;
+const SHEET_MIN = () => H * .30, SHEET_MAX = () => H * .92;
 const clampSheet = h => Math.max(SHEET_MIN(), Math.min(SHEET_MAX(), h));
 function sheetHeight(state) { return state === 'closed' ? 84 : clampSheet(sheetFrac * H); }
 function paintSheet(h, rest) {  // rest = a resting position (also re-pads the article list so its last item can be scrolled into view)
@@ -1484,7 +1484,6 @@ function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.of
 function hideHover() { $('hover').classList.remove('pin'); pinned = null; delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
 let tapEdge = null;
 function tap(x, y, touch) {
-  if (phone() && !EMBED && sheetState !== 'closed') {dismissPanel(); return;}
   if (MARKET.on) return marketTap(x,y);
   if (pinned) hideHover(); else if (touch) hideHover();
   const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
@@ -1499,8 +1498,8 @@ function tap(x, y, touch) {
 
   const d = pick(x, y, touch ? 26 : 16);
   if (d) { hideHover(); if (d.list.length === 1) return openStory(d.list[0]); if (d.same || Z >= ZMAX - .2) return openPlace(d.list); return flyTo(d.lo, d.la, Math.min(ZMAX, Z * 2.2)); }
-  if ((!phone() && !panel.hidden) || (phone() && sheetState !== 'closed')) { dismissPanel(); return; }
   const g = inv(x, y), c = g && countryAt(g[0], g[1]);
+  if (!c && !EMBED) { dismissPanel(); return; }
   if (c) { if (phone() && !EMBED) { const hv = $('hover'); hv.className = 'hover glass solo brief on'; hv.innerHTML = briefHTML(c); hv.dataset.country = c.name; return; } return openCountry(c); }
 }
 $('hover').addEventListener('click', e => { if (pinned && pinned.article) { const a = pinned.article; if (e.target.closest('.hv-open')) { tapEdge = null; hideHover(); openStory(a); } return; }
@@ -2238,7 +2237,7 @@ function peekUpdate() {
   el.dataset.story = s.id;
   el.innerHTML = `<span class="pk-e"><time datetime="${esc(s.published_at || '')}">${ago(s.t)}</time>${src ? `<span>· ${esc(src)}</span>` : ''}</span><span class="pk-h">${esc(s.headline)}</span>${a ? `<span class="pk-a"><span>${esc(a.n)}</span>${pctPill(a.d)}</span>` : ''}`;
 }
-$('peek').onclick = () => { if(performance.now()-peekDraggedAt<400)return; const s = byId[$('peek').dataset.story]; if (s) openStory(s); else openFilters(); };
+$('peek').onclick = () => { if(performance.now()-peekDraggedAt<400)return; if($('peek').classList.contains('minimized')){$('peek').classList.remove('minimized');return;} const s = byId[$('peek').dataset.story]; if (s) openStory(s); else openFilters(); };
 function dockUpdate() {
   for (const b of $('dock').querySelectorAll('button')) b.dataset.v === phoneView ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
   const h = $('nav-grab'); h.hidden = EMBED || !phone() || phoneView === 'globe';
@@ -2256,7 +2255,7 @@ $('dock').onclick = e => {
   const b = e.target.closest('button'); if (!b || !phone()) return;
   gmAutoSheet = false;
   if (phoneView === b.dataset.v && phoneView !== 'globe') return toggleNavSheet();
-  phoneView = b.dataset.v;
+  phoneView = b.dataset.v; $('peek').classList.remove('minimized');
   marketSetMode(phoneView === 'markets' ? 'markets' : 'news');
   setSheet('closed');
   $('peek').hidden = phoneView !== 'globe'; dockUpdate();
