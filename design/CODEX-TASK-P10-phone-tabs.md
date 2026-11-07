@@ -34,3 +34,7 @@ re-reads the file. Empty / loading / error states designed (skeleton rows, "Pric
 dropping frames below today's 48H baseline by more than 15%. 3. Countries list count equals the countries in the window.
 4. No "AI-assisted" text in lists/cards (test). 5. Markets rows link to asset pages; prices match `markets.json`.
 6. No console errors; PC layout unchanged; tests from `main` pass.
+
+## Change (owner): Countries list, no A–Z index
+Remove the A–Z letter strip on the right side. Keep search, region chips and the full list grouped by letter headers.
+Style: professional finance app (Bloomberg / Yahoo Finance / Reuters), not a full iOS contacts copy: Inter, glass rows, flag · name · article count.

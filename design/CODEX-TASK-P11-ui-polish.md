@@ -17,3 +17,9 @@ Mockups: `design/markets-globe/D-desktop-slim-switch.png`, `D-phone-slim-switch.
    minimise to a one-line bar; Esc closes on desktop; tapping empty globe space closes the open panel. State is not lost (re-open
    restores the same country / tab).
 5. Test: open and dismiss each overlay by ✕, drag, Esc and outside tap on 1440 px and 390 px; screenshot table vs mockups.
+
+## Phone: News/Markets switch under the globe (owner approved)
+- On phone the slim switch (176×32 px, glass background) sits centred just under the globe, not pinned at the top.
+- It does not always show: hide it while a sheet, article or the Countries list is open; show it again when the globe is visible.
+- Tapping a side slides the white pill over to it (0.25 s ease) and switches mode. No caption under it.
+- Mockups: design/phone-tabs/SWP-news.png, SWP-markets.png.
