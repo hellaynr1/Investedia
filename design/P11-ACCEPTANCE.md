@@ -27,3 +27,5 @@ Mockups are attached under tests/mockups/p11-ui; screenshots under tests/screens
 - Controls and hairline colour assertions are now executable. The old `.panel` background has `!important`, and the later P11 override also has `!important` with rgba(18,18,22,.62), so computed colour tests at both widths confirm it wins. There is one #panel instance; every view reuses it.
 - Every test now passes its A1–A5 criterion explicitly to check(); no fallback regex maps assertions.
 - P4's phone regression path now uses the full globe's dock, checking first tap selects Markets and second tap opens the sheet; desktop retains homepage embedded-mode coverage.
+
+Fourth review: opening a sheet from Globe activates News in go(); a real phone country tap checks active dock, visible handle and dismissal. Escape yields to active InvPeek, Layers, search and dropdown handlers before dismissing the underlying panel. Desktop country/article/Layers/search Escape checks pass. Country brief popovers stack above the peek so their tap remains reachable. Final focused suite: 57 assertions passed.

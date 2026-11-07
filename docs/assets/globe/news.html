@@ -269,7 +269,7 @@ h1 span{color:var(--fg-3)}
   .pbody h2{font-size:19px}
   .hover{display:none}
   .hover.hv-b.pin{display:block;position:fixed;left:12px!important;right:12px;width:auto;top:76px!important;max-height:62vh;overflow:auto;z-index:30}  /* touch: tapped connection card */
-  .hover.brief.on{display:block;left:12px!important;right:12px;top:auto!important;bottom:100px;width:auto;pointer-events:auto}
+  .hover.brief.on{display:block;z-index:30;left:12px!important;right:12px;top:auto!important;bottom:100px;width:auto;pointer-events:auto}
 }
 /* Optional comparison layouts. Story and country views keep the original panel. */
 .compact-list{display:grid;gap:6px;margin-top:12px}
@@ -1597,7 +1597,7 @@ pbody.addEventListener('click', e => { const b = e.target.closest('[data-share]'
 pbody.addEventListener('click', e => { if (phone() && sheetState === 'closed' && !e.target.closest('a,button,input')) setSheet('peek'); });
 const layoutObserver = new ResizeObserver(() => { if (!sheetGesture) size(); }); [document.querySelector('.top'), $('tl'), panel, $('peek')].forEach(e => layoutObserver.observe(e));
 document.fonts.ready.then(size);
-function go(v, push = true) { panel.hidden = false; if (push && view.k !== v.k || push && view.id !== v.id) hist.push(view); view = v; render(); pbody.scrollTop = 0; if (phone()) setSheet('peek'); }
+function go(v, push = true) { panel.hidden = false; if(phone()&&phoneView==='globe')phoneView='news'; if (push && view.k !== v.k || push && view.id !== v.id) hist.push(view); view = v; render(); pbody.scrollTop = 0; if (phone()) setSheet('peek'); }
 function back() { view = hist.pop() || { k: 'top' }; if (view.k === 'top') { sel = null; selCountry = null; } else if (view.k === 'country') { sel = null; selCountry = byName[view.id]; } else if (view.k === 'article') { sel = byId[view.id]; } render(); }
 function openStory(s) {
   if (EMBED) { top.location.href = '/assets/globe/news.html?story=' + encodeURIComponent(s.id); return; }
@@ -2271,7 +2271,7 @@ let peekDrag, peekDraggedAt=-1000;
 $('peek').addEventListener('pointerdown', e => {peekDrag=e.clientY;e.currentTarget.setPointerCapture(e.pointerId);});
 $('peek').addEventListener('pointerup', e => {if(peekDrag!==undefined && e.clientY-peekDrag>35){$('peek').classList.add('minimized'); peekDraggedAt=performance.now(); e.preventDefault();}peekDrag=undefined;});
 addEventListener('keydown', e => {
-  if(e.key !== 'Escape' || EMBED || !$('fsheet').hidden || !$('res').hidden || !$('lay-pop').hidden) return;
+  if(e.key !== 'Escape' || e.defaultPrevented || e.cancelBubble || document.querySelector('.pk.on') || EMBED || !$('fsheet').hidden || !$('res').hidden || !$('lay-pop').hidden) return;
   if(phone() && sheetState === 'closed' || !phone() && panel.hidden) return;
   dismissPanel(); e.preventDefault(); e.stopImmediatePropagation();
 }, true);
