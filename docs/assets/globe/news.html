@@ -1299,7 +1299,7 @@ let pinned = null, hoverC = null, hoverCountry = null, sel = null, selCountry = 
 
 // ---- Globe numbers (owner choice 2026-11-07, heat glow 2 tight hotspots): zoomed out, a sharp heat glow per country (no numbers);
 // zoomed in, the per-place numbers return. The count of any place is always in its hover/tap card. Homepage globe unchanged.
-const COUNT_ZOOM = 1.5;  // owner choice 2026-11-07 (option Z): no numbers on the full globe; zoomed in, leader line + count + top-2 category breakdown
+const COUNT_ZOOM = 0;  // owner 2026-11-07: numbers back at normal zoom (leader line + count + top-2 categories)
 function zoomCounts() {
   const ph = phone(), max = ph ? 3 : 8, right = ph ? innerWidth - 76 : globeBox.right - 8, boxes = [];
   const big = drawn.filter(d => d.z > .3 && d.list.length >= 25);  // bright lights a label must not cover
