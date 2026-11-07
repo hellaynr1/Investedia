@@ -1,0 +1,35 @@
+{
+  "device": "iPhone 13",
+  "cpuSlowdown": 4,
+  "asOf": "2026-11-06T21:34:11Z",
+  "order": [
+    "48h",
+    "30d",
+    "30d",
+    "48h"
+  ],
+  "metrics": {
+    "48h": {
+      "articles": 934,
+      "places": 202,
+      "samples": 200,
+      "medianFrameMs": 299.8999999999978,
+      "medianDrawMs": 35.5
+    },
+    "30d": {
+      "articles": 6984,
+      "places": 599,
+      "samples": 200,
+      "medianFrameMs": 316.6000000000058,
+      "medianDrawMs": 40.39999997615814
+    }
+  },
+  "frameRatio": 1.0556852284094969,
+  "drawRatio": 1.1380281683424829,
+  "input_snapshot": {
+    "main": "6d4d4fca4",
+    "historical_connections": 1493,
+    "live_connections": 292
+  },
+  "note": "Renderer benchmark measured before the routine main-data refresh. Final regenerated data has 1498 historical / 298 live connections; the refreshed functional suite and provenance test pass. Rendering code is unchanged."
+}
