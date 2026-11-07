@@ -50,3 +50,11 @@ homepage. No secrets in code (keys from the environment). No paid API calls with
 ## PR must include
 Source table, dry-run estimates, trial-run counts, duplicate rate, quality sample results, cost actually spent (should be 0 until
 the owner approves), files changed.
+
+## Addition (owner, 7 Nov): connections for back-filled news, both globes
+- Every back-filled day must get connection lines exactly like live news: run the same connection engine (globe-lines-v3 + registry) over the history, not a separate one.
+- Do this for **News mode** (story links between countries) and **Markets mode** (links between markets/exchanges when one story moves several markets, e.g. "One story, multiple markets: a financial event connecting Japan and the United States").
+- **As few doubles as possible:** group the same story from different sources into one cluster before drawing (same event + same countries + within 48 h = one line). Test: no two lines with the same pair of countries for the same cluster.
+- **Look for more useful sources** for the history (official statistics, central banks, exchanges, reputable wires with an allowed feed). List each new source with its licence/terms in the PR. No scraping where the terms forbid it.
+- **Gemini allowed as a helper** to decide which countries/markets a story connects. Rules: key only as GitHub secret `GEMINI_API_KEY` (owner adds it, never in code); every link Gemini suggests must be backed by a country or company actually named in the article text, otherwise drop it; store the reason text with each link; report the cost per 1,000 articles in the PR.
+- Acceptance: 30D view shows lines on back-filled days in both modes; double-line test passes; a sample of 50 random links checked by hand in the PR (≥ 95 % correct).

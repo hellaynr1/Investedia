@@ -14,6 +14,7 @@ Every PR: no evidence folders, list files changed, test results; the automatic C
 - **Backfill quality gate:** 90% relevant, 95% correct country (as in P3).
 
 ## P5 · Connections for underserved markets (after P2)
+> Use the same rules as the P3 addition (same engine, both globes, no doubles, Gemini only as verified helper).
 New companies from P2 can now be connection destinations. Extend `tools/globe-news/connections.py` so that articles about
 Nigeria, Kenya, Egypt, Morocco, the Gulf, Vietnam, the Philippines, Peru and Colombia resolve to those companies and indices by the
 same rules (exact registry match, verified place, no sector lines). Add the country index / ETF proxy as a "market" destination.
