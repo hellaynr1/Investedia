@@ -32,3 +32,12 @@ Bottom bar keeps three tabs: Globe · News · Markets. No News/Markets switch on
 - Sheets: glass style, 0.25 s slide, a small grab handle always visible above the bar so people know they can pull it up.
 - Mockups: design/phone-tabs/NAV-closed.png, NAV-open.png, NAV-mkt.png (Markets panel, same glass).
 - PC keeps the slim switch beside "Open globe" (placement 3).
+
+## Owner (7 Nov): only one thing open at a time on the globe (phone AND PC)
+Today, opening something on the globe page leaves the previous panel/sheet/popup open, and the user has to close each one by hand. Fix:
+- Opening any panel, sheet, popup, tooltip, country card, article, filter, region menu, Settings, search or list **automatically closes whatever else is open** (one shared "open panel" state, not per-component flags).
+- Exceptions: the bottom bar, the time window control and the zoom buttons stay visible.
+- Tapping empty globe space or pressing Esc closes the open item.
+- Back gesture / browser back closes the open item instead of leaving the page.
+- Same rule on PC and phone, and on the homepage globe.
+- Test: open country → open article → open Settings → open search, in any order: at every step exactly one item is open (automated check in `tests/`).
