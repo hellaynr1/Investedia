@@ -30,5 +30,5 @@ Bottom bar keeps three tabs: Globe · News · Markets. No News/Markets switch on
 - **News**: the globe in News mode (news dots, counts, connection lines). Tap News again, or swipe up the handle, and a sheet slides up with the News widget (Top / Latest / Countries). Swipe down or tap the tab again to close it and return to the News globe.
 - **Markets**: the same system. First tap = globe in Markets mode (exchanges, trade lines). Second tap or swipe up = Markets sheet (Overview / Indices / FX / Commodities).
 - Sheets: glass style, 0.25 s slide, a small grab handle always visible above the bar so people know they can pull it up.
-- Mockups: design/phone-tabs/NAV-closed.png, NAV-open.png.
+- Mockups: design/phone-tabs/NAV-closed.png, NAV-open.png, NAV-mkt.png (Markets panel, same glass).
 - PC keeps the slim switch beside "Open globe" (placement 3).
