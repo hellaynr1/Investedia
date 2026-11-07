@@ -1,0 +1,18 @@
+{
+  "baselineCommit": "3c5644fc9",
+  "globe": {
+    "command": "python3 tools/globe-news/build.py",
+    "exit": 0,
+    "output": "389 KB; 176 countries; detailed map 240 countries"
+  },
+  "site": {
+    "command": "python3 build.py",
+    "exit": 0,
+    "output": "240 assets\nBuilt 53 pages: 404.html, about.html, accessibility.html, admin.html, affiliate-disclosure.html, ai-disclosure.html, ai-insights.html, analysis-article.html, analysis.html, article.html, asset.html, bonds.html, calculator.html, calendar.html, call.html, commodities.html, companies.html, company.html, compare.html, contact.html, converter.html, cookies.html, copyright.html, corrections.html, crypto.html, currencies.html, dashboard.html, disclaimer.html, editorial-policy.html, education.html, funds.html, globe.html, home-v2.html, implications.html, index.html, indices.html, legal-notice.html, legal.html, lesson.html, markets.html, movers.html, news.html, privacy.html, profile.html, real-estate.html, screener.html, sources.html, stocks.html, story.html, studio.html, terms.html, track-record.html, watchlist.html\n"
+  },
+  "provenanceTests": {
+    "command": "python3 tests/test_market_links.py",
+    "passed": 2
+  },
+  "scopeNote": "Generated HTML/service-worker conflicts were resolved by rebuilding from merged sources. Test-generated example-library records were moved out of the repository. No news or event-data changes are included."
+}

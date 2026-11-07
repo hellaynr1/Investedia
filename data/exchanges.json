@@ -87,7 +87,14 @@
       "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
       "https://centralbank.ae",
       "https://www.adx.ae"
-    ]
+    ],
+    "coordinates": {
+      "latitude": 24.45118,
+      "longitude": 54.39696,
+      "precision": "city",
+      "source": "https://www.geonames.org/292968",
+      "attribution": "GeoNames · CC BY 4.0"
+    }
   },
   "XAMS": {
     "name": "Euronext - Euronext Amsterdam",
@@ -612,7 +619,8 @@
       "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
       "https://cbn.gov.ng",
       "https://ngxgroup.com"
-    ]
+    ],
+    "benchmark_name": "NGX All-Share"
   },
   "XNSE": {
     "name": "National Stock Exchange of India",
@@ -657,7 +665,14 @@
       "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
       "https://rbnz.govt.nz",
       "https://www.nzx.com"
-    ]
+    ],
+    "coordinates": {
+      "latitude": -36.84853,
+      "longitude": 174.76349,
+      "precision": "city",
+      "source": "https://www.geonames.org/2193733",
+      "attribution": "GeoNames · CC BY 4.0"
+    }
   },
   "XOSL": {
     "name": "Oslo Bors",
@@ -702,7 +717,14 @@
       "https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv",
       "https://bsp.gov.ph",
       "https://www.pse.com.ph"
-    ]
+    ],
+    "coordinates": {
+      "latitude": 14.58691,
+      "longitude": 121.0614,
+      "precision": "city",
+      "source": "https://www.geonames.org/7290466",
+      "attribution": "GeoNames · CC BY 4.0"
+    }
   },
   "XPRA": {
     "name": "Prague Stock Exchange",

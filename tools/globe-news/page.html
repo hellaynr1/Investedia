@@ -505,6 +505,11 @@ h1 span{color:var(--fg-3)}
 .gm-market-row,.gm-market-labels{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr) minmax(0,.7fr) minmax(0,.7fr);gap:6px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}.gm-market-row>.gm-name{font-size:12px}.gm-market-row>b{font:11px var(--mono);overflow-wrap:anywhere}.gm-market-row small{font-size:9px;color:var(--fg-3)}.gm-market-row .pct{font-size:10px;padding:0;background:none}.gm-market-labels{font-size:10px;color:var(--fg-3)}
 @media(max-width:760px){.gm-continent>[data-gm-region-summary],.gm-continent>h3.sec-h:first-of-type{display:none}html[data-panel] .panel:not([data-sheet=closed]) .pbody:has(.gm-country){padding-top:8px}html[data-panel] .panel:not([data-sheet=closed]) .pbody .gm-back{left:auto;right:100px;top:0;font-size:11px}.gm-country-title h2{font-size:23px}.gm-country-title .follow{min-height:32px}.gm-country-sub{font-size:12px}.gm-exchange-full{display:none}.gm-exchange-short{display:inline}.gm-kpis b{font-size:14px}.gm-kpis>div{padding:11px 8px}.gm-kpis{gap:8px}.gm-country .gm-tabs button{font-size:11px;padding:7px 2px;min-height:40px}.gm-continent .gm-regions{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:4px}.gm-regions button{white-space:nowrap;flex:none}.gm-country-list .gm-row{min-height:44px}.gm-continent{padding-top:6px}.gm-country-list .gm-row>small{font-size:9px;max-width:84px}.gm-country .gm-news strong{font-size:13px}}
 
+
+/* P4 Markets uses the existing camera and sphere; only this optional overlay changes. */
+.market-panel{position:fixed;z-index:8;right:28px;top:80px;bottom:90px;width:360px;max-width:calc(100vw - 28px);overflow:auto;overscroll-behavior:contain;padding:18px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(16,16,18,.96);color:#eeeef0;font-family:Inter,sans-serif;text-align:left;box-sizing:border-box}.market-panel[hidden]{display:none}.market-close{position:absolute;right:12px;top:8px;font-size:22px;color:#999;cursor:pointer}.market-eyebrow{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#85858e}.market-panel h2{display:flex;align-items:center;gap:8px;font:600 22px Inter,sans-serif;margin:8px 0 4px}.market-panel .flag{width:24px;height:17px}.market-exchange{font-size:12px;color:#a0a0aa;line-height:1.5;margin:0 0 12px}.market-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.market-kpis>div{border:1px solid #ffffff13;border-radius:12px;padding:10px 9px;min-width:0;display:grid;align-content:start;gap:5px}.market-kpis small{font-size:10px;color:#85858e;line-height:1.4}.market-up{color:#34d399}.market-down{color:#f87171}.market-flat{color:#9999a3}.market-kpis b{font:600 15px Inter,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}.market-section{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:14px 0 8px;font-size:12px;color:#a4a4ad}.market-section a{color:#FF7A1A}.market-article{display:block;padding:8px 0;border-top:1px solid #ffffff13;color:inherit;text-decoration:none}.market-article>span{font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.market-article small{display:block;margin-top:5px;font-size:11px;color:#8c8c96}.market-tabs{display:flex;gap:5px;white-space:nowrap}.market-tabs button,.market-control button{border:1px solid #ffffff18;border-radius:999px;background:transparent;color:#9999a3;font:600 12px Inter,sans-serif;padding:8px 10px;cursor:pointer}.market-tabs button[aria-selected=true],.market-control button[aria-pressed=true]{color:#101012;background:#fff;border-color:#fff}.market-mention{display:flex;justify-content:space-between;gap:12px;font-size:12px;padding:8px 0;border-top:1px solid #ffffff14}.market-mention>span:last-child{flex:none;color:#9999a3}.market-empty,.market-footnote{font-size:11px;line-height:1.5;color:#8c8c96}.market-footnote{font-size:10px;margin:8px 0}.market-explore{display:inline-flex;background:#fff;color:#101012;text-decoration:none;padding:11px 16px;border-radius:999px;font-size:13px;font-weight:600;margin:5px 0 14px}.market-legend{display:flex;gap:16px;font-size:11px;color:#9999a3}.market-legend span:first-child{color:#FF7A1A}.market-source{display:block;color:#777781;font-size:10px;line-height:1.5;margin-top:10px}.market-handle{display:none}.market-control{display:none;position:fixed;right:28px;bottom:24px;z-index:12;border:1px solid #ffffff20;border-radius:999px;padding:4px;background:#111114}.market-mode .market-control{display:flex}.market-mode:not(.embed) .top .demo,.market-mode:not(.embed) .top .cats,.market-mode:not(.embed) .ddrow,.market-mode:not(.embed) .panel,.market-mode:not(.embed) .timeline,.market-mode:not(.embed) .dock,.market-mode:not(.embed) .peek{display:none!important}
+@media(max-width:760px){.market-panel{right:12px;left:12px;width:auto;top:auto;bottom:12px;height:26vh;max-height:55vh;padding:16px;touch-action:pan-y}.market-panel h2{font-size:21px}.market-handle{display:block;height:14px;margin:-10px auto 8px;width:70px;touch-action:none;cursor:grab}.market-handle:before{content:'';display:block;width:44px;height:4px;border-radius:4px;background:#666;margin:5px auto}.market-control{right:auto;left:16px;bottom:auto;top:16px}.market-up{color:#34d399}.market-down{color:#f87171}.market-flat{color:#9999a3}.market-kpis b{font-size:15px}.market-panel .market-section{margin-top:20px}}
+
 </style>
 <script src="../locale.js"></script>
 </head>
@@ -1406,6 +1411,7 @@ cv.addEventListener('pointermove', e => {
     }
     return;
   }
+  if (MARKET.on) { cv.style.cursor = MARKET.hits.some(h=>Math.hypot(h.x-e.clientX,h.y-e.clientY)<18)?'pointer':''; return; }
   if (fine) { lastX = e.clientX; lastY = e.clientY; hoverAt(e.clientX, e.clientY); }
 });
 function endPointer(e) {
@@ -1458,6 +1464,7 @@ function placeHover(x, y) { const hv = $('hover'), w = hv.offsetWidth, h = hv.of
 function hideHover() { $('hover').classList.remove('pin'); pinned = null; delete $('hover').dataset.country; arcHover=null; clearTimeout(cTimer); hoverC = null; hoverCountry = null; $('hover').classList.remove('on');  }
 let tapEdge = null;
 function tap(x, y, touch) {
+  if (MARKET.on) return marketTap(x,y);
   if (pinned) hideHover(); else if (touch) hideHover();
   const up = !EMBED && upPick(x, y); if (up) { hist = []; view = { k: 'top' }; sel = null; selCountry = null; panelTab = 'upcoming'; render(); if (phone()) setSheet('full'); return; }
   const ex = !EMBED && exPick(x, y); if (ex) { window.InvPeek?.open(ex.e.ix); return; }
@@ -1575,6 +1582,7 @@ function openStory(s) {
   else flyTo(s.location.lon, s.location.lat, Math.max(Z, phone() ? 1.5 : 2.2));
 }
 function openCountry(c) {
+  if (MARKET.on) return marketSelect(c.name,new URLSearchParams(location.search).get('exchange'));
   if (EMBED) { top.location.href = '/assets/globe/news.html?country=' + encodeURIComponent(c.name); return; }
   const wasClosed = sheetState === 'closed'; countryTab = 'overview';
   sel = null; selCountry = c; go({ k: 'country', id: c.name });
@@ -2052,6 +2060,8 @@ function frame(t) {
   if (selCountry) countryShape(selCountry, 'rgba(255,122,26,.10)', 'rgba(255,122,26,.75)', 1.2);
   ctx.restore();
 
+  if (MARKET.on) { drawMarketMode(); ctx.restore(); requestAnimationFrame(frame); return; }
+
   // connections (only for the article you're looking at)
   const focus = impactFocus;
   const chain = chainOf(focus);
@@ -2249,9 +2259,13 @@ newsReady = load(NEWS_URL).then(d => { if (!d.stories || !d.stories.length) thro
   const q = new URLSearchParams(location.search);
   const lq = q.get('lens'); if (lq && LENSES.some(l => l[0] === lq)) { F.lens = lq; press($('cats'), lq); refresh(); }
   if (q.get('story') && byId[q.get('story')]) openStory(byId[q.get('story')]);
-  else if (q.get('country') && byName[q.get('country')]) openCountry(byName[q.get('country')]);
+  else if (q.get('country') && byName[q.get('country')]) {
+    openCountry(byName[q.get('country')]);
+    if (!MARKET.on && q.get('win') && WINS.some(w=>w[0]===q.get('win'))) setTimeout(async()=>{await setWin(q.get('win'));if(q.get('country-tab')==='news')countryTab='news';render();},0);
+  }
 }).catch(() => { pbody.innerHTML = '<div class="empty">News could not be loaded. Please refresh the page.</div>'; });
 setInterval(() => { if (view.k === 'top' && (panelTab === 'markets' || panelTab === 'upcoming') && F.lens === 'all') render(); }, 60000);
+/* MARKET_MODE */
 requestAnimationFrame(frame);
 </script>
 </body>

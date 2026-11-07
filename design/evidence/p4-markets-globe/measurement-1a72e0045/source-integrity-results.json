@@ -1,0 +1,41 @@
+{
+  "baselineCommit": "1a72e0045",
+  "unchangedFunctions": {
+    "size": true,
+    "flyTo": true,
+    "proj": true,
+    "arcGeom": true,
+    "drawConnections": true,
+    "updateNetwork": true,
+    "countryTotals": true,
+    "buildSites": true
+  },
+  "newsFrameUnchangedExceptModeBranch": true,
+  "existingJSONFilesUnchanged": 6637,
+  "modifiedProtectedJSON": [],
+  "trackRecordGeneratedContentUnchangedExceptAssetVersions": true,
+  "trackRecordSourceUnchanged": true,
+  "inputHashes": [
+    {
+      "file": "data/registry.json",
+      "sha256": "5622362a990f49cd978498bf7591c0cd95c16ee58acfcf31da227f606783107b"
+    },
+    {
+      "file": "data/companies.json",
+      "sha256": "1674beda3edc3ef535c196858ca31e326259c26dd19b6e8e8419ca10f03330d2"
+    },
+    {
+      "file": "assets/globe/markets.json",
+      "sha256": "586dd9bd84a996ed101604573203034f4c6ccc021dcc66dda3301ba9913c7d3a"
+    },
+    {
+      "file": "assets/globe/economy.json",
+      "sha256": "0a0dc38ee7d67fec974e382232c6054373209a2895c2989cf19e8ccd3b2580d3"
+    },
+    {
+      "file": "assets/globe/connections.json",
+      "sha256": "ed39aa3117c5878e75368050a11725f1fd0aa16df2a41b89f737a3075b130d08"
+    }
+  ],
+  "homepageCameraParametersUnchanged": true
+}

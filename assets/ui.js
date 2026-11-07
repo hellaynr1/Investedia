@@ -68,13 +68,13 @@
   // ---------- formatters ----------
   const fmtP = (a, v = a.p) => {
     if (a.y) return v.toFixed(3) + '%';
-    if (window.InvPrefs && (a.c === 'crypto' || a.cur === 'USD')) return InvPrefs.fmt(v, { t: 'crypto' });
+    if (window.InvPrefs && (a.c === 'crypto' || a.cur === 'USD' && !['indices','currencies','bonds'].includes(a.c))) return InvPrefs.fmt(v, { t: 'crypto' });
     const d = v >= 1000 ? 2 : v >= 10 ? 2 : v >= 1 ? 4 : 4;
     return (a.c === 'currencies' || a.c === 'indices' || a.c === 'bonds' ? '' : ({ EUR: '€', GBP: '£', JPY: '¥', USD: '$', CHF: 'CHF ', CAD: 'C$', AUD: 'A$', NZD: 'NZ$', HKD: 'HK$', SGD: 'S$', KRW: '₩', INR: '₹', CNY: '¥', ZAR: 'R ', EGP: 'E£', SAR: 'SAR ', AED: 'AED ', QAR: 'QAR ', BRL: 'R$', MXN: 'MX$', ILS: '₪' }[a.cur] || (a.x === 'XETRA' || a.x === 'EURONEXT' ? '€' : a.x === 'LSE' ? '£' : '$'))) + v.toLocaleString('en-US', { minimumFractionDigits: a.c === 'currencies' ? 4 : d, maximumFractionDigits: a.c === 'currencies' ? 4 : d });
   };
   const fmtC = (v, bps) => bps ? `${v > 0 ? '+' : ''}${(v * 1).toFixed(1)} bp` : `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}%`;
   const cls = v => v > 0 ? 'up' : v < 0 ? 'down' : 'muted';
-  const cap = b => b == null ? '—' : b >= 1000 ? `$${(b / 1000).toFixed(2)}T` : `$${b}B`;
+  const cap = b => b == null ? '—' : `<span data-usd-value="${b*1e9}">${window.InvPrefs?InvPrefs.compact(b*1e9,{cur:'USD'}):'$'+b+'B'}</span>`;
   // Asset logos, all round and self-hosted in assets/logos: coin logos (CC0 set), brand marks (simple-icons CC0, svgl MIT), company icons
   // and round flags (circle-flags, MIT) for indices, bonds and currencies. Anything else gets a coloured ticker tile.
   const COIN = new Set(['BTC', 'ETH', 'SOL', 'XRP', 'BNB', 'DOGE', 'ADA', 'AVAX', 'LINK', 'UNI', 'AAVE', 'USDT', 'USDC', 'TRX', 'ZEC', 'XMR', 'LEO', 'XLM', 'BCH', 'DAI', 'LTC', 'QNT', 'HYPE', 'NEAR', 'HBAR', 'PYUSD', 'SHIB', 'CRO', 'ENA', 'RLUSD', 'SUI']);
@@ -329,10 +329,6 @@
   const dth = drawer.querySelector('.drawer-theme'), paintDth = () => { const l = document.documentElement.dataset.theme === 'light'; dth.firstElementChild.textContent = l ? 'Dark mode' : 'Light mode'; dth.lastElementChild.innerHTML = l ? moon : sun; };
   paintDth(); new MutationObserver(paintDth).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   dth.onclick = () => { const t = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'; closeDrawer(); setTimeout(() => switchTheme(t, dth.lastElementChild), 200); };
-  // phones: the light/dark button sits in the header (like on PC) and the currency picker moves into the menu
-  const pfHome = () => hdr.querySelector('.hdr-tools'), dcHost = drawer.querySelector('.dc-host'), phoneQ = matchMedia('(max-width: 900px)');
-  const placePf = () => { const w = document.querySelector('.pf-wrap'); if (!w) return; if (phoneQ.matches) { if (w.parentNode !== dcHost) dcHost.append(w); } else if (w.parentNode === dcHost) pfHome().prepend(w); };
-  placePf(); phoneQ.addEventListener?.('change', placePf);
   function closeDrawer() { if(drawer.classList.contains('open')) modalClose(drawer); drawer.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); mt.classList.remove('is-open'); document.body.style.overflow = ''; }
   mt.onclick = () => { const o = !drawer.classList.contains('open'); if(o)modalOpen(drawer);else modalClose(drawer); drawer.classList.toggle('open', o); mt.setAttribute('aria-expanded', o); mt.classList.toggle('is-open', o); mt.setAttribute('aria-label', o ? 'Close menu' : 'Open menu'); document.body.style.overflow = o ? 'hidden' : ''; if(o)drawer.querySelector('a').focus(); };
 
@@ -390,11 +386,13 @@
     document.querySelectorAll(`[data-lp="${s}"]`).forEach(el => { const t = fmtP(a); if (el.textContent === t) return; el.textContent = t; el.classList.remove('tick-up', 'tick-down'); void el.offsetWidth; el.classList.add(up ? 'tick-up' : 'tick-down'); });
     document.querySelectorAll(`[data-lc="${s}"]`).forEach(el => { el.textContent = fmtC(a.d, a.y); el.classList.remove('up', 'down', 'muted'); el.classList.add(cls(a.d)); });
   }
+  const repaintMoney=()=>{document.querySelectorAll('[data-lp]').forEach(el=>{const a=M.bySym[el.dataset.lp];if(a)el.textContent=fmtP(a);});document.querySelectorAll('[data-usd-value]').forEach(el=>el.textContent=InvPrefs[el.dataset.usdKind==='price'?'fmt':'compact'](+el.dataset.usdValue,{cur:'USD'}));};
+  window.InvPrefs?.onChange(repaintMoney);
   const whenVisible = (fn, ms) => { let t = 0; const run = () => { clearTimeout(t); if (!document.hidden) fn(); t = setTimeout(run, ms); }; document.addEventListener('visibilitychange', () => { if (!document.hidden) run(); }); setTimeout(run, 4000); };
 
   // Live currencies: Coinbase's free exchange-rate feed, every 30 seconds while the page is open
   whenVisible(() => window.InvConsent?.allows('images') && fetch('https://api.coinbase.com/v2/exchange-rates?currency=USD', { cache: 'no-store' }).then(r => r.json()).then(j => {
-    const R = j.data.rates; R.USD = '1';
+    const R = j.data.rates; R.USD = '1'; window.InvPrefs?.setRates(R);
     M.assets.filter(a => a.c === 'currencies' && a.s.length === 6).forEach(a => { const b = +R[a.s.slice(0, 3)], q = +R[a.s.slice(3)]; if (b && q) { a.live = true; setPrice(a.s, +(q / b).toFixed(a.p > 20 ? 3 : 5)); } });
     document.dispatchEvent(new CustomEvent('inv:tick'));
   }).catch(() => {}), 30000);
@@ -462,14 +460,12 @@
   const ftrQ = matchMedia('(max-width: 760px)'), ftrFold = () => ftr.querySelectorAll('.ftr-col').forEach(d => { d.open = !ftrQ.matches; });
   ftrFold(); ftrQ.addEventListener?.('change', ftrFold);
   // Native first-party translation (assets/locale.js + assets/locales/<lang>.json); no third-party script, no proxy.
-  const ftrLang = ftr.querySelector('.ftr-lang select');
-  const syncLang = () => { if (window.InvLocale) ftrLang.value = InvLocale.language; };
-  ftrLang.addEventListener('change', () => { const want = ftrLang.value; window.InvLocale?.setLanguage(want).catch(() => { ftrLang.value = 'en'; }); });
-  addEventListener('inv-language-change', syncLang);
+  const ftrLang=ftr.querySelector('.ftr-lang');
+  ftrLang.innerHTML='<button type="button" class="btn btn-ghost">Language</button>';
+  ftrLang.querySelector('button').onclick=e=>{e.stopPropagation();window.scrollTo({top:0,behavior:'instant'});window.InvPrefs?.openSettings();};
   ftr.querySelector('.ftr-top-btn')?.addEventListener('click', () => scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
   document.addEventListener('DOMContentLoaded', () => {
     document.body.append(ftr);
-    syncLang();
   });
   // scroll reveal: sections fade and rise in once as they enter the view; grid items follow in a short stagger.
   // Only opacity/transform (GPU), each element animates once, nothing hidden without JS, and none with reduced motion.
@@ -543,7 +539,7 @@
   function assetTable(rows, cols = ['price', 'chg', 'week', 'spark']) {
     const H = { price: 'Price', chg: '24h / 1D', week: '1W', cap: 'Market cap', vol: 'Volume', pe: 'P/E', spark: '7 days', aum: 'Assets', fee: 'Fee', sector: 'Sector' };
     return `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th>${cols.map(c => `<th>${H[c]}</th>`).join('')}<th style="width:40px"></th></tr></thead><tbody>${rows.map(a => `<tr data-href="${href(a)}"><td><a class="ident" href="${href(a)}">${logo(a)}<span><b>${a.s}</b><small>${a.n}</small></span></a></td>${cols.map(c => {
-      if (c === 'price') return `<td class="num">${fmtP(a)}${a.unit ? `<span class="dim">${a.unit}</span>` : ''}</td>`;
+      if (c === 'price') return `<td class="num"><span data-lp="${a.s}">${fmtP(a)}</span>${a.unit ? `<span class="dim">${a.unit}</span>` : ''}</td>`;
       if (c === 'chg') return `<td><span class="pill ${cls(a.d)}">${fmtC(a.d, a.y)}</span></td>`;
       if (c === 'week') return `<td class="num ${cls(a.w)}">${fmtC(a.w, a.y)}</td>`;
       if (c === 'cap') return `<td class="num">${cap(a.m)}</td>`;
