@@ -1245,3 +1245,6 @@ body:has(.drawer.open) #hdr-login{visibility:hidden}
 .ftr-translate select{max-width:100%;min-height:44px;color:#111;background:#fff}
 .ftr-original{width:max-content;max-width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--fg);font:inherit;cursor:pointer}
 .ftr-translate-status{max-width:60ch;margin:0;color:var(--fg-2);font-size:13px;line-height:1.5}
+
+/* Header Settings stays available on PC and phone. */
+.pf-slot{display:inline-flex}.pf-wrap{position:relative;display:inline-flex}.pf-btn svg{width:22px;height:22px}.pf-dd{position:absolute;right:0;top:48px;z-index:100;width:292px;padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--surface,#151517);box-shadow:0 16px 50px #0008;color:var(--fg)}.pf-dd[hidden]{display:none}.pf-dd label{display:grid;gap:7px;margin:16px 0;font-size:13px}.pf-dd select{width:100%;min-height:44px}.pf-dd small,.pf-status{font-size:12px;line-height:1.5;color:var(--fg-3)}.pf-status:empty{display:none}@media(max-width:900px){.hdr-tools .pf-slot,.hdr-tools .pf-wrap{display:inline-flex!important}.pf-dd{position:fixed;left:16px;right:16px;top:66px;width:auto}}

@@ -110,7 +110,8 @@
   const label = a => a.s.replace(/-USD$/, '').replace(/=F$/, '').replace(/^\^/, '');
   const money = (v, a) => window.InvPrefs ? InvPrefs.fmt(v, a) : v?.toLocaleString('en-US', { maximumFractionDigits: 2 });
   const rank = (q, a) => { const s = label(a).toLowerCase(), n = (a.n || '').toLowerCase(); if (s === q) return 0; if (n === q) return 1; if (s.startsWith(q)) return 2; if (n.startsWith(q)) return 3; if (n.split(/[\s.-]+/).some(w => w.startsWith(q))) return 4; if (n.includes(q) || s.includes(q)) return 5; return 9; };
-  const FILTERS = [['all', 'All'], ['stocks', 'Companies'], ['crypto', 'Crypto'], ['idx', 'Indices'], ['cmd', 'Commodities'], ['fx', 'Currencies'], ['countries', 'Countries'], ['articles', 'Articles']];
+  const marketsSearch = () => new URLSearchParams(location.search).get('mode') === 'markets';
+  const FILTERS = [['all', 'All'], ['stocks', 'Companies'], ['crypto', 'Crypto'], ['idx', 'Indices'], ['cmd', 'Commodities'], ['fx', 'Currencies'], ['countries', 'Countries'], ['exchanges', 'Exchanges'], ['articles', 'Articles']];
   const GROUPS = { stocks: ['Companies', a => a.t === 'stocks' && !['Index','Country ETF'].includes(a.g)], idx: ['Indices', a => a.t === 'stocks' && a.g === 'Index'], crypto: ['Crypto', a => a.t === 'crypto' && DATA.cryptoRank[label(a)] != null], cmd: ['Commodities', a => a.t === 'cmd'], fx: ['Currencies', a => a.t === 'fx'] };
   
   const fmtP = d => isFinite(d) ? `<i class="pc ${d > 0.005 ? 'u' : d < -0.005 ? 'd' : 'o'}"><span class="direction-arrow">${d > 0.005 ? '↑' : d < -0.005 ? '↓' : '↔'}</span> ${Math.abs(d).toFixed(2)}%</i>` : '';
@@ -127,14 +128,18 @@
     if (sec.length) out.push({ key: 'sectors', fk: 'stocks', title: 'Sectors', items: sec, html: x => lnk(ROOT + 'assets/globe/news.html?sector=' + encodeURIComponent(x.slug), InvSectors.icon(x.name), x.name, 'Sector · articles and sector fund move') });
     const articleCount = c => DATA.stories.filter(s => s.location?.country === c).length;
     const cs = DATA.countries.filter(c => !q || c.toLowerCase().includes(q)).sort((a,b) => articleCount(b) - articleCount(a));
-    if (cs.length) out.push({ key: 'countries', title: 'Countries', items: cs, html: c => lnk(ROOT + 'assets/globe/news.html?country=' + encodeURIComponent(c), DATA.iso[c] ? `<img src="${ROOT}assets/globe/flags/${DATA.iso[c].toLowerCase()}.svg" alt="">` : '', c, articleCount(c) + ' articles', 'country:' + c) });
+    if (cs.length) out.push({ key: 'countries', title: 'Countries', items: cs, html: c => lnk(ROOT + 'assets/globe/news.html?country=' + encodeURIComponent(c) + (marketsSearch() ? '&mode=markets' : ''), DATA.iso[c] ? `<img src="${ROOT}assets/globe/flags/${DATA.iso[c].toLowerCase()}.svg" alt="">` : '', c, articleCount(c) + ' articles', 'country:' + c) });
+    if(marketsSearch()){
+      const exchanges=(DATA.exchanges||[]).filter(e=>!q||[e.mic,e.short,e.name,e.city,e.countryName].join(' ').toLowerCase().includes(q));
+      if(exchanges.length)out.push({key:'exchanges',title:'Exchanges',items:exchanges,html:e=>lnk(ROOT+'assets/globe/news.html?mode=markets&country='+encodeURIComponent(e.countryName)+'&exchange='+encodeURIComponent(e.mic),DATA.iso[e.countryName]?`<img src="${ROOT}assets/globe/flags/${DATA.iso[e.countryName].toLowerCase()}.svg" alt="">`:'',e.short+' · '+e.name,e.city+' · '+e.currency,'market:'+e.mic+':'+e.countryName)});
+    }
     const ns = DATA.stories.filter(s => !q || ((s.headline || '') + ' ' + (s.summary || '') + ' ' + (s.entities || []).map(e => e.name).join(' ')).toLowerCase().includes(q)).sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at)).slice(0,q ? 1000 : 20);
     if (ns.length) out.push({ key: 'articles', title: 'Articles', items: ns, html: s => lnk(ROOT + 'assets/globe/news.html?story=' + encodeURIComponent(s.id), esc((s.source?.name || 'N').slice(0,2).toUpperCase()), s.headline, (s.source?.name || '') + ' · ' + new Date(s.published_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }), 'story:' + s.id), more: 'articles' });
     return out;
   }
   function searchUI() {
     const V = '3';
-    const l = mount('pk-s ' + [...V].map(c => 'v' + c).join(' '), `<div class="pk-sb" role="dialog" aria-modal="true" aria-label="Search"><div class="pk-in">${SEARCH}<input type="search" autocomplete="off" spellcheck="false" placeholder="Search assets, countries &amp; articles" aria-label="Search"><kbd>esc</kbd></div><div class="pk-body"><nav class="pk-fl" aria-label="Filters"></nav><div class="pk-r"><div class="pk-none">Loading…</div></div><aside class="pk-pv" aria-live="polite"></aside></div></div>`);
+    const l = mount('pk-s ' + [...V].map(c => 'v' + c).join(' '), `<div class="pk-sb" role="dialog" aria-modal="true" aria-label="Search"><div class="pk-in">${SEARCH}<input type="search" autocomplete="off" spellcheck="false" placeholder="${marketsSearch()?'Search countries, exchanges, indices &amp; companies':'Search assets, countries &amp; articles'}" aria-label="Search"><kbd>esc</kbd></div><div class="pk-body"><nav class="pk-fl" aria-label="Filters"></nav><div class="pk-r"><div class="pk-none">Loading…</div></div><aside class="pk-pv" aria-live="polite"></aside></div></div>`);
     const inp = l.querySelector('input'), res = l.querySelector('.pk-r'), fl = l.querySelector('.pk-fl'), pv = l.querySelector('.pk-pv'); inp.focus(); let sel = 0, F = 'all', SEC = [];
     const items = () => [...res.querySelectorAll('.pk-i')], mark = () => { items().forEach((e, i) => e.setAttribute('aria-selected', i === sel ? 'true' : 'false')); preview(); };
     const count = k => k === 'all' ? SEC.reduce((n, s) => n + s.items.length, 0) : SEC.filter(s => s.key === k || s.fk === k).reduce((n, s) => n + s.items.length, 0);
@@ -168,13 +173,13 @@
     const paint = () => {
       if (!DATA) return; const q = inp.value.trim().toLowerCase(); let h = '';
       SEC = search(q);
-      fl.innerHTML = FILTERS.filter(([k]) => !q || k === 'all' || count(k)).map(([k, t]) => `<button type="button" class="pk-f${k === F ? ' on' : ''}" data-f="${k}">${t}${q ? `<em>${count(k)}</em>` : ''}</button>`).join('');
+      fl.innerHTML = FILTERS.filter(([k]) => (k !== 'exchanges' || marketsSearch()) && (!q || k === 'all' || count(k))).map(([k, t]) => `<button type="button" class="pk-f${k === F ? ' on' : ''}" data-f="${k}">${t}${q ? `<em>${count(k)}</em>` : ''}</button>`).join('');
       const shown = SEC.filter(s => F === 'all' || s.key === F || s.fk === F || (F === 'stocks' && s.key === 'sectors'));
       for (const s of shown) { const lim = s.key === 'popular' ? 20 : F === 'all' ? (s.key === 'articles' ? 5 : 4) : 40; h += `<h6>${s.title}${q ? `<em>${s.items.length}</em>` : ''}</h6>` + s.items.slice(0, lim).map((x, i) => s.html(x, i === 0 && s.type === 'asset' && F === 'all' && q ? 'top' : '')).join(''); }
       res.classList.toggle('popular', false); res.scrollTop = 0;
       res.innerHTML = h || `<div class="pk-none">No result for “${esc(inp.value)}”.</div>`; sel = 0; mark();
     };
-    load().then(paint); inp.addEventListener('input', () => { F = 'all'; paint(); });
+    load().then(async()=>{if(marketsSearch()&&!DATA.exchanges){try{const r=await fetch(ROOT+'data/exchanges.json',{cache:'no-cache'});if(r.ok){const ex=await r.json();DATA.exchanges=Object.entries(ex).map(([mic,e])=>({mic,...e,countryName:DATA.countries.find(c=>DATA.iso[c]===e.country)})).filter(e=>e.countryName);}}catch{}}paint();}); inp.addEventListener('input', () => { F = 'all'; paint(); });
     fl.addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { F = b.dataset.f; paint(); inp.focus(); } });
     const go = s => { close(true); setTimeout(() => open(s), 30); };
     res.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (b) { go(b.dataset.a); return; } const a = e.target.closest('[data-nav]'); if (a && window.InvGlobeNav) { const [k, v] = [a.dataset.nav.split(':')[0], a.dataset.nav.slice(a.dataset.nav.indexOf(':') + 1)]; e.preventDefault(); if (InvGlobeNav[k] && InvGlobeNav[k](v)) close(true); else location.href = a.href; } });

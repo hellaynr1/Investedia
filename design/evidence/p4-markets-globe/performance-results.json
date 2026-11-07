@@ -1,0 +1,28 @@
+{
+  "baselineCommit": "3c5644fc9",
+  "device": "iPhone 13",
+  "cpuSlowdown": 4,
+  "order": [
+    "news",
+    "markets",
+    "markets",
+    "news"
+  ],
+  "selectedCountry": "Nigeria",
+  "maxDrawnLines": 5,
+  "metrics": {
+    "news": {
+      "samples": 400,
+      "medianFrameMs": 200,
+      "medianDrawMs": 25.900000005960464
+    },
+    "markets": {
+      "samples": 400,
+      "medianFrameMs": 200,
+      "medianDrawMs": 22.599999994039536
+    }
+  },
+  "frameRatio": 1,
+  "drawRatio": 0.8725868721559271,
+  "pass": true
+}

@@ -21,7 +21,7 @@
     const X = i => i / (v.length - 1) * W, Y = y => H - (y - L0) / r * H;
     const d = v.map((y, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(y).toFixed(1)).join(''), gid = 'apg' + Math.random().toString(36).slice(2, 7);
     const dec = r < 2 ? 2 : r < 20 ? 1 : 0, tick = k => (L0 + r * k / 4);
-    const yl = [4, 3, 2, 1, 0].map(k => `<span style="top:${(100 - k * 25).toFixed(1)}%">${tick(k).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec })}</span>`).join('');
+    const yl = [4, 3, 2, 1, 0].map(k => `<span style="top:${(100 - k * 25).toFixed(1)}%">${money(tick(k))}</span>`).join('');
     const grid = [1, 2, 3].map(k => `<line x1="0" x2="${W}" y1="${H * k / 4}" y2="${H * k / 4}"/>`).join('');
     const t = S.intra[a.s]?.d1?.t, now = Date.now(), win = S.win;
     const tOk = win === 'd' && t?.length > 1 && t[t.length - 1] - t[0] > 1800;  // real intraday times

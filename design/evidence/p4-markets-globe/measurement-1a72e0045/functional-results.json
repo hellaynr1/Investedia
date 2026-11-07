@@ -1,0 +1,1258 @@
+{
+  "baselineCommit": "1a72e0045",
+  "clock": "2026-11-07T03:00:00Z",
+  "checks": [
+    {
+      "id": "A1 News default 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 News CTA 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 rings without lines 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 URL and search 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 Nigeria selected 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 all rings selectable with real city positions 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 Nigeria KPI data 1440",
+      "pass": true,
+      "evidence": {
+        "source": {
+          "fx": 1345.99,
+          "inflation": [
+            2025,
+            23.01
+          ]
+        },
+        "text": "×\nAFRICA · MARKET\nNigeria\n\nNigerian Exchange (NGX) · Lagos · Nigerian naira (NGN)\n\nNGX benchmark\n—\nno data yet\nUSD/NGN\n1,345.99\ndelayed\nInflation\n23.0%\n2025 · WB\nNotable developments\n492 →\nNigeria Central Bank Imposes $11 Million Licensing Rule for Dollar Stablecoins\nThe Rio Times · 6 Nov\nCentral Bank of Nigeria introduces regulatory framework for virtual assets\nBusinessDay Nigeria · 6 Nov\nMarket Momentum\n30 days\nPerformers\nAttention\nSectors\nAlphabet Inc\n5 articles\nAirtel Africa\n3 articles\nMastercard\n2 articles\n\nVerified article mentions, last 30 days. Not a recommendation.\n\nExplore Nigeria →\n━ Trade\n━ Investment\nTrade 2024 · UN Comtrade. Investment 2023 · IMF CPIS. Prices delayed. Not investment advice."
+      }
+    },
+    {
+      "id": "A1 panel elements 1440",
+      "pass": true
+    },
+    {
+      "id": "A2 sourced line 1440 trade-NG-ES-2024",
+      "pass": true,
+      "evidence": {
+        "from": "NG",
+        "to": "ES",
+        "kind": "trade",
+        "year": 2024,
+        "value_usd": 5496406841.959,
+        "measure": "Annual merchandise exports, reporter Nigeria, TOTAL HS",
+        "source": "UN Comtrade",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?period=2024&reporterCode=566&cmdCode=TOTAL&flowCode=X&partner2Code=0&customsCode=C00&motCode=0&maxRecords=500",
+        "record": {
+          "reporter": 566,
+          "partner": 724,
+          "flow": "X",
+          "period": "2024",
+          "cmdCode": "TOTAL"
+        },
+        "reported": false,
+        "id": "trade-NG-ES-2024"
+      }
+    },
+    {
+      "id": "A2 sourced line 1440 trade-NG-FR-2024",
+      "pass": true,
+      "evidence": {
+        "from": "NG",
+        "to": "FR",
+        "kind": "trade",
+        "year": 2024,
+        "value_usd": 4703371428.031,
+        "measure": "Annual merchandise exports, reporter Nigeria, TOTAL HS",
+        "source": "UN Comtrade",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?period=2024&reporterCode=566&cmdCode=TOTAL&flowCode=X&partner2Code=0&customsCode=C00&motCode=0&maxRecords=500",
+        "record": {
+          "reporter": 566,
+          "partner": 251,
+          "flow": "X",
+          "period": "2024",
+          "cmdCode": "TOTAL"
+        },
+        "reported": false,
+        "id": "trade-NG-FR-2024"
+      }
+    },
+    {
+      "id": "A2 sourced line 1440 trade-NG-NL-2024",
+      "pass": true,
+      "evidence": {
+        "from": "NG",
+        "to": "NL",
+        "kind": "trade",
+        "year": 2024,
+        "value_usd": 4686398581.166,
+        "measure": "Annual merchandise exports, reporter Nigeria, TOTAL HS",
+        "source": "UN Comtrade",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?period=2024&reporterCode=566&cmdCode=TOTAL&flowCode=X&partner2Code=0&customsCode=C00&motCode=0&maxRecords=500",
+        "record": {
+          "reporter": 566,
+          "partner": 528,
+          "flow": "X",
+          "period": "2024",
+          "cmdCode": "TOTAL"
+        },
+        "reported": false,
+        "id": "trade-NG-NL-2024"
+      }
+    },
+    {
+      "id": "A2 sourced line 1440 trade-NG-IN-2024",
+      "pass": true,
+      "evidence": {
+        "from": "NG",
+        "to": "IN",
+        "kind": "trade",
+        "year": 2024,
+        "value_usd": 3913177057.958,
+        "measure": "Annual merchandise exports, reporter Nigeria, TOTAL HS",
+        "source": "UN Comtrade",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?period=2024&reporterCode=566&cmdCode=TOTAL&flowCode=X&partner2Code=0&customsCode=C00&motCode=0&maxRecords=500",
+        "record": {
+          "reporter": 566,
+          "partner": 699,
+          "flow": "X",
+          "period": "2024",
+          "cmdCode": "TOTAL"
+        },
+        "reported": false,
+        "id": "trade-NG-IN-2024"
+      }
+    },
+    {
+      "id": "A2 sourced line 1440 investment-US-NG-2023",
+      "pass": true,
+      "evidence": {
+        "from": "US",
+        "to": "NG",
+        "kind": "investment",
+        "year": 2023,
+        "value_usd": 3902000000,
+        "measure": "Year-end portfolio holdings in Nigeria; derived liabilities from counterpart reports, total instruments, all sectors",
+        "source": "IMF CPIS (DBnomics mirror)",
+        "url": "https://db.nomics.world/IMF/CPIS/A.NG.I_L_T_T_T_BP6_DV_USD.T.T.US",
+        "series": "A.NG.I_L_T_T_T_BP6_DV_USD.T.T.US",
+        "snapshot": "2025-04-09",
+        "id": "investment-US-NG-2023"
+      }
+    },
+    {
+      "id": "A2 sourced line 1440 trade-NG-US-2024",
+      "pass": true,
+      "evidence": {
+        "from": "NG",
+        "to": "US",
+        "kind": "trade",
+        "year": 2024,
+        "value_usd": 3801399188.196,
+        "measure": "Annual merchandise exports, reporter Nigeria, TOTAL HS",
+        "source": "UN Comtrade",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?period=2024&reporterCode=566&cmdCode=TOTAL&flowCode=X&partner2Code=0&customsCode=C00&motCode=0&maxRecords=500",
+        "record": {
+          "reporter": 566,
+          "partner": 842,
+          "flow": "X",
+          "period": "2024",
+          "cmdCode": "TOTAL"
+        },
+        "reported": false,
+        "id": "trade-NG-US-2024"
+      }
+    },
+    {
+      "id": "A2 sourced line 1440 investment-NL-NG-2023",
+      "pass": true,
+      "evidence": {
+        "from": "NL",
+        "to": "NG",
+        "kind": "investment",
+        "year": 2023,
+        "value_usd": 2240940000,
+        "measure": "Year-end portfolio holdings in Nigeria; derived liabilities from counterpart reports, total instruments, all sectors",
+        "source": "IMF CPIS (DBnomics mirror)",
+        "url": "https://db.nomics.world/IMF/CPIS/A.NG.I_L_T_T_T_BP6_DV_USD.T.T.NL",
+        "series": "A.NG.I_L_T_T_T_BP6_DV_USD.T.T.NL",
+        "snapshot": "2025-04-09",
+        "id": "investment-NL-NG-2023"
+      }
+    },
+    {
+      "id": "A2 sourced line 1440 investment-ZA-NG-2023",
+      "pass": true,
+      "evidence": {
+        "from": "ZA",
+        "to": "NG",
+        "kind": "investment",
+        "year": 2023,
+        "value_usd": 1270546803.6,
+        "measure": "Year-end portfolio holdings in Nigeria; derived liabilities from counterpart reports, total instruments, all sectors",
+        "source": "IMF CPIS (DBnomics mirror)",
+        "url": "https://db.nomics.world/IMF/CPIS/A.NG.I_L_T_T_T_BP6_DV_USD.T.T.ZA",
+        "series": "A.NG.I_L_T_T_T_BP6_DV_USD.T.T.ZA",
+        "snapshot": "2025-04-09",
+        "id": "investment-ZA-NG-2023"
+      }
+    },
+    {
+      "id": "A2 sourced line 1440 investment-IE-NG-2023",
+      "pass": true,
+      "evidence": {
+        "from": "IE",
+        "to": "NG",
+        "kind": "investment",
+        "year": 2023,
+        "value_usd": 857480000,
+        "measure": "Year-end portfolio holdings in Nigeria; derived liabilities from counterpart reports, total instruments, all sectors",
+        "source": "IMF CPIS (DBnomics mirror)",
+        "url": "https://db.nomics.world/IMF/CPIS/A.NG.I_L_T_T_T_BP6_DV_USD.T.T.IE",
+        "series": "A.NG.I_L_T_T_T_BP6_DV_USD.T.T.IE",
+        "snapshot": "2025-04-09",
+        "id": "investment-IE-NG-2023"
+      }
+    },
+    {
+      "id": "A2 sourced line 1440 investment-DE-NG-2023",
+      "pass": true,
+      "evidence": {
+        "from": "DE",
+        "to": "NG",
+        "kind": "investment",
+        "year": 2023,
+        "value_usd": 476255000,
+        "measure": "Year-end portfolio holdings in Nigeria; derived liabilities from counterpart reports, total instruments, all sectors",
+        "source": "IMF CPIS (DBnomics mirror)",
+        "url": "https://db.nomics.world/IMF/CPIS/A.NG.I_L_T_T_T_BP6_DV_USD.T.T.DE",
+        "series": "A.NG.I_L_T_T_T_BP6_DV_USD.T.T.DE",
+        "snapshot": "2025-04-09",
+        "id": "investment-DE-NG-2023"
+      }
+    },
+    {
+      "id": "A2 phone cap and link kinds 1440",
+      "pass": true,
+      "evidence": [
+        "trade-NG-ES-2024",
+        "trade-NG-FR-2024",
+        "trade-NG-NL-2024",
+        "trade-NG-IN-2024",
+        "investment-US-NG-2023",
+        "trade-NG-US-2024",
+        "investment-NL-NG-2023",
+        "investment-ZA-NG-2023",
+        "investment-IE-NG-2023",
+        "investment-DE-NG-2023"
+      ]
+    },
+    {
+      "id": "A3 clear controls 1440",
+      "pass": true,
+      "evidence": {
+        "panel": {
+          "x": 1052,
+          "y": 137,
+          "width": 360,
+          "height": 649
+        },
+        "cta": {
+          "x": 1224.71875,
+          "y": 802,
+          "width": 195.28125,
+          "height": 44
+        },
+        "sw": {
+          "x": 1055.609375,
+          "y": 802,
+          "width": 157.109375,
+          "height": 44
+        }
+      }
+    },
+    {
+      "id": "A3 phone sheet or desktop panel 1440",
+      "pass": true,
+      "evidence": {
+        "panel": {
+          "x": 1052,
+          "y": 137,
+          "width": 360,
+          "height": 649
+        },
+        "ifr": {
+          "x": 0,
+          "y": 57,
+          "width": 1440,
+          "height": 819
+        }
+      }
+    },
+    {
+      "id": "A4 atlas no overlaps 1440",
+      "pass": true,
+      "evidence": {
+        "overlaps": 0,
+        "labels": [
+          {
+            "x": 896.2394934923095,
+            "y": 413.91950848365326,
+            "w": 76.091064453125,
+            "h": 16,
+            "id": "XNSA",
+            "text": "NGX · NIGERIA"
+          },
+          {
+            "x": 771.0411707643223,
+            "y": 191.52780243523725,
+            "w": 144.88720703125,
+            "h": 16,
+            "id": "ARCX",
+            "text": "NYSE ARCA · UNITED STATES"
+          },
+          {
+            "x": 847.9433886277936,
+            "y": 173.9895531482667,
+            "w": 139.9609375,
+            "h": 16,
+            "id": "XAMS",
+            "text": "EURONEXT · NETHERLANDS"
+          },
+          {
+            "x": 966.0827170285105,
+            "y": 227.78053802993227,
+            "w": 64.8330078125,
+            "h": 16,
+            "id": "XMAD",
+            "text": "BME · SPAIN"
+          },
+          {
+            "x": 622.9374109986973,
+            "y": 191.52780243523725,
+            "w": 130.103759765625,
+            "h": 16,
+            "id": "XNAS",
+            "text": "NASDAQ · UNITED STATES"
+          }
+        ]
+      }
+    },
+    {
+      "id": "A4 selected label 1440",
+      "pass": true,
+      "evidence": [
+        {
+          "x": 896.2394934923095,
+          "y": 413.91950848365326,
+          "w": 76.091064453125,
+          "h": 16,
+          "id": "XNSA",
+          "text": "NGX · NIGERIA"
+        },
+        {
+          "x": 771.0411707643223,
+          "y": 191.52780243523725,
+          "w": 144.88720703125,
+          "h": 16,
+          "id": "ARCX",
+          "text": "NYSE ARCA · UNITED STATES"
+        },
+        {
+          "x": 847.9433886277936,
+          "y": 173.9895531482667,
+          "w": 139.9609375,
+          "h": 16,
+          "id": "XAMS",
+          "text": "EURONEXT · NETHERLANDS"
+        },
+        {
+          "x": 966.0827170285105,
+          "y": 227.78053802993227,
+          "w": 64.8330078125,
+          "h": 16,
+          "id": "XMAD",
+          "text": "BME · SPAIN"
+        },
+        {
+          "x": 622.9374109986973,
+          "y": 191.52780243523725,
+          "w": 130.103759765625,
+          "h": 16,
+          "id": "XNAS",
+          "text": "NASDAQ · UNITED STATES"
+        }
+      ]
+    },
+    {
+      "id": "A4 labels clear of panel 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 verified attention 1440",
+      "pass": true,
+      "evidence": {
+        "actual": [
+          {
+            "id": "CO:CIK0001652044",
+            "name": "Alphabet Inc",
+            "n": 5
+          },
+          {
+            "id": "CO:EQ:XLON:AAF",
+            "name": "Airtel Africa",
+            "n": 3
+          },
+          {
+            "id": "CO:CIK0001141391",
+            "name": "Mastercard",
+            "n": 2
+          },
+          {
+            "id": "CO:CIK0000093410",
+            "name": "Chevron Corp",
+            "n": 1
+          },
+          {
+            "id": "CO:CIK0000019617",
+            "name": "JPMorgan Chase",
+            "n": 1
+          },
+          {
+            "id": "CO:EQ:XJSE:MTN",
+            "name": "MTN Group",
+            "n": 1
+          },
+          {
+            "id": "CO:EQ:XSWX:NESN",
+            "name": "Nestle",
+            "n": 1
+          },
+          {
+            "id": "CO:CIK0001403161",
+            "name": "Visa Inc",
+            "n": 1
+          }
+        ],
+        "source": [
+          [
+            "CO:EQ:XJSE:MTN",
+            1
+          ],
+          [
+            "CO:EQ:XLON:AAF",
+            3
+          ],
+          [
+            "CO:CIK0001652044",
+            5
+          ],
+          [
+            "CO:CIK0000019617",
+            1
+          ],
+          [
+            "CO:CIK0000093410",
+            1
+          ],
+          [
+            "CO:CIK0001403161",
+            1
+          ],
+          [
+            "CO:CIK0001141391",
+            2
+          ],
+          [
+            "CO:EQ:XSWX:NESN",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "id": "A1 country news destination 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 unlicensed prices missing 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 sector tab 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 source sector counts 1440",
+      "pass": true,
+      "evidence": {
+        "actual": [
+          {
+            "name": "Communication",
+            "n": 5
+          },
+          {
+            "name": "Finance",
+            "n": 2
+          },
+          {
+            "name": "Consumer",
+            "n": 1
+          },
+          {
+            "name": "Energy",
+            "n": 1
+          }
+        ],
+        "source": [
+          [
+            "Communication",
+            5
+          ],
+          [
+            "Finance",
+            2
+          ],
+          [
+            "Energy",
+            1
+          ],
+          [
+            "Consumer",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "id": "A1 close panel 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 Escape closes 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 outside tap closes 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 News restored 1440",
+      "pass": true
+    },
+    {
+      "id": "A5 gear in header 1440",
+      "pass": true
+    },
+    {
+      "id": "A5 two Settings rows 1440",
+      "pass": true
+    },
+    {
+      "id": "A5 currency saved 1440",
+      "pass": true
+    },
+    {
+      "id": "A5 USD conversion correct 1440",
+      "pass": true,
+      "evidence": {
+        "usd": "€89.76 EUR",
+        "local": "R 100.00",
+        "index": "100.00",
+        "rate": 0.8975854950184005
+      }
+    },
+    {
+      "id": "A5 local quotes and index units 1440",
+      "pass": true,
+      "evidence": {
+        "usd": "€89.76 EUR",
+        "local": "R 100.00",
+        "index": "100.00",
+        "rate": 0.8975854950184005
+      }
+    },
+    {
+      "id": "A5 no rate preserves source 1440",
+      "pass": true,
+      "evidence": {
+        "before": "+1.25%",
+        "after": "+1.25%",
+        "missing": "$100.00"
+      }
+    },
+    {
+      "id": "A5 percentages unchanged and bad rates rejected 1440",
+      "pass": true,
+      "evidence": {
+        "before": "+1.25%",
+        "after": "+1.25%",
+        "missing": "$100.00"
+      }
+    },
+    {
+      "id": "Settings Escape 1440",
+      "pass": true
+    },
+    {
+      "id": "A5 homepage price converts 1440",
+      "pass": true,
+      "evidence": "€68,033.14 EUR"
+    },
+    {
+      "id": "A5 asset price converts 1440",
+      "pass": true,
+      "evidence": "€308.08 EUR"
+    },
+    {
+      "id": "A5 persistence 1440",
+      "pass": true
+    },
+    {
+      "id": "A5 company price converts 1440",
+      "pass": true
+    },
+    {
+      "id": "Settings keyboard reachable 1440",
+      "pass": true
+    },
+    {
+      "id": "A6 native French 1440",
+      "pass": true
+    },
+    {
+      "id": "A6 French persistence 1440",
+      "pass": true
+    },
+    {
+      "id": "A6 footer opens Settings 1440",
+      "pass": true
+    },
+    {
+      "id": "A2 absent links never invent arcs 1440",
+      "pass": true
+    },
+    {
+      "id": "A8 no app exceptions 1440",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "id": "A8 no application console errors 1440",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "id": "A8 no phone overflow 1440",
+      "pass": true
+    },
+    {
+      "id": "A1 News default 390",
+      "pass": true
+    },
+    {
+      "id": "A1 News CTA 390",
+      "pass": true
+    },
+    {
+      "id": "A1 rings without lines 390",
+      "pass": true
+    },
+    {
+      "id": "A1 URL and search 390",
+      "pass": true
+    },
+    {
+      "id": "A1 Nigeria selected 390",
+      "pass": true
+    },
+    {
+      "id": "A1 all rings selectable with real city positions 390",
+      "pass": true
+    },
+    {
+      "id": "A1 Nigeria KPI data 390",
+      "pass": true,
+      "evidence": {
+        "source": {
+          "fx": 1345.99,
+          "inflation": [
+            2025,
+            23.01
+          ]
+        },
+        "text": "×\nAFRICA · MARKET\nNigeria\n\nNigerian Exchange (NGX) · Lagos · Nigerian naira (NGN)\n\nNGX benchmark\n—\nno data yet\nUSD/NGN\n1,345.99\ndelayed\nInflation\n23.0%\n2025 · WB\nNotable developments\n492 →\nNigeria Central Bank Imposes $11 Million Licensing Rule for Dollar Stablecoins\nThe Rio Times · 6 Nov\nCentral Bank of Nigeria introduces regulatory framework for virtual assets\nBusinessDay Nigeria · 6 Nov\nMarket Momentum\n30 days\nPerformers\nAttention\nSectors\nAlphabet Inc\n5 articles\nAirtel Africa\n3 articles\nMastercard\n2 articles\n\nVerified article mentions, last 30 days. Not a recommendation.\n\nExplore Nigeria →\n━ Trade\n━ Investment\nTrade 2024 · UN Comtrade. Investment 2023 · IMF CPIS. Prices delayed. Not investment advice."
+      }
+    },
+    {
+      "id": "A1 panel elements 390",
+      "pass": true
+    },
+    {
+      "id": "A2 sourced line 390 trade-NG-ES-2024",
+      "pass": true,
+      "evidence": {
+        "from": "NG",
+        "to": "ES",
+        "kind": "trade",
+        "year": 2024,
+        "value_usd": 5496406841.959,
+        "measure": "Annual merchandise exports, reporter Nigeria, TOTAL HS",
+        "source": "UN Comtrade",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?period=2024&reporterCode=566&cmdCode=TOTAL&flowCode=X&partner2Code=0&customsCode=C00&motCode=0&maxRecords=500",
+        "record": {
+          "reporter": 566,
+          "partner": 724,
+          "flow": "X",
+          "period": "2024",
+          "cmdCode": "TOTAL"
+        },
+        "reported": false,
+        "id": "trade-NG-ES-2024"
+      }
+    },
+    {
+      "id": "A2 sourced line 390 trade-NG-FR-2024",
+      "pass": true,
+      "evidence": {
+        "from": "NG",
+        "to": "FR",
+        "kind": "trade",
+        "year": 2024,
+        "value_usd": 4703371428.031,
+        "measure": "Annual merchandise exports, reporter Nigeria, TOTAL HS",
+        "source": "UN Comtrade",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?period=2024&reporterCode=566&cmdCode=TOTAL&flowCode=X&partner2Code=0&customsCode=C00&motCode=0&maxRecords=500",
+        "record": {
+          "reporter": 566,
+          "partner": 251,
+          "flow": "X",
+          "period": "2024",
+          "cmdCode": "TOTAL"
+        },
+        "reported": false,
+        "id": "trade-NG-FR-2024"
+      }
+    },
+    {
+      "id": "A2 sourced line 390 trade-NG-NL-2024",
+      "pass": true,
+      "evidence": {
+        "from": "NG",
+        "to": "NL",
+        "kind": "trade",
+        "year": 2024,
+        "value_usd": 4686398581.166,
+        "measure": "Annual merchandise exports, reporter Nigeria, TOTAL HS",
+        "source": "UN Comtrade",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?period=2024&reporterCode=566&cmdCode=TOTAL&flowCode=X&partner2Code=0&customsCode=C00&motCode=0&maxRecords=500",
+        "record": {
+          "reporter": 566,
+          "partner": 528,
+          "flow": "X",
+          "period": "2024",
+          "cmdCode": "TOTAL"
+        },
+        "reported": false,
+        "id": "trade-NG-NL-2024"
+      }
+    },
+    {
+      "id": "A2 sourced line 390 investment-US-NG-2023",
+      "pass": true,
+      "evidence": {
+        "from": "US",
+        "to": "NG",
+        "kind": "investment",
+        "year": 2023,
+        "value_usd": 3902000000,
+        "measure": "Year-end portfolio holdings in Nigeria; derived liabilities from counterpart reports, total instruments, all sectors",
+        "source": "IMF CPIS (DBnomics mirror)",
+        "url": "https://db.nomics.world/IMF/CPIS/A.NG.I_L_T_T_T_BP6_DV_USD.T.T.US",
+        "series": "A.NG.I_L_T_T_T_BP6_DV_USD.T.T.US",
+        "snapshot": "2025-04-09",
+        "id": "investment-US-NG-2023"
+      }
+    },
+    {
+      "id": "A2 sourced line 390 investment-NL-NG-2023",
+      "pass": true,
+      "evidence": {
+        "from": "NL",
+        "to": "NG",
+        "kind": "investment",
+        "year": 2023,
+        "value_usd": 2240940000,
+        "measure": "Year-end portfolio holdings in Nigeria; derived liabilities from counterpart reports, total instruments, all sectors",
+        "source": "IMF CPIS (DBnomics mirror)",
+        "url": "https://db.nomics.world/IMF/CPIS/A.NG.I_L_T_T_T_BP6_DV_USD.T.T.NL",
+        "series": "A.NG.I_L_T_T_T_BP6_DV_USD.T.T.NL",
+        "snapshot": "2025-04-09",
+        "id": "investment-NL-NG-2023"
+      }
+    },
+    {
+      "id": "A2 phone cap and link kinds 390",
+      "pass": true,
+      "evidence": [
+        "trade-NG-ES-2024",
+        "trade-NG-FR-2024",
+        "trade-NG-NL-2024",
+        "investment-US-NG-2023",
+        "investment-NL-NG-2023"
+      ]
+    },
+    {
+      "id": "A3 clear controls 390",
+      "pass": true,
+      "evidence": {
+        "panel": {
+          "x": 12,
+          "y": 621.46875,
+          "width": 362,
+          "height": 202.53125
+        },
+        "cta": {
+          "x": 303,
+          "y": 440.265625,
+          "width": 67,
+          "height": 44
+        },
+        "sw": {
+          "x": 20,
+          "y": 440.265625,
+          "width": 149.109375,
+          "height": 54
+        }
+      }
+    },
+    {
+      "id": "A3 phone sheet or desktop panel 390",
+      "pass": true,
+      "evidence": {
+        "panel": {
+          "x": 12,
+          "y": 621.46875,
+          "width": 362,
+          "height": 202.53125
+        },
+        "ifr": {
+          "x": 0,
+          "y": 57,
+          "width": 390,
+          "height": 779
+        }
+      }
+    },
+    {
+      "id": "A4 atlas no overlaps 390",
+      "pass": true,
+      "evidence": {
+        "overlaps": 0,
+        "labels": [
+          {
+            "x": 190.66527897271732,
+            "y": 535.1672542418266,
+            "w": 76.091064453125,
+            "h": 16,
+            "id": "XNSA",
+            "text": "NGX · NIGERIA"
+          }
+        ]
+      }
+    },
+    {
+      "id": "A4 selected label 390",
+      "pass": true,
+      "evidence": [
+        {
+          "x": 190.66527897271732,
+          "y": 535.1672542418266,
+          "w": 76.091064453125,
+          "h": 16,
+          "id": "XNSA",
+          "text": "NGX · NIGERIA"
+        }
+      ]
+    },
+    {
+      "id": "A4 labels clear of panel 390",
+      "pass": true
+    },
+    {
+      "id": "A1 verified attention 390",
+      "pass": true,
+      "evidence": {
+        "actual": [
+          {
+            "id": "CO:CIK0001652044",
+            "name": "Alphabet Inc",
+            "n": 5
+          },
+          {
+            "id": "CO:EQ:XLON:AAF",
+            "name": "Airtel Africa",
+            "n": 3
+          },
+          {
+            "id": "CO:CIK0001141391",
+            "name": "Mastercard",
+            "n": 2
+          },
+          {
+            "id": "CO:CIK0000093410",
+            "name": "Chevron Corp",
+            "n": 1
+          },
+          {
+            "id": "CO:CIK0000019617",
+            "name": "JPMorgan Chase",
+            "n": 1
+          },
+          {
+            "id": "CO:EQ:XJSE:MTN",
+            "name": "MTN Group",
+            "n": 1
+          },
+          {
+            "id": "CO:EQ:XSWX:NESN",
+            "name": "Nestle",
+            "n": 1
+          },
+          {
+            "id": "CO:CIK0001403161",
+            "name": "Visa Inc",
+            "n": 1
+          }
+        ],
+        "source": [
+          [
+            "CO:EQ:XJSE:MTN",
+            1
+          ],
+          [
+            "CO:EQ:XLON:AAF",
+            3
+          ],
+          [
+            "CO:CIK0001652044",
+            5
+          ],
+          [
+            "CO:CIK0000019617",
+            1
+          ],
+          [
+            "CO:CIK0000093410",
+            1
+          ],
+          [
+            "CO:CIK0001403161",
+            1
+          ],
+          [
+            "CO:CIK0001141391",
+            2
+          ],
+          [
+            "CO:EQ:XSWX:NESN",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "id": "A1 country news destination 390",
+      "pass": true
+    },
+    {
+      "id": "A1 unlicensed prices missing 390",
+      "pass": true
+    },
+    {
+      "id": "A1 sector tab 390",
+      "pass": true
+    },
+    {
+      "id": "A1 source sector counts 390",
+      "pass": true,
+      "evidence": {
+        "actual": [
+          {
+            "name": "Communication",
+            "n": 5
+          },
+          {
+            "name": "Finance",
+            "n": 2
+          },
+          {
+            "name": "Consumer",
+            "n": 1
+          },
+          {
+            "name": "Energy",
+            "n": 1
+          }
+        ],
+        "source": [
+          [
+            "Communication",
+            5
+          ],
+          [
+            "Finance",
+            2
+          ],
+          [
+            "Energy",
+            1
+          ],
+          [
+            "Consumer",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "id": "A3 keyboard sheet expand 390",
+      "pass": true
+    },
+    {
+      "id": "A1 close panel 390",
+      "pass": true
+    },
+    {
+      "id": "A1 Escape closes 390",
+      "pass": true
+    },
+    {
+      "id": "A1 outside tap closes 390",
+      "pass": true
+    },
+    {
+      "id": "A1 News restored 390",
+      "pass": true
+    },
+    {
+      "id": "A5 gear in header 390",
+      "pass": true
+    },
+    {
+      "id": "A5 two Settings rows 390",
+      "pass": true
+    },
+    {
+      "id": "A5 currency saved 390",
+      "pass": true
+    },
+    {
+      "id": "A5 USD conversion correct 390",
+      "pass": true,
+      "evidence": {
+        "usd": "€89.76 EUR",
+        "local": "R 100.00",
+        "index": "100.00",
+        "rate": 0.8975854950184005
+      }
+    },
+    {
+      "id": "A5 local quotes and index units 390",
+      "pass": true,
+      "evidence": {
+        "usd": "€89.76 EUR",
+        "local": "R 100.00",
+        "index": "100.00",
+        "rate": 0.8975854950184005
+      }
+    },
+    {
+      "id": "A5 no rate preserves source 390",
+      "pass": true,
+      "evidence": {
+        "before": "+1.25%",
+        "after": "+1.25%",
+        "missing": "$100.00"
+      }
+    },
+    {
+      "id": "A5 percentages unchanged and bad rates rejected 390",
+      "pass": true,
+      "evidence": {
+        "before": "+1.25%",
+        "after": "+1.25%",
+        "missing": "$100.00"
+      }
+    },
+    {
+      "id": "Settings Escape 390",
+      "pass": true
+    },
+    {
+      "id": "A5 homepage price converts 390",
+      "pass": true,
+      "evidence": "€68,033.14 EUR"
+    },
+    {
+      "id": "A5 asset price converts 390",
+      "pass": true,
+      "evidence": "€308.08 EUR"
+    },
+    {
+      "id": "A5 persistence 390",
+      "pass": true
+    },
+    {
+      "id": "A5 company price converts 390",
+      "pass": true
+    },
+    {
+      "id": "Settings keyboard reachable 390",
+      "pass": true
+    },
+    {
+      "id": "A6 native French 390",
+      "pass": true
+    },
+    {
+      "id": "A6 French persistence 390",
+      "pass": true
+    },
+    {
+      "id": "A6 footer opens Settings 390",
+      "pass": true
+    },
+    {
+      "id": "A2 absent links never invent arcs 390",
+      "pass": true
+    },
+    {
+      "id": "A8 no app exceptions 390",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "id": "A8 no application console errors 390",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "id": "A8 no phone overflow 390",
+      "pass": true
+    }
+  ],
+  "devices": {
+    "390": {
+      "links": [
+        "trade-NG-ES-2024",
+        "trade-NG-FR-2024",
+        "trade-NG-NL-2024",
+        "investment-US-NG-2023",
+        "investment-NL-NG-2023"
+      ],
+      "labels": [
+        {
+          "x": 190.66527897271732,
+          "y": 535.1672542418266,
+          "w": 76.091064453125,
+          "h": 16,
+          "id": "XNSA",
+          "text": "NGX · NIGERIA"
+        }
+      ],
+      "homePrice": "€68,033.14 EUR",
+      "assetPrice": "€308.08 EUR",
+      "errors": [],
+      "consoleErrors": [],
+      "httpDiagnostics": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:8786/assets/globe/market-links.json"
+        }
+      ]
+    },
+    "1440": {
+      "links": [
+        "trade-NG-ES-2024",
+        "trade-NG-FR-2024",
+        "trade-NG-NL-2024",
+        "trade-NG-IN-2024",
+        "investment-US-NG-2023",
+        "trade-NG-US-2024",
+        "investment-NL-NG-2023",
+        "investment-ZA-NG-2023",
+        "investment-IE-NG-2023",
+        "investment-DE-NG-2023"
+      ],
+      "labels": [
+        {
+          "x": 896.2394934923095,
+          "y": 413.91950848365326,
+          "w": 76.091064453125,
+          "h": 16,
+          "id": "XNSA",
+          "text": "NGX · NIGERIA"
+        },
+        {
+          "x": 771.0411707643223,
+          "y": 191.52780243523725,
+          "w": 144.88720703125,
+          "h": 16,
+          "id": "ARCX",
+          "text": "NYSE ARCA · UNITED STATES"
+        },
+        {
+          "x": 847.9433886277936,
+          "y": 173.9895531482667,
+          "w": 139.9609375,
+          "h": 16,
+          "id": "XAMS",
+          "text": "EURONEXT · NETHERLANDS"
+        },
+        {
+          "x": 966.0827170285105,
+          "y": 227.78053802993227,
+          "w": 64.8330078125,
+          "h": 16,
+          "id": "XMAD",
+          "text": "BME · SPAIN"
+        },
+        {
+          "x": 622.9374109986973,
+          "y": 191.52780243523725,
+          "w": 130.103759765625,
+          "h": 16,
+          "id": "XNAS",
+          "text": "NASDAQ · UNITED STATES"
+        }
+      ],
+      "homePrice": "€68,033.14 EUR",
+      "assetPrice": "€308.08 EUR",
+      "errors": [],
+      "consoleErrors": [],
+      "httpDiagnostics": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:8786/assets/globe/market-links.json"
+        }
+      ]
+    }
+  },
+  "completed": true,
+  "passed": 102,
+  "failed": 0
+}

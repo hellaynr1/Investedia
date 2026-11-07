@@ -1,0 +1,522 @@
+{
+  "baselineCommit": "1a72e0045",
+  "suites": [
+    {
+      "suite": "python-unittest",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exit": 1,
+      "seconds": 3.28,
+      "candidateExit": 1
+    },
+    {
+      "suite": "contrast-check.py",
+      "command": [
+        "python3",
+        "tests/contrast-check.py"
+      ],
+      "exit": 0,
+      "seconds": 0.07,
+      "candidateExit": 0
+    },
+    {
+      "suite": "a11y.spec.mjs",
+      "command": [
+        "node",
+        "tests/a11y.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 191.57,
+      "candidateExit": 1
+    },
+    {
+      "suite": "alert-consent.spec.mjs",
+      "command": [
+        "node",
+        "tests/alert-consent.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 103.77,
+      "candidateExit": 1
+    },
+    {
+      "suite": "batch2.spec.mjs",
+      "command": [
+        "node",
+        "tests/batch2.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 10.26,
+      "candidateExit": 1
+    },
+    {
+      "suite": "confirmed.spec.mjs",
+      "command": [
+        "node",
+        "tests/confirmed.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 24.27,
+      "candidateExit": 1
+    },
+    {
+      "suite": "consent-media.spec.mjs",
+      "command": [
+        "node",
+        "tests/consent-media.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 155.05,
+      "candidateExit": 1
+    },
+    {
+      "suite": "consent.spec.mjs",
+      "command": [
+        "node",
+        "tests/consent.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 217.91,
+      "candidateExit": 1
+    },
+    {
+      "suite": "footer-translation.spec.mjs",
+      "command": [
+        "node",
+        "tests/footer-translation.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 10.51,
+      "candidateExit": 1
+    },
+    {
+      "suite": "globe-controls.spec.mjs",
+      "command": [
+        "node",
+        "tests/globe-controls.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 43.89,
+      "candidateExit": 1
+    },
+    {
+      "suite": "globe-dropdowns.spec.mjs",
+      "command": [
+        "node",
+        "tests/globe-dropdowns.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 103.93,
+      "candidateExit": 1
+    },
+    {
+      "suite": "globe-ideas.spec.mjs",
+      "command": [
+        "node",
+        "tests/globe-ideas.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 48.69,
+      "candidateExit": 1
+    },
+    {
+      "suite": "globe-orange.spec.mjs",
+      "command": [
+        "node",
+        "tests/globe-orange.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 22.94,
+      "candidateExit": 0
+    },
+    {
+      "suite": "globe-page.spec.mjs",
+      "command": [
+        "node",
+        "tests/globe-page.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 15.11,
+      "candidateExit": 0
+    },
+    {
+      "suite": "globe-phone.spec.mjs",
+      "command": [
+        "node",
+        "tests/globe-phone.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 19.54,
+      "candidateExit": 1
+    },
+    {
+      "suite": "globe-select.spec.mjs",
+      "command": [
+        "node",
+        "tests/globe-select.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 23.92,
+      "candidateExit": 0
+    },
+    {
+      "suite": "globe-sheet.spec.mjs",
+      "command": [
+        "node",
+        "tests/globe-sheet.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 43.74,
+      "candidateExit": 1
+    },
+    {
+      "suite": "home-globe.spec.mjs",
+      "command": [
+        "node",
+        "tests/home-globe.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 18.1,
+      "candidateExit": 0
+    },
+    {
+      "suite": "indices-commodities.spec.mjs",
+      "command": [
+        "node",
+        "tests/indices-commodities.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 18.83,
+      "candidateExit": 0
+    },
+    {
+      "suite": "keyboard.spec.mjs",
+      "command": [
+        "node",
+        "tests/keyboard.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 27.44,
+      "candidateExit": 1
+    },
+    {
+      "suite": "logo-size.spec.mjs",
+      "command": [
+        "node",
+        "tests/logo-size.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 77.79,
+      "candidateExit": 0
+    },
+    {
+      "suite": "markets-updates.spec.mjs",
+      "command": [
+        "node",
+        "tests/markets-updates.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 16.22,
+      "candidateExit": 0
+    },
+    {
+      "suite": "news-menu.spec.mjs",
+      "command": [
+        "node",
+        "tests/news-menu.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 7.63,
+      "candidateExit": 1
+    },
+    {
+      "suite": "p0-timeline.spec.mjs",
+      "command": [
+        "node",
+        "tests/p0-timeline.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 73.41,
+      "candidateExit": 1
+    },
+    {
+      "suite": "p1-global-markets.spec.mjs",
+      "command": [
+        "node",
+        "tests/p1-global-markets.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 121.22,
+      "candidateExit": 0
+    },
+    {
+      "suite": "redesign.spec.mjs",
+      "command": [
+        "node",
+        "tests/redesign.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 34.0,
+      "candidateExit": 0
+    },
+    {
+      "suite": "redirects.spec.mjs",
+      "command": [
+        "node",
+        "tests/redirects.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 20.2,
+      "candidateExit": 0
+    },
+    {
+      "suite": "screenshots.spec.mjs",
+      "command": [
+        "node",
+        "tests/screenshots.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 40.49,
+      "candidateExit": 1
+    },
+    {
+      "suite": "share.spec.mjs",
+      "command": [
+        "node",
+        "tests/share.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 17.0,
+      "candidateExit": 0
+    },
+    {
+      "suite": "since-everywhere.spec.mjs",
+      "command": [
+        "node",
+        "tests/since-everywhere.spec.mjs"
+      ],
+      "exit": 0,
+      "seconds": 21.19,
+      "candidateExit": 0
+    },
+    {
+      "suite": "since-news.spec.mjs",
+      "command": [
+        "node",
+        "tests/since-news.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 112.07,
+      "candidateExit": 1
+    },
+    {
+      "suite": "track-record.spec.mjs",
+      "command": [
+        "node",
+        "tests/track-record.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 34.37,
+      "candidateExit": 1
+    },
+    {
+      "suite": "translation-live.spec.mjs",
+      "command": [
+        "node",
+        "tests/translation-live.spec.mjs"
+      ],
+      "exit": 1,
+      "seconds": 57.79,
+      "candidateExit": 1
+    }
+  ],
+  "newlyFailingSuites": [],
+  "finalPassingSuiteReruns": [
+    {
+      "suite": "contrast-check.py",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "suite": "globe-orange.spec.mjs",
+      "exit": 0,
+      "seconds": 26.09
+    },
+    {
+      "suite": "globe-page.spec.mjs",
+      "exit": 0,
+      "seconds": 13.68
+    },
+    {
+      "suite": "globe-select.spec.mjs",
+      "exit": 0,
+      "seconds": 24.6
+    },
+    {
+      "suite": "home-globe.spec.mjs",
+      "exit": 0,
+      "seconds": 18.15
+    },
+    {
+      "suite": "indices-commodities.spec.mjs",
+      "exit": 0,
+      "seconds": 16.11
+    },
+    {
+      "suite": "logo-size.spec.mjs",
+      "exit": 0,
+      "seconds": 83.51
+    },
+    {
+      "suite": "markets-updates.spec.mjs",
+      "exit": 0,
+      "seconds": 16.58
+    },
+    {
+      "suite": "p1-global-markets.spec.mjs",
+      "exit": 0,
+      "seconds": 68.7
+    },
+    {
+      "suite": "redesign.spec.mjs",
+      "exit": 0,
+      "seconds": 22.56
+    },
+    {
+      "suite": "redirects.spec.mjs",
+      "exit": 0,
+      "seconds": 6.88
+    },
+    {
+      "suite": "share.spec.mjs",
+      "exit": 0,
+      "seconds": 7.79
+    },
+    {
+      "suite": "since-everywhere.spec.mjs",
+      "exit": 0,
+      "seconds": 12.51
+    },
+    {
+      "suite": "globe-phone.spec.mjs",
+      "exit": 1,
+      "seconds": 16.53
+    },
+    {
+      "suite": "p0-timeline.spec.mjs",
+      "exit": 1,
+      "seconds": 46.88
+    },
+    {
+      "suite": "test_market_links.py",
+      "exit": 0,
+      "seconds": 0.12
+    }
+  ],
+  "browserRows": {
+    "compared": 214,
+    "files": [
+      {
+        "file": "globe-phone-results.json",
+        "previouslyPassingRows": 10
+      },
+      {
+        "file": "logo-size-results.json",
+        "previouslyPassingRows": 30
+      },
+      {
+        "file": "indices-commodities-results.json",
+        "previouslyPassingRows": 19
+      },
+      {
+        "file": "globe-dropdowns-results.json",
+        "previouslyPassingRows": 22
+      },
+      {
+        "file": "alert-consent-results.json",
+        "previouslyPassingRows": 2
+      },
+      {
+        "file": "globe-ideas-results.json",
+        "previouslyPassingRows": 29
+      },
+      {
+        "file": "markets-updates-results.json",
+        "previouslyPassingRows": 12
+      },
+      {
+        "file": "since-news-results.json",
+        "previouslyPassingRows": 18
+      },
+      {
+        "file": "keyboard-results.json",
+        "previouslyPassingRows": 12
+      },
+      {
+        "file": "globe-controls-results.json",
+        "previouslyPassingRows": 23
+      },
+      {
+        "file": "news-menu-results.json",
+        "previouslyPassingRows": 2
+      },
+      {
+        "file": "globe-orange-results.json",
+        "previouslyPassingRows": 3
+      },
+      {
+        "file": "consent-media-results.json",
+        "previouslyPassingRows": 4
+      },
+      {
+        "file": "globe-select-results.json",
+        "previouslyPassingRows": 6
+      },
+      {
+        "file": "redesign-results.json",
+        "previouslyPassingRows": 22
+      }
+    ],
+    "regressions": []
+  },
+  "notes": [
+    "33 routine suites on both copies; performance run separately.",
+    "Full comparison used the implementation snapshot before final city-coordinate, sector, footer-click and News-overlay corrections. All 13 main-passing suites were repeated against final files; Globe phone and P0 timeline were repeated too.",
+    "Existing failing suites were not weakened or reclassified as passing."
+  ],
+  "selectedPrivacyReruns": {
+    "scope": "Original alert-consent and consent-media assertions; only 390px Globe cases selected. Final News mode switch is hidden, leaving Privacy reachable.",
+    "results": [
+      {
+        "url": "assets/globe/news.html",
+        "width": 390,
+        "pass": true,
+        "errors": [],
+        "axe": []
+      },
+      {
+        "url": "assets/globe/news.html",
+        "width": 390,
+        "pass": true,
+        "hosts": [
+          "fonts.googleapis.com"
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "finalPython": {
+    "tests": 128,
+    "passed": 127,
+    "failed": 1,
+    "failure": "Existing legal-footer ai-disclosure link test; same failing assertion on main."
+  }
+}
